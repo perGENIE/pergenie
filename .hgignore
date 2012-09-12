@@ -1,0 +1,7 @@
+syntax: glob
+.DS_Store
+*.pyc
+db/ref_genome
+*~
+\#*
+pergenie/db.sqlite3
