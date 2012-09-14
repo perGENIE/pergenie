@@ -5,6 +5,8 @@ from django.template import RequestContext
 from django.views.decorators.http import require_http_methods
 from frontend.forms import LoginForm, RegisterForm
 
+import pymongo
+
 
 def index(request):
     return redirect('frontend.views.login')
@@ -63,6 +65,11 @@ def register(request):
                     params['message'] = 'Already registered'
 
                 else:
+                    with pymongo.Connection() as connection:
+                        db = connection['pergenie']
+                        users = db['users']
+                        users.insert({'user_id': user_id})
+
                     params['is_succeeded'] = True
                     params['message'] = 'You have successfully registered!'
 
