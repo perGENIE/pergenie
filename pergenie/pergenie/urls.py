@@ -20,4 +20,12 @@ urlpatterns = patterns('',
     url(r'^logout/$', 'frontend.views.logout'),
     url(r'^register/$', 'frontend.views.register'),
     url(r'^about/$', 'frontend.views.about'),
+
+    url(r'^dashboard/$', 'dashboard.views.index'),
+
+    url(r'^riskreport/$', 'riskreport.views.index'),
+
+    url(r'^catalog/$', 'catalog.views.index'),
+
+    url(r'^upload/$', 'upload.views.index'),
 )
