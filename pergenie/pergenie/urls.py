@@ -19,4 +19,5 @@ urlpatterns = patterns('',
     url(r'^login/$', 'frontend.views.login'),
     url(r'^logout/$', 'frontend.views.logout'),
     url(r'^register/$', 'frontend.views.register'),
+    url(r'^about/$', 'frontend.views.about'),
 )
