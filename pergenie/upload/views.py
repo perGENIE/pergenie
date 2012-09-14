@@ -5,7 +5,8 @@ from django.views.generic.simple import direct_to_template
 import datetime
 import os
 import pymongo
-import mongo.import_variants as import_variants
+# import mongo.import_variants as import_variants
+from lib.tasks import qimport_variants
 from upload.forms import UploadForm
 
 
@@ -62,15 +63,6 @@ def index(request):
 
                 msg = 'Successfully uploaded: {}'.format(call_file.name)
 
-                #
-                # TODO: Throw queue for importing variant-files
-                # ---------------------------------------------
-                
-                import_error_state = import_variants.import_variants(file_path, population, file_format, user_id)
-                if import_error_state:
-                    err = ', but import failed...' + import_error_state
-                    os.remove(file_path)  # ok?
-                    break
 
                 today = str(datetime.datetime.today()).replace('-', '/')
                 tmp_data_info = {'user_id': user_id,
@@ -78,9 +70,14 @@ def index(request):
                                  'date': today,
                                  'population': population,
                                  'sex': sex,
-                                 'file_format': file_format}
+                                 'file_format': file_format,
+                                 'status': float(0.0)}
                 data_info.insert(tmp_data_info)
-                msg += ', and imported'
+
+                # TODO: Throw queue
+                qimport_variants.delay(file_path, tmp_data_info)
+                msg += ', and now importing. (sorry, it takes for minutes...)'
+
 
                 print '[INFO] user_id:', user_id
                 print '[INFO] data_info:', tmp_data_info

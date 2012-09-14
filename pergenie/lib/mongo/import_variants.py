@@ -3,6 +3,7 @@
 
 import argparse
 import sys
+import os
 import csv
 import time
 import pymongo
@@ -21,13 +22,14 @@ def import_variants(path_to_variants, population, file_format, user_id):
     with pymongo.Connection() as connection:
         db = connection['pergenie']
         users_variants = db['variants'][user_id][path_to_variants]
+        data_info = db['data_info']
 
         if users_variants.find_one():
             # this variants file is already imported, so drop old one.
             db.drop_collection(users_variants)
             print >>sys.stderr, '[INFO] dropped old collection of {}'.format(path_to_variants)
 
-        print >>sys.stderr, '[INFO] Importing {}'.format(path_to_variants)
+        print >>sys.stderr, '[INFO] Importing {} ...'.format(path_to_variants)
         prev_collections = db.collection_names()
 
         try:
@@ -36,8 +38,19 @@ def import_variants(path_to_variants, population, file_format, user_id):
                     if data['rs']:
                         users_variants.insert(data)
 
+                #
+                call_file_name = os.path.basename(path_to_variants)
+                print 'call_file_name', call_file_name
+                print 'find', data_info.find({'user_id': user_id, 'name': call_file_name})
+                data_info.update({'user_id': user_id, 'name': call_file_name}, {"$set": {'status': 90.0}})
+
+                print >>sys.stderr,'[INFO] ensure_index ...'
                 users_variants.ensure_index('rs', unique=True)  # ok?
-                print >>sys.stderr,'[INFO] done. added collection:', set(db.collection_names()) - set(prev_collections)
+
+                #
+                data_info.update({'user_id': user_id, 'name': call_file_name}, {"$set": {'status': 100.0}})
+
+                print >>sys.stderr,'[INFO] done. added collection {}'.format(set(db.collection_names()) - set(prev_collections))
             return None
 
         except ParseError, e:
