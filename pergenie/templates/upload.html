@@ -1,0 +1,207 @@
+{% extends "layout.html" %}
+{% block title %}Upload{% endblock %}
+{% block cookie_id %}upload{% endblock %}
+{% block description %}upload genome data{% endblock %}
+
+{% block main_container %}
+
+
+<!-- show and hide column -->
+
+<!-- <script type="text/javascript" charset="utf-8"> -->
+<!--   $(document).ready(function() { -->
+<!--   $('#datatable').dataTable( { -->
+<!--   "sScrollY": "200px", -->
+<!--   "bPaginate": false -->
+<!--   } ); -->
+<!--   } ); -->
+
+<!--   function fnShowHide( iCol ) -->
+<!--   { -->
+<!--   /* Get the DataTables object again - this is not a recreation, just a get of the object */ -->
+<!--   var oTable = $('#datatable').dataTable(); -->
+
+<!--   var bVis = oTable.fnSettings().aoColumns[iCol].bVisible; -->
+<!--   oTable.fnSetColumnVis( iCol, bVis ? false : true ); -->
+<!--   } -->
+<!--   </script> -->
+
+<!-- <a href="javascript:void(0);" onclick="fnShowHide(0);">Toggle column 1<br></a> -->
+<!-- <a href="javascript:void(0);" onclick="fnShowHide(1);">Toggle column 2<br></a> -->
+<!-- <a href="javascript:void(0);" onclick="fnShowHide(2);">Toggle column 3<br></a> -->
+<!-- <a href="javascript:void(0);" onclick="fnShowHide(3);">Toggle column 4<br></a> -->
+<!-- <a href="javascript:void(0);" onclick="fnShowHide(4);">Toggle column 5<br></a> -->
+
+
+
+
+<div id="main_container" class="span10">
+
+  <!-- <\!-- Breadcrumb -\->         -->
+  <!-- <div class="row-fluid"> -->
+  <!--     <div class="span12"> -->
+  <!--     <ul class="breadcrumb">                             -->
+  <!--       	<li class="active">Upload</li> -->
+  <!--     </ul> -->
+  <!--     </div><\!--/span-\-> -->
+  <!-- </div> -->
+
+  <!-- Content start -->
+  <!-- <\!-- Draggable Widgets start -\-> -->
+  <div class="row-fluid">
+    <div class="span12">
+      <div class="box grad_colour_dark_blue" id="box_1">
+        <h2 class="box_head round_top">Upload</h2>
+        <div class="toggle_container">
+          <div class="block box_content round_bottom std_padding">
+            <div class="row-fluid">
+              <div class="span12 box_padding_20">
+
+                <form class="form-horizontal" action="{% url upload.views.index %}" method="post" enctype="multipart/form-data">
+                  {% csrf_token %}
+		  <fieldset>
+                    <legend>Genome data upload</legend>
+
+                    <div class="control-group">
+                      <label class="control-label">call file</label>
+                      <div class="controls">
+                      <input type="file" name="call">
+                      </div>
+                    </div>
+
+                    <div class="control-group">
+                      <label class="control-label">population</label>
+                      <div class="controls">
+                        <select name="population">
+                          <option value="unkown">unkown</option>
+                          <option value="JPT">JPT</option>
+                          <option value="CEU">CEU</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="control-group">
+                      <label class="control-label">sex</label>
+                      <div class="controls">
+                        <select name="sex">
+                          <option value="unkown">unkown</option>
+                          <option value="male">male</option>
+                          <option value="female">female</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="control-group">
+                      <label class="control-label">file format</label>
+                      <div class="controls">
+                        <select name="file_format">
+                          <option value="andme">23andMe</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="form-actions">
+                      <input type="submit" class="btn btn-primary">
+                      <input type="reset" value="reset" class="btn">
+                    </div>
+
+                    {% if msg %}
+                    <div class="alert alert-success">
+                      <!-- <button type="button" class="close" data-dismiss="alert">×</button> -->
+                      {{ msg }}
+                    </div>
+                    {% endif %}
+
+                    {% if err %}
+                    <div class="alert alert-error">
+                      <!-- <button type="button" class="close" data-dismiss="alert">×</button> -->
+                      {{ err }}
+                    </div>
+                    {% endif %}
+
+
+
+                  </fieldset>
+
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div><!--/span-->
+  </div><!--/row-->
+
+  <!-- Table start -->
+  <div class="row-fluid">
+    <div class="span12">
+      <div class="box grad_colour_dark_blue">
+        <h2 class="box_head round_top">Uploaded status</h2>
+        <div class="toggle_container">
+          <div class="block box_content round_bottom padding_20">
+            <table cellpadding="0" cellspacing="0" border="0" class="display datatable" id="datatable">
+              <thead>
+              <tr>
+                <th>Name</th>
+                <th>Date</th>
+                <th>Population</th>
+                <th>Sex</th>
+                <th>Format</th>
+                <th></th>
+              </tr>
+              </thead>
+
+              <tbody>
+                {% if uploadeds %}
+                {% for uploaded in uploadeds %}
+
+                <tr>
+                  <td class="dataname">{{ uploaded.name }}</td>
+                  <td class="center">{{ uploaded.date }}</td>
+                  <td class="center">
+                    <span class="label label-success">{{ uploaded.population }}</span>
+                  </td>
+                  <td class="center">
+                    <span class="label label-success">{{ uploaded.sex }}</span>
+                  </td>
+                  <td class="center">
+                    <span class="label label-success">{{ uploaded.file_format }}</span>
+                  </td>
+                  <td class="center">
+                    <!-- <a class="btn btn-success" href="#"> -->
+                    <!--   <i class="icon-zoom-in icon-white"></i> -->
+                    <!--   View -->
+                    <!-- </a> -->
+                    <!-- <a class="btn btn-info" href="#"> -->
+                    <!--   <i class="icon-edit icon-white"></i> -->
+                    <!--   Edit -->
+                    <!-- </a> -->
+                    <div id="deleteModal{{ loop.index  }}"  class="modal hide fade in" style="display: none;">
+                      <div class="modal-header"></div>
+                      <div class="modal-body"><p>Really delete?</p></div>
+                      <div class="modal-footer">
+                        <button class="btn" data-dismiss="modal">No.</button>
+                        <button class="btn btn-primary delete" href="#" id="{{ uploaded.name }}">Yes, delete this data.</button>
+                      </div>
+                    </div>
+                    <a data-toggle="modal" href="#deleteModal{{ loop.index }}" class="btn btn-danger"><i class="icon-trash icon-white"></i>Delete</a>
+
+		  </td>
+		</tr>
+		{% endfor %}
+		{% endif %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div><!--/span-->
+  </div><!--/row-->
+  <!-- Table end -->
+
+  <!-- Draggable Widgets end -->
+  <!-- Content end -->
+</div>
+
+
+{% endblock %}
