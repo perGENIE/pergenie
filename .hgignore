@@ -5,3 +5,4 @@ db/ref_genome
 *~
 \#*
 pergenie/db.sqlite3
+pergenie/celeryd.log

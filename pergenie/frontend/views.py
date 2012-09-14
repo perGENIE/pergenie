@@ -65,11 +65,6 @@ def register(request):
                     params['message'] = 'Already registered'
 
                 else:
-                    with pymongo.Connection() as connection:
-                        db = connection['pergenie']
-                        users = db['users']
-                        users.insert({'user_id': user_id})
-
                     params['is_succeeded'] = True
                     params['message'] = 'You have successfully registered!'
 

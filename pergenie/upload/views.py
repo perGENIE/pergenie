@@ -18,7 +18,7 @@ def index(request):
 
     with pymongo.Connection() as connection:
         db = connection['pergenie']
-        users = db['users']
+        data_info = db['data_info']
 
         if request.method == 'POST':
             while True:
@@ -62,37 +62,35 @@ def index(request):
 
                 msg = 'Successfully uploaded: {}'.format(call_file.name)
 
+                #
+                # TODO: Throw queue for importing variant-files
+                # ---------------------------------------------
+                
                 import_error_state = import_variants.import_variants(file_path, population, file_format, user_id)
                 if import_error_state:
                     err = ', but import failed...' + import_error_state
-                    os.remove(file_path)
+                    os.remove(file_path)  # ok?
+                    break
 
-                else:
-                    today = str(datetime.datetime.today()).replace('-', '/')
-                    data_info = {'name': call_file.name,
+                today = str(datetime.datetime.today()).replace('-', '/')
+                tmp_data_info = {'user_id': user_id,
+                                 'name': call_file.name,
                                  'date': today,
                                  'population': population,
-                                 'sex': sex, 'file_format':
-                                 file_format}
-                    users.update({'user_id': user_id}, {'$addToSet': {'data': data_info}})
-                    msg += ', and imported'
+                                 'sex': sex,
+                                 'file_format': file_format}
+                data_info.insert(tmp_data_info)
+                msg += ', and imported'
 
-                    print {'user_id': user_id}, {'$addToSet': {'data': data_info}}
+                print '[INFO] user_id:', user_id
+                print '[INFO] data_info:', tmp_data_info
 
-                # Update user info
                 # TODO: support multiple data
 
                 # TODO
                 break
 
-        user_data = list(users.find({'user_id': user_id}))
-
-        if not user_data:
-            uploadeds = []
-        elif len(user_data) > 1:
-            uploadeds = 'somehow there are same user records...'
-        else:
-            uploadeds = user_data[0].get('data')
+        uploadeds = list(data_info.find( {'user_id': user_id} ))
 
     return direct_to_template(request,
                               'upload.html',
