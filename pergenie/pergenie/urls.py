@@ -17,5 +17,6 @@ urlpatterns = patterns('',
 
     url(r'^$', 'frontend.views.index'),
     url(r'^login/$', 'frontend.views.login'),
+    url(r'^logout/$', 'frontend.views.logout'),
     url(r'^register/$', 'frontend.views.register'),
 )
