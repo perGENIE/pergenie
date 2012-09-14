@@ -1,0 +1,183 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>{% block title %}{% endblock %} - perGENIE</title>
+    <meta name="description" content="{% block description %}{% endblock %}">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+	<script src="{% static 'js/html5shiv.js' %}"></script>
+    <![endif]-->
+
+    <!-- Bootstrap -->
+    <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
+    <link href="{% static 'css/bootstrap-responsive.css' %}" rel="stylesheet">
+
+    <!-- Bootstrap CSS fixes for IE6 -->
+    <!--[if lt IE 7]><link rel="stylesheet" href="http://blueimp.github.com/cdn/css/bootstrap-ie6.min.css"><![endif]-->
+
+    <!-- jQuery UI Bootstrap theme -->
+    <link type="text/css" href="{% static 'css/jquery-ui-1.8.16.custom.css' %}" rel="stylesheet">
+
+    <!-- Bootstrap google prettify -->
+    <link href="{% static 'css/prettify.css' %}" rel="stylesheet">
+
+    <!-- UI to Top -->
+    <link rel="stylesheet" type="text/css" media="screen,projection" href="{% static 'css/ui.totop.css' %}">
+
+    <!-- Datatables -->
+    <link rel="stylesheet" href="{% static 'css/demo_table_jui.intenso.css' %}">
+
+    <!-- Admin Instenso main scripts -->
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/side_nav.css' %}">
+    <link rel="stylesheet" href="{% static 'css/accordion.css' %}">
+
+    <!-- Favorites and Appple touch icons -->
+    <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}">
+    <link rel="apple-touch-icon" href="{% static 'images/apple-touch-icon.png' %}">
+    <link rel="apple-touch-icon" sizes="72x72" href="{% static 'images/apple-touch-icon-72x72.png' %}">
+    <link rel="apple-touch-icon" sizes="114x114" href="{% static 'images/apple-touch-icon-114x114.png' %}">
+  </head>
+
+  <body id="{% block cookie_id %}{% endblock %}"><!-- This id is used for the cookies -->
+
+    <!-- Top navigation bar -->
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="i-bar"></span>
+            <span class="i-bar"></span>
+            <span class="i-bar"></span>
+          </a>
+          <div class="nav-collapse">
+            <ul class="nav">
+              <li><a href="{% url frontend.views.logout %}">Logout</a></li>
+              <li><a href="{% url frontend.views.about %}">&copy; perGENIE</a></li>
+            </ul>
+            <p class="navbar-text pull-right">
+              {% if user %}Logged in as <a href="{% url frontend.views.settings %}">{{user.username}}</a>{% else %}Not logged in{% endif %}
+            </p>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <!-- side nav -->
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <div id="side_nav" class="span2 sidebar-nav side_nav">
+          <ul class="clearfix">
+            <li><a class="round_top" href="{% url dashboard.views.index %}">
+                <img src="{% static 'images/icons/grey/Laptop.png' %}">
+                <span>Dashboard</span></a></li>
+            <li><a href="{% url riskreport.views.index %}">
+                <img src="{% static 'images/icons/grey/Frames.png' %}">
+                <span>RiskReport</span></a></li>
+            <li><a href="{% url catalog.views.index %}">
+                <img src="{% static 'images/icons/grey/list_w__images.png' %}">
+                <span>Catalog</span></a></li>
+            <!-- <li><a href="#todo.admin.search"> -->
+            <!--     <img src="{% static 'images/icons/grey/Archive.png' %}"> -->
+            <!--     <span>Search</span></li> -->
+            <li><a href="{% url upload.views.index %}">
+                <img src="{% static 'images/icons/grey/Images.png' %}">
+                <span>Upload</span></a></li>
+          </ul>
+        </div><!--/span-->
+
+        <!-- main container -->
+        {% block main_container %}
+        {% endblock %}
+        <!-- main container end -->
+
+    <!-- footer -->
+    </div><!--/.fluid-container-->
+
+    <!-- javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <!-- jQuery (UI) -->
+    <script type="text/javascript" language="javascript" src="{% static 'js/jquery.min.js' %}"></script>
+    <script type="text/javascript" language="javascript" src="{% static 'js/jquery-ui.min.js' %}"></script>
+
+    <!-- jQuery Cookie -->
+    <script type="text/javascript" language="javascript" src="{% static 'js/jquery.cookie.js' %}"></script>
+
+    <!-- Sherpa side nav -->
+    <script type="text/javascript" language="javascript" src="{% static 'js/jquery.hoverIntent.minified.js' %}"></script>
+
+    <!-- UI to Top -->
+    <script type="text/javascript" language="javascript" src="{% static 'js/jquery.ui.totop.js' %}"></script>
+
+    <!-- Bootstrap Scripts -->
+    <script type="text/javascript" language="javascript" src="{% static 'js/bootstrap-dropdown.js' %}"></script>
+    <script type="text/javascript" language="javascript" src="{% static 'js/bootstrap-tooltip.js' %}"></script>
+    <script type="text/javascript" language="javascript" src="{% static 'js/bootstrap-popover.js' %}"></script>
+    <script type="text/javascript" language="javascript" src="{% static 'js/bootstrap-alert.js' %}"></script>
+    <script type="text/javascript" language="javascript" src="{% static 'js/bootstrap-tab.js' %}"></script>
+    <script type="text/javascript" language="javascript" src="{% static 'js/bootstrap-typeahead.js' %}"></script>
+    <script type="text/javascript" language="javascript" src="{% static 'js/bootstrap-modal.js' %}"></script>
+    <script type="text/javascript" language="javascript" src="{% static 'js/prettify.js' %}"></script>
+
+    <!-- <\!-- Datatables -\-> -->
+    <script type="text/javascript" language="javascript" src="{% static 'js/jquery.dataTables.js' %}"></script>
+
+    <!-- Flot Graphs -->
+    <!--[if lte IE 8]><script type="text/javascript" language="javascript" src="{% static 'js/excanvas.min.js' %}"></script><![endif]-->
+    <script type="text/javascript" language="javascript" src="{% static 'js/jquery.flot.min.js' %}"></script>
+    <script type="text/javascript" language="javascript" src="{% static 'js/jquery.flot.selection.js' %}"></script>
+    <script type="text/javascript" language="javascript" src="{% static 'js/jquery.flot.resize.js' %}"></script>
+
+    <!-- Full Calender -->
+    <!-- <script type="text/javascript" src="{% static 'js/fullcalendar.min.js' %}"></script> -->
+
+    <script type="text/javascript" language="javascript" src="{% static 'js/intenso.js' %}"></script>
+    <!-- <script type="text/javascript" language="javascript" src="{% static 'js/intenso.charts.js' %}"></script> -->
+    <!-- <script type="text/javascript" language="javascript" src="{% static 'js/intenso.calendar.js' %}"></script> -->
+    <!-- <div id="visits_per_day_placeholder" style="width:95%;height:300px;margin-top:20px;"></div> -->
+    <!-- <div id="visits_per_day_overview" style="margin-left:5%;margin-top:20px;width:85%;height:50px"></div> -->
+
+
+<script type=text/javascript>
+  var $SCRIPT_ROOT = "";
+</script>
+
+<script type=text/javascript>
+  $(function() {
+    $('a#calculate').click(function() {
+      $.getJSON($SCRIPT_ROOT + '/_add_numbers', {
+        a: $('input[name="a"]').val(),
+        b: $('input[name="b"]').val()
+      }, function(data) {
+        $("#result").text(data.result);
+      });
+      return false;
+    });
+  });
+</script>
+
+
+<!-- delete button -->
+<script type=text/javascript>
+  $(function() {
+    $('.delete').click(function() {
+      var id = $(this).attr('id');
+      console.log(id);
+    });
+  });
+</script>
+
+
+<!-- label "unknown" as warning -->
+<script type=text/javascript>
+  $(function() {
+    $("span:contains('unkown')").removeClass().addClass("label label-warning");;
+  });
+</script>
+
+  </body>
+</html>
