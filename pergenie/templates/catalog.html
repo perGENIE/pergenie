@@ -1,0 +1,54 @@
+{% extends "layout.html" %}
+{% load extras %}
+{% block title %}Catalog index{% endblock %}
+{% block description %}catalog of risk SNPs{% endblock %}
+
+{% block main_container %}
+<div id="main_container" class="span10">
+
+  <!-- Breadcrumb -->
+  <div class="row-fluid">
+    <div class="span12">
+      <ul class="breadcrumb">
+        <li class="active">Catalog</li>
+      </ul>
+    </div><!--/span-->
+  </div>
+
+  <!-- Content start -->
+  <!-- Draggable Widgets start -->
+  <div class="row-fluid">
+    <div class="span12">
+      <div class="box grad_colour_dark_blue" id="box_1">
+        <h2 class="box_head round_top">Index</h2>
+        <div class="toggle_container">
+          <div class="block box_content round_bottom std_padding">
+            <div class="row-fluid">
+              <div class="span12 box_padding_20">
+
+                <form action="{% url catalog.views.index %}" method="get">
+                  Query search: <input type="text" name="query" value="{% if query %}{{ query }}{% endif %}">
+                  <input type="submit" value="search">
+                </form>
+
+                {% if query  %}
+                Search result for query "{{ query }}"<br>
+                {% endif %}
+
+                {% for trait in my_trait_list %}
+                <ul class="nav nav-pills nav-stacked">
+                  <li><a href="{% url catalog.views.catalog trait_name='{{trait | space2underbar}}' %}">{{ trait }}</a></li>
+                </ul>
+                {% endfor %}
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div><!--/span-->
+  </div><!--/row-->
+  <!-- Draggable Widgets end -->
+  <!-- Content end -->
+</div>
+{% endblock %}

@@ -79,6 +79,10 @@ def register(request):
     return _render_to_response('register.html', params, request)
 
 
+def settings(request):
+    pass
+
+
 def about(request):
     return render_to_response('about.html')
 
