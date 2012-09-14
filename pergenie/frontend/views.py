@@ -25,7 +25,7 @@ def login(request):
 
             if user:
                 auth_login(request, user)
-                # TODO: go to dashboard
+                return redirect('dashboard.views.index')
 
             else:
                 params['error'] = 'invalid mail address or password'
