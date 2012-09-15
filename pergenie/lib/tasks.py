@@ -2,6 +2,8 @@ from celery.task import Task
 from celery.decorators import task
 import mongo.import_variants as import_variants
 
+from pprint import pformat
+
 # ref: http://yuku-tech.hatenablog.com/entry/20101112/1289569700
 
 # @task
@@ -14,7 +16,9 @@ import mongo.import_variants as import_variants
 @task
 def qimport_variants(file_path, tmp_data_info):
     logger = Task.get_logger()
-    logger.info('qimporting {0}, {1}'.format(file_path, tmp_data_info))
+    
+    logger.info('qimporting {}'.format(file_path))
+    logger.info(pformat(tmp_data_info))
 
     import_error_state= import_variants.import_variants(file_path,
                                                         tmp_data_info['population'],

@@ -47,6 +47,8 @@ def import_variants(path_to_variants, population, file_format, user_id):
                 call_file_name = os.path.basename(path_to_variants)
                 print 'call_file_name', call_file_name
                 print 'find', data_info.find({'user_id': user_id, 'name': call_file_name})
+
+                # TODO: rewrite to use $inc
                 data_info.update({'user_id': user_id, 'name': call_file_name}, {"$set": {'status': 90.0}})
 
                 print >>sys.stderr,'[INFO] ensure_index ...'
