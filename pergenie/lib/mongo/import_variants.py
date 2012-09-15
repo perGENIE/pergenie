@@ -11,40 +11,43 @@ import pymongo
 
 import colors
 
+UPLOAD_DIR = '/tmp/pergenie'
+
 class ParseError(Exception):
     def __init__(self, value):
         self.value = value
     def __str__(self):
         return repr(self.value)
 
-def import_variants(path_to_variants, population, file_format, user_id):
+def import_variants(file_name, population, file_format, user_id):
     """doc"""
     
     with pymongo.Connection() as connection:
         db = connection['pergenie']
-        users_variants = db['variants'][user_id][path_to_variants]
+        users_variants = db['variants'][user_id][file_name]
         data_info = db['data_info']
 
         if users_variants.find_one():
             # this variants file is already imported, so drop old one.
             db.drop_collection(users_variants)
-            print >>sys.stderr, '[INFO] dropped old collection of {}'.format(path_to_variants)
+            print >>sys.stderr, '[INFO] dropped old collection of {}'.format(file_name)
 
         # print '[INFO] Countiong input lines ...',
         # file_lines = int(subprocess.check_output(['wc', '-l', ]).split()[0])
         # print 'done. # of lines: {0}'.format(file_lines)
 
-        print >>sys.stderr, '[INFO] Importing {} ...'.format(path_to_variants)
+        print >>sys.stderr, '[INFO] Importing {} ...'.format(file_name)
         prev_collections = db.collection_names()
 
         try:
-            with open(path_to_variants, 'rb') as fin:
+            print os.path.join(UPLOAD_DIR, user_id, file_name)
+            with open(os.path.join(UPLOAD_DIR, user_id, file_name), 'rb') as fin:
                 for data in parse_lines(fin, file_format):
                     if data['rs']:
                         users_variants.insert(data)
 
                 #
-                call_file_name = os.path.basename(path_to_variants)
+                call_file_name = os.path.basename(file_name)
                 print 'call_file_name', call_file_name
                 print 'find', data_info.find({'user_id': user_id, 'name': call_file_name})
 
@@ -161,13 +164,13 @@ def _string(text):
 
 def _main():
     parser = argparse.ArgumentParser(description='import variants file into mongodb')
-    parser.add_argument('path_to_variants')
+    parser.add_argument('file_name')
     parser.add_argument('population')
     parser.add_argument('file_format')
     parser.add_argument('user_id')
     args = parser.parse_args()
 
-    import_variants(args.path_to_variants, args.population, args.file_format, args.user_id)
+    import_variants(args.file_name, args.population, args.file_format, args.user_id)
 
 
 if __name__ == '__main__':

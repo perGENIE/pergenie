@@ -9,6 +9,8 @@ import pymongo
 from lib.tasks import qimport_variants
 from apps.upload.forms import UploadForm
 
+UPLOAD_DIR = '/tmp/pergenie'
+
 @require_http_methods(['GET', 'POST'])
 @login_required
 def index(request):
@@ -46,40 +48,35 @@ def index(request):
                     err = 'Not allowed file extension.'
                     break
 
-                if os.path.exists(os.path.join('/tmp/pergenie', user_id, call_file.name)):
+                if os.path.exists(os.path.join(UPLOAD_DIR, user_id, call_file.name)):
                     err = 'Same file name exists. If you want to overwrite it, please delete old one.'
                     break
 
 
-                if not os.path.exists(os.path.join('/tmp/pergenie', user_id)):
-                    os.mkdir(os.path.join('/tmp/pergenie', user_id))
+                if not os.path.exists(os.path.join(UPLOAD_DIR, user_id)):
+                    os.mkdir(os.path.join(UPLOAD_DIR, user_id))
 
-                file_path = os.path.join('/tmp/pergenie', user_id, call_file.name)
-
-                with open(file_path, 'wb') as fout:
+                with open(os.path.join(UPLOAD_DIR, user_id, call_file.name), 'wb') as fout:
                     for chunk in call_file.chunks():
                         fout.write(chunk)
 
                 msg = 'Successfully uploaded: {}'.format(call_file.name)
 
-
                 today = str(datetime.datetime.today()).replace('-', '/')
-                tmp_data_info = {'user_id': user_id,
-                                 'name': call_file.name,
-                                 'date': today,
-                                 'population': population,
-                                 'sex': sex,
-                                 'file_format': file_format,
-                                 'status': float(0.0)}
-                data_info.insert(tmp_data_info)
+                info = {'user_id': user_id,
+                        'name': call_file.name,
+                        'date': today,
+                        'population': population,
+                        'sex': sex,
+                        'file_format': file_format,
+                        'status': float(0.0)}
+                data_info.insert(info)
 
                 # TODO: Throw queue
-                qimport_variants.delay(file_path, tmp_data_info)
+                qimport_variants.delay(info)
                 msg += ', and now importing. (sorry, it takes for minutes...)'
 
-
-                print '[INFO] user_id:', user_id
-                print '[INFO] data_info:', tmp_data_info
+                print '[INFO] data_info:', info
 
                 # TODO: support multiple data
 

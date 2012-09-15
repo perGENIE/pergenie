@@ -1,0 +1,2 @@
+eng/ja
+cancer/がん

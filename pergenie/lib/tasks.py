@@ -14,17 +14,16 @@ from pprint import pformat
 
 
 @task
-def qimport_variants(file_path, tmp_data_info):
+def qimport_variants(data_info):
     logger = Task.get_logger()
-    
-    logger.info('qimporting {}'.format(file_path))
-    logger.info(pformat(tmp_data_info))
+    logger.info('qimporting ...')
+    logger.info(pformat(data_info))
 
-    import_error_state= import_variants.import_variants(file_path,
-                                                        tmp_data_info['population'],
-                                                        tmp_data_info['file_format'],
-                                                        tmp_data_info['user_id'])
+    import_error_state= import_variants.import_variants(data_info['name'],
+                                                        data_info['population'],
+                                                        data_info['file_format'],
+                                                        data_info['user_id'])
     
     if import_error_state:
         err = ', but import failed...' + import_error_state
-        os.remove(file_path)  # ok?
+        os.remove(file_id)  # ok?

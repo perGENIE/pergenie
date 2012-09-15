@@ -4,5 +4,6 @@ syntax: glob
 db/ref_genome
 *~
 \#*
+.\#*
 pergenie/db.sqlite3
-pergenie/log/celeryd.log
+*.log

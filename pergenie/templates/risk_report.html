@@ -1,0 +1,93 @@
+{% extends "layout.html" %}
+{% load extras %}
+{% block title %}Risk report{% endblock %}
+{% block description %}risk report{% endblock %}
+
+{% block main_container %}
+<div id="main_container" class="span10">
+
+  <!-- Breadcrumb -->
+  <div class="row-fluid">
+    <div class="span12">
+      <ul class="breadcrumb">
+        <li class="active">Risk report</li>
+      </ul>
+    </div><!--/span-->
+  </div>
+
+  <!-- Content start -->
+  <!-- Draggable Widgets start -->
+  <div class="row-fluid">
+    <div class="span12">
+      <div class="box grad_colour_dark_blue" id="box_1">
+        <h2 class="box_head round_top">Index</h2>
+        <div class="toggle_container">
+          <div class="block box_content round_bottom std_padding">
+            <div class="row-fluid">
+              <div class="span12 box_padding_20">
+
+                {% if msg %}
+                <div class="alert alert-success">{{ msg }}</div>
+                {% endif %}
+
+                {% if err %}
+                <div class="alert alert-success">{{ err }}</div>
+                {% endif %}
+
+
+
+
+                <!-- {% for trait in my_trait_list %} -->
+                <!-- <ul class="nav nav-pills nav-stacked"> -->
+                <!--   <li><a href="{% url apps.catalog.views.catalog trait_name='{{trait | space2underbar}}' %}">{{ trait }}</a></li> -->
+                <!-- </ul> -->
+                <!-- {% endfor %} -->
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div><!--/span-->
+  </div><!--/row-->
+
+  <!-- Table start -->
+  <div class="row-fluid">
+    <div class="span12">
+      <div class="box grad_colour_dark_blue">
+        <h2 class="box_head round_top">( Table )</h2>
+        <div class="toggle_container">
+          <div class="block box_content round_bottom padding_20">
+            <table cellpadding="0" cellspacing="0" border="0" class="display datatable" id="datatable">
+              <thead>
+              <tr>
+                <th>Trait</th>
+                <th>Value</th>
+              </tr>
+              </thead>
+
+              <tbody>
+                {% if risk_reports %}
+                {% for trait in risk_reports %}
+
+                <tr>
+                  <td class="center">{{ trait }}</td>
+                  <td class="center">{{ trait }}</td>
+		        </tr>
+		        {% endfor %}
+		        {% endif %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div><!--/span-->
+  </div><!--/row-->
+  <!-- Table end -->
+  <!-- Draggable Widgets end -->
+  <!-- Content end -->
+</div>
+
+
+
+{% endblock %}
