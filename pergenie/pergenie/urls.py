@@ -15,19 +15,20 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     # url(r'^admin/', include(admin.site.urls)),
 
-    url(r'^$', 'frontend.views.index'),
-    url(r'^login/$', 'frontend.views.login'),
-    url(r'^logout/$', 'frontend.views.logout'),
-    url(r'^register/$', 'frontend.views.register'),
-    url(r'^settings/$', 'frontend.views.settings'),
-    url(r'^about/$', 'frontend.views.about'),
+    url(r'^$', 'apps.frontend.views.index'),
+    url(r'^login/$', 'apps.frontend.views.login'),
+    url(r'^logout/$', 'apps.frontend.views.logout'),
+    url(r'^register/$', 'apps.frontend.views.register'),
+    url(r'^settings/$', 'apps.frontend.views.settings'),
+    url(r'^about/$', 'apps.frontend.views.about'),
 
-    url(r'^dashboard/$', 'dashboard.views.index'),
+    url(r'^dashboard/$', 'apps.dashboard.views.index'),
 
-    url(r'^riskreport/$', 'riskreport.views.index'),
+    url(r'^riskreport/$', 'apps.riskreport.views.index'),
 
-    url(r'^catalog/$', 'catalog.views.index'),
-    url(r'^catalog/(?P<trait>.*?)/$', 'catalog.views.catalog'),
+    url(r'^catalog/$', 'apps.catalog.views.index'),
+    url(r'^catalog/(?P<trait>.*?)/$', 'apps.catalog.views.catalog'),
 
-    url(r'^upload/$', 'upload.views.index'),
+    url(r'^upload/$', 'apps.upload.views.index'),
 )
+

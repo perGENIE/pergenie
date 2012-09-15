@@ -3,13 +3,13 @@ from django.contrib.auth.models import User
 from django.shortcuts import redirect, render_to_response
 from django.template import RequestContext
 from django.views.decorators.http import require_http_methods
-from frontend.forms import LoginForm, RegisterForm
+from apps.frontend.forms import LoginForm, RegisterForm
 
 import pymongo
 
 
 def index(request):
-    return redirect('frontend.views.login')
+    return redirect('apps.frontend.views.login')
 
 
 @require_http_methods(['GET', 'POST'])
@@ -25,7 +25,7 @@ def login(request):
 
             if user:
                 auth_login(request, user)
-                return redirect('dashboard.views.index')
+                return redirect('apps.dashboard.views.index')
 
             else:
                 params['error'] = 'invalid mail address or password'
@@ -38,7 +38,7 @@ def login(request):
 
 def logout(request):
     auth_logout(request)
-    return redirect('frontend.views.index')
+    return redirect('apps.frontend.views.index')
 
 
 @require_http_methods(['GET', 'POST'])

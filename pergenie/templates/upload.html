@@ -57,7 +57,7 @@
             <div class="row-fluid">
               <div class="span12 box_padding_20">
 
-                <form class="form-horizontal" action="{% url upload.views.index %}" method="post" enctype="multipart/form-data">
+                <form class="form-horizontal" action="{% url apps.upload.views.index %}" method="post" enctype="multipart/form-data">
                   {% csrf_token %}
 		  <fieldset>
                     <legend>Genome data upload</legend>
@@ -96,6 +96,7 @@
                       <div class="controls">
                         <select name="file_format">
                           <option value="andme">23andMe</option>
+                          <option value="tmmb">tmmb</option>
                         </select>
                       </div>
                     </div>

@@ -4,6 +4,7 @@
 import argparse
 import sys
 import os
+import subprocess
 import csv
 import time
 import pymongo
@@ -28,6 +29,10 @@ def import_variants(path_to_variants, population, file_format, user_id):
             # this variants file is already imported, so drop old one.
             db.drop_collection(users_variants)
             print >>sys.stderr, '[INFO] dropped old collection of {}'.format(path_to_variants)
+
+        # print '[INFO] Countiong input lines ...',
+        # file_lines = int(subprocess.check_output(['wc', '-l', ]).split()[0])
+        # print 'done. # of lines: {0}'.format(file_lines)
 
         print >>sys.stderr, '[INFO] Importing {} ...'.format(path_to_variants)
         prev_collections = db.collection_names()
@@ -63,7 +68,8 @@ def parse_lines(handle, file_format):
     23andme:
     # rsid chromosome position genotype
 
-
+    tmmb:
+    chromosome position rsid reference genotype1 genotype2
     """
 
     parse_maps = {'andme' : {'header_chr': '#',
@@ -71,23 +77,33 @@ def parse_lines(handle, file_format):
                              'fields': [('rs', 'rsid', _rs),
                                         ('chrom', 'chromosome', _chrom),
                                         ('pos', 'position', _integer),
-                                        ('genotype', 'genotype', _string),
-                                        ],
-                             'delimiter': '\t'}
+                                        ('genotype', 'genotype', _string)],
+                             'delimiter': '\t'},
+                  'tmmb' : {'header_chr': '',
+                            'header_starts': '',
+                            'fields': [('chrom', 'chromosome', _chrom),
+                                       ('pos', 'position', _integer),
+                                       ('rs', 'rsid', _rs),
+                                       ('ref', 'reference', _string),
+                                       ('genotype1', 'genotype1', _string),
+                                       ('genotype2', 'genotype2', _string)],
+                            'delimiter': '\t'}
                   }
     parse_map = parse_maps[file_format]
 
-    # Paser header lines
-    for line in handle:
-        if not line.startswith(parse_map['header_chr']):
-            raise ParseError, 'uploaded file has no header line. format correct?'
+    # start = time.time()
 
-        elif line.startswith(parse_map['header_starts']):
-            fieldnames = [x[1] for x in parse_map['fields']]
-            break
+    # Paser header lines, if infile have header
+    if parse_map['header_chr']:
+        for line in handle:
+            if not line.startswith(parse_map['header_chr']):
+                raise ParseError, 'uploaded file has no header line. format correct?'
 
+            elif line.startswith(parse_map['header_starts']):
+                break
 
-    # Parse record lines
+    # Parse record lines by fieldnames
+    fieldnames = [x[1] for x in parse_map['fields']]
     for record in csv.DictReader(handle, fieldnames=fieldnames, delimiter=parse_map['delimiter']):
         data = {}
         for dict_name, record_name, converter in parse_map['fields']:

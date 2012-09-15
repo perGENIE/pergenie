@@ -26,7 +26,7 @@
             <div class="row-fluid">
               <div class="span12 box_padding_20">
 
-                <form action="{% url catalog.views.index %}" method="get">
+                <form action="{% url apps.catalog.views.index %}" method="get">
                   Query search: <input type="text" name="query" value="{% if query %}{{ query }}{% endif %}">
                   <input type="submit" value="search">
                 </form>
@@ -37,7 +37,7 @@
 
                 {% for trait in my_trait_list %}
                 <ul class="nav nav-pills nav-stacked">
-                  <li><a href="{% url catalog.views.catalog trait_name='{{trait | space2underbar}}' %}">{{ trait }}</a></li>
+                  <li><a href="{% url apps.catalog.views.catalog trait_name='{{trait | space2underbar}}' %}">{{ trait }}</a></li>
                 </ul>
                 {% endfor %}
 

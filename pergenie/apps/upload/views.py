@@ -7,7 +7,7 @@ import os
 import pymongo
 # import mongo.import_variants as import_variants
 from lib.tasks import qimport_variants
-from upload.forms import UploadForm
+from apps.upload.forms import UploadForm
 
 
 @require_http_methods(['GET', 'POST'])

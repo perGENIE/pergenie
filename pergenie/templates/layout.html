@@ -55,11 +55,11 @@
           </a>
           <div class="nav-collapse">
             <ul class="nav">
-              <li><a href="{% url frontend.views.logout %}">Logout</a></li>
-              <li><a href="{% url frontend.views.about %}">&copy; perGENIE</a></li>
+              <li><a href="{% url apps.frontend.views.logout %}">Logout</a></li>
+              <li><a href="{% url apps.frontend.views.about %}">&copy; perGENIE</a></li>
             </ul>
             <p class="navbar-text pull-right">
-              {% if user %}Logged in as <a href="{% url frontend.views.settings %}">{{user.username}}</a>{% else %}Not logged in{% endif %}
+              {% if user %}Logged in as <a href="{% url apps.frontend.views.settings %}">{{user.username}}</a>{% else %}Not logged in{% endif %}
             </p>
           </div><!--/.nav-collapse -->
         </div>
@@ -71,19 +71,19 @@
       <div class="row-fluid">
         <div id="side_nav" class="span2 sidebar-nav side_nav">
           <ul class="clearfix">
-            <li><a class="round_top" href="{% url dashboard.views.index %}">
+            <li><a class="round_top" href="{% url apps.dashboard.views.index %}">
                 <img src="{% static 'images/icons/grey/Laptop.png' %}">
                 <span>Dashboard</span></a></li>
-            <li><a href="{% url riskreport.views.index %}">
+            <li><a href="{% url apps.riskreport.views.index %}">
                 <img src="{% static 'images/icons/grey/Frames.png' %}">
                 <span>RiskReport</span></a></li>
-            <li><a href="{% url catalog.views.index %}">
+            <li><a href="{% url apps.catalog.views.index %}">
                 <img src="{% static 'images/icons/grey/list_w__images.png' %}">
                 <span>Catalog</span></a></li>
             <!-- <li><a href="#todo.admin.search"> -->
             <!--     <img src="{% static 'images/icons/grey/Archive.png' %}"> -->
             <!--     <span>Search</span></li> -->
-            <li><a href="{% url upload.views.index %}">
+            <li><a href="{% url apps.upload.views.index %}">
                 <img src="{% static 'images/icons/grey/Images.png' %}">
                 <span>Upload</span></a></li>
           </ul>
