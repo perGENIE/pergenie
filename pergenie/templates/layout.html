@@ -124,7 +124,7 @@
     <script type="text/javascript" language="javascript" src="{% static 'js/prettify.js' %}"></script>
 
     <!-- <\!-- Datatables -\-> -->
-    <script type="text/javascript" language="javascript" src="{% static 'js/jquery.dataTables.js' %}"></script>
+    <script type="text/javascript" language="javascript" src="{% static 'js/jquery.datatables.js' %}"></script>
 
     <!-- Flot Graphs -->
     <!--[if lte IE 8]><script type="text/javascript" language="javascript" src="{% static 'js/excanvas.min.js' %}"></script><![endif]-->
@@ -146,19 +146,19 @@
   var $SCRIPT_ROOT = "";
 </script>
 
-<script type=text/javascript>
-  $(function() {
-    $('a#calculate').click(function() {
-      $.getJSON($SCRIPT_ROOT + '/_add_numbers', {
-        a: $('input[name="a"]').val(),
-        b: $('input[name="b"]').val()
-      }, function(data) {
-        $("#result").text(data.result);
-      });
-      return false;
-    });
-  });
-</script>
+<!-- <script type=text/javascript> -->
+<!--   $(function() { -->
+<!--     $('a#calculate').click(function() { -->
+<!--       $.getJSON($SCRIPT_ROOT + '/_add_numbers', { -->
+<!--         a: $('input[name="a"]').val(), -->
+<!--         b: $('input[name="b"]').val() -->
+<!--       }, function(data) { -->
+<!--         $("#result").text(data.result); -->
+<!--       }); -->
+<!--       return false; -->
+<!--     }); -->
+<!--   }); -->
+<!-- </script> -->
 
 
 <!-- delete button -->

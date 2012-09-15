@@ -9,7 +9,6 @@ import pymongo
 from lib.tasks import qimport_variants
 from apps.upload.forms import UploadForm
 
-
 @require_http_methods(['GET', 'POST'])
 @login_required
 def index(request):

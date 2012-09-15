@@ -170,7 +170,9 @@
                     <span class="label label-success">{{ uploaded.file_format }}</span>
                   </td>
                   <td class="center">
-                    <span class="label label-success">{{ uploaded.status }}</span>
+                    <div class="progress progress-striped active">
+                      <div class="bar" style="width: {{ uploaded.status }}%;"></div>
+                    </div>
                   </td>
                   <td class="center">
                     <!-- <a class="btn btn-success" href="#"> -->
