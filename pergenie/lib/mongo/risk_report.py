@@ -10,6 +10,9 @@ import weblio_eng2ja
 import search_variants
 
 def _zyg(genotype, risk_allele):
+    if genotype == 'na':
+        return 'NA'
+
     try:
         return {0:'..', 1:'R.', 2:'RR'}[genotype.count(risk_allele)]
     except TypeError:
@@ -17,7 +20,7 @@ def _zyg(genotype, risk_allele):
         return '..'
 
 
-def _population_relative_risk(freq, OR, zygosities):
+def _relative_risk_to_general_population(freq, OR, zygosities):
     try:
         prob_hom = freq**2
         prob_het = freq*(1-freq)
@@ -33,19 +36,17 @@ def _population_relative_risk(freq, OR, zygosities):
         risk_het = OR_het/average_population_risk
         risk_ref = OR_ref/average_population_risk
 
-        risk_map = {'RR':risk_hom, 'R.':risk_het, '..':risk_ref}
-        print 'RR:{0}, R.:{1}, ..:{2}'.format(round(risk_hom,3), round(risk_het,3), round(risk_ref,3))
+        # print 'RR:{0}, R.:{1}, ..:{2}, NA:1.0'.format(round(risk_hom,3), round(risk_het,3), round(risk_ref,3))
 
     except TypeError:
-        print >>sys.stderr, colors.blue('freq:{0} OR:{1} ...'.format(freq, OR))
+        # print >>sys.stderr, colors.blue('freq:{0} OR:{1} ...'.format(freq, OR))
         return 1.0
 
     try: 
-        return risk_map[zygosities]
+        return {'RR':risk_hom, 'R.':risk_het, '..':risk_ref, 'NA': 1.0}[zygosities]
     except KeyError:
-        print >>sys.stderr, colors.blue('{0} is not hom/het/ref'.format(zygosities))
+        # print >>sys.stderr, colors.blue('{0} is not hom/het/ref'.format(zygosities))
         return 1.0
-
 
 def risk_calculation(catalog_map, variants_map):
     risk_store = {}
@@ -62,23 +63,42 @@ def risk_calculation(catalog_map, variants_map):
         record = catalog_map[found_id]
         rs = record['rs']
         variant = variants_map[rs]
+        
+        while True:
+            tmp_risk_data = {'catalog_map': record, 'variant_map': variant, 'zyg': None, 'RR': None}
 
-        tmp_risk_data = [record['risk_allele'], record['freq'], record['OR_or_beta'], variant['genotype']]
+            # filter out odd records
+            if not record['risk_allele'] in ['A', 'T', 'G', 'C']:
+                # print "not record['risk_allele'] in ['A', 'T', 'G', 'C']:", tmp_risk_data
+                break
 
-        if not record['trait'] in risk_store:
-            risk_store[record['trait']] = {rs: tmp_risk_data} # initial record
+            if not record['freq']:
+                # print "not record['freq']", tmp_risk_data
+                break
 
-        else:
-            if not rs in risk_store[record['trait']]:
-                risk_store[record['trait']][rs] = tmp_risk_data # initial rs
+            try:
+                if not float(record['OR_or_beta']) > 1:
+                    # print "not float(record['OR_or_beta']) > 1", tmp_risk_data
+                    break
+            except (TypeError, ValueError):
+                # print "Error with float()", tmp_risk_data
+                break            
+
+            # store records
+            if not record['trait'] in risk_store:
+                risk_store[record['trait']] = {rs: tmp_risk_data} # initial record
 
             else:
-                print >>sys.stderr, colors.green('same rs record for same trait. {0} {1}'.format(record['trait'], rs))
+                if not rs in risk_store[record['trait']]:
+                    risk_store[record['trait']][rs] = tmp_risk_data # initial rs
 
-                # # Prioritize risk data (1-rs has 1-OR) --------------------------------
-                # if args.priority == 'p-value':
-                #     if risk_store[record['trait']][rs][2] < record['p_value']:
-                #         risk_store[record['trait']][rs] = tmp_risk_data # update
+                else:
+                    print >>sys.stderr, colors.green('same rs record for same trait. {0} {1}'.format(record['trait'], rs))
+            break
+                    # # Prioritize risk data (1-rs has 1-OR) --------------------------------
+                    # if args.priority == 'p-value':
+                    #     if risk_store[record['trait']][rs][2] < record['p_value']:
+                    #         risk_store[record['trait']][rs] = tmp_risk_data # update
 
 
     #
@@ -89,23 +109,23 @@ def risk_calculation(catalog_map, variants_map):
     """
     Calculate risk
     --------------
-    
+
      * use **cumulative model**
      * zygosities are determied by the number of risk allele
 
     """
     for trait in risk_store:
         for rs in risk_store[trait]:
-            risk_allele, freq, OR, genotype = risk_store[trait][rs]
-            zyg = _zyg(genotype, risk_allele)
-            tmp_risk = _population_relative_risk(freq, OR, zyg)
-            print rs, risk_allele, genotype, OR, tmp_risk
-            
+            risk_store[trait][rs]['zyg'] = _zyg(risk_store[trait][rs]['variant_map']['genotype'],
+                                                risk_store[trait][rs]['catalog_map']['risk_allele'])
+            risk_store[trait][rs]['RR'] = _relative_risk_to_general_population(risk_store[trait][rs]['catalog_map']['freq'],
+                                                                               risk_store[trait][rs]['catalog_map']['OR_or_beta'],
+                                                                               risk_store[trait][rs]['zyg'])
+
             if not trait in risk_report:
-                risk_report[trait] = tmp_risk
+                risk_report[trait] = risk_store[trait][rs]['RR']
             else:
-                risk_report[trait] *= tmp_risk
-        print risk_report[trait]
+                risk_report[trait] *= risk_store[trait][rs]['RR']
 
     return risk_store, risk_report
 
@@ -161,9 +181,25 @@ def _main():
 
         found_record = risk_store.get(raw_query)
         if found_record:
-            for (k,v) in sorted(found_record.items(), key=lambda(k,v):(v[1],k), reverse=True): # sorted by OR
-                print 'rs:{0}, alele:{1} freq:{2} OR:{3} genotype:{4} '.format(k, v[0], v[1], v[2], v[3])
-
+            for (k,v) in sorted(found_record.items(), key=lambda(k,v):(v['catalog_map']['OR_or_beta'],k), reverse=True): # sorted by OR
+                msg = 'rs:{0}, OR: {1} freq:{2} risk-allele:{3} genotype:{4} zyg:{5} RR:{6}'.format(k,
+                                                                                                    v['catalog_map']['OR_or_beta'],
+                                                                                                    v['catalog_map']['freq'],
+                                                                                                    v['catalog_map']['risk_allele'],
+                                                                                                    v['variant_map']['genotype'],
+                                                                                                    v['zyg'],
+                                                                                                    v['RR'])
+                
+                if v['variant_map']['genotype'] == 'na':
+                    print colors.black(msg)
+                elif v['zyg'] == 'RR':
+                    print colors.red(msg)
+                elif v['zyg'] == 'R.':
+                    print colors.yellow(msg)
+                elif v['zyg'] == '..':
+                    print colors.blue(msg)
+                else:
+                    print 'somethin err...'
 
 if __name__ == '__main__':
     _main()
