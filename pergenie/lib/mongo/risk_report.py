@@ -139,19 +139,23 @@ def _main():
 
     parser.add_argument('-u', '--user_id', required=True)
     parser.add_argument('-v', '--file_name', required=True)
-    parser.add_argument('-p', '--population', required=True, choices=['Asian', 'Europian', 'African']) ###
+    parser.add_argument('-p', '--population', required=True, choices=['Asian', 'Europian', 'African', 'Japanese']) ###
     parser.add_argument('--sex')    
     # parser.add_argument('--priority', type=str, default='p-value')
     # parser.add_argument('--eng2ja', default='db/eng2ja.txt')
     # parser.add_argument('--eng2ja_plus', default='db/eng2ja_plus.txt')
     args = parser.parse_args()
 
-    # TODO: population mapping e.g. Europian : [Europian, Caucasian, ...]
-    population_map = {'Asian': [],
-                      'Europian': [],
-                      'African': []}
+    #
+    # TODO: population mapping
+    # ------------------------
+    population_map = {'Asian': ['African'],
+                      'Europian': ['European', 'Caucasian'],
+                      'African': ['Chinese', 'Japanese', 'Asian'],
+                      'Japanese': ['Japanese', 'Asian']
+                      }
     
-    population = 'population:{}'.format(' + '.join(population_map[args.population]))
+    population = 'population:{}'.format('+'.join(population_map[args.population]))
 
     catalog_map, variants_map = search_variants.search_variants(args.user_id, args.file_name, population)
     risk_store, risk_report = risk_calculation(catalog_map, variants_map)
