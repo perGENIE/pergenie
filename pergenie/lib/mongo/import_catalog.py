@@ -139,6 +139,7 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja):
     print '[INFO] # of traits:', len(trait_dict)
     print '[INFO] # of documents in catalog (after):', catalog.count()
 
+    # write out my_trait_list
     trait_list = [k for k in trait_dict.keys()]
     with open('my_trait_list.py', 'w') as my_trait_list:
         print >>my_trait_list, '# -*- coding: utf-8 -*- '

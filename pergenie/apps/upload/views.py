@@ -5,7 +5,6 @@ from django.views.generic.simple import direct_to_template
 import datetime
 import os
 import pymongo
-# import mongo.import_variants as import_variants
 from lib.tasks import qimport_variants
 from apps.upload.forms import UploadForm
 

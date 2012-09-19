@@ -1,7 +1,8 @@
 {% extends "layout.html" %}
-{% load extras %}
 {% block title %}Catalog {{ trait_name }}{% endblock %}
 {% block description %}catalog of risk SNPs{% endblock %}
+{% block cookie_id %}catalog_record{% endblock %} <!--  -->
+{% load extras %} <!--  -->
 
 {% block main_container %}
 <div id="main_container" class="span10">
@@ -26,8 +27,7 @@
           <div class="block box_content round_bottom padding_20">
             <h3>Risk alleles</h3>
 
-            <table class="table">
-
+            <table cellpadding="0" cellspacing="0" border="0" class="display datatable" id="datatable">
               <thead>
                 <tr>
                   <th>rs</th>
@@ -39,16 +39,14 @@
               </thead>
 
               <tbody>
-                {% for found_id in catalog_map %}
-                {% set catalog = catalog_map[found_id] %}
+                {% for catalog in catalog_list %}
                 {% set rs = catalog.rs %}
-		{% set yours = variants_map[rs] %}
                 <tr>
                   <td>{{ rs }}</td>
                   <td class="center">{{ catalog.trait }}</td>
                   <td class="center">{{ catalog.risk_allele }}</td>
                   <td class="center">{{ catalog.OR_or_beta }}</td>
-                  <td class="center">{{ yours.genotype }}</td>
+                  <td class="center">{{ variants_map.rs }}</td>
                 </tr>
                 {% endfor %}
               </tbody>
