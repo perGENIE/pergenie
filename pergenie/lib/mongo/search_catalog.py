@@ -6,6 +6,7 @@ import re
 import shlex
 import pymongo
 
+OR_SYMBOL = '+'
 
 def _split_query(raw_query):
     """
@@ -34,25 +35,38 @@ def search_catalog_by_query(raw_query):
 
     # parse & build query
     sub_queries = []
+    query_map = {'rs': 'snps',
+                 'chr': 'chr_id',
+                 'population': 'initial_sample_size',
+                 'trait': 'trait'}
+
+                 # 'gene': ['mapped_genes.gene_symbol', 'reported_genes.gene_symbol']
+
     for query_type, query in _split_query(raw_query):
+        or_queries = []
         print 'query: {0}: {1}'.format(query_type, query)
-        if query_type == 'rs':
-            sub_queries.append({'snps': query})
-        elif query_type == 'gene':
-            sub_queries.append({'reported_genes.gene_symbol' : re.compile(query, re.IGNORECASE)})
-            sub_queries.append({'mapped_genes.gene_symbol' : re.compile(query, re.IGNORECASE)})
-        elif query_type == 'chr':
-            sub_queries.append({'chr_id' : query})
-        elif query_type == 'population':
-            sub_queries.append({'initial_sample_size': re.compile(query, re.IGNORECASE)})
+        print query.split(OR_SYMBOL)
+
+        if query_type == 'gene':
+            for or_sub_query in query.split(OR_SYMBOL):
+                or_queries.append({'reported_genes.gene_symbol': re.compile(or_sub_query, re.IGNORECASE)})
+                or_queries.append({'mapped_genes.gene_symbol': re.compile(or_sub_query, re.IGNORECASE)})
+
+        elif query_type in query_map:
+            for or_sub_query in query.split(OR_SYMBOL):
+                or_queries.append({query_map[query_type]: re.compile(or_sub_query, re.IGNORECASE)})
+
         else:
-            sub_queries.append({'trait': re.compile(query, re.IGNORECASE)})
+            for or_sub_query in query.split(OR_SYMBOL):
+                or_queries.append({'trait': re.compile(or_sub_query, re.IGNORECASE)})
+
+        sub_queries.append({'$or': or_queries})
 
     with pymongo.Connection() as connection:
         db = connection['pergenie']
         catalog = db['catalog']
-
         query = {'$and': sub_queries}
+        print query
         catalog_records = catalog.find(query)# .sort('snps', 1)
 
         return catalog_records
@@ -66,7 +80,7 @@ def _main():
     found_records = search_catalog_by_query(args.query)
 
     for record in found_records.sort('trait', 1):
-        print record['snps'], record['trait'], record['risk_allele'], record['risk_allele_frequency'], record['OR_or_beta']
+        print record['snps'], record['trait'], record['risk_allele'], record['risk_allele_frequency'], record['OR_or_beta'], record['initial_sample_size']
 
 if __name__ == '__main__':
     _main()
