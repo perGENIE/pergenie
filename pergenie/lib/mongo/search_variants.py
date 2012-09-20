@@ -27,31 +27,23 @@ def search_variants(user_id, file_name, query):
             mapped_genes = ', '.join([gene['gene_symbol'] for gene in record['mapped_genes']])
 
             found_id += 1
-            tmp_catalog_map[found_id] = {'rs':record['snps'],
-                                         'trait':record['trait'],
-                                         'reported_genes':reported_genes,
-                                         'mapped_genes':mapped_genes,
-                                         
-                                         'chr':record['chr_id'],
-                                         'freq':record['risk_allele_frequency'],
-                                         'risk_allele':record['risk_allele'],
-                                         'OR_or_beta':record['OR_or_beta'],
-                                         
-                                         'date':'{0}-{1}'.format(record['date'].year,
-                                                                 record['date'].month),
-                                         
-                                         'first_author':record['first_author'],
-                                         'jornal':record['jornal'],
-                                         'study':record['study'],
-                                         
-                                         'sample':record['initial_sample_size'],
-                                         'p_value':record['p_value_mlog'],
-                                         
-                                         'dbsnp_link':'http://www.ncbi.nlm.nih.gov/projects/SNP/snp_ref.cgi?rs='+str(record['snps']),
-                                         'pubmed_link':'http://www.ncbi.nlm.nih.gov/pubmed/'+str(record['pubmed_id'])
-                                         }
-        
+            tmp_catalog_map[found_id] = record
+            tmp_catalog_map[found_id].update({'rs':record['snps'],
+                                              'reported_genes':reported_genes,
+                                              'mapped_genes':mapped_genes,
+                                              
+                                              'chr':record['chr_id'],
+                                              'freq':record['risk_allele_frequency'],
 
+                                              'date':'{0}-{1}'.format(record['date'].year,
+                                                                      record['date'].month),
+                                              
+                                              'p_value':record['p_value_mlog'],
+                           
+                                              'dbsnp_link':'http://www.ncbi.nlm.nih.gov/projects/SNP/snp_ref.cgi?rs='+str(record['snps']),
+                                              'pubmed_link':'http://www.ncbi.nlm.nih.gov/pubmed/'+str(record['pubmed_id'])
+                                              })
+        
         variants_records = variants.find({'rs': {'$in': list(snps_all)}})
 
         # in catalog & in variants

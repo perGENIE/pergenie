@@ -38,6 +38,7 @@ def index(request):
 
 
     my_trait_list_underbar = [trait.replace(' ', '_') for trait in my_trait_list.my_trait_list]  ### TODO: use formatting function
+
     return direct_to_template(request,
                               'catalog.html',
                               {'err': err,
@@ -74,7 +75,7 @@ def catalog(request, trait):
         query = '"{}"'.format(trait.replace('_', ' '))
         catalog_map, variants_map = search_variants.search_variants(user_id, file_name, query)
         catalog_list = [catalog_map[found_id] for found_id in catalog_map] ###
-        
+
         return direct_to_template(request,
                                   'catalog_records.html',
                                   {'err': err,

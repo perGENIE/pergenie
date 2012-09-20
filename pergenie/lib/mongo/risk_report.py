@@ -9,6 +9,8 @@ import colors
 import weblio_eng2ja
 import search_variants
 
+from pprint import pprint
+
 def _zyg(genotype, risk_allele):
     if genotype == 'na':
         return 'NA'
@@ -43,10 +45,10 @@ def _relative_risk_to_general_population(freq, OR, zygosities):
         return 1.0
 
     try: 
-        return {'RR':risk_hom, 'R.':risk_het, '..':risk_ref, 'NA': 1.0}[zygosities]
+        return {'RR':risk_hom, 'R.':risk_het, '..':risk_ref, 'NA': 1.0}[zygosities], average_population_risk
     except KeyError:
         # print >>sys.stderr, colors.blue('{0} is not hom/het/ref'.format(zygosities))
-        return 1.0
+        return 1.0, average_population_risk
 
 def risk_calculation(catalog_map, variants_map):
     risk_store = {}
@@ -118,9 +120,9 @@ def risk_calculation(catalog_map, variants_map):
         for rs in risk_store[trait]:
             risk_store[trait][rs]['zyg'] = _zyg(risk_store[trait][rs]['variant_map']['genotype'],
                                                 risk_store[trait][rs]['catalog_map']['risk_allele'])
-            risk_store[trait][rs]['RR'] = _relative_risk_to_general_population(risk_store[trait][rs]['catalog_map']['freq'],
-                                                                               risk_store[trait][rs]['catalog_map']['OR_or_beta'],
-                                                                               risk_store[trait][rs]['zyg'])
+            risk_store[trait][rs]['RR'], risk_store[trait][rs]['R'] = _relative_risk_to_general_population(risk_store[trait][rs]['catalog_map']['freq'],
+                                                                                                           risk_store[trait][rs]['catalog_map']['OR_or_beta'],
+                                                                                                           risk_store[trait][rs]['zyg'])
 
             if not trait in risk_report:
                 risk_report[trait] = risk_store[trait][rs]['RR']
@@ -138,8 +140,8 @@ def _main():
     """
 
     parser.add_argument('-u', '--user_id', required=True)
-    parser.add_argument('-v', '--file_name', required=True)
-    parser.add_argument('-p', '--population', required=True, choices=['Asian', 'Europian', 'African', 'Japanese']) ###
+    parser.add_argument('-f', '--file_name', required=True)
+    parser.add_argument('-p', '--population', required=True, choices=['Asian', 'Europian', 'African', 'Japanese', 'none']) ###
     parser.add_argument('--sex')    
     # parser.add_argument('--priority', type=str, default='p-value')
     # parser.add_argument('--eng2ja', default='db/eng2ja.txt')
@@ -152,8 +154,8 @@ def _main():
     population_map = {'Asian': ['African'],
                       'Europian': ['European', 'Caucasian'],
                       'African': ['Chinese', 'Japanese', 'Asian'],
-                      'Japanese': ['Japanese', 'Asian']
-                      }
+                      'Japanese': ['Japanese', 'Asian'],
+                      'none': ['']}
     
     population = 'population:{}'.format('+'.join(population_map[args.population]))
 
@@ -193,14 +195,19 @@ def _main():
         found_record = risk_store.get(raw_query)
         if found_record:
             for (k,v) in sorted(found_record.items(), key=lambda(k,v):(v['catalog_map']['OR_or_beta'],k), reverse=True): # sorted by OR
-                msg = 'rs:{0}, OR: {1} freq:{2} risk-allele:{3} genotype:{4} zyg:{5} RR:{6}'.format(k,
-                                                                                                    v['catalog_map']['OR_or_beta'],
-                                                                                                    v['catalog_map']['freq'],
-                                                                                                    v['catalog_map']['risk_allele'],
-                                                                                                    v['variant_map']['genotype'],
-                                                                                                    v['zyg'],
-                                                                                                    v['RR'])
-                
+                data = (k,
+                        v['catalog_map']['OR_or_beta'],
+                        v['catalog_map']['freq'],
+                        v['catalog_map']['risk_allele'],
+                        v['variant_map']['genotype'],
+                        v['zyg'],
+                        v['RR'],
+                        v['R'],
+                        v['catalog_map']['initial_sample_size'],
+                        v['catalog_map']['platform'])
+
+                msg = 'rs:{0} OR:{1} freq:{2} risk-allele:{3} genotype:{4} zyg:{5} RR:{6} R:{7} sample:{8} platform:{9}'.format(*data)
+
                 if v['variant_map']['genotype'] == 'na':
                     print colors.black(msg)
                 elif v['zyg'] == 'RR':
@@ -210,7 +217,7 @@ def _main():
                 elif v['zyg'] == '..':
                     print colors.blue(msg)
                 else:
-                    print 'somethin err...'
+                    print 'something err...'
 
 if __name__ == '__main__':
     _main()

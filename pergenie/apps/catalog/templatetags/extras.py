@@ -4,6 +4,14 @@ from django.template.defaultfilters import stringfilter
 register = template.Library()
 
 
+"""
+to use this sctipt, put this in .html
+
+{% load extras %}}
+
+"""
+
+
 # Django 'set variable' support
 # from http://www.soyoucode.com/2011/set-variable-django-template
 
@@ -37,3 +45,8 @@ def set_var(parser, token):
 @stringfilter
 def space2underbar(s):
     return s.replace(' ', '_')
+
+
+# @register.filter
+# def keyvalue(dict, key):
+#     return dict[key]['genotype']
