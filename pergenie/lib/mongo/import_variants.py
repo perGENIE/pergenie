@@ -13,7 +13,7 @@ import colors
 
 UPLOAD_DIR = '/tmp/pergenie'
 
-class ParseError(Exception):
+class VariantParseError(Exception):
     def __init__(self, value):
         self.value = value
     def __str__(self):
@@ -27,44 +27,44 @@ def import_variants(file_name, population, file_format, user_id):
         users_variants = db['variants'][user_id][file_name]
         data_info = db['data_info']
 
+        # ensure this variants file is not imported
         if users_variants.find_one():
-            # this variants file is already imported, so drop old one.
             db.drop_collection(users_variants)
-            print >>sys.stderr, '[INFO] dropped old collection of {}'.format(file_name)
+            print >>sys.stderr, '[WARNING] dropped old collection of {}'.format(file_name)
 
-        # print '[INFO] Countiong input lines ...',
-        # file_lines = int(subprocess.check_output(['wc', '-l', ]).split()[0])
-        # print 'done. # of lines: {0}'.format(file_lines)
+        variant_file_path = os.path.join(UPLOAD_DIR, user_id, file_name)
+        print '[INFO] variant_file_path:', variant_file_path
 
-        print >>sys.stderr, '[INFO] Importing {} ...'.format(file_name)
+        print '[INFO] Countiong input lines ...',
+        file_lines = int(subprocess.check_output(['wc', '-l', variant_file_path]).split()[0])
+        print 'done. # of lines: {}'.format(file_lines)
+
+        print >>sys.stderr, '[INFO] Start importing {} ...'.format(file_name)
         prev_collections = db.collection_names()
+        data_info.update({'user_id': user_id, 'name': file_name}, {"$set": {'status': 1}})
 
         try:
-            print os.path.join(UPLOAD_DIR, user_id, file_name)
-            with open(os.path.join(UPLOAD_DIR, user_id, file_name), 'rb') as fin:
-                for data in parse_lines(fin, file_format):
+            with open(variant_file_path, 'rb') as fin:
+                for i,data in enumerate(parse_lines(fin, file_format)):
                     if data['rs']:
                         users_variants.insert(data)
 
-                #
-                call_file_name = os.path.basename(file_name)
-                print 'call_file_name', call_file_name
-                print 'find', data_info.find({'user_id': user_id, 'name': call_file_name})
-
-                # TODO: rewrite to use $inc
-                data_info.update({'user_id': user_id, 'name': call_file_name}, {"$set": {'status': 90.0}})
+                    if i>0 and i%10000 == 0:
+                        upload_status = int( 100 * ( i*0.8 / file_lines ) )
+                        data_info.update({'user_id': user_id, 'name': file_name}, {"$set": {'status': upload_status}})
+                        print '[INFO] status: {}'.format(data_info.find({'user_id': user_id, 'name': file_name})[0]['status'])  #
 
                 print >>sys.stderr,'[INFO] ensure_index ...'
                 users_variants.ensure_index('rs', unique=True)  # ok?
 
-                #
-                data_info.update({'user_id': user_id, 'name': call_file_name}, {"$set": {'status': 100.0}})
+                data_info.update({'user_id': user_id, 'name': file_name}, {"$set": {'status': 100}})
 
                 print >>sys.stderr,'[INFO] done. added collection {}'.format(set(db.collection_names()) - set(prev_collections))
             return None
 
-        except ParseError, e:
-            print '[ERROR] ParseError:', e.value
+        except VariantParseError, e:
+            print '[ERROR] VariantParseError:', e.value
+            db.drop_collection(users_variants)
             return e.value
 
 
@@ -114,7 +114,7 @@ def parse_lines(handle, file_format):
         for dict_name, record_name, converter in parse_map['fields']:
             try:
                 data[dict_name] = converter(record.get(record_name, None))
-            except ParseError:
+            except VariantParseError:
                 data[dict_name] = None
                 data['info'] = record.get(record_name, None)
             
@@ -126,7 +126,7 @@ def _rs(text):
         try:
             return  int(text.replace('rs', ''))
         except ValueError:
-            raise ParseError, '[WARNING] rs? {}'
+            raise VariantParseError, '[WARNING] rs? {}'
 
     return None
 
