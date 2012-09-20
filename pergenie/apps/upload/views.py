@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
+from django.shortcuts import redirect
 from django.utils import simplejson
 from django.views.decorators.http import require_http_methods
 from django.views.generic.simple import direct_to_template
@@ -89,6 +90,21 @@ def index(request):
     return direct_to_template(request,
                               'upload.html',
                               {'msg': msg, 'err': err, 'uploadeds': uploadeds})
+
+
+@login_required
+def delete(request):
+    user_id = request.user.username
+    name = request.GET.get('name')
+
+    with pymongo.Connection() as connection:
+        db = connection['pergenie']
+        data_info = db['data_info']
+
+        #
+        data_info.remove({'user_id': user_id, 'name': name})
+
+    return redirect('apps.upload.views.index')
 
 
 def status(request):

@@ -172,8 +172,7 @@
                   </td>
                   <td class="center">
                     <div class="progress progress-striped active">
-		      <!-- <div class="bar" style="width: {{ uploaded.status }}%;"></div> -->
-		      <div class="bar"></div>
+		      <div class="bar" style="width: {{ uploaded.status }}%;"></div>
                     </div>
                   </td>
                   <td class="center">
@@ -185,15 +184,15 @@
                     <!--   <i class="icon-edit icon-white"></i> -->
                     <!--   Edit -->
                     <!-- </a> -->
-                    <div id="deleteModal{{ loop.index  }}"  class="modal hide fade in" style="display: none;">
+                    <div id="deleteModal{{ forloop.counter }}" class="modal hide fade in delete" style="display: none;">
                       <div class="modal-header"></div>
-                      <div class="modal-body"><p>Really delete?</p></div>
+                      <div class="modal-body"><p>Really delete "{{ uploaded.name }}"?</p></div>
                       <div class="modal-footer">
                         <button class="btn" data-dismiss="modal">No.</button>
                         <button class="btn btn-primary delete" href="#" id="{{ uploaded.name }}">Yes, delete this data.</button>
                       </div>
                     </div>
-                    <a data-toggle="modal" href="#deleteModal{{ loop.index }}" class="btn btn-danger"><i class="icon-trash icon-white"></i>Delete</a>
+                    <a data-toggle="modal" href="#deleteModal{{ forloop.counter }}" class="btn btn-danger"><i class="icon-trash icon-white"></i>Delete</a>
 
 		  </td>
 		</tr>
@@ -216,6 +215,7 @@
 {% endblock %}
 
 {% block js %}
+<script type="text/javascript">window.upload_delete_url = "{% url apps.upload.views.delete %}";</script>
 <script type="text/javascript">window.upload_status_url = "{% url apps.upload.views.status %}";</script>
 <script type="text/javascript" src="{% static 'js/upload.js' %}"></script>
 {% endblock %}
