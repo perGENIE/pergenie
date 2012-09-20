@@ -171,15 +171,15 @@
                     <span class="label label-success">{{ uploaded.file_format }}</span>
                   </td>
                   <td class="center">
-		    {% if uploaded.status >= 100 %}
+		            {% if uploaded.status >= 100 %}
                     <div class="progress progress-success">
-		      <div class="bar" style="width: 100%;">Done</div>
-		    </div>
-		    {% else %}
+		              <div class="bar" style="width: 100%;">Done</div>
+		            </div>
+		            {% else %}
                     <div class="progress progress-striped progress-info active">
-		      <div class="bar" style="width: {{ uploaded.status }}%;"></div>
+		              <div class="bar" style="width: {{ uploaded.status }}%;"></div>
                     </div>
-		    {% endif %}
+		            {% endif %}
                   </td>
                   <td class="center">
                     <!-- <a class="btn btn-success" href="#"> -->
@@ -198,12 +198,17 @@
                         <button class="btn btn-primary delete" href="#" id="{{ uploaded.name }}">Yes, delete this data.</button>
                       </div>
                     </div>
-                    <a data-toggle="modal" href="#deleteModal{{ forloop.counter }}" class="btn btn-danger"><i class="icon-trash icon-white"></i>Delete</a>
-
-		  </td>
-		</tr>
-		{% endfor %}
-		{% endif %}
+                    {% if uploaded.status >= 100 %}
+                    <a data-toggle="modal" href="#deleteModal{{ forloop.counter }}" class="btn btn-danger">
+                      <i class="icon-trash icon-white"></i>Delete
+                    {% else %}
+                    <a data-toggle="modal" href="#" class="btn btn-danger disabled">
+                      <i class="icon-trash icon-white"></i>Delete
+                    {% endif%}
+		          </td>
+		        </tr>
+		        {% endfor %}
+		        {% endif %}
               </tbody>
             </table>
           </div>
