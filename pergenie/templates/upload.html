@@ -171,9 +171,15 @@
                     <span class="label label-success">{{ uploaded.file_format }}</span>
                   </td>
                   <td class="center">
-                    <div class="progress progress-striped active">
+		    {% if uploaded.status >= 100 %}
+                    <div class="progress progress-success">
+		      <div class="bar" style="width: 100%;">Done</div>
+		    </div>
+		    {% else %}
+                    <div class="progress progress-striped progress-info active">
 		      <div class="bar" style="width: {{ uploaded.status }}%;"></div>
                     </div>
+		    {% endif %}
                   </td>
                   <td class="center">
                     <!-- <a class="btn btn-success" href="#"> -->

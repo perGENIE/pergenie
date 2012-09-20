@@ -50,7 +50,7 @@ def index(request):
                     err = 'Not allowed file extension.'
                     break
 
-                if os.path.exists(os.path.join(UPLOAD_DIR, user_id, call_file.name)):
+                if data_info.find({'user_id': user_id, 'name': call_file.name}).count() > 0:
                     err = 'Same file name exists. If you want to overwrite it, please delete old one.'
                     break
 
@@ -100,6 +100,7 @@ def delete(request):
     with pymongo.Connection() as connection:
         db = connection['pergenie']
         data_info = db['data_info']
+        variant = db['variant']
 
         #
         data_info.remove({'user_id': user_id, 'name': name})
