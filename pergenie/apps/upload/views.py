@@ -1,4 +1,6 @@
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
+from django.utils import simplejson
 from django.views.decorators.http import require_http_methods
 from django.views.generic.simple import direct_to_template
 
@@ -87,3 +89,32 @@ def index(request):
     return direct_to_template(request,
                               'upload.html',
                               {'msg': msg, 'err': err, 'uploadeds': uploadeds})
+
+
+def status(request):
+    if not request.user or not request.user.username:
+        result = {'status': 'error',
+                  'error_message': 'login required',
+                  'uploaded_files': []}
+
+    else:
+        user_id = request.user.username
+
+
+        with pymongo.Connection() as connection:
+            db = connection['pergenie']
+            data_info = db['data_info']
+
+            uploaded_files = {}
+            for record in data_info.find({'user_id': user_id}):
+                uploaded_files[record['name']] = record['status']
+
+        result = {'status': 'ok',
+                  'error_message': None,
+                  'uploaded_files': uploaded_files}
+
+    response = HttpResponse(simplejson.dumps(result), mimetype='application/json')
+    response['Pragma'] = 'no-cache'
+    response['Cache-Control'] = 'no-cache'
+
+    return response

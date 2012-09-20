@@ -30,5 +30,5 @@ urlpatterns = patterns('',
     url(r'^catalog/(?P<trait>.*?)/$', 'apps.catalog.views.catalog'),
 
     url(r'^upload/$', 'apps.upload.views.index'),
+    url(r'^upload/status', 'apps.upload.views.status'),
 )
-
