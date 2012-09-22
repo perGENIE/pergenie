@@ -10,7 +10,7 @@
   <div class="row-fluid">
     <div class="span12">
       <ul class="breadcrumb">
-        <li class="active">Catalog</li>
+        <li>Catalog<span class="divider">/</span></li>
       </ul>
     </div><!--/span-->
   </div>
@@ -53,7 +53,9 @@
   <div class="row-fluid">
     <div class="span12">
       <div class="box grad_colour_dark_blue">
-        <h2 class="box_head round_top">Catalog index</h2>
+        <h2 class="box_head round_top">Catalog index - trait -</h2>
+        <a href="#" class="toggle box_button_2" title="toggle">&nbsp;</a>
+        <a href="#" class="destroy box_button_1" title="close">&nbsp;</a>
         <div class="toggle_container">
           <div class="block box_content round_bottom padding_20">
 
@@ -68,8 +70,8 @@
                   <tbody>
                     {% for trait_name in my_trait_list_underbar %}
                     <tr>
-                      <td><a href="{% url apps.catalog.views.catalog trait=trait_name %}">{{ trait_name }}</a></td>
-                      <td><a href="{% url apps.catalog.views.catalog trait=trait_name %}">{{ my_trait_list_ja_underbar|listvalue:forloop.counter }}</a></td>
+                      <td><a href="{% url apps.catalog.views.trait trait=trait_name %}">{{ trait_name }}</a></td>
+                      <td><a href="{% url apps.catalog.views.trait trait=trait_name %}">{{ my_trait_list_ja_underbar|listvalue:forloop.counter }}</a></td>
                     </tr>
                     {% endfor %}
                   </tbody>

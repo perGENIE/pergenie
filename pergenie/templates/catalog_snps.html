@@ -1,0 +1,130 @@
+{% extends "layout.html" %}
+{% block title %}Catalog {{ rs }}{% endblock %}
+{% block description %}catalog of risk SNPs{% endblock %}
+{% block cookie_id %}catalog_record{% endblock %}
+{% load staticfiles %}
+{% load extras %}}
+
+{% block main_container %}
+<div id="main_container" class="span10">
+  <!-- Breadcrumb -->
+  <div class="row-fluid">
+    <div class="span12">
+      <ul class="breadcrumb">
+        <li><a href="{% url apps.catalog.views.index %}">Catalog</a><span class="divider">/</span></li>
+        <li class="active">snps<span class="divider">/</span></li>
+        <li class="active">rs{{ rs }}</li>
+      </ul>
+    </div><!--/span-->
+  </div>
+
+  <!-- Content start -->
+  <!-- Draggable Widgets start -->
+  <div class="row-fluid">
+    <div class="span12">
+      <div class="box grad_colour_dark_blue" id="box_1">
+        <h2 class="box_head round_top">{{ rs }}</h2>
+        <div class="toggle_container">
+          <div class="block box_content round_bottom padding_20">
+            <table cellpadding="0" cellspacing="0" border="0" class="display datatable" id="snps_table">
+              <thead>
+                <tr>
+                  <th>rs</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr>
+                  <td>{{ rs }}</td>
+                </tr>
+              </tbody>
+            </table>
+            <div id="container" style="min-width: 200px; height: 200px; margin: 0 auto"></div>
+
+            {{ record.allele1 }}
+            {{ record.allele1_freq }}
+            {{ record.allele2 }}
+            {{ record.allele2_freq }}
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+$(function () {
+    var chart;
+    $(document).ready(function() {
+        chart = new Highcharts.Chart({
+            chart: {
+                renderTo: 'container',
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false
+            },
+            title: {
+                text: 'allele frequency'
+            },
+            tooltip: {
+                formatter: function() {
+                    return '<b>'+ this.point.name +'</b>: '+ this.percentage +' %';
+                }
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: true,
+                        color: '#000000',
+                        connectorColor: '#000000',
+                        formatter: function() {
+                            return '<b>'+ this.point.name +'</b>: '+ this.percentage +' %';
+                        }
+                    }
+                }
+            },
+            series: [{
+                type: 'pie',
+                name: 'allele frequency',
+                data: [
+                      [ "{{ record.allele1 }}",   {{ record.allele1_freq }} ],
+                      [ "{{ record.allele2 }}",   {{ record.allele2_freq }} ]
+                ]
+            }]
+        });
+    });
+    
+});
+</script>
+
+
+<script type="text/javascript" src="{% static 'js/highcharts/highcharts.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/highcharts/modules/exporting.js' %}"></script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){
+  $('#catalog_record_table').dataTable({
+   "bJQueryUI": true,
+   "bPaginate": false,
+   "bLengthChange": false,
+   "bFilter": true,
+   "bAutoWidth": false,
+   "oLanguage": {
+            "sLengthMenu": "Display _MENU_ records per page",
+            "sZeroRecords": "Nothing found - sorry",
+            "sInfo": "Showing _TOTAL_ records",
+            "sInfoEmpty": "Showing 0 record",
+            "sInfoFiltered": "(filtered from _MAX_ total records)"
+   },       
+   "sDom": '<"top"if>t<"bottom"lp><"clear">'
+  });
+});
+</script>
+
+{% endblock %}

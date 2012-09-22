@@ -1,11 +1,9 @@
 {% extends "layout.html" %}
 {% block title %}Upload{% endblock %}
-{% block cookie_id %}upload{% endblock %}
 {% block description %}upload genome data{% endblock %}
+{% block cookie_id %}upload{% endblock %}
 {% load staticfiles %}
-
 {% block main_container %}
-
 
 <!-- show and hide column -->
 
@@ -35,7 +33,6 @@
 
 
 
-
 <div id="main_container" class="span10">
 
   <!-- <\!-- Breadcrumb -\->         -->
@@ -49,10 +46,13 @@
 
   <!-- Content start -->
   <!-- <\!-- Draggable Widgets start -\-> -->
+
   <div class="row-fluid">
     <div class="span12">
-      <div class="box grad_colour_dark_blue" id="box_1">
+      <div class="box grad_colour_dark_blue">
         <h2 class="box_head round_top">Upload</h2>
+        <a href="#" class="toggle box_button_2" title="toggle">&nbsp;</a>
+        <a href="#" class="destroy box_button_1" title="close">&nbsp;</a>
         <div class="toggle_container">
           <div class="block box_content round_bottom std_padding">
             <div class="row-fluid">
@@ -138,7 +138,10 @@
   <div class="row-fluid">
     <div class="span12">
       <div class="box grad_colour_dark_blue">
+      <div class="box grad_colour_dark_blue">
         <h2 class="box_head round_top">Uploaded status</h2>
+        <a href="#" class="toggle box_button_2" title="toggle">&nbsp;</a>
+        <a href="#" class="destroy box_button_1" title="close">&nbsp;</a>
         <div class="toggle_container">
           <div class="block box_content round_bottom padding_20">
             <table cellpadding="0" cellspacing="0" border="0" class="display datatable" id="uploaded_table">
@@ -198,7 +201,7 @@
                         <button class="btn btn-primary delete" href="#" id="{{ uploaded.name }}">Yes, delete this data.</button>
                       </div>
                     </div>
-                    {% if uploaded.status >= 100 %}
+                    {% if uploaded.status %}
                     <a data-toggle="modal" href="#deleteModal{{ forloop.counter }}" class="btn btn-danger">
                       <i class="icon-trash icon-white"></i>Delete
                     {% else %}

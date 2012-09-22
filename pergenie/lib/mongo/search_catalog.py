@@ -16,11 +16,11 @@ def _split_query(raw_query):
     for query in shlex.split(raw_query):
         try:
             if re.match('rs[0-9]+', query):
-                yield 'rs', int(re.match('rs([0-9]+)', query).group(1))
+                yield 'rs', re.match('rs([0-9]+)', query).group(1)
             elif re.match('gene:', query):
                 yield 'gene', re.match('gene:(\S+)', query).group(1)
             elif re.match('chr:', query):
-                yield 'chr', int(re.match('chr:(\S+)', query).group(1))
+                yield 'chr', re.match('chr:(\S+)', query).group(1)
             elif re.match('population:', query):
                 yield 'population', re.match('population:(\S+)', query).group(1)
             elif re.match('trait:', query):
@@ -52,15 +52,22 @@ def search_catalog_by_query(raw_query):
                 or_queries.append({'reported_genes.gene_symbol': re.compile(or_sub_query, re.IGNORECASE)})
                 or_queries.append({'mapped_genes.gene_symbol': re.compile(or_sub_query, re.IGNORECASE)})
 
-        elif query_type in query_map:
-            for or_sub_query in query.split(OR_SYMBOL):
-                or_queries.append({query_map[query_type]: re.compile(or_sub_query, re.IGNORECASE)})
+        elif query_type == 'rs' or  query_type == 'chr':  ### complete match only
+            # for or_sub_query in query.split(OR_SYMBOL):
+            #     or_sub_query = int(or_sub_query)
+            #     or_queries.append({query_map[query_type]: re.compile(or_sub_query, re.IGNORECASE)})
+            sub_queries.append({query_map[query_type]: int(query)})
+
+        # elif query_type in query_map:
+        #     for or_sub_query in query.split(OR_SYMBOL):
+        #         or_queries.append({query_map[query_type]: re.compile(or_sub_query, re.IGNORECASE)})
 
         else:
             for or_sub_query in query.split(OR_SYMBOL):
                 or_queries.append({'trait': re.compile(or_sub_query, re.IGNORECASE)})
 
-        sub_queries.append({'$or': or_queries})
+        if or_queries:
+            sub_queries.append({'$or': or_queries})
 
     with pymongo.Connection() as connection:
         db = connection['pergenie']

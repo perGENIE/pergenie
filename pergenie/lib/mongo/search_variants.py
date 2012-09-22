@@ -52,7 +52,6 @@ def search_variants(user_id, file_name, query):
             # print 'in catalog & in variants', record['rs']
             # tmp_variants_map[record['rs']] = {'genotype':record['genotype']}
             tmp_variants_map[record['rs']] = record['genotype']
-        print tmp_variants_map
 
         # in catalog, but not in variants
         # null_variant = {'genotype':'na'}

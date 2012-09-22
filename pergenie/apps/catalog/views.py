@@ -4,6 +4,7 @@ from django.views.generic.simple import direct_to_template
 
 import pymongo
 from lib.mongo import search_variants
+from lib.mongo import search_catalog
 
 from lib.mongo import my_trait_list
 MY_TRAIT_LIST = my_trait_list.my_trait_list
@@ -33,7 +34,7 @@ def index(request):
             catalog_list = [catalog_map[found_id] for found_id in catalog_map] ### somehow catalog_map.found_id does not work in templete...
             
             return direct_to_template(request,
-                                      'catalog_records.html',
+                                      'catalog_trait.html',
                                       {'err': err,
                                        'trait_name': query,
                                        'catalog_list': catalog_list,
@@ -53,7 +54,7 @@ def index(request):
 
 
 @login_required
-def catalog(request, trait):
+def trait(request, trait):
     user_id = request.user.username
     err = ''
 
@@ -83,10 +84,39 @@ def catalog(request, trait):
         catalog_list = [catalog_map[found_id] for found_id in catalog_map] ###
 
         return direct_to_template(request,
-                                  'catalog_records.html',
+                                  'catalog_trait.html',
                                   {'err': err,
                                    'trait_name': query,
                                    'catalog_list': catalog_list,
                                    'variants_map': variants_map})
 
-    # return direct_to_template(response, 'catalog_records.html')
+    # return direct_to_template(response, 'catalog_trait.html')
+
+
+@login_required
+def snps(request, rs):
+    user_id = request.user.username
+    err = ''
+
+    found_records = list(search_catalog.search_catalog_by_query('rs{}'.format(rs)))
+    print 'found', found_records
+
+    if len(found_records) == 1:
+        record = found_records[0]
+        record.update({'allele1': record['risk_allele'],
+                       'allele1_freq': record['risk_allele_frequency']*100,
+                       'allele2': 'N',
+                       'allele2_freq': (1 - record['risk_allele_frequency'])*100
+                       })
+
+        return direct_to_template(request,
+                                  'catalog_snps.html',
+                                  {'err': err,
+                                   'rs': rs,
+                                   'record': record})
+    elif len(found_records) == 0:
+        # no hits
+        pass
+    else:
+        # somehow multi hits...
+        pass

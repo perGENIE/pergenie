@@ -18,7 +18,7 @@ def _zyg(genotype, risk_allele):
     try:
         return {0:'..', 1:'R.', 2:'RR'}[genotype.count(risk_allele)]
     except TypeError:
-        print >>sys.stderr, colors.purple('genotype?? genotype:{0} risk-allele {1} '.format(genotype, risk_allele))        
+        print >>sys.stderr, colors.purple('genotype?? genotype:{0} risk-allele {1} '.format(genotype, risk_allele))
         return '..'
 
 
@@ -71,19 +71,19 @@ def risk_calculation(catalog_map, variants_map):
 
             # filter out odd records
             if not record['risk_allele'] in ['A', 'T', 'G', 'C']:
-                # print "not record['risk_allele'] in ['A', 'T', 'G', 'C']:", tmp_risk_data
+                print colors.yellow("not record['risk_allele'] in ['A', 'T', 'G', 'C']:"), record['risk_allele'], record['OR_or_beta'], record['trait']
                 break
 
             if not record['freq']:
-                # print "not record['freq']", tmp_risk_data
+                print colors.yellow("not record['freq']"), record['freq'], record['OR_or_beta'], record['trait']
                 break
 
             try:
                 if not float(record['OR_or_beta']) > 1:
-                    # print "not float(record['OR_or_beta']) > 1", tmp_risk_data
+                    print colors.yellow("not float(record['OR_or_beta']) > 1"), record['OR_or_beta'], record['trait']
                     break
             except (TypeError, ValueError):
-                # print "Error with float()", tmp_risk_data
+                print colors.yellow("Error with float()"), record['OR_or_beta'], record['trait']
                 break            
 
             # store records
@@ -118,7 +118,7 @@ def risk_calculation(catalog_map, variants_map):
     """
     for trait in risk_store:
         for rs in risk_store[trait]:
-            risk_store[trait][rs]['zyg'] = _zyg(risk_store[trait][rs]['variant_map']['genotype'],
+            risk_store[trait][rs]['zyg'] = _zyg(risk_store[trait][rs]['variant_map'],
                                                 risk_store[trait][rs]['catalog_map']['risk_allele'])
             risk_store[trait][rs]['RR'], risk_store[trait][rs]['R'] = _relative_risk_to_general_population(risk_store[trait][rs]['catalog_map']['freq'],
                                                                                                            risk_store[trait][rs]['catalog_map']['OR_or_beta'],
@@ -199,7 +199,7 @@ def _main():
                         v['catalog_map']['OR_or_beta'],
                         v['catalog_map']['freq'],
                         v['catalog_map']['risk_allele'],
-                        v['variant_map']['genotype'],
+                        v['variant_map'],
                         v['zyg'],
                         v['RR'],
                         v['R'],
@@ -208,7 +208,7 @@ def _main():
 
                 msg = 'rs:{0} OR:{1} freq:{2} risk-allele:{3} genotype:{4} zyg:{5} RR:{6} R:{7} sample:{8} platform:{9}'.format(*data)
 
-                if v['variant_map']['genotype'] == 'na':
+                if v['variant_map'] == 'na':
                     print colors.black(msg)
                 elif v['zyg'] == 'RR':
                     print colors.red(msg)
