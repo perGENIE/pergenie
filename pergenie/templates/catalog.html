@@ -17,38 +17,38 @@
 
   <!-- Content start -->
   <!-- Draggable Widgets start -->
-  <div class="row-fluid">
-    <div class="span12">
-      <div class="box grad_colour_dark_blue" id="box_1">
-        <h2 class="box_head round_top">Index</h2>
-        <div class="toggle_container">
-          <div class="block box_content round_bottom std_padding">
-            <div class="row-fluid">
-              <div class="span12 box_padding_20">
+<!--   <div class="row-fluid"> -->
+<!--     <div class="span12"> -->
+<!--       <div class="box grad_colour_dark_blue" id="box_1"> -->
+<!--         <h2 class="box_head round_top">Index</h2> -->
+<!--         <div class="toggle_container"> -->
+<!--           <div class="block box_content round_bottom std_padding"> -->
+<!--             <div class="row-fluid"> -->
+<!--               <div class="span12 box_padding_20"> -->
 
-                <form action="{% url apps.catalog.views.index %}" method="get">
-                  Query search: <input type="text" name="query" value="{% if query %}{{ query }}{% endif %}">
-                  <input type="submit" value="search">
-                </form>
+<!--                 <form action="{% url apps.catalog.views.index %}" method="get"> -->
+<!--                   Query search: <input type="text" name="query" value="{% if query %}{{ query }}{% endif %}"> -->
+<!--                   <input type="submit" value="search"> -->
+<!--                 </form> -->
 
-                {% if msg %}
-                <div class="alert alert-success">
-                  <button type="button" class="close" data-dismiss="alert">×</button>
-                  {{ msg }}
-                </div>
-                {% endif %}
+<!--                 {% if msg %} -->
+<!--                 <div class="alert alert-success"> -->
+<!--                   <button type="button" class="close" data-dismiss="alert">×</button> -->
+<!--                   {{ msg }} -->
+<!--                 </div> -->
+<!--                 {% endif %} -->
 
-                {% if query  %}
-                Search result for query "{{ query }}"<br>
-                {% endif %}
+<!--                 {% if query  %} -->
+<!--                 Search result for query "{{ query }}"<br> -->
+<!--                 {% endif %} -->
 
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+<!--               </div> -->
+<!--             </div> -->
+<!--           </div> -->
+<!--         </div> -->
+<!--       </div> -->
+<!--     </div> -->
+<!--   </div> -->
 
   <div class="row-fluid">
     <div class="span12">
@@ -57,7 +57,7 @@
         <div class="toggle_container">
           <div class="block box_content round_bottom padding_20">
 
-                <table cellpadding="0" cellspacing="0" border="0" class="display datatable" id="datatable">
+                <table cellpadding="0" cellspacing="0" border="0" class="display datatable" id="catalog_table">
                   <thead>
                     <tr>
                       <th>trait</th>
@@ -80,4 +80,25 @@
 <!-- Draggable Widgets end -->
 <!-- Content end -->
 </div>
+
+{% endblock %}
+
+
+{% block js %}
+<script type="text/javascript">
+$(document).ready(function(){
+  $('#catalog_table').dataTable({
+    "bJQueryUI": true,
+    "sPaginationType": "full_numbers",
+    "iDisplayLength": 30,
+    "oLanguage": {
+            "sZeroRecords": "Nothing found - sorry",
+            "sInfo": "Showing _START_ to _END_ of _TOTAL_ records",
+            "sInfoEmpty": "Showing 0 to 0 of 0 records",
+            "sInfoFiltered": "(filtered from _MAX_ total records)"
+    },
+    "sDom": '<"top"if>t<"bottom"p><"clear">'
+  });
+});
+</script>
 {% endblock %}

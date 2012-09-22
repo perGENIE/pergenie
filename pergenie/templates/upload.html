@@ -141,7 +141,7 @@
         <h2 class="box_head round_top">Uploaded status</h2>
         <div class="toggle_container">
           <div class="block box_content round_bottom padding_20">
-            <table cellpadding="0" cellspacing="0" border="0" class="display datatable" id="datatable">
+            <table cellpadding="0" cellspacing="0" border="0" class="display datatable" id="uploaded_table">
               <thead>
               <tr>
                 <th>Name</th>
@@ -202,7 +202,7 @@
                     <a data-toggle="modal" href="#deleteModal{{ forloop.counter }}" class="btn btn-danger">
                       <i class="icon-trash icon-white"></i>Delete
                     {% else %}
-                    <a data-toggle="modal" href="#" class="btn btn-danger disabled">
+                    <a href="#" class="btn btn-danger disabled">
                       <i class="icon-trash icon-white"></i>Delete
                     {% endif%}
 		          </td>
@@ -229,4 +229,20 @@
 <script type="text/javascript">window.upload_delete_url = "{% url apps.upload.views.delete %}";</script>
 <script type="text/javascript">window.upload_status_url = "{% url apps.upload.views.status %}";</script>
 <script type="text/javascript" src="{% static 'js/upload.js' %}"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){
+  $('#uploaded_table').dataTable({
+   "bJQueryUI": true,
+   "bPaginate": false,
+   "bLengthChange": false,
+   "bFilter": false,
+   "bInfo": false,
+   "bAutoWidth": false,
+   "sDom": '<"top">t<"bottom"><"clear">'
+
+  });
+});
+</script>
+
 {% endblock %}

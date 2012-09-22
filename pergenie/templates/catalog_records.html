@@ -26,7 +26,7 @@
           <div class="block box_content round_bottom padding_20">
             <h3>Risk alleles</h3>
 
-            <table cellpadding="0" cellspacing="0" border="0" class="display datatable" id="datatable">
+            <table cellpadding="0" cellspacing="0" border="0" class="display datatable" id="catalog_record_table">
               <thead>
                 <tr>
                   <th>rs</th>
@@ -53,18 +53,6 @@
 
             </table>
 
-            <div class="pagination pagination-centered">
-              <ul>
-                <li><a href="#">Prev</a></li>
-                <li class="active">
-                  <a href="#">1</a>
-                </li>
-                <li><a href="#">2</a></li>
-                <li><a href="#">3</a></li>
-                <li><a href="#">4</a></li>
-                <li><a href="#">Next</a></li>
-              </ul>
-            </div>
 
           </div>
         </div>
@@ -72,4 +60,27 @@
     </div>
   </div>
 </div>
+{% endblock %}
+
+
+{% block js %}
+<script type="text/javascript">
+$(document).ready(function(){
+  $('#catalog_record_table').dataTable({
+   "bJQueryUI": true,
+   "bPaginate": false,
+   "bLengthChange": false,
+   "bFilter": true,
+   "bAutoWidth": false,
+   "oLanguage": {
+            "sLengthMenu": "Display _MENU_ records per page",
+            "sZeroRecords": "Nothing found - sorry",
+            "sInfo": "Showing _TOTAL_ records",
+            "sInfoEmpty": "Showing 0 record",
+            "sInfoFiltered": "(filtered from _MAX_ total records)"
+   },       
+   "sDom": '<"top"if>t<"bottom"lp><"clear">'
+  });
+});
+</script>
 {% endblock %}
