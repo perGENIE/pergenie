@@ -3,8 +3,11 @@ from django.views.decorators.http import require_http_methods
 from django.views.generic.simple import direct_to_template
 
 import pymongo
-from lib.mongo import my_trait_list
 from lib.mongo import search_variants
+
+from lib.mongo import my_trait_list
+MY_TRAIT_LIST = my_trait_list.my_trait_list
+MY_TRAIT_LIST_JA = my_trait_list.my_trait_list_ja
 
 #
 from apps.catalog.forms import CatalogForm
@@ -37,13 +40,16 @@ def index(request):
                                        'variants_map': variants_map})
 
 
-    my_trait_list_underbar = [trait.replace(' ', '_') for trait in my_trait_list.my_trait_list]  ### TODO: use formatting function
+    my_trait_list_underbar = [trait.replace(' ', '_') for trait in MY_TRAIT_LIST]  ### TODO: use formatting function
+    my_trait_list_ja_underbar = [trait.replace(' ', '_') for trait in MY_TRAIT_LIST_JA]  ### TODO: use formatting function
 
     return direct_to_template(request,
                               'catalog.html',
                               {'err': err,
-                               'my_trait_list': my_trait_list.my_trait_list,
-                               'my_trait_list_underbar': my_trait_list_underbar})
+                               'my_trait_list': MY_TRAIT_LIST,
+                               'my_trait_list_underbar': my_trait_list_underbar,
+                               'my_trait_list_ja_underbar': my_trait_list_ja_underbar,
+                               })
 
 
 @login_required
@@ -53,15 +59,15 @@ def catalog(request, trait):
 
     print 'trait', trait
     
-    if not trait.replace('_', ' ') in my_trait_list.my_trait_list:
+    if not trait.replace('_', ' ') in MY_TRAIT_LIST:
         err = 'trait not found'
         print 'err', err
         
-        my_trait_list_underbar = [trait.replace(' ', '_') for trait in my_trait_list.my_trait_list]  ###
+        my_trait_list_underbar = [trait.replace(' ', '_') for trait in MY_TRAIT_LIST]  ###
         return direct_to_template(request,
                                   'catalog.html',
                                   {'err': err,
-                                   'my_trait_list': my_trait_list.my_trait_list,
+                                   'my_trait_list': MY_TRAIT_LIST,
                                    'my_trait_list_underbar': my_trait_list_underbar})
 
 

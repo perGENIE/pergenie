@@ -46,7 +46,12 @@ def set_var(parser, token):
 def space2underbar(s):
     return s.replace(' ', '_')
 
+# 
+@register.filter
+def keyvalue(dict, key):
+    return dict[key]
 
-# @register.filter
-# def keyvalue(dict, key):
-#     return dict[key]['genotype']
+#
+@register.filter
+def listvalue(list, loopindex_1based):
+    return list[loopindex_1based - 1]

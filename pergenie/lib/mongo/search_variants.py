@@ -50,16 +50,17 @@ def search_variants(user_id, file_name, query):
         tmp_variants_map = {}
         for record in variants_records:
             # print 'in catalog & in variants', record['rs']
-            tmp_variants_map[record['rs']] = {'genotype':record['genotype']}
+            # tmp_variants_map[record['rs']] = {'genotype':record['genotype']}
+            tmp_variants_map[record['rs']] = record['genotype']
         print tmp_variants_map
 
         # in catalog, but not in variants
-        null_variant = {'genotype':'na'}
+        # null_variant = {'genotype':'na'}
+        null_variant = 'na'
         for found_id, catalog in tmp_catalog_map.items():
             rs = catalog['rs']
             if not rs in tmp_variants_map:
                 tmp_variants_map[rs] = null_variant
-
 
 
     for found_id, catalog in tmp_catalog_map.items():
@@ -67,7 +68,8 @@ def search_variants(user_id, file_name, query):
         variant = tmp_variants_map[rs]
         
         print found_id, rs, catalog['trait'], catalog['risk_allele'], catalog['freq'], catalog['OR_or_beta'], 
-        print variant['genotype']
+        # print variant['genotype']
+        print variant
 
 
     return tmp_catalog_map, tmp_variants_map

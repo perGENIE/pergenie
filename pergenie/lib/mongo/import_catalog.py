@@ -8,12 +8,13 @@ import re
 import sys
 import pymongo
 
+import weblio_eng2ja
 import colors
 
 _g_gene_symbol_map = {}  # { Gene Symbol => (Entrez Gene ID, OMIM Gene ID) }
 _g_gene_id_map = {}      # { Entrez Gene ID => (Gene Symbol, OMIM Gene ID) }
 
-def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja):
+def import_catalog(path_to_gwascatalog, path_to_mim2gene):
     print 'Loading mim2gene.txt...'
     with open(path_to_mim2gene, 'rb') as fin:
         for record in csv.DictReader(fin, delimiter='\t'):
@@ -28,12 +29,12 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja):
             _g_gene_id_map[entrez_gene_id] = gene_symbol, omim_gene_id
 
 
-    print 'Loading eng2ja.txt...'
-    eng2ja = {}
-    with open(path_to_eng2ja, 'rb') as fin:
-        for record in csv.DictReader(fin, delimiter='/'):
-            eng2ja[record['eng']] = record['ja']
-
+    # print 'Loading eng2ja.txt...'
+    # eng2ja = {}
+    # with open(path_to_eng2ja, 'rb') as fin:
+    #     for record in csv.DictReader(fin, delimiter='/'):
+    #         eng2ja[record['eng']] = record['ja']
+    eng2ja = weblio_eng2ja.WeblioEng2Ja('data/eng2ja.txt', 'data/eng2ja_plus.txt')
 
     with pymongo.Connection() as connection:
         catalog = connection['pergenie']['catalog']
@@ -111,7 +112,7 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja):
                         pass
 
                 # Weblio eng2ja
-                data['eng2ja'] = eng2ja.get(data['trait'], data['trait'])
+                data['eng2ja'] = eng2ja.try_get(data['trait'])
 
 
                 if (not data['snps']) or (not data['strongest_snp_risk_allele']):
@@ -139,12 +140,17 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja):
     print '[INFO] # of traits:', len(trait_dict)
     print '[INFO] # of documents in catalog (after):', catalog.count()
 
-    # write out my_trait_list
-    trait_list = [k for k in trait_dict.keys()]
+    # write out my_trait_list & my_trait_list_ja
     with open('my_trait_list.py', 'w') as my_trait_list:
+        trait_list = [k for k in trait_dict.keys()]
         print >>my_trait_list, '# -*- coding: utf-8 -*- '
         print >>my_trait_list, 'my_trait_list =',
-        print >>my_trait_list,  trait_list        
+        print >>my_trait_list,  trait_list  
+
+        trait_list_ja = [eng2ja.try_get(trait) for trait in trait_list]
+        print >>my_trait_list, ''
+        print >>my_trait_list, 'my_trait_list_ja =',
+        print >>my_trait_list,  trait_list_ja
 
 
 def _OR_or_beta(text):
@@ -383,10 +389,9 @@ def _main():
     parser = argparse.ArgumentParser(description='import gwascatalog.txt to the database')
     parser.add_argument('gwascatalog', help='path to gwascatalog.txt')
     parser.add_argument('mim2gene', help='path to mim2gene.txt')
-    parser.add_argument('eng2ja', help='path to eng2ja.txt')
     args = parser.parse_args()
 
-    import_catalog(args.gwascatalog, args.mim2gene ,args.eng2ja)
+    import_catalog(args.gwascatalog, args.mim2gene)
 
 if __name__ == '__main__':
     _main()

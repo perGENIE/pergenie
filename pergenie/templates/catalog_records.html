@@ -2,7 +2,7 @@
 {% block title %}Catalog {{ trait_name }}{% endblock %}
 {% block description %}catalog of risk SNPs{% endblock %}
 {% block cookie_id %}catalog_record{% endblock %}
-
+{% load extras %}}
 {% block main_container %}
 <div id="main_container" class="span10">
 
@@ -39,15 +39,14 @@
 
               <tbody>
                 {% for catalog in catalog_list %}
-                {% with catalog.rs as rs %}
+                {% set rs = catalog.rs %}
                 <tr>
                   <td>{{ rs }}</td>
                   <td class="center">{{ catalog.trait }}</td>
                   <td class="center">{{ catalog.risk_allele }}</td>
                   <td class="center">{{ catalog.OR_or_beta }}</td>
-                  <td class="center">{{ variants_map.rs }}</td>
+                  <td class="center">{{ variants_map|keyvalue:rs }}</td>
                 </tr>
-                {% endwith %}
                 {% endfor %}
               </tbody>
 
