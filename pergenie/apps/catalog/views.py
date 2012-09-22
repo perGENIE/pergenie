@@ -6,6 +6,7 @@ import pymongo
 from lib.mongo import search_variants
 from lib.mongo import search_catalog
 
+#
 from lib.mongo import my_trait_list
 MY_TRAIT_LIST = my_trait_list.my_trait_list
 MY_TRAIT_LIST_JA = my_trait_list.my_trait_list_ja
@@ -13,32 +14,32 @@ MY_TRAIT_LIST_JA = my_trait_list.my_trait_list_ja
 #
 from apps.catalog.forms import CatalogForm
 
-@require_http_methods(['GET', 'POST'])
+# @require_http_methods(['GET', 'POST'])
 @login_required
 # def index(response):
 def index(request):
     user_id = request.user.username
     err = ''
 
-    if request.method == 'POST':
-        # if query:
-        with pymongo.Connection() as connection:
-            db = connection['pergenie']
-            data_info = db['data_info']
+    # if request.method == 'POST':
+    #     # if query:
+    #     with pymongo.Connection() as connection:
+    #         db = connection['pergenie']
+    #         data_info = db['data_info']
 
-            uploadeds = list(data_info.find( {'user_id': user_id} ))
-            file_name = uploadeds[0]['name']
+    #         uploadeds = list(data_info.find( {'user_id': user_id} ))
+    #         file_name = uploadeds[0]['name']
 
-            query = '"{}"'.format(CatalogForm.query)
-            catalog_map, variants_map = search_variants.search_variants(user_id, file_name, query)
-            catalog_list = [catalog_map[found_id] for found_id in catalog_map] ### somehow catalog_map.found_id does not work in templete...
+    #         query = '"{}"'.format(CatalogForm.query)
+    #         catalog_map, variants_map = search_variants.search_variants(user_id, file_name, query)
+    #         catalog_list = [catalog_map[found_id] for found_id in catalog_map] ### somehow catalog_map.found_id does not work in templete...
             
-            return direct_to_template(request,
-                                      'catalog_trait.html',
-                                      {'err': err,
-                                       'trait_name': query,
-                                       'catalog_list': catalog_list,
-                                       'variants_map': variants_map})
+    #         return direct_to_template(request,
+    #                                   'catalog_trait.html',
+    #                                   {'err': err,
+    #                                    'trait_name': query,
+    #                                    'catalog_list': catalog_list,
+    #                                    'variants_map': variants_map})
 
 
     my_trait_list_underbar = [trait.replace(' ', '_') for trait in MY_TRAIT_LIST]  ### TODO: use formatting function
@@ -58,8 +59,6 @@ def trait(request, trait):
     user_id = request.user.username
     err = ''
 
-    print 'trait', trait
-    
     if not trait.replace('_', ' ') in MY_TRAIT_LIST:
         err = 'trait not found'
         print 'err', err
@@ -76,11 +75,13 @@ def trait(request, trait):
         db = connection['pergenie']
         data_info = db['data_info']
 
-        uploadeds = list(data_info.find( {'user_id': user_id} ))
-        file_name = uploadeds[0]['name']
+        uploadeds = list(data_info.find( {'user_id': user_id}))
+        file_names = [uploaded['name'] for uploaded in uploadeds]
 
         query = '"{}"'.format(trait.replace('_', ' '))
-        catalog_map, variants_map = search_variants.search_variants(user_id, file_name, query)
+        variants_maps = {}
+        for file_name in file_names:
+            catalog_map, variants_maps[file_name] = search_variants.search_variants(user_id, file_name, query)
         catalog_list = [catalog_map[found_id] for found_id in catalog_map] ###
 
         return direct_to_template(request,
@@ -88,7 +89,7 @@ def trait(request, trait):
                                   {'err': err,
                                    'trait_name': query,
                                    'catalog_list': catalog_list,
-                                   'variants_map': variants_map})
+                                   'variants_maps': variants_maps})
 
     # return direct_to_template(response, 'catalog_trait.html')
 
@@ -99,13 +100,12 @@ def snps(request, rs):
     err = ''
 
     found_records = list(search_catalog.search_catalog_by_query('rs{}'.format(rs)))
-    print 'found', found_records
 
     if len(found_records) == 1:
         record = found_records[0]
         record.update({'allele1': record['risk_allele'],
                        'allele1_freq': record['risk_allele_frequency']*100,
-                       'allele2': 'N',
+                       'allele2': 'other',
                        'allele2_freq': (1 - record['risk_allele_frequency'])*100
                        })
 

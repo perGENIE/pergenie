@@ -34,7 +34,9 @@
                   <th>trait</th>
                   <th>risk allele</th>
                   <th>OR</th>
-                  <th>yours</th>
+                  {% for filename in variants_maps %}
+                  <th>{{ filename }}</th>
+                  {% endfor %}
                 </tr>
               </thead>
 
@@ -49,7 +51,9 @@
                   <td class="center">{{ catalog.trait }}</td>
                   <td class="center">{{ catalog.risk_allele }}</td>
                   <td class="center">{{ catalog.OR_or_beta }}</td>
-                  <td class="center">{{ variants_map|keyvalue:rs }}</td>
+                  {% for filename in variants_maps %}
+                  <td class="center">{{variants_maps|keyvalue:filename|keyvalue:rs }}</td>
+                  {% endfor %}
                 </tr>
                 {% endfor %}
               </tbody>
