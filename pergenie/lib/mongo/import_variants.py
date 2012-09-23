@@ -91,7 +91,8 @@ def parse_lines(handle, file_format):
                                        ('rs', 'rsid', _rs),
                                        ('ref', 'reference', _string),
                                        ('genotype1', 'genotype1', _string),
-                                       ('genotype2', 'genotype2', _string)],
+                                       ('genotype2', 'genotype2', _string),
+                                       ('genotype', 'genotype', _string)],
                             'delimiter': '\t'}
                   }
     parse_map = parse_maps[file_format]
@@ -117,6 +118,9 @@ def parse_lines(handle, file_format):
             except VariantParseError:
                 data[dict_name] = None
                 data['info'] = record.get(record_name, None)
+            
+        if file_format == 'tmmb':
+            data['genotype'] = data['genotype1'] + data['genotype2']
             
         yield data
 

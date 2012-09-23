@@ -66,10 +66,12 @@ def search_variants(user_id, file_name, query):
         rs = catalog['rs']
         variant = tmp_variants_map[rs]
         
-        print found_id, rs, catalog['trait'], catalog['risk_allele'], catalog['freq'], catalog['OR_or_beta'], 
-        # print variant['genotype']
-        print variant
-
+        if int(found_id) < 10:
+            print found_id, rs, catalog['trait'], catalog['risk_allele'], catalog['freq'], catalog['OR_or_beta'], 
+            # print variant['genotype']
+            print variant
+        elif int(found_id) == 10:
+            print 'has more...'
 
     return tmp_catalog_map, tmp_variants_map
                 

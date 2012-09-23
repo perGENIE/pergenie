@@ -58,9 +58,9 @@ def search_catalog_by_query(raw_query):
             #     or_queries.append({query_map[query_type]: re.compile(or_sub_query, re.IGNORECASE)})
             sub_queries.append({query_map[query_type]: int(query)})
 
-        # elif query_type in query_map:
-        #     for or_sub_query in query.split(OR_SYMBOL):
-        #         or_queries.append({query_map[query_type]: re.compile(or_sub_query, re.IGNORECASE)})
+        elif query_type in query_map:
+            for or_sub_query in query.split(OR_SYMBOL):
+                or_queries.append({query_map[query_type]: re.compile(or_sub_query, re.IGNORECASE)})
 
         else:
             for or_sub_query in query.split(OR_SYMBOL):

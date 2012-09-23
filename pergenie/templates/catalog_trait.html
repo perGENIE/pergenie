@@ -32,7 +32,10 @@
                 <tr>
                   <th>rs</th>
                   <th>trait</th>
+                  <th>study</th>
+                  <th>initial sample</th>
                   <th>risk allele</th>
+                  <th>risk allele frequency (in study)</th>
                   <th>OR</th>
                   {% for filename in variants_maps %}
                   <th>{{ filename }}</th>
@@ -49,7 +52,10 @@
                       {{ rs }}</a>
                   </td>
                   <td class="center">{{ catalog.trait }}</td>
+                  <td class="center">{{ catalog.study }}</td>
+                  <td class="center">{{ catalog.initial_sample_size }}</td>
                   <td class="center">{{ catalog.risk_allele }}</td>
+                  <td class="center">{{ catalog.risk_allele_frequency }}</td>
                   <td class="center">{{ catalog.OR_or_beta }}</td>
                   {% for filename in variants_maps %}
                   <td class="center">{{variants_maps|keyvalue:filename|keyvalue:rs }}</td>
@@ -86,7 +92,7 @@ $(document).ready(function(){
             "sInfoEmpty": "Showing 0 record",
             "sInfoFiltered": "(filtered from _MAX_ total records)"
    },       
-   "sDom": '<"top"if>t<"bottom"lp><"clear">'
+   "sDom": '<"top"if>t<"bottom"lp><"clear">',
   });
 });
 </script>
