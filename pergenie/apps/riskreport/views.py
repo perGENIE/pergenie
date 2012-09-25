@@ -29,14 +29,39 @@ def index(request):
             # TODO: support multiple data.
             info = infos[0]  # temporary choose first one
             
-            # TODO: population
-            catalog_map, variants_map = search_variants.search_variants(info['user_id'], info['name'],
-                                                                        'population:{}'.format(''))
-            risk_store, risk_reports = risk_report.risk_calculation(catalog_map, variants_map)
 
-            # for (trait,risk_value) in sorted(risk_reports.items(), key=lambda(k,v):(v,k), reverse=True):            
+            # TODO: population mapping
+            # ------------------------
+            population_map = {'Asian': ['African'],
+                              'Europian': ['European', 'Caucasian'],
+                              'African': ['Chinese', 'Japanese', 'Asian'],
+                              'Japanese': ['Japanese', 'Asian'],
+                              'none': ['']}
+            population = 'population:{}'.format('+'.join(population_map[info['population']]))
+
+            catalog_map, variants_map = search_variants.search_variants(info['user_id'], info['name'], population)
+
+            population_code_map = {'Asian': 'JPT',
+                                   'Europian': 'CEU',
+                                   'Japanese': 'JPT',
+                                   'none': 'CEU'}
+            print info['population'], population_code_map[info['population']]
+
+            risk_store, risk_reports = risk_report.risk_calculation(catalog_map, variants_map, population_code_map[info['population']], is_LD_block_clustered=False)
+
+
             break
+
+        print risk_reports
+        risk_traits = [k.encode('euc_jp') for k,v in risk_reports.items()]
+        print risk_traits
+        risk_values = [round(v, 3) for k,v in risk_reports.items()]
+
 
         return direct_to_template(request,
                                   'risk_report.html',
-                                  {'msg': msg, 'err': err, 'risk_reports': risk_reports})
+                                  {'msg': msg,
+                                   'err': err,
+                                   'risk_reports': risk_reports,
+                                   'risk_traits': risk_values,
+                                   'risk_values': risk_values})

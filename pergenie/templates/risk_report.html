@@ -1,7 +1,9 @@
 {% extends "layout.html" %}
-{% load extras %}
 {% block title %}Risk report{% endblock %}
 {% block description %}risk report{% endblock %}
+{% block cookie_id %}risk_report{% endblock %}
+{% load staticfiles %}
+{% load extras %}
 
 {% block main_container %}
 <div id="main_container" class="span10">
@@ -17,48 +19,34 @@
 
   <!-- Content start -->
   <!-- Draggable Widgets start -->
-<!--   <div class="row-fluid"> -->
-<!--     <div class="span12"> -->
-<!--       <div class="box grad_colour_dark_blue" id="box_1"> -->
-<!--         <h2 class="box_head round_top">Index</h2> -->
-<!--         <div class="toggle_container"> -->
-<!--           <div class="block box_content round_bottom std_padding"> -->
-<!--             <div class="row-fluid"> -->
-<!--               <div class="span12 box_padding_20"> -->
 
-<!--                 {% if msg %} -->
-<!--                 <div class="alert alert-success">{{ msg }}</div> -->
-<!--                 {% endif %} -->
-
-<!--                 {% if err %} -->
-<!--                 <div class="alert alert-success">{{ err }}</div> -->
-<!--                 {% endif %} -->
-
-
-
-
-<!--                 <\!-- {% for trait in my_trait_list %} -\-> -->
-<!--                 <\!-- <ul class="nav nav-pills nav-stacked"> -\-> -->
-<!--                 <\!--   <li><a href="{% url apps.catalog.views.catalog trait_name='{{trait | space2underbar}}' %}">{{ trait }}</a></li> -\-> -->
-<!--                 <\!-- </ul> -\-> -->
-<!--                 <\!-- {% endfor %} -\-> -->
-
-<!--               </div> -->
-<!--             </div> -->
-<!--           </div> -->
-<!--         </div> -->
-<!--       </div> -->
-<!--     </div><\!--/span-\-> -->
-<!--   </div><\!--/row-\-> -->
-
-  <!-- Table start -->
+  {% if risk_reports %}
   <div class="row-fluid">
     <div class="span12">
       <div class="box grad_colour_dark_blue">
-        <h2 class="box_head round_top">( Table )</h2>
+        <h2 class="box_head round_top">Chart</h2>
+        <a href="#" class="toggle box_button_2" title="toggle">&nbsp;</a>
+        <a href="#" class="destroy box_button_1" title="close">&nbsp;</a>
+
         <div class="toggle_container">
           <div class="block box_content round_bottom padding_20">
-            <table cellpadding="0" cellspacing="0" border="0" class="display datatable" id="risk_report_table">
+            <div id="container" style="min-width: 400px; height: 1000px; margin: 0 auto"></div>
+          </div>
+        </div>
+      </div>
+    </div><!--/span-->
+  </div><!--/row-->
+
+  <div class="row-fluid">
+    <div class="span12">
+      <div class="box grad_colour_dark_blue">
+        <h2 class="box_head round_top">Table</h2>
+        <a href="#" class="toggle box_button_2" title="toggle">&nbsp;</a>
+        <a href="#" class="destroy box_button_1" title="close">&nbsp;</a>
+
+        <div class="toggle_container">
+          <div class="block box_content round_bottom padding_20">
+            <table cellpadding="0" cellspacing="0" border="0" class="display datatable" id="risk_reports_table">
               <thead>
               <tr>
                 <th>Trait</th>
@@ -68,11 +56,11 @@
 
               <tbody>
                 {% if risk_reports %}
-                {% for trait in risk_reports %}
+                {% for trait,value in risk_reports.items %}
 
                 <tr>
                   <td class="center">{{ trait }}</td>
-                  <td class="center">{{ trait }}</td>
+                  <td class="center">{{ value }}</td>
 		        </tr>
 		        {% endfor %}
 		        {% endif %}
@@ -83,21 +71,92 @@
       </div>
     </div><!--/span-->
   </div><!--/row-->
-  <!-- Table end -->
+  {% endif %}
+
   <!-- Draggable Widgets end -->
   <!-- Content end -->
 </div>
-
-
-
 {% endblock %}
-
-
 
 {% block js %}
 <script type="text/javascript">
+$(function () {
+    var chart;
+    $(document).ready(function() {
+        chart = new Highcharts.Chart({
+            chart: {
+                renderTo: 'container',
+                type: 'bar'
+            },
+            title: {
+                text: 'Relative Risk'
+            },
+            subtitle: {
+                text: ''
+            },
+            xAxis: {
+                categories: {{ risk_traits }},
+                title: {
+                    text: null
+                }
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: '[]',
+                    align: 'high'
+                }
+            },
+            tooltip: {
+                formatter: function() {
+                    return ''+
+                        this.series.name +': '+ this.y +' ';
+                }
+            },
+            plotOptions: {
+                bar: {
+                    dataLabels: {
+                        enabled: true
+                    }
+                }
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'top',
+                x: -50,
+                y: 50,
+                floating: true,
+                borderWidth: 1,
+                backgroundColor: '#FFFFFF',
+                shadow: true
+            },
+            credits: {
+                enabled: false
+            },
+            series: [
+                {
+                name: 'Aさん',
+                data: {{ risk_values }}
+                }, {
+                name: 'Bさん',
+                data: {{ risk_values }}
+                }, {
+                name: 'Kさん',
+                data: {{ risk_values }}
+                }
+            ]
+        });
+    });
+});
+</script>
+
+<script type="text/javascript" src="{% static 'js/highcharts/highcharts.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/highcharts/modules/exporting.js' %}"></script>
+
+<script type="text/javascript">
 $(document).ready(function(){
-  $('#risk_report_table').dataTable({
+  $('#risk_reports_table').dataTable({
     "bJQueryUI": true,
     "sPaginationType": "full_numbers",
     "iDisplayLength": 25,

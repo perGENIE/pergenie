@@ -26,8 +26,9 @@ def import_variants(file_name, population, file_format, user_id):
         db = connection['pergenie']
         users_variants = db['variants'][user_id][file_name]
         data_info = db['data_info']
-
-        # ensure this variants file is not imported
+        data_info.update({'user_id': user_id, 'name': file_name}, {"$set": {'status': 1}})
+ 
+       # ensure this variants file is not imported
         if users_variants.find_one():
             db.drop_collection(users_variants)
             print >>sys.stderr, '[WARNING] dropped old collection of {}'.format(file_name)
@@ -41,7 +42,6 @@ def import_variants(file_name, population, file_format, user_id):
 
         print >>sys.stderr, '[INFO] Start importing {} ...'.format(file_name)
         prev_collections = db.collection_names()
-        data_info.update({'user_id': user_id, 'name': file_name}, {"$set": {'status': 1}})
 
         try:
             with open(variant_file_path, 'rb') as fin:
@@ -50,7 +50,7 @@ def import_variants(file_name, population, file_format, user_id):
                         users_variants.insert(data)
 
                     if i>0 and i%10000 == 0:
-                        upload_status = int( 100 * ( i*0.8 / file_lines ) )
+                        upload_status = int( 100 * ( i*0.9 / file_lines ) )
                         data_info.update({'user_id': user_id, 'name': file_name}, {"$set": {'status': upload_status}})
                         print '[INFO] status: {}'.format(data_info.find({'user_id': user_id, 'name': file_name})[0]['status'])  #
 

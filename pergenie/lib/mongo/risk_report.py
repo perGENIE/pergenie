@@ -147,7 +147,7 @@ def _relative_risk_to_general_population(freq, OR, zygosities):
         # print >>sys.stderr, colors.blue('{0} is not hom/het/ref'.format(zygosities))
         return 1.0, average_population_risk
 
-def risk_calculation(catalog_map, variants_map, population_code):
+def risk_calculation(catalog_map, variants_map, population_code, is_LD_block_clustered):
     risk_store = {}
     risk_report = {}
 
@@ -197,10 +197,9 @@ def risk_calculation(catalog_map, variants_map, population_code):
             break
 
 
-    # LD block (r^2) clustering
-    # -------------------------
-
-    risk_store_LD_clustered  = LD_block_clustering(risk_store, population_code)
+    if is_LD_block_clustered:
+        risk_store  = LD_block_clustering(risk_store, population_code)
+    
 
     """
     Calculate risk
@@ -210,20 +209,20 @@ def risk_calculation(catalog_map, variants_map, population_code):
     * zygosities are determied by # of risk alleles
 
     """
-    for trait in risk_store_LD_clustered:
-        for rs in risk_store_LD_clustered[trait]:
-            risk_store_LD_clustered[trait][rs]['zyg'] = _zyg(risk_store_LD_clustered[trait][rs]['variant_map'],
-                                                             risk_store_LD_clustered[trait][rs]['catalog_map']['risk_allele'])
-            risk_store_LD_clustered[trait][rs]['RR'], risk_store_LD_clustered[trait][rs]['R'] = _relative_risk_to_general_population(risk_store_LD_clustered[trait][rs]['catalog_map']['freq'],
-                                                                                                                                     risk_store_LD_clustered[trait][rs]['catalog_map']['OR_or_beta'],
-                                                                                                                                     risk_store_LD_clustered[trait][rs]['zyg'])
+    for trait in risk_store:
+        for rs in risk_store[trait]:
+            risk_store[trait][rs]['zyg'] = _zyg(risk_store[trait][rs]['variant_map'],
+                                                             risk_store[trait][rs]['catalog_map']['risk_allele'])
+            risk_store[trait][rs]['RR'], risk_store[trait][rs]['R'] = _relative_risk_to_general_population(risk_store[trait][rs]['catalog_map']['freq'],
+                                                                                                                                     risk_store[trait][rs]['catalog_map']['OR_or_beta'],
+                                                                                                                                     risk_store[trait][rs]['zyg'])
 
             if not trait in risk_report:
-                risk_report[trait] = risk_store_LD_clustered[trait][rs]['RR']
+                risk_report[trait] = risk_store[trait][rs]['RR']
             else:
-                risk_report[trait] *= risk_store_LD_clustered[trait][rs]['RR']
+                risk_report[trait] *= risk_store[trait][rs]['RR']
 
-    return risk_store_LD_clustered, risk_report
+    return risk_store, risk_report
 
 
 def _main():
@@ -231,17 +230,17 @@ def _main():
     parser.add_argument('-u', '--user_id', required=True)
     parser.add_argument('-f', '--file_name', required=True)
     parser.add_argument('-p', '--population', required=True, choices=['Asian', 'Europian', 'African', 'Japanese', 'none']) ###
-    parser.add_argument('--sex')    
+    parser.add_argument('--sex')
+    parser.add_argument('-L', '--LD_block_clustering', action='store_true')
     args = parser.parse_args()
 
     # TODO: population mapping
     # ------------------------
-    population_map = {'Asian': ['African'],
+    population_map = {'African': ['African'],
                       'Europian': ['European', 'Caucasian'],
-                      'African': ['Chinese', 'Japanese', 'Asian'],
+                      'Asian': ['Chinese', 'Japanese', 'Asian'],
                       'Japanese': ['Japanese', 'Asian'],
                       'none': ['']}
-    
     population = 'population:{}'.format('+'.join(population_map[args.population]))
 
     catalog_map, variants_map = search_variants.search_variants(args.user_id, args.file_name, population)
@@ -250,11 +249,13 @@ def _main():
     population_code_map = {'Europian': 'CEU',
                            'Japanese': 'JPT',
                            'none': 'CEU'}
-    print population_code_map
-    print args.population
-    print population_code_map[args.population]
+    print args.population, population_code_map[args.population]
 
-    risk_store, risk_report = risk_calculation(catalog_map, variants_map, population_code_map[args.population])
+    risk_store, risk_report = risk_calculation(catalog_map, variants_map, population_code_map[args.population],
+                                               args.LD_block_clustering)
+
+
+
 
     # Show risk report
     # ----------------
