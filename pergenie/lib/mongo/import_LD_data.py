@@ -3,6 +3,7 @@
 
 import argparse
 import os
+import signal
 import sys
 import csv
 import time
@@ -10,12 +11,22 @@ import datetime
 import re
 import subprocess
 import glob
-from pprint import pprint
-
+from pprint import pprint, pformat
 import pymongo
-import colors
+
+# logging with colors
+import logging
+from termcolor import colored
+import clogging
+log = clogging.ColorLogging(logging.getLogger(__name__))
+log.setLevel(logging.DEBUG)
+stdout = logging.StreamHandler()
+stdout.setLevel(logging.DEBUG)
+stdout.setFormatter(logging.Formatter('%(asctime)s [%(levelname)s] %(message)s'))
+log.addHandler(stdout)
 
 
+BULK_SIZE = 1000
 POPULATION_CODE = ['ASW', 'CEU', 'CHB', 'CHD', 'GIH', 'JPT', 'LWK', 'MEX', 'MKK', 'TSI', 'YRI']
 """
 ASW (A): African ancestry in Southwest USA
@@ -31,8 +42,34 @@ TSI (T): Toscans in Italy
 YRI (Y): Yoruba in Ibadan, Nigeria (West Africa)
 """
 
+
+def mongod_pid(command_name, port):
+    com1 = subprocess.Popen(['ps'],
+                            stdout=subprocess.PIPE,
+                            )
+
+    com2 = subprocess.Popen(['grep', command_name],
+                            stdin=com1.stdout,
+                            stdout=subprocess.PIPE,
+                            )
+
+    com3 = subprocess.Popen(['grep', '-v', 'grep'],
+                             stdin=com2.stdout,
+                             stdout=subprocess.PIPE,
+                             )
+
+    end_of_pipe = com3.stdout
+
+    for ps in end_of_pipe:
+        print ps,
+        if command_name in ps.split(' ') and str(port) in ps.split(' '):
+            mongo_pid = int(ps.split(' ')[0])
+
+    return int(mongo_pid)
+
+
 def import_LD_data(path_to_LD_data_dir, mongo_port,
-                   chroms_to_import, populations_to_import, drop_old_collections, ensure_index, skip_import):
+                   chroms_to_import, populations_to_import, drop_old_collections, ensure_index, skip_import, bulk_insert):
     """
     import LD-data into MongoDB
     -----------------------------------
@@ -44,7 +81,15 @@ def import_LD_data(path_to_LD_data_dir, mongo_port,
 
     """
 
-    print '[INFO]', datetime.datetime.now()
+    log.info('path_to_LD_data_dir {}'.format(path_to_LD_data_dir))
+    log.info('mongo_port{}'.format(mongo_port))
+    log.info('chroms_to_import {}'.format(chroms_to_import))
+    log.info('populations_to_import {}'.format(populations_to_import))
+    log.info('drop_old_collections {}'.format(drop_old_collections))
+    log.info('ensure_index {}'.format(ensure_index))
+    log.info('skip_import {}'.format(skip_import))
+    log.info('bulk_insert {0}, BULK_SIZE {1}'.format(bulk_insert, BULK_SIZE))
+
 
     with pymongo.Connection(port=mongo_port) as connection:
         db = connection['hapmap']
@@ -55,8 +100,8 @@ def import_LD_data(path_to_LD_data_dir, mongo_port,
             for code in POPULATION_CODE:
                 if ld_data_by_population_map[code].find_one():
                     db.drop_collection(ld_data_by_population_map[code])
-                    print '[WARNING] dropped old collection for {0}: {1}'.format(code, ld_data_by_population_map[code])
-        print '[INFO] collections:', db.collection_names()
+                    log.warn('dropped old collection for {0}: {1}'.format(code, ld_data_by_population_map[code]))
+        log.info('collections {}'.format(db.collection_names()))
 
         fields = [('pos1', 'Chromosomal position of marker1', _integer),
                   ('pos2', 'Chromosomal position of marker2', _integer),
@@ -69,51 +114,86 @@ def import_LD_data(path_to_LD_data_dir, mongo_port,
                   ('fbin', 'fbin (index based on Col1)', _float)]
         fieldnames = [field[1] for field in fields]
 
-        ld_data_files = glob.glob(os.path.join(path_to_LD_data_dir, 'ld_*.txt'))
-        r = re.compile('ld_chr(.+)_(...).txt')
+#         if (not chroms_to_import) or (not populations_to_import):
+#             ld_data_files = glob.glob(os.path.join(path_to_LD_data_dir, 'ld_*.txt'))
+#         else:
+        ld_data_files = []
+        for population_code in populations_to_import:
+            ld_data_files_by_population = [os.path.join(path_to_LD_data_dir, 'ld_chr{0}_{1}.txt'.format(chrom, population_code)) for chrom in chroms_to_import]
+            ld_data_files += ld_data_files_by_population
+        log.info(pformat(ld_data_files))
 
+        r = re.compile('ld_chr(.+)_(...).txt')
 
         if not skip_import:
             for ld_data_file in ld_data_files:
                 chrom, population_code = r.findall(ld_data_file)[0]
-                print '[INFO] chrom{0} population_code {1}'.format(chrom, population_code)
+                log.info('chrom:{0} population_code:{1}'.format(chrom, population_code))
 
                 if (not chroms_to_import) or (chrom in chroms_to_import):
                     if (not populations_to_import) or (population_code in populations_to_import):
 
-                        print '[INFO] Counting input lines ...',
+                        log.info('Counting input lines ...')
                         file_lines = int(subprocess.check_output(['wc', '-l', ld_data_file]).split()[0])
-                        print 'done. {} lines'.format(file_lines)
+                        log.info('... done. {} lines'.format(file_lines))
 
-                        print '[INFO] Importing ...'
+                        log.info('Start importing ...')
                         record_count = 0
                         with open(ld_data_file, 'rb') as fin:
+                            bulk_data = []
                             for i,record in enumerate(csv.DictReader(fin, delimiter=' ', fieldnames=fieldnames)):
                                 data = {}
                                 for dict_name, record_name, converter in fields:
                                     data[dict_name] = converter(record[record_name])
                                 data['chrom'] = chrom
 
-                                if not data['population_code'] in POPULATION_CODE:
-                                    print colors.red('[WARNING] not in population code: {}'.format(text))
+#                                 if not data['population_code'] in POPULATION_CODE:
+#                                     print colors.red('[WARNING] not in population code: {}'.format(text))
 
-                                # filtering by r_square                    
-                                if data['r_square'] >= 0.8:
-                                    ld_data_by_population_map[population_code].save(data)  ###
+#                                 # filtering by r_square
+#                                 if data['r_square'] >= 0.8:
+
+                                if bulk_insert:
+                                    bulk_data.append(data)
+                                    if len(bulk_data) == BULK_SIZE:
+                                        ld_data_by_population_map[population_code].insert(bulk_data)
+                                        record_count += len(bulk_data)
+                                        bulk_data = []
+
+                                else:
+                                    ld_data_by_population_map[population_code].insert(data)
                                     record_count += 1
+                 
+                                if (i+1)>1 and (i+1)%1000000 == 0:
+                                    log.info('{0}% done. {1} records to be inserted'.format(round(float(i+1)/float(file_lines),3)*100, i+1))
 
-                                if i>0 and i%1000000 == 0:
-                                    print '[INFO] {}% done.'.format(round(float(i)/float(file_lines),3)*100)
+                        # reminder
+                        if bulk_data:
+                            ld_data_by_population_map[population_code].insert(bulk_data)
+                            record_count += len(bulk_data)
+                            bulk_data = []
+                            
+                        log.info('{0} of {1} records ({2}%) imported'.format(record_count, file_lines, round(float(record_count)/float(file_lines),3)*100))
 
-                        print '[INFO] {0} of {1} records ({2}%) imported'.format(record_count, file_lines, round(float(record_count)/float(file_lines),3)*100)
-                        print '[INFO]', datetime.datetime.now()
+            log.info('... importing done.')
         
+
         if ensure_index:
-            print '[INFO] ensure index....'
+            log.info('Start indexing ...')
             for population_code in POPULATION_CODE:
                 ld_data_by_population_map[population_code].ensure_index([('rs1', pymongo.ASCENDING)], drop_dups=True)
 
-    print '[INFO]', datetime.datetime.now()
+            log.info('... indexing done.')
+
+    # kill mongod
+    mongo_pid = mongod_pid('mongod', mongo_port)
+    log.warn('kill mongod --port {} in 30 seconds. pid:{}'.format(mongo_port, mongo_pid))
+    time.sleep(30)
+    os.kill(mongo_pid, signal.SIGKILL)
+    log.warn('killed {}'.format(mongo_pid))
+
+    log.info('completed!')
+
 
 def _string(text):
     return text
@@ -131,10 +211,11 @@ def _rs(text):
 def _main():
     parser = argparse.ArgumentParser(description='import gwascatalog.txt to the database')
     parser.add_argument('path_to_LD_data_dir')
-    parser.add_argument('--port', type=int)
+    parser.add_argument('--port', type=int, required=True)
 
-    parser.add_argument('-c', '--chrom', nargs='+', help='population code')
-    parser.add_argument('-p', '--population',  nargs='+', choices=['JPT','CEU'], help='population code')
+    parser.add_argument('-c', '--chrom', nargs='+', help='population code', required=True)
+    parser.add_argument('-p', '--population',  nargs='+', choices=['JPT','CEU'], help='population code', required=True)
+    parser.add_argument('--bulk', action='store_true', help='bulk insert')
 
     parser.add_argument('--new', action='store_true', help='drop old collections')
     parser.add_argument('--skip_import', action='store_true', help='skip inport')
@@ -142,7 +223,7 @@ def _main():
     args = parser.parse_args()
 
     import_LD_data(args.path_to_LD_data_dir, args.port,
-                   args.chrom , args.population, args.new, args.ensure_index, args.skip_import)
+                   args.chrom , args.population, args.new, args.ensure_index, args.skip_import, args.bulk)
 
 
 if __name__ == '__main__':

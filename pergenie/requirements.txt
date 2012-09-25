@@ -12,4 +12,5 @@ django-jinja==0.3
 kombu==2.4.6
 pymongo==2.3
 python-dateutil==1.5
+termcolor==1.1.0
 wsgiref==0.1.2
