@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*- 
+
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 from django.views.generic.simple import direct_to_template
@@ -101,22 +103,38 @@ def snps(request, rs):
 
     found_records = list(search_catalog.search_catalog_by_query('rs{}'.format(rs)))
 
-    if len(found_records) == 1:
+    print found_records
+
+    if len(found_records) >= 1:
+        if len(found_records) >= 2:
+            print '[WARNING] somehow multi records found for {}'.format(rs)
+
         record = found_records[0]
-        record.update({'allele1': record['risk_allele'],
-                       'allele1_freq': record['risk_allele_frequency']*100,
-                       'allele2': 'other',
-                       'allele2_freq': (1 - record['risk_allele_frequency'])*100
-                       })
+        
+        if record['risk_allele_frequency']:
+            record.update({'allele1': record['risk_allele'],
+                           'allele1_freq': record['risk_allele_frequency']*100,
+                           'allele2': 'other',
+                           'allele2_freq': (1 - record['risk_allele_frequency'])*100
+                           })
+        else:
+            err = 'allele frequency is not available...'
+            record.update({'allele1': record['risk_allele'],
+                           'allele1_freq': None,
+                           'allele2': 'other',
+                           'allele2_freq': None
+                           })
 
         return direct_to_template(request,
                                   'library_snps.html',
                                   {'err': err,
                                    'rs': rs,
                                    'record': record})
+
     elif len(found_records) == 0:
-        # no hits
-        pass
-    else:
-        # somehow multi hits...
-        pass
+        err = 'perGENIEに未登録のsnpです'
+        return direct_to_template(request,
+                                  'library_snps.html',
+                                  {'err': err,
+                                   'rs': rs,
+                                   'record': None})
