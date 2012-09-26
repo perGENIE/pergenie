@@ -100,7 +100,7 @@ def _main():
         variant = variants_map[rs]
         
         print found_id, rs, catalog['trait'], catalog['risk_allele'], catalog['freq'], catalog['OR_or_beta'], 
-        print variant['genotype']
+        print variant
 
 
 if __name__ == '__main__':

@@ -96,45 +96,70 @@ def trait(request, trait):
     # return direct_to_template(response, 'library_trait.html')
 
 
+# TODO: table view for snps
+# @login_required
+# def snps_table(request, rs):
+
+
 @login_required
 def snps(request, rs):
+    """
+    /library/snps/rs(\d+)
+    """
+    try:
+        rs = int(rs)
+    except ValueError:
+        # 404
+        pass
+
     user_id = request.user.username
     err = ''
 
-    found_records = list(search_catalog.search_catalog_by_query('rs{}'.format(rs)))
+    with pymongo.Connection() as connection:
+        db = connection['pergenie']
+        data_info = db['data_info']
+        uploadeds = list(data_info.find( {'user_id': user_id}))
+        file_names = [uploaded['name'] for uploaded in uploadeds]
 
-    print found_records
+        # data from uploaded files
+        variants = {}
+        for file_name in file_names:
+            variant = db['variants'][user_id][file_name].find_one({'rs': rs})
+            variants[file_name] = variant['genotype'] if variant else 'NA'
 
-    if len(found_records) >= 1:
-        if len(found_records) >= 2:
-            print '[WARNING] somehow multi records found for {}'.format(rs)
+        # data from dbsnp
+        dbsnp = connection['dbsnp']['B132']
+        dbsnp_record = dbsnp.find_one({'rs': rs})
+        print 'dbsnp_record', dbsnp_record
 
-        record = found_records[0]
-        
-        if record['risk_allele_frequency']:
-            record.update({'allele1': record['risk_allele'],
-                           'allele1_freq': record['risk_allele_frequency']*100,
+    # data from gwascatalog
+    catalog_records = list(search_catalog.search_catalog_by_query('rs{}'.format(rs)))
+    if len(catalog_records) > 0:
+        catalog_record = catalog_records[0]
+        if catalog_record['risk_allele_frequency']:
+            catalog_record.update({'allele1': catalog_record['risk_allele'],
+                           'allele1_freq': catalog_record['risk_allele_frequency']*100,
                            'allele2': 'other',
-                           'allele2_freq': (1 - record['risk_allele_frequency'])*100
+                           'allele2_freq': (1 - catalog_record['risk_allele_frequency'])*100
                            })
         else:
             err = 'allele frequency is not available...'
-            record.update({'allele1': record['risk_allele'],
+            catalog_record.update({'allele1': catalog_record['risk_allele'],
                            'allele1_freq': None,
                            'allele2': 'other',
                            'allele2_freq': None
                            })
+    else:
+        catalog_record = None
 
-        return direct_to_template(request,
-                                  'library_snps.html',
-                                  {'err': err,
-                                   'rs': rs,
-                                   'record': record})
+    # TODO: data from HapMap
+    # * allele freq, genotype freq
+    # * LD data(r^2)
 
-    elif len(found_records) == 0:
-        err = 'perGENIEに未登録のsnpです'
-        return direct_to_template(request,
-                                  'library_snps.html',
-                                  {'err': err,
-                                   'rs': rs,
-                                   'record': None})
+    return direct_to_template(request,
+                              'library_snps.html',
+                              {'err': err,
+                               'rs': rs,
+                               'dbsnp_record': dbsnp_record,
+                               'catalog_record': catalog_record,
+                               'variants': variants})
