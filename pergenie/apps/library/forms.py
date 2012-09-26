@@ -1,5 +1,5 @@
 from django import forms
 
 
-class CatalogForm(forms.Form):
+class LibraryForm(forms.Form):
     query = forms.CharField(max_length=128)

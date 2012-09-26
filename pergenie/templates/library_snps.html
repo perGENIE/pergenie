@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
-{% block title %}Catalog {{ rs }}{% endblock %}
-{% block description %}catalog of risk SNPs{% endblock %}
-{% block cookie_id %}catalog_record{% endblock %}
+{% block title %}Library {{ rs }}{% endblock %}
+{% block description %}library of risk SNPs{% endblock %}
+{% block cookie_id %}library_record{% endblock %}
 {% load staticfiles %}
 {% load extras %}}
 
@@ -11,7 +11,7 @@
   <div class="row-fluid">
     <div class="span12">
       <ul class="breadcrumb">
-        <li><a href="{% url apps.catalog.views.index %}">Catalog</a><span class="divider">/</span></li>
+        <li><a href="{% url apps.library.views.index %}">Library</a><span class="divider">/</span></li>
         <li class="active">snps<span class="divider">/</span></li>
         <li class="active">rs{{ rs }}</li>
       </ul>
@@ -112,7 +112,7 @@ $(function () {
 
 <script type="text/javascript">
 $(document).ready(function(){
-  $('#catalog_record_table').dataTable({
+  $('#library_record_table').dataTable({
    "bJQueryUI": true,
    "bPaginate": false,
    "bLengthChange": false,

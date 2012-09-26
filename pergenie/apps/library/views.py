@@ -12,7 +12,7 @@ MY_TRAIT_LIST = my_trait_list.my_trait_list
 MY_TRAIT_LIST_JA = my_trait_list.my_trait_list_ja
 
 #
-from apps.catalog.forms import CatalogForm
+from apps.library.forms import LibraryForm
 
 # @require_http_methods(['GET', 'POST'])
 @login_required
@@ -46,7 +46,7 @@ def index(request):
     my_trait_list_ja_underbar = [trait.replace(' ', '_') for trait in MY_TRAIT_LIST_JA]  ### TODO: use formatting function
 
     return direct_to_template(request,
-                              'catalog.html',
+                              'library.html',
                               {'err': err,
                                'my_trait_list': MY_TRAIT_LIST,
                                'my_trait_list_underbar': my_trait_list_underbar,
@@ -65,7 +65,7 @@ def trait(request, trait):
         
         my_trait_list_underbar = [trait.replace(' ', '_') for trait in MY_TRAIT_LIST]  ###
         return direct_to_template(request,
-                                  'catalog.html',
+                                  'library.html',
                                   {'err': err,
                                    'my_trait_list': MY_TRAIT_LIST,
                                    'my_trait_list_underbar': my_trait_list_underbar})
@@ -81,17 +81,17 @@ def trait(request, trait):
         query = '"{}"'.format(trait.replace('_', ' '))
         variants_maps = {}
         for file_name in file_names:
-            catalog_map, variants_maps[file_name] = search_variants.search_variants(user_id, file_name, query)
-        catalog_list = [catalog_map[found_id] for found_id in catalog_map] ###
+            library_map, variants_maps[file_name] = search_variants.search_variants(user_id, file_name, query)
+        library_list = [library_map[found_id] for found_id in library_map] ###
 
         return direct_to_template(request,
-                                  'catalog_trait.html',
+                                  'library_trait.html',
                                   {'err': err,
                                    'trait_name': query,
-                                   'catalog_list': catalog_list,
+                                   'library_list': library_list,
                                    'variants_maps': variants_maps})
 
-    # return direct_to_template(response, 'catalog_trait.html')
+    # return direct_to_template(response, 'library_trait.html')
 
 
 @login_required
@@ -110,7 +110,7 @@ def snps(request, rs):
                        })
 
         return direct_to_template(request,
-                                  'catalog_snps.html',
+                                  'library_snps.html',
                                   {'err': err,
                                    'rs': rs,
                                    'record': record})

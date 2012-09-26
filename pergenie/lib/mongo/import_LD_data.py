@@ -69,7 +69,7 @@ def mongod_pid(command_name, port):
 
 
 def import_LD_data(path_to_LD_data_dir, mongo_port,
-                   chroms_to_import, populations_to_import, drop_old_collections, ensure_index, skip_import, bulk_insert):
+                   chroms_to_import, populations_to_import, drop_old_collections, ensure_index, skip_import, bulk_insert, after_kill):
     """
     import LD-data into MongoDB
     -----------------------------------
@@ -185,12 +185,13 @@ def import_LD_data(path_to_LD_data_dir, mongo_port,
 
             log.info('... indexing done.')
 
-    # kill mongod
-    mongo_pid = mongod_pid('mongod', mongo_port)
-    log.warn('kill mongod --port {} in 30 seconds. pid:{}'.format(mongo_port, mongo_pid))
-    time.sleep(30)
-    os.kill(mongo_pid, signal.SIGKILL)
-    log.warn('killed {}'.format(mongo_pid))
+    if after_kill:
+        # kill mongod
+        mongo_pid = mongod_pid('mongod', mongo_port)
+        log.warn('kill mongod --port {} in 30 seconds. pid:{}'.format(mongo_port, mongo_pid))
+        time.sleep(30)
+        os.kill(mongo_pid, signal.SIGKILL)
+        log.warn('killed {}'.format(mongo_pid))
 
     log.info('completed!')
 
@@ -220,10 +221,11 @@ def _main():
     parser.add_argument('--new', action='store_true', help='drop old collections')
     parser.add_argument('--skip_import', action='store_true', help='skip inport')
     parser.add_argument('--ensure_index', action='store_true', help='ensure index')
+    parser.add_argument('--kill', action='store_true')
     args = parser.parse_args()
 
     import_LD_data(args.path_to_LD_data_dir, args.port,
-                   args.chrom , args.population, args.new, args.ensure_index, args.skip_import, args.bulk)
+                   args.chrom , args.population, args.new, args.ensure_index, args.skip_import, args.bulk, args.kill)
 
 
 if __name__ == '__main__':

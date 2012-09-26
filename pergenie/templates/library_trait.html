@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
-{% block title %}Catalog {{ trait_name }}{% endblock %}
-{% block description %}catalog of risk SNPs{% endblock %}
-{% block cookie_id %}catalog_record{% endblock %}
+{% block title %}Library {{ trait_name }}{% endblock %}
+{% block description %}library of risk SNPs{% endblock %}
+{% block cookie_id %}library_record{% endblock %}
 {% load extras %}}
 {% block main_container %}
 <div id="main_container" class="span10">
@@ -10,7 +10,7 @@
   <div class="row-fluid">
     <div class="span12">
       <ul class="breadcrumb">
-        <li><a href="{% url apps.catalog.views.index %}">Catalog</a><span class="divider">/</span></li>
+        <li><a href="{% url apps.library.views.index %}">Library</a><span class="divider">/</span></li>
         <li class="active">trait<span class="divider">/</span></li>
         <li class="active">{{ trait_name }}</li>
       </ul>
@@ -27,7 +27,7 @@
           <div class="block box_content round_bottom padding_20">
             <h3>Risk alleles</h3>
 
-            <table cellpadding="0" cellspacing="0" border="0" class="display datatable" id="catalog_record_table">
+            <table cellpadding="0" cellspacing="0" border="0" class="display datatable" id="library_record_table">
               <thead>
                 <tr>
                   <th>rs</th>
@@ -44,19 +44,19 @@
               </thead>
 
               <tbody>
-                {% for catalog in catalog_list %}
-                {% set rs = catalog.rs %}
+                {% for library in library_list %}
+                {% set rs = library.rs %}
                 <tr>
                   <td>
-                    <a href="{% url apps.catalog.views.snps rs=rs %}">
+                    <a href="{% url apps.library.views.snps rs=rs %}">
                       {{ rs }}</a>
                   </td>
-                  <td class="center">{{ catalog.trait }}</td>
-                  <td class="center">{{ catalog.study }}</td>
-                  <td class="center">{{ catalog.initial_sample_size }}</td>
-                  <td class="center">{{ catalog.risk_allele }}</td>
-                  <td class="center">{{ catalog.risk_allele_frequency }}</td>
-                  <td class="center">{{ catalog.OR_or_beta }}</td>
+                  <td class="center">{{ library.trait }}</td>
+                  <td class="center">{{ library.study }}</td>
+                  <td class="center">{{ library.initial_sample_size }}</td>
+                  <td class="center">{{ library.risk_allele }}</td>
+                  <td class="center">{{ library.risk_allele_frequency }}</td>
+                  <td class="center">{{ library.OR_or_beta }}</td>
                   {% for filename in variants_maps %}
                   <td class="center">{{variants_maps|keyvalue:filename|keyvalue:rs }}</td>
                   {% endfor %}
@@ -79,7 +79,7 @@
 {% block js %}
 <script type="text/javascript">
 $(document).ready(function(){
-  $('#catalog_record_table').dataTable({
+  $('#library_record_table').dataTable({
    "bJQueryUI": true,
    "bPaginate": false,
    "bLengthChange": false,

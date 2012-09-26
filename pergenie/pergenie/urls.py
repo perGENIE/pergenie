@@ -26,9 +26,9 @@ urlpatterns = patterns('',
 
     url(r'^riskreport/$', 'apps.riskreport.views.index'),
 
-    url(r'^catalog/$', 'apps.catalog.views.index'),
-    url(r'^catalog/trait/(?P<trait>.*?)/$', 'apps.catalog.views.trait'),
-    url(r'^catalog/snps/rs(?P<rs>.*?)/$', 'apps.catalog.views.snps'),
+    url(r'^library/$', 'apps.library.views.index'),
+    url(r'^library/trait/(?P<trait>.*?)/$', 'apps.library.views.trait'),
+    url(r'^library/snps/rs(?P<rs>.*?)/$', 'apps.library.views.snps'),
 
     url(r'^upload/$', 'apps.upload.views.index'),
     url(r'^upload/delete', 'apps.upload.views.delete'),

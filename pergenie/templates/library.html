@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% load extras %}
-{% block title %}Catalog index{% endblock %}
-{% block description %}catalog of risk SNPs{% endblock %}
+{% block title %}Library index{% endblock %}
+{% block description %}library of risk SNPs{% endblock %}
 
 {% block main_container %}
 <div id="main_container" class="span10">
@@ -10,7 +10,7 @@
   <div class="row-fluid">
     <div class="span12">
       <ul class="breadcrumb">
-        <li>Catalog<span class="divider">/</span></li>
+        <li>Library<span class="divider">/</span></li>
       </ul>
     </div><!--/span-->
   </div>
@@ -26,7 +26,7 @@
 <!--             <div class="row-fluid"> -->
 <!--               <div class="span12 box_padding_20"> -->
 
-<!--                 <form action="{% url apps.catalog.views.index %}" method="get"> -->
+<!--                 <form action="{% url apps.library.views.index %}" method="get"> -->
 <!--                   Query search: <input type="text" name="query" value="{% if query %}{{ query }}{% endif %}"> -->
 <!--                   <input type="submit" value="search"> -->
 <!--                 </form> -->
@@ -53,13 +53,13 @@
   <div class="row-fluid">
     <div class="span12">
       <div class="box grad_colour_dark_blue">
-        <h2 class="box_head round_top">Catalog index - trait -</h2>
+        <h2 class="box_head round_top">Library index - trait -</h2>
         <a href="#" class="toggle box_button_2" title="toggle">&nbsp;</a>
         <a href="#" class="destroy box_button_1" title="close">&nbsp;</a>
         <div class="toggle_container">
           <div class="block box_content round_bottom padding_20">
 
-                <table cellpadding="0" cellspacing="0" border="0" class="display datatable" id="catalog_table">
+                <table cellpadding="0" cellspacing="0" border="0" class="display datatable" id="library_table">
                   <thead>
                     <tr>
                       <th>trait</th>
@@ -70,8 +70,8 @@
                   <tbody>
                     {% for trait_name in my_trait_list_underbar %}
                     <tr>
-                      <td><a href="{% url apps.catalog.views.trait trait=trait_name %}">{{ trait_name }}</a></td>
-                      <td><a href="{% url apps.catalog.views.trait trait=trait_name %}">{{ my_trait_list_ja_underbar|listvalue:forloop.counter }}</a></td>
+                      <td><a href="{% url apps.library.views.trait trait=trait_name %}">{{ trait_name }}</a></td>
+                      <td><a href="{% url apps.library.views.trait trait=trait_name %}">{{ my_trait_list_ja_underbar|listvalue:forloop.counter }}</a></td>
                     </tr>
                     {% endfor %}
                   </tbody>
@@ -91,7 +91,7 @@
 {% block js %}
 <script type="text/javascript">
 $(document).ready(function(){
-  $('#catalog_table').dataTable({
+  $('#library_table').dataTable({
     "bJQueryUI": true,
     "sPaginationType": "full_numbers",
     "iDisplayLength": 30,
