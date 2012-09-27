@@ -27,7 +27,6 @@
         <div class="toggle_container">
           <div class="block box_content round_bottom padding_20">
 
-            {{ dbsnp_record }}
             {{ catalog_record }}
 
             {{ err }}
@@ -58,12 +57,12 @@
                 </tr>
               </tbody>
             </table>
-            <div id="container" style="min-width: 200px; height: 200px; margin: 0 auto"></div>
+            <div id="container" style="min-width: 150px; height: 150px; margin: 0 auto"></div>
 
-            {{ record.allele1 }}
-            {{ record.allele1_freq }}
-            {{ record.allele2 }}
-            {{ record.allele2_freq }}
+            {{ catalog_record.allele1 }}
+            {{ catalog_record.allele1_freq }}
+            {{ catalog_record.allele2 }}
+            {{ catalog_record.allele2_freq }}
 
           </div>
         </div>
@@ -114,8 +113,8 @@ $(function () {
                 type: 'pie',
                 name: 'allele frequency',
                 data: [
-                      [ "{{ record.allele1 }}",   {{ record.allele1_freq }} ],
-                      [ "{{ record.allele2 }}",   {{ record.allele2_freq }} ]
+                      [ "{{ catalog_record.allele1 }}",   {{ catalog_record.allele1_freq }} ],
+                      [ "{{ catalog_record.allele2 }}",   {{ catalog_record.allele2_freq }} ]
                 ]
             }]
         });

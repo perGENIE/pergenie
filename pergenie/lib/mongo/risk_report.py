@@ -147,7 +147,7 @@ def _relative_risk_to_general_population(freq, OR, zygosities):
         # print >>sys.stderr, colors.blue('{0} is not hom/het/ref'.format(zygosities))
         return 1.0, average_population_risk
 
-def risk_calculation(catalog_map, variants_map, population_code, is_LD_block_clustered):
+def risk_calculation(catalog_map, variants_map, population_code, sex, is_LD_block_clustered):
     risk_store = {}
     risk_report = {}
 
@@ -197,7 +197,11 @@ def risk_calculation(catalog_map, variants_map, population_code, is_LD_block_clu
             break
 
 
-    if is_LD_block_clustered:
+    # TODO: filtering by sex
+    # if sex:
+    #     pass
+
+    if is_LD_block_clustered and not population_code == 'unkown':
         risk_store  = LD_block_clustering(risk_store, population_code)
     
 
@@ -230,7 +234,7 @@ def _main():
     parser.add_argument('-u', '--user_id', required=True)
     parser.add_argument('-f', '--file_name', required=True)
     parser.add_argument('-p', '--population', required=True, choices=['Asian', 'Europian', 'African', 'Japanese', 'none']) ###
-    parser.add_argument('--sex')
+    parser.add_argument('--sex', choices=['male', 'female'])
     parser.add_argument('-L', '--LD_block_clustering', action='store_true')
     args = parser.parse_args()
 
@@ -251,7 +255,7 @@ def _main():
                            'none': 'CEU'}
     print args.population, population_code_map[args.population]
 
-    risk_store, risk_report = risk_calculation(catalog_map, variants_map, population_code_map[args.population],
+    risk_store, risk_report = risk_calculation(catalog_map, variants_map, population_code_map[args.population], args.sex,
                                                args.LD_block_clustering)
 
 

@@ -3,6 +3,7 @@
 {% block description %}upload genome data{% endblock %}
 {% block cookie_id %}upload{% endblock %}
 {% load staticfiles %}
+
 {% block main_container %}
 
 <!-- show and hide column -->
@@ -60,7 +61,7 @@
 
                 <form class="form-horizontal" action="{% url apps.upload.views.index %}" method="post" enctype="multipart/form-data">
                   {% csrf_token %}
-		  <fieldset>
+		          <fieldset>
                     <legend>Genome data upload</legend>
 
                     <div class="control-group">

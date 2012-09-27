@@ -103,29 +103,30 @@ def import_LD_data(path_to_LD_data_dir, mongo_port,
                     log.warn('dropped old collection for {0}: {1}'.format(code, ld_data_by_population_map[code]))
         log.info('collections {}'.format(db.collection_names()))
 
-        fields = [('pos1', 'Chromosomal position of marker1', _integer),
-                  ('pos2', 'Chromosomal position of marker2', _integer),
-                  ('population_code', 'population code', _string),
-                  ('rs1', 'rs number for marker1', _rs),
-                  ('rs2', 'rs number for marker2', _rs),
-                  ('d_prime', 'Dprime', _float),
-                  ('r_square', 'R square', _float),
-                  ('LOD', 'LOD', _float),
-                  ('fbin', 'fbin (index based on Col1)', _float)]
-        fieldnames = [field[1] for field in fields]
-
-#         if (not chroms_to_import) or (not populations_to_import):
-#             ld_data_files = glob.glob(os.path.join(path_to_LD_data_dir, 'ld_*.txt'))
-#         else:
-        ld_data_files = []
-        for population_code in populations_to_import:
-            ld_data_files_by_population = [os.path.join(path_to_LD_data_dir, 'ld_chr{0}_{1}.txt'.format(chrom, population_code)) for chrom in chroms_to_import]
-            ld_data_files += ld_data_files_by_population
-        log.info(pformat(ld_data_files))
-
-        r = re.compile('ld_chr(.+)_(...).txt')
 
         if not skip_import:
+            fields = [('pos1', 'Chromosomal position of marker1', _integer),
+                      ('pos2', 'Chromosomal position of marker2', _integer),
+                      ('population_code', 'population code', _string),
+                      ('rs1', 'rs number for marker1', _rs),
+                      ('rs2', 'rs number for marker2', _rs),
+                      ('d_prime', 'Dprime', _float),
+                      ('r_square', 'R square', _float),
+                      ('LOD', 'LOD', _float),
+                      ('fbin', 'fbin (index based on Col1)', _float)]
+            fieldnames = [field[1] for field in fields]
+
+    #         if (not chroms_to_import) or (not populations_to_import):
+    #             ld_data_files = glob.glob(os.path.join(path_to_LD_data_dir, 'ld_*.txt'))
+    #         else:
+            ld_data_files = []
+            for population_code in populations_to_import:
+                ld_data_files_by_population = [os.path.join(path_to_LD_data_dir, 'ld_chr{0}_{1}.txt'.format(chrom, population_code)) for chrom in chroms_to_import]
+                ld_data_files += ld_data_files_by_population
+            log.info(pformat(ld_data_files))
+
+            r = re.compile('ld_chr(.+)_(...).txt')
+
             for ld_data_file in ld_data_files:
                 chrom, population_code = r.findall(ld_data_file)[0]
                 log.info('chrom:{0} population_code:{1}'.format(chrom, population_code))
@@ -180,7 +181,7 @@ def import_LD_data(path_to_LD_data_dir, mongo_port,
 
         if ensure_index:
             log.info('Start indexing ...')
-            for population_code in POPULATION_CODE:
+            for population_code in populations_to_import:
                 ld_data_by_population_map[population_code].ensure_index([('rs1', pymongo.ASCENDING)], drop_dups=True)
 
             log.info('... indexing done.')
@@ -214,10 +215,9 @@ def _main():
     parser.add_argument('path_to_LD_data_dir')
     parser.add_argument('--port', type=int, required=True)
 
-    parser.add_argument('-c', '--chrom', nargs='+', help='population code', required=True)
-    parser.add_argument('-p', '--population',  nargs='+', choices=['JPT','CEU'], help='population code', required=True)
+    parser.add_argument('-c', '--chrom', nargs='+', help='population code')
+    parser.add_argument('-p', '--population',  nargs='+', choices=['JPT','CEU'], help='population code')
     parser.add_argument('--bulk', action='store_true', help='bulk insert')
-
     parser.add_argument('--new', action='store_true', help='drop old collections')
     parser.add_argument('--skip_import', action='store_true', help='skip inport')
     parser.add_argument('--ensure_index', action='store_true', help='ensure index')

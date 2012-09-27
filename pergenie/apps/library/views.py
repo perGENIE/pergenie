@@ -8,12 +8,10 @@ import pymongo
 from lib.mongo import search_variants
 from lib.mongo import search_catalog
 
-#
 from lib.mongo import my_trait_list
 MY_TRAIT_LIST = my_trait_list.my_trait_list
 MY_TRAIT_LIST_JA = my_trait_list.my_trait_list_ja
 
-#
 from apps.library.forms import LibraryForm
 
 # @require_http_methods(['GET', 'POST'])
@@ -132,6 +130,10 @@ def snps(request, rs):
         dbsnp_record = dbsnp.find_one({'rs': rs})
         print 'dbsnp_record', dbsnp_record
 
+        # TODO: data from HapMap
+        # * allele freq by polulation (with allele strand dbsnp oriented)
+        # * LD data(r^2)
+
     # data from gwascatalog
     catalog_records = list(search_catalog.search_catalog_by_query('rs{}'.format(rs)))
     if len(catalog_records) > 0:
@@ -151,10 +153,6 @@ def snps(request, rs):
                            })
     else:
         catalog_record = None
-
-    # TODO: data from HapMap
-    # * allele freq, genotype freq
-    # * LD data(r^2)
 
     return direct_to_template(request,
                               'library_snps.html',
