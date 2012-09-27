@@ -68,10 +68,10 @@
                   </thead>
 
                   <tbody>
-                    {% for trait_name in my_trait_list_underbar %}
+                    {% for trait_name in my_trait_list %}
                     <tr>
                       <td><a href="{% url apps.library.views.trait trait=trait_name %}">{{ trait_name }}</a></td>
-                      <td><a href="{% url apps.library.views.trait trait=trait_name %}">{{ my_trait_list_ja_underbar|listvalue:forloop.counter }}</a></td>
+                      <td><a href="{% url apps.library.views.trait trait=trait_name %}">{{ my_trait_list_ja|listvalue:forloop.counter }}</a></td>
                     </tr>
                     {% endfor %}
                   </tbody>

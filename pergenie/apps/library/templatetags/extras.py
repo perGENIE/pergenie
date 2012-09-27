@@ -8,7 +8,6 @@ register = template.Library()
 to use this sctipt, put this in .html
 
 {% load extras %}}
-
 """
 
 
@@ -45,6 +44,12 @@ def set_var(parser, token):
 @stringfilter
 def space2underbar(s):
     return s.replace(' ', '_')
+
+@register.filter
+@stringfilter
+def underbar2space(s):
+    return s.replace('_', ' ')
+
 
 # 
 @register.filter

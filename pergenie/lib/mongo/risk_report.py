@@ -226,6 +226,14 @@ def risk_calculation(catalog_map, variants_map, population_code, sex, is_LD_bloc
             else:
                 risk_report[trait] *= risk_store[trait][rs]['RR']
 
+    # FOR DEBUG ONLY
+    debug_risk_report = {}
+    for trait,value in risk_report.items():
+        if value < 100:
+            debug_risk_report[trait] = value
+
+    return risk_store, debug_risk_report
+
     return risk_store, risk_report
 
 

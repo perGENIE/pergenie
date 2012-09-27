@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
-{% block title %}Risk report{% endblock %}
-{% block description %}risk report{% endblock %}
-{% block cookie_id %}risk_report{% endblock %}
+{% block title %}Risk report - {{ trait_name }}{% endblock %}
+{% block description %}risk report detail{% endblock %}
+<!-- {% block cookie_id %}risk_report_detail{% endblock %} -->
 {% load staticfiles %}
 {% load extras %}
 
@@ -12,7 +12,9 @@
   <div class="row-fluid">
     <div class="span12">
       <ul class="breadcrumb">
-        <li class="active">Risk report</li>
+        <li><a href="{% url apps.riskreport.views.index %}">Risk report</a><span class="divider">/</span></li>
+        <li class="active">{{ file_name }}<span class="divider">/</span></li>
+        <li class="active">{{ trait_name }}</li>
       </ul>
     </div><!--/span-->
   </div>
@@ -20,9 +22,7 @@
   <!-- Content start -->
   <!-- Draggable Widgets start -->
 
-  {% if risk_reports %}
-
-
+  {% if tmp_risk_value %}
   <div class="row-fluid">
     <div class="span12">
       <div class="box grad_colour_dark_blue">
@@ -53,43 +53,34 @@
               </fieldset>
             </form>
 
-            <div id="container" style="min-width: 400px; height: 1000px; margin: 0 auto"></div>
-          </div>
-        </div>
-      </div>
-    </div><!--/span-->
-  </div><!--/row-->
+            value:{{ tmp_risk_value }}
 
-  <div class="row-fluid">
-    <div class="span12">
-      <div class="box grad_colour_dark_blue">
-        <h2 class="box_head round_top">Table</h2>
-        <a href="#" class="toggle box_button_2" title="toggle">&nbsp;</a>
-        <a href="#" class="destroy box_button_1" title="close">&nbsp;</a>
+            snps_list: {{ snps_list }}
+            RR_list: {{ RR_list }} 
+            
+            <div id="container" style="min-width: 200px; height: 400px; margin: 0 auto"></div>
 
-        <div class="toggle_container">
-          <div class="block box_content round_bottom padding_20">
             <table cellpadding="0" cellspacing="0" border="0" class="display datatable" id="risk_reports_table">
               <thead>
               <tr>
-                <th>Trait</th>
-                <th>Value</th>
+                <th>snps</th>
+                <th>RR</th>
               </tr>
               </thead>
 
               <tbody>
-                {% if risk_reports %}
-                {% for trait_name,value in risk_reports.items %}
+                {% if tmp_risk_store %}
+                {% for trait_name,store in tmp_risk_store.items %}
 
                 <tr>
-                  <td class="center"><a href="{% url apps.riskreport.views.trait trait=trait_name file_name=tmp_info.name%}">{{ trait_name }}</a></td>
-
-                  <td class="center">{{ value }}</td>
+                  <td class="center"><a href="{% url apps.riskreport.views.trait trait=trait_name file_name=tmp_info.name %}">{{ trait_name }}</a></td>
+                  <td class="center">{{ store }}</td>
 		        </tr>
 		        {% endfor %}
 		        {% endif %}
               </tbody>
             </table>
+
           </div>
         </div>
       </div>
@@ -110,79 +101,33 @@ $(function () {
         chart = new Highcharts.Chart({
             chart: {
                 renderTo: 'container',
-                type: 'bar'
+                type: 'column'
             },
             title: {
-                text: 'Relative Risk for {{ tmp_info.name }}'
-            },
-            subtitle: {
-                text: ''
+                text: 'Column chart with negative values'
             },
             xAxis: {
-                categories: {{ risk_traits }},
-                title: {
-                    text: null
-                }
-            },
-            yAxis: {
-                min: 0,
-                title: {
-                    text: '[]',
-                    align: 'high'
-                }
+                categories: {{ snps_list }}
             },
             tooltip: {
                 formatter: function() {
                     return ''+
-                        this.series.name +': '+ this.y +' ';
+                        this.series.name +': '+ this.y +'';
                 }
-            },
-            plotOptions: {
-                bar: {
-                    dataLabels: {
-                        enabled: true
-                    }
-                }
-            },
-            legend: {
-                layout: 'vertical',
-                align: 'right',
-                verticalAlign: 'top',
-                x: -50,
-                y: 50,
-                floating: true,
-                borderWidth: 1,
-                backgroundColor: '#FFFFFF',
-                shadow: true
             },
             credits: {
                 enabled: false
             },
-            series: [
-                {
-                name: 'Aさん',
-                data: {{ risk_values }},
-                dataLabels: {
-                    enabled: true,
-                    rotation: 0,
-                    color: '#FFFFFF',
-                    align: 'right',
-                    x: 0,
-                    y: 0,
-                    formatter: function() {
-                        return this.y;
-                    },
-                    style: {
-                        fontSize: '10px',
-                        fontFamily: 'Verdana, sans-serif'
-                    }
-                }
-            }]
+            series: [{
+                name: "{{ file_name }}",
+                data: {{ RR_list }}
+            }
+            ]
         });
     });
+    
 });
 </script>
-
 
 <script type="text/javascript" src="{% static 'js/highcharts/highcharts.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/highcharts/modules/exporting.js' %}"></script>

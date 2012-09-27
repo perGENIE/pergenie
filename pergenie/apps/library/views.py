@@ -42,15 +42,11 @@ def index(request):
     #                                    'variants_map': variants_map})
 
 
-    my_trait_list_underbar = [trait.replace(' ', '_') for trait in MY_TRAIT_LIST]  ### TODO: use formatting function
-    my_trait_list_ja_underbar = [trait.replace(' ', '_') for trait in MY_TRAIT_LIST_JA]  ### TODO: use formatting function
-
     return direct_to_template(request,
                               'library.html',
                               {'err': err,
                                'my_trait_list': MY_TRAIT_LIST,
-                               'my_trait_list_underbar': my_trait_list_underbar,
-                               'my_trait_list_ja_underbar': my_trait_list_ja_underbar,
+                               'my_trait_list_ja': MY_TRAIT_LIST_JA,
                                })
 
 
@@ -63,12 +59,12 @@ def trait(request, trait):
         err = 'trait not found'
         print 'err', err
         
-        my_trait_list_underbar = [trait.replace(' ', '_') for trait in MY_TRAIT_LIST]  ###
         return direct_to_template(request,
                                   'library.html',
                                   {'err': err,
                                    'my_trait_list': MY_TRAIT_LIST,
-                                   'my_trait_list_underbar': my_trait_list_underbar})
+                                   'my_trait_list_ja': MY_TRAIT_LIST_JA
+                                   })
 
 
     with pymongo.Connection() as connection:
