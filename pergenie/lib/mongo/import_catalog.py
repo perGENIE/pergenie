@@ -7,12 +7,27 @@ import datetime
 import re
 import sys
 import pymongo
+try:
+   import cPickle as pickle
+except ImportError:
+   import pickle
 
 import weblio_eng2ja
 import colors
 
 _g_gene_symbol_map = {}  # { Gene Symbol => (Entrez Gene ID, OMIM Gene ID) }
 _g_gene_id_map = {}      # { Entrez Gene ID => (Gene Symbol, OMIM Gene ID) }
+
+
+def pickle_dump_obj(obj, fout_name):
+    with open(fout_name, 'wb') as fout:
+        pickle.dump(obj, fout, protocol=2)
+
+def pickle_load_obj(fin_name):
+    with open(fin_name, 'rb') as fin:
+        obj = pickle.load(fin)
+    return obj
+
 
 def import_catalog(path_to_gwascatalog, path_to_mim2gene):
     print 'Loading mim2gene.txt...'
@@ -101,6 +116,7 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene):
         print '[INFO] Importing gwascatalog.txt...'
 
         trait_dict = {}
+        catalog_summary = {}
         with open(path_to_gwascatalog, 'rb') as fin:            
             for i,record in enumerate(csv.DictReader(fin, delimiter='\t')):# , quotechar="'"):
                 print >>sys.stderr, i
@@ -113,7 +129,6 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene):
 
                 # Weblio eng2ja
                 data['eng2ja'] = eng2ja.try_get(data['trait'])
-
 
                 if (not data['snps']) or (not data['strongest_snp_risk_allele']):
                     print colors.green('[WARNING] absence of "snps" or "strongest_snp_risk_allele" {0} {1}. pubmed_id:{2}'.format(data['snps'], data['strongest_snp_risk_allele'], data['pubmed_id']))
@@ -129,6 +144,22 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene):
                         except KeyError:
                             trait_dict[data['trait']] = 1
 
+                        # TODO: support gene records
+
+                        # catalog summary
+                        for field,value in data.items():
+                            if '_gene' in field:
+                                pass
+                            else:
+                                try:
+                                    catalog_summary[field][value] += 1
+                                except KeyError:
+
+                                    try:
+                                        catalog_summary[field].update({value: 1})
+                                    except KeyError:
+                                        catalog_summary[field] = {value: 1}
+
                         catalog.insert(data)
 
             # TODO: indexing target
@@ -139,6 +170,9 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene):
             
     print '[INFO] # of traits:', len(trait_dict)
     print '[INFO] # of documents in catalog (after):', catalog.count()
+
+    pickle_dump_obj(catalog_summary, 'catalog_summary.p')
+    print '[INFO] dumped catalog_summary.p as pickle'
 
     # write out my_trait_list & my_trait_list_ja
     with open('my_trait_list.py', 'w') as my_trait_list:

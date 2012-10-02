@@ -80,12 +80,9 @@ def index(request):
 
             # list for chart
             risk_traits = [k for k,v in sorted(risk_reports.items(), key=lambda(k,v):(v,k), reverse=True)]
-            print risk_traits
             risk_values = [round(v, 3) for k,v in sorted(risk_reports.items(), key=lambda(k,v):(v,k), reverse=True)]
 
             break
-
-
 
         return direct_to_template(request,
                                   'risk_report.html',
