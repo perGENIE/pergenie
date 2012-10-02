@@ -79,10 +79,13 @@ def index(request):
                                                                     tmp_info['sex'], is_LD_block_clustered=False)
 
             # list for chart
-            risk_traits = [k.encode('euc_jp') for k,v in sorted(risk_reports.items(), key=lambda(k,v):(v,k), reverse=True)]
+            risk_traits = [k for k,v in sorted(risk_reports.items(), key=lambda(k,v):(v,k), reverse=True)]
+            print risk_traits
             risk_values = [round(v, 3) for k,v in sorted(risk_reports.items(), key=lambda(k,v):(v,k), reverse=True)]
 
             break
+
+
 
         return direct_to_template(request,
                                   'risk_report.html',
@@ -91,7 +94,7 @@ def index(request):
                                    'infos': infos,
                                    'tmp_info': tmp_info,
                                    'risk_reports': risk_reports,
-                                   'risk_traits': risk_values,
+                                   'risk_traits': risk_traits,
                                    'risk_values': risk_values})
 
 

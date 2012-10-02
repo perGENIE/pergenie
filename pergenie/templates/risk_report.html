@@ -53,7 +53,7 @@
               </fieldset>
             </form>
 
-            <div id="container" style="min-width: 400px; height: 1000px; margin: 0 auto"></div>
+            <div id="container" style="min-width: 400px; height: 10000px; margin: 0 auto"></div>
           </div>
         </div>
       </div>
@@ -113,13 +113,13 @@ $(function () {
                 type: 'bar'
             },
             title: {
-                text: 'Relative Risk for {{ tmp_info.name }}'
+                text: 'Relative Risk for "{{ tmp_info.name }}"'
             },
             subtitle: {
                 text: ''
             },
             xAxis: {
-                categories: {{ risk_traits }},
+                categories: [{% for trait in risk_traits %}'{{ trait }}',{% endfor %}],
                 title: {
                     text: null
                 }
@@ -134,7 +134,7 @@ $(function () {
             tooltip: {
                 formatter: function() {
                     return ''+
-                        this.series.name +': '+ this.y +' ';
+                        this.x+': '+ this.y +' ';
                 }
             },
             plotOptions: {
@@ -144,6 +144,10 @@ $(function () {
                     }
                 }
             },
+            credits: {
+                enabled: false
+            },
+
             legend: {
                 layout: 'vertical',
                 align: 'right',
@@ -153,14 +157,13 @@ $(function () {
                 floating: true,
                 borderWidth: 1,
                 backgroundColor: '#FFFFFF',
-                shadow: true
-            },
-            credits: {
+                shadow: true,
                 enabled: false
             },
+
             series: [
                 {
-                name: 'Aさん',
+                name: '{{ tmp_info.name }}',
                 data: {{ risk_values }},
                 dataLabels: {
                     enabled: true,

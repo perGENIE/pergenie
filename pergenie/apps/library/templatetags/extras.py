@@ -40,6 +40,13 @@ def set_var(parser, token):
     return SetVarNode(parts[1], parts[3])
 
 
+# from xml.sax.saxutils import unescape, escape
+# @register.filter
+# @stringfilter
+# def unescape_html(s):
+#     return unescape(s)
+
+
 @register.filter
 @stringfilter
 def space2underbar(s):

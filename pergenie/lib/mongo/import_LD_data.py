@@ -101,7 +101,7 @@ def import_LD_data(path_to_LD_data_dir, mongo_port,
                 if ld_data_by_population_map[code].find_one():
                     db.drop_collection(ld_data_by_population_map[code])
                     log.warn('dropped old collection for {0}: {1}'.format(code, ld_data_by_population_map[code]))
-        log.info('collections {}'.format(db.collection_names()))
+        log.info('current collections {}'.format(db.collection_names()))
 
 
         if not skip_import:
@@ -130,6 +130,7 @@ def import_LD_data(path_to_LD_data_dir, mongo_port,
             for ld_data_file in ld_data_files:
                 chrom, population_code = r.findall(ld_data_file)[0]
                 log.info('chrom:{0} population_code:{1}'.format(chrom, population_code))
+                log.info('will import to collection: {}'.format(ld_data_by_population_map[population_code]))
 
                 if (not chroms_to_import) or (chrom in chroms_to_import):
                     if (not populations_to_import) or (population_code in populations_to_import):
