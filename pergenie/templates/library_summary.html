@@ -41,7 +41,7 @@
                     {% for field_name, uniqs_counts in catalog_uniqs_counts.items %}
                     <tr>
                       <td><a href="{% url apps.library.views.trait trait=trait_name %}">{{ field_name }}</a></td>
-                      <td><a href="{% url apps.library.views.trait trait=trait_name %}">{{ uniqs_counts }}</a></td>
+                      <td>{{ uniqs_counts }}</td>
                     </tr>
                     {% endfor %}
                   </tbody>
