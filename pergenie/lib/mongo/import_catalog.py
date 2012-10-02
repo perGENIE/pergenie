@@ -23,12 +23,6 @@ def pickle_dump_obj(obj, fout_name):
     with open(fout_name, 'wb') as fout:
         pickle.dump(obj, fout, protocol=2)
 
-def pickle_load_obj(fin_name):
-    with open(fin_name, 'rb') as fin:
-        obj = pickle.load(fin)
-    return obj
-
-
 def import_catalog(path_to_gwascatalog, path_to_mim2gene):
     print 'Loading mim2gene.txt...'
     with open(path_to_mim2gene, 'rb') as fin:
@@ -109,7 +103,8 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene):
                   ('cl_95', '95% CI (text)', _string),
                   ('platform', 'Platform [SNPs passing QC]', _string),
                   ('cnv', 'CNV', _string)]
-
+        
+        field_names = [field[0:2] for field in fields]
         fields = my_fields + fields
         print '[INFO] # of fields:', len(fields)
 
@@ -170,9 +165,11 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene):
             
     print '[INFO] # of traits:', len(trait_dict)
     print '[INFO] # of documents in catalog (after):', catalog.count()
-
+    
     pickle_dump_obj(catalog_summary, 'catalog_summary.p')
+    pickle_dump_obj(field_names, 'field_names.p')
     print '[INFO] dumped catalog_summary.p as pickle'
+    print '[INFO] dumped field_names.p as pickle'
 
     # write out my_trait_list & my_trait_list_ja
     with open('my_trait_list.py', 'w') as my_trait_list:

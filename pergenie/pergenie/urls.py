@@ -28,7 +28,10 @@ urlpatterns = patterns('',
     url(r'^riskreport/(?P<file_name>.*?)/(?P<trait>.*?)/$', 'apps.riskreport.views.trait'),
 
     url(r'^library/$', 'apps.library.views.index'),
+    url(r'^library/summary', 'apps.library.views.summary'),
+    url(r'^library/trait/$', 'apps.library.views.trait_index'),
     url(r'^library/trait/(?P<trait>.*?)/$', 'apps.library.views.trait'),
+    url(r'^library/snps/$', 'apps.library.views.snps_index'),
     url(r'^library/snps/rs(?P<rs>.*?)/$', 'apps.library.views.snps'),
 
     url(r'^upload/$', 'apps.upload.views.index'),

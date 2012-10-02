@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*- 
+import os
+try:
+   import cPickle as pickle
+except ImportError:
+   import pickle
 
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
@@ -8,42 +13,84 @@ import pymongo
 from lib.mongo import search_variants
 from lib.mongo import search_catalog
 
+# TODO: rewrite ?
 from lib.mongo import my_trait_list
 MY_TRAIT_LIST = my_trait_list.my_trait_list
 MY_TRAIT_LIST_JA = my_trait_list.my_trait_list_ja
 
 from apps.library.forms import LibraryForm
+from pergenie.settings import common
 
-# @require_http_methods(['GET', 'POST'])
+@require_http_methods(['GET', 'POST'])
 @login_required
 # def index(response):
 def index(request):
     user_id = request.user.username
     err = ''
 
-    # if request.method == 'POST':
-    #     # if query:
-    #     with pymongo.Connection() as connection:
-    #         db = connection['pergenie']
-    #         data_info = db['data_info']
+    if request.method == 'POST':
+        # if query:
+        with pymongo.Connection() as connection:
+            db = connection['pergenie']
+            data_info = db['data_info']
 
-    #         uploadeds = list(data_info.find( {'user_id': user_id} ))
-    #         file_name = uploadeds[0]['name']
+            uploadeds = list(data_info.find( {'user_id': user_id} ))
+            file_name = uploadeds[0]['name']
 
-    #         query = '"{}"'.format(CatalogForm.query)
-    #         catalog_map, variants_map = search_variants.search_variants(user_id, file_name, query)
-    #         catalog_list = [catalog_map[found_id] for found_id in catalog_map] ### somehow catalog_map.found_id does not work in templete...
+            query = '"{}"'.format(CatalogForm.query)
+            catalog_map, variants_map = search_variants.search_variants(user_id, file_name, query)
+            catalog_list = [catalog_map[found_id] for found_id in catalog_map] ### somehow catalog_map.found_id does not work in templete...
             
-    #         return direct_to_template(request,
-    #                                   'catalog_trait.html',
-    #                                   {'err': err,
-    #                                    'trait_name': query,
-    #                                    'catalog_list': catalog_list,
-    #                                    'variants_map': variants_map})
-
+            return direct_to_template(request,
+                                      'library_trait.html',
+                                      {'err': err,
+                                       'trait_name': query,
+                                       'catalog_list': catalog_list,
+                                       'variants_map': variants_map})
 
     return direct_to_template(request,
                               'library.html',
+                              {'err': err,
+                               'my_trait_list': MY_TRAIT_LIST,
+                               'my_trait_list_ja': MY_TRAIT_LIST_JA,
+                               })
+
+@login_required
+def summary(request):
+    user_id = request.user.username
+    err = ''
+
+    # TODO: error handling ?
+    with open(os.path.join(common.BASE_DIR, 'lib', 'mongo', 'catalog_summary.p'), 'rb') as fin:
+        catalog_summary = pickle.load(fin)
+        with open(os.path.join(common.BASE_DIR, 'lib', 'mongo', 'field_names.p'), 'rb') as fin:
+            field_names = pickle.load(fin)
+            
+            print field_names
+            
+            catalog_uniqs_counts = {}
+
+            for field_name in field_names:
+                uniqs = catalog_summary.get(field_name[0])
+
+                if uniqs:
+                    catalog_uniqs_counts[field_name[1]] = len(uniqs)
+
+    print catalog_uniqs_counts
+
+    return direct_to_template(request,
+                              'library_summary.html',
+                              {'err': err,
+                               'catalog_uniqs_counts': catalog_uniqs_counts
+                               })
+
+@login_required
+def trait_index(request):
+    user_id = request.user.username
+    err = ''
+
+    return direct_to_template(request,
+                              'library_trait_index.html',
                               {'err': err,
                                'my_trait_list': MY_TRAIT_LIST,
                                'my_trait_list_ja': MY_TRAIT_LIST_JA,
@@ -60,7 +107,7 @@ def trait(request, trait):
         print 'err', err
         
         return direct_to_template(request,
-                                  'library.html',
+                                  'library_trait_index.html',
                                   {'err': err,
                                    'my_trait_list': MY_TRAIT_LIST,
                                    'my_trait_list_ja': MY_TRAIT_LIST_JA
@@ -91,9 +138,17 @@ def trait(request, trait):
 
 
 # TODO: table view for snps
-# @login_required
-# def snps_table(request, rs):
+@login_required
+def snps_index(request):
+    user_id = request.user.username
+    err = ''
 
+    return direct_to_template(request,
+                              'library_snps_index.html',
+                              {'err': err,
+                               'my_trait_list': MY_TRAIT_LIST,
+                               'my_trait_list_ja': MY_TRAIT_LIST_JA,
+                               })
 
 @login_required
 def snps(request, rs):
