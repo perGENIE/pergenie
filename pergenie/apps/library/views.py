@@ -56,8 +56,8 @@ def index(request):
                                })
 
 @login_required
-def summary(request):
-    user_id = request.user.username
+def summary_index(request):
+    # user_id = request.user.username
     err = ''
 
     # TODO: error handling ?
@@ -74,15 +74,38 @@ def summary(request):
                 uniqs = catalog_summary.get(field_name[0])
 
                 if uniqs:
-                    catalog_uniqs_counts[field_name[1]] = len(uniqs)
+                    catalog_uniqs_counts[field_name] = len(uniqs)
 
     print catalog_uniqs_counts
 
     return direct_to_template(request,
-                              'library_summary.html',
+                              'library_summary_index.html',
                               {'err': err,
                                'catalog_uniqs_counts': catalog_uniqs_counts
                                })
+
+@login_required
+def summary(request, field_name):
+    user_id = request.user.username
+    err = ''
+
+    with open(os.path.join(common.BASE_DIR, 'lib', 'mongo', 'catalog_summary.p'), 'rb') as fin:
+        catalog_summary = pickle.load(fin)
+
+        uniqs_counts = catalog_summary.get(field_name)
+        
+        # TODO: 404?
+        if not uniqs_counts:
+            err = 'not found'
+            uniqs_counts = {}
+
+        return direct_to_template(request,
+                                  'library_summary.html',
+                                  {'err': err,
+                                   'uniqs_counts': uniqs_counts,
+                                   'field_name': field_name
+                                   })
+
 
 @login_required
 def trait_index(request):
