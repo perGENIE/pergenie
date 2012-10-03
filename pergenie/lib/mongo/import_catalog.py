@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import argparse
+import os
 import csv
 import datetime
 import time
@@ -19,12 +20,16 @@ import colors
 _g_gene_symbol_map = {}  # { Gene Symbol => (Entrez Gene ID, OMIM Gene ID) }
 _g_gene_id_map = {}      # { Entrez Gene ID => (Gene Symbol, OMIM Gene ID) }
 
-
 def pickle_dump_obj(obj, fout_name):
     with open(fout_name, 'wb') as fout:
         pickle.dump(obj, fout, protocol=2)
 
-def import_catalog(path_to_gwascatalog, path_to_mim2gene):
+def pickle_load_obj(fin_name):
+    with open(fin_name, 'rb') as fin:
+        obj = pickle.load(fin)
+    return obj
+
+def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_pickled_catalog=None):
     print 'Loading mim2gene.txt...'
     with open(path_to_mim2gene, 'rb') as fin:
         for record in csv.DictReader(fin, delimiter='\t'):
@@ -56,14 +61,25 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene):
             print '[WARNING] dropped old collection'
         assert catalog.count() == 0
 
-
         if not dbsnp.find_one():
-            # sys.exit('dbsnp.B132 does not exist in mongodb ...')
             print '[WARNING] dbsnp.B132 does not exist in mongodb ...'
             print '[WARNING] so strand-check will be skipped'
             dbsnp = None
 
+        # can load from pickled catalog
+        if path_to_pickled_catalog:
+           print '[WARNING] try to load catalog from {}...'.format(path_to_pickled_catalog)
+           if os.path.exists(path_to_pickled_catalog):
+              pickled_catalog = pickle_load_obj(path_to_pickled_catalog)
+              for record in pickled_catalog:
+                 catalog.insert(record)
+              print '[INFO] import catalog done'
+              return
+           else:
+              print '[WARNING] but does not exist'
+              print '[WARNING] so load from flatfile {}'.format(path_to_gwascatalog)
 
+        
         my_fields = [('my_added', 'Date Added to MyCatalog', _date),
                      ('who_added', 'Who Added', _string),
                      ('activated', 'Activated', _integer),
@@ -115,10 +131,10 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene):
         print '[INFO] # of fields:', len(fields)
 
         print '[INFO] Importing gwascatalog.txt...'
-
         trait_dict = {}
         catalog_summary = {}
-        with open(path_to_gwascatalog, 'rb') as fin:            
+        to_pickle_catalog = []
+        with open(path_to_gwascatalog, 'rb') as fin:
             for i,record in enumerate(csv.DictReader(fin, delimiter='\t')):# , quotechar="'"):
                 print >>sys.stderr, i
                 data = {}
@@ -153,7 +169,7 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene):
                         # for DEGUG
                         if type(data['OR']) == float:
                            data['OR_or_beta'] = data['OR']
-                           print data['OR_or_beta'], data['OR'], data['snps']
+                           print data['OR_or_beta'], data['OR'], 'rs{}'.format(data['snps'])
                         else:
                            data['OR_or_beta'] = None
 
@@ -164,10 +180,6 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene):
                             if '_gene' in field or field == 'CI_95':
                                 pass
                             else:
-
-                                if field == 'OR':
-                                   print value
-
                                 try:
                                     catalog_summary[field][value] += 1
                                 except KeyError:
@@ -177,21 +189,24 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene):
                                     except KeyError:
                                         catalog_summary[field] = {value: 1}
 
+                        to_pickle_catalog.append(data)
                         catalog.insert(data)
 
             # TODO: indexing target
             # catalog.create_index([('snps', pymongo.ASCENDING)])
 
-    for trait,ok_count in sorted(trait_dict.items(), key=lambda x:x[1]):
-        print '[INFO]', trait, ok_count
+    # for trait,ok_count in sorted(trait_dict.items(), key=lambda x:x[1]):
+    #     print '[INFO]', trait, ok_count
             
     print '[INFO] # of traits:', len(trait_dict)
     print '[INFO] # of documents in catalog (after):', catalog.count()
     
     pickle_dump_obj(catalog_summary, 'catalog_summary.p')
     pickle_dump_obj(field_names, 'field_names.p')
+    pickle_dump_obj(to_pickle_catalog, 'catalog.p')
     print '[INFO] dumped catalog_summary.p as pickle'
     print '[INFO] dumped field_names.p as pickle'
+    print '[INFO] dumped catalog.p as pickle'
 
     # write out my_trait_list & my_trait_list_ja
     with open('my_trait_list.py', 'w') as my_trait_list:
@@ -205,6 +220,8 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene):
         print >>my_trait_list, 'my_trait_list_ja =',
         print >>my_trait_list,  trait_list_ja
 
+    print '[INFO] import catalog done'
+    return
 
 def identfy_OR_or_beta(OR_or_beta, CI_95):
    if CI_95['text']:
@@ -526,9 +543,10 @@ def _main():
     parser = argparse.ArgumentParser(description='import gwascatalog.txt to the database')
     parser.add_argument('gwascatalog', help='path to gwascatalog.txt')
     parser.add_argument('mim2gene', help='path to mim2gene.txt')
+    parser.add_argument('--pickled_catalog', help='path to pickled catalog')
     args = parser.parse_args()
 
-    import_catalog(args.gwascatalog, args.mim2gene)
+    import_catalog(args.gwascatalog, args.mim2gene, args.pickled_catalog)
 
 if __name__ == '__main__':
     _main()
