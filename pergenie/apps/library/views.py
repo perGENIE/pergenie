@@ -166,11 +166,15 @@ def snps_index(request):
     user_id = request.user.username
     err = ''
 
+    with open(os.path.join(common.BASE_DIR, 'lib', 'mongo', 'catalog_summary.p'), 'rb') as fin:
+        catalog_summary = pickle.load(fin)
+
+        uniq_snps_list = list(catalog_summary['snps'])
+
     return direct_to_template(request,
                               'library_snps_index.html',
                               {'err': err,
-                               'my_trait_list': MY_TRAIT_LIST,
-                               'my_trait_list_ja': MY_TRAIT_LIST_JA,
+                               'uniq_snps_list': uniq_snps_list
                                })
 
 @login_required

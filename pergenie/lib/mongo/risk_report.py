@@ -4,6 +4,7 @@
 import argparse
 import sys
 import os
+import math
 
 import pymongo
 
@@ -13,7 +14,7 @@ import search_variants
 
 from pprint import pprint
 
-HAPMAP_PORT = 10001
+HAPMAP_PORT = 10002
 POPULATION_CODE = ['ASW', 'CEU', 'CHB', 'CHD', 'GIH', 'JPT', 'LWK', 'MEX', 'MKK', 'TSI', 'YRI']
 
 def LD_block_clustering(risk_store, population_code):
@@ -226,13 +227,23 @@ def risk_calculation(catalog_map, variants_map, population_code, sex, is_LD_bloc
             else:
                 risk_report[trait] *= risk_store[trait][rs]['RR']
 
+
     # FOR DEBUG ONLY
     debug_risk_report = {}
     for trait,value in risk_report.items():
         if value < 100:
             debug_risk_report[trait] = value
 
-    return risk_store, debug_risk_report
+    risk_report = debug_risk_report
+
+
+#     # convert risk value to log
+#     log_risk_report = {}
+#     for trait,value in risk_report.items():
+#         log_risk_report[trait] = math.log(value)
+
+#     risk_report = log_risk_report
+
 
     return risk_store, risk_report
 
