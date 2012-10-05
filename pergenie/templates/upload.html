@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block title %}Upload{% endblock %}
-{% block description %}upload genome data{% endblock %}
-{% block cookie_id %}upload{% endblock %}
+{% block description %}upload genome file{% endblock %}
+<!-- {% block cookie_id %}upload{% endblock %} -->
 {% load staticfiles %}
 
 {% block main_container %}
@@ -33,49 +33,52 @@
 <!-- <a href="javascript:void(0);" onclick="fnShowHide(4);">Toggle column 5<br></a> -->
 
 
-
 <div id="main_container" class="span10">
 
-  <!-- <\!-- Breadcrumb -\->         -->
-  <!-- <div class="row-fluid"> -->
-  <!--     <div class="span12"> -->
-  <!--     <ul class="breadcrumb">                             -->
-  <!--       	<li class="active">Upload</li> -->
-  <!--     </ul> -->
-  <!--     </div><\!--/span-\-> -->
-  <!-- </div> -->
-
-  <!-- Content start -->
-  <!-- <\!-- Draggable Widgets start -\-> -->
+  <!-- Breadcrumb -->
+  <div class="row-fluid">
+    <div class="span12">
+      <ul class="breadcrumb">
+        <li>Upload</li>
+      </ul>
+    </div>
+  </div>
 
   <div class="row-fluid">
     <div class="span12">
       <div class="box grad_colour_dark_blue">
-        <h2 class="box_head round_top">Upload</h2>
+        <h2 class="box_head round_top"></h2>
         <a href="#" class="toggle box_button_2" title="toggle">&nbsp;</a>
         <a href="#" class="destroy box_button_1" title="close">&nbsp;</a>
         <div class="toggle_container">
-          <div class="block box_content round_bottom std_padding">
-            <div class="row-fluid">
-              <div class="span12 box_padding_20">
+          <div class="block box_content round_bottom padding_20">
 
                 <form class="form-horizontal" action="{% url apps.upload.views.index %}" method="post" enctype="multipart/form-data">
                   {% csrf_token %}
 		          <fieldset>
-                    <legend>Genome data upload</legend>
+                    <div class="page-header">
+                      <h1>Upload <small></small></h1>
+                    </div>
+                  
+                    <p>Before upload your genome files, see the description below:</p>
+                    <div class="tooltip-demo well">
+                      <p class="muted" style="margin-bottom: 0;">Tight pants next level keffiyeh <a href="#" rel='tooltip' title="first tooltip">you probably</a> haven't heard of them. Photo booth beard raw denim letterpress vegan messenger bag stumptown. Farm-to-table seitan, mcsweeney's fixie sustainable quinoa 8-bit american apparel <a href="#" rel='tooltip' title='Another tooltip'>have a</a> terry richardson vinyl chambray. Beard stumptown, cardigans banh mi lomo thundercats. Tofu biodiesel williamsburg marfa, four loko mcsweeney's cleanse vegan chambray. A <a href="#" rel='tooltip' title='Another one here too'>really ironic</a> artisan whatever keytar, scenester farm-to-table banksy Austin <a href="#" rel='tooltip' title='The last tip!'>twitter handle</a> freegan cred raw denim single-origin coffee viral.
+                      </p>
+                    </div>
 
+  
                     <div class="control-group">
-                      <label class="control-label">call file</label>
+                      <label class="control-label">Genome File</label>
                       <div class="controls">
                       <input type="file" name="call">
                       </div>
                     </div>
 
                     <div class="control-group">
-                      <label class="control-label">population</label>
+                      <label class="control-label">Population</label>
                       <div class="controls">
                         <select name="population">
-                          <option value="unkown">unkown</option>
+                          <option value="unkown">Unkown</option>
                           <option value="Asian">Asian</option>
                           <option value="Europian">Europian</option>
                           <option value="Japanese">Japanese</option>
@@ -84,10 +87,10 @@
                     </div>
 
                     <div class="control-group">
-                      <label class="control-label">sex</label>
+                      <label class="control-label">Sex</label>
                       <div class="controls">
                         <select name="sex">
-                          <option value="unkown">unkown</option>
+                          <option value="unkown">Unkown</option>
                           <option value="male">male</option>
                           <option value="female">female</option>
                         </select>
@@ -95,10 +98,13 @@
                     </div>
 
                     <div class="control-group">
-                      <label class="control-label">file format</label>
+                      <label class="control-label">File Format</label>
                       <div class="controls">
                         <select name="file_format">
                           <option value="andme">23andMe</option>
+                          <option value="decode">deCODEme</option>
+                          <option value="navi">Navigenics</option>
+                          <option value="vcf">VCF</option>
                           <option value="tmmb">tmmb</option>
                         </select>
                       </div>
@@ -131,25 +137,23 @@
               </div>
             </div>
           </div>
-        </div>
-      </div>
     </div><!--/span-->
   </div><!--/row-->
 
-  <!-- Table start -->
   <div class="row-fluid">
     <div class="span12">
-      <div class="box grad_colour_dark_blue">
       <div class="box grad_colour_dark_blue">
         <h2 class="box_head round_top">Uploaded status</h2>
         <a href="#" class="toggle box_button_2" title="toggle">&nbsp;</a>
         <a href="#" class="destroy box_button_1" title="close">&nbsp;</a>
         <div class="toggle_container">
           <div class="block box_content round_bottom padding_20">
-            <table cellpadding="0" cellspacing="0" border="0" class="display datatable" id="uploaded_table">
+            
+
+            <table class="table table-striped table-condensed">
               <thead>
               <tr>
-                <th>Name</th>
+                <th>File Name</th>
                 <th>Date</th>
                 <th>Population</th>
                 <th>Sex</th>
@@ -177,9 +181,12 @@
                   </td>
                   <td class="center">
 		            {% if uploaded.status >= 100 %}
-                    <div class="progress progress-success">
-		              <div class="bar" style="width: 100%;">Done</div>
-		            </div>
+                    <p>100%</p>
+<!--                     <div class="progress progress-success"> -->
+<!-- 		              <div class="bar" style="width: 100%;">100%</div> -->
+<!-- 		            </div> -->
+
+
 		            {% else %}
                     <div class="progress progress-striped progress-info active">
 		              <div class="bar" style="width: {{ uploaded.status }}%;"></div>
@@ -216,38 +223,17 @@
 		        {% endif %}
               </tbody>
             </table>
+
           </div>
         </div>
       </div>
-    </div><!--/span-->
-  </div><!--/row-->
-  <!-- Table end -->
-
-  <!-- Draggable Widgets end -->
-  <!-- Content end -->
+    </div>
+  </div>
 </div>
-
-
 {% endblock %}
 
 {% block js %}
 <script type="text/javascript">window.upload_delete_url = "{% url apps.upload.views.delete %}";</script>
 <script type="text/javascript">window.upload_status_url = "{% url apps.upload.views.status %}";</script>
 <script type="text/javascript" src="{% static 'js/upload.js' %}"></script>
-
-<script type="text/javascript">
-$(document).ready(function(){
-  $('#uploaded_table').dataTable({
-   "bJQueryUI": true,
-   "bPaginate": false,
-   "bLengthChange": false,
-   "bFilter": false,
-   "bInfo": false,
-   "bAutoWidth": false,
-   "sDom": '<"top">t<"bottom"><"clear">'
-
-  });
-});
-</script>
-
 {% endblock %}
