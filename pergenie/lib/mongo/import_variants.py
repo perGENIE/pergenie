@@ -28,7 +28,7 @@ def import_variants(file_name, population, file_format, user_id):
         data_info = db['data_info']
         data_info.update({'user_id': user_id, 'name': file_name}, {"$set": {'status': 1}})
  
-       # ensure this variants file is not imported
+        # ensure this variants file is not imported
         if users_variants.find_one():
             db.drop_collection(users_variants)
             print >>sys.stderr, '[WARNING] dropped old collection of {}'.format(file_name)
@@ -77,6 +77,7 @@ def parse_lines(handle, file_format):
     chromosome position rsid reference genotype1 genotype2
     """
 
+    ref_genome_version = None
     parse_maps = {'andme' : {'header_chr': '#',
                              'header_starts': '# rsid',
                              'fields': [('rs', 'rsid', _rs),
@@ -97,16 +98,22 @@ def parse_lines(handle, file_format):
                   }
     parse_map = parse_maps[file_format]
 
-    # start = time.time()
-
-    # Paser header lines, if infile have header
+    # parse headers
     if parse_map['header_chr']:
         for line in handle:
             if not line.startswith(parse_map['header_chr']):
-                raise ParseError, 'uploaded file has no header line. format correct?'
+                raise ParseError, 'Uploaded file has no header lines. File format correct?'
 
             elif line.startswith(parse_map['header_starts']):
                 break
+
+            # TODO: infer ref_genome_version
+            if file_format == 'andme':
+                if 'build 36' in line:
+                    ref_genome_version = 'b36'
+                elif 'build 37' in line:
+                    ref_genome_version = 'b37'
+            
 
     # Parse record lines by fieldnames
     fieldnames = [x[1] for x in parse_map['fields']]
