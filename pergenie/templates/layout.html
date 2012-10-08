@@ -55,16 +55,45 @@
           <div class="nav-collapse">
             <ul class="nav">
               <li><a href="{% url apps.frontend.views.logout %}">Logout</a></li>
-              <li><a href="{% url apps.frontend.views.about %}">&copy; perGENIE</a></li>
+              <li> <a data-toggle="modal" href="#aboutModal">&copy; perGENIE</a></li>
             </ul>
             <p class="navbar-text pull-right">
-              {% if user %}Logged in as <a href="{% url apps.frontend.views.settings %}">{{user.username}}</a>{% else %}Not logged in{% endif %}
+              {% if user %}Logged in as <a href="{% url apps.settings.views.settings %}">{{user.username}}</a>{% else %}Not logged in{% endif %}
             </p>
-          </div><!--/.nav-collapse -->
+          </div>
         </div>
       </div>
     </div>
 
+    <!-- about modal -->
+    <div id="aboutModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="aboutModalLabel" aria-hidden="true">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3 id="aboutModalLabel">About perGENIE</h3>
+      </div>
+      <div class="modal-body">
+        
+        <ul class="unstyled">
+          <li><h4>Credits</h4></li>
+          <li>perGENIE uses data from</li>
+          <ul>
+            <li><code><a href="http://www.genome.gov/gwastudies">The NHGRI GWAS catalog</a></code></li>
+            <li><code><a href="http://www.hapmap.org">The HapMap project</a></code></li>
+          </ul>
+          <hr>
+          <li><h4>License</h4></li>
+          <ul>
+            <li>The perGENIE is licensed under CC BY SA 3.0. ??</li>
+            <li>The data is licensed under CC0 1.0. ??</li>
+          </ul>
+        </ul>
+        
+        <div class="modal-footer">
+        <button class="btn" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+    
     <!-- side nav -->
     <div class="container-fluid">
       <div class="row-fluid">

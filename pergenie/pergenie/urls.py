@@ -19,11 +19,10 @@ urlpatterns = patterns('',
     url(r'^login/$', 'apps.frontend.views.login'),
     url(r'^logout/$', 'apps.frontend.views.logout'),
     url(r'^register/$', 'apps.frontend.views.register'),
-    url(r'^settings/$', 'apps.frontend.views.settings'),
-    url(r'^about/$', 'apps.frontend.views.about'),
 
     url(r'^dashboard/$', 'apps.dashboard.views.index'),
-
+    url(r'^settings/$', 'apps.settings.views.settings'),
+                       
     url(r'^riskreport/$', 'apps.riskreport.views.index'),
     url(r'^riskreport/(?P<file_name>.*?)/(?P<trait>.*?)/$', 'apps.riskreport.views.trait'),
 
