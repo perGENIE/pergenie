@@ -32,13 +32,10 @@
         <div class="toggle_container">
           <div class="block box_content round_bottom padding_20">
             
-            <form class="form-horizontal" action="{% url apps.riskreport.views.index %}" method="post" enctype="multipart/form-data">
+            <form action="{% url apps.riskreport.views.index %}" method="post" enctype="multipart/form-data">
               {% csrf_token %}
 		      <fieldset>
                 
-                <div class="control-group">
-                  <label class="control-label">file</label>
-                  <div class="controls">
                     <select name="file_name" onchange="submit(this.form)">
                       {% for info in infos%}
                         {% if info == tmp_info %}
@@ -48,15 +45,12 @@
                         {% endif %}
                       {% endfor%}
                     </select>
-                  </div>
-                </div>
               </fieldset>
             </form>
 
-            value:{{ tmp_risk_value }}
-
-            snps_list: {{ snps_list }}
-            RR_list: {{ RR_list }} 
+<!--             value:{{ tmp_risk_value }} -->
+<!--             snps_list: {{ snps_list }} -->
+<!--             RR_list: {{ RR_list }}  -->
             
             <div id="container" style="min-width: 200px; height: 400px; margin: 0 auto"></div>
 
@@ -104,25 +98,45 @@ $(function () {
                 type: 'column'
             },
             title: {
-                text: 'Column chart with negative values'
+                text: '{{ trait_name }}'
             },
             xAxis: {
-                categories: {{ snps_list }}
+                categories: [{% for snp in snps_list %}'rs{{ snp }}',{% endfor %}],
+                labels: {
+                    rotation: -45,
+                    align: 'right',
+                }
             },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: 'Relative genetic risk'
+                }
+            },
+
             tooltip: {
                 formatter: function() {
-                    return ''+
-                        this.series.name +': '+ this.y +'';
+                    return '<b>'+ this.x +'</b><br/>'+
+                        'Risk value: '+ Highcharts.numberFormat(this.y, 1) + ' <br/>';
                 }
             },
             credits: {
                 enabled: false
             },
+            legend: {
+                enabled: false
+            },
             series: [{
                 name: "{{ file_name }}",
-                data: {{ RR_list }}
+                data: [{% for RR_value in RR_list %}
+                         {% if RR_value < 1.0 %}{y: {{ RR_value }}, color: '#2ca6f1'}
+                         {% elif RR_value == 1.0 %}{y: {{ RR_value }},  color: '#8a8a8a'}
+                         {% else %}{y: {{ RR_value }},  color: '#f12ca6'}{% endif %},
+                       {% endfor %}],
             }
             ]
+
+
         });
     });
     
