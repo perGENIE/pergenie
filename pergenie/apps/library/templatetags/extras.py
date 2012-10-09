@@ -47,6 +47,7 @@ def set_var(parser, token):
 #     return unescape(s)
 
 
+
 @register.filter
 @stringfilter
 def space2underbar(s):

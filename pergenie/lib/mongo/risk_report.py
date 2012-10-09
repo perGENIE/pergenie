@@ -143,7 +143,7 @@ def _relative_risk_to_general_population(freq, OR, zygosities):
         return 1.0
 
     try: 
-        return {'RR':risk_hom, 'R.':risk_het, '..':risk_ref, 'NA': 1.0}[zygosities], average_population_risk
+        return round({'RR':risk_hom, 'R.':risk_het, '..':risk_ref, 'NA': 1.0}[zygosities], 1), average_population_risk
     except KeyError:
         # print >>sys.stderr, colors.blue('{0} is not hom/het/ref'.format(zygosities))
         return 1.0, average_population_risk

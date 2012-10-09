@@ -48,6 +48,8 @@
               </fieldset>
             </form>
 
+<!--             {{ tmp_risk_store }} -->
+
 <!--             value:{{ tmp_risk_value }} -->
 <!--             snps_list: {{ snps_list }} -->
 <!--             RR_list: {{ RR_list }}  -->
@@ -57,18 +59,35 @@
             <table cellpadding="0" cellspacing="0" border="0" class="display datatable" id="risk_reports_table">
               <thead>
               <tr>
-                <th>snps</th>
-                <th>RR</th>
+                <th>Risk relative to average population</th>
+                <th>SNPs</th>
+                <th>Genotype</th>
+                <th>Risk allele</th>
+                <th>Risk allele frequency</th>
+                <th>OR</th>
               </tr>
               </thead>
 
               <tbody>
                 {% if tmp_risk_store %}
-                {% for trait_name,store in tmp_risk_store.items %}
-
+                {% for snp, store in tmp_risk_store.items %}
                 <tr>
-                  <td class="center"><a href="{% url apps.riskreport.views.trait trait=trait_name file_name=tmp_info.name %}">{{ trait_name }}</a></td>
-                  <td class="center">{{ store }}</td>
+                  <td class="center">{{ store.RR }}</td>
+                  <td class="center">rs{{ snp }}</td>
+                  <td class="center">{% if store.variant_map.0 in store.catalog_map.risk_allele %}
+                                        <span>{{ store.variant_map.0 }}</span>
+                                     {% else %}
+                                        <span style="color : #c5c5c5">{{ store.variant_map.0 }}</span>
+                                     {% endif %}
+                                     {% if store.variant_map.1 in store.catalog_map.risk_allele %}
+                                        <span>{{ store.variant_map.1 }}</span>
+                                     {% else %}
+                                        <span style="color : #c5c5c5">{{ store.variant_map.1 }}</span>
+                                     {% endif %}
+                  </td>
+                  <td class="center">{{ store.catalog_map.risk_allele }}</td>
+                  <td class="center">{{ store.catalog_map.risk_allele_frequency }}</td>
+                  <td class="center">{{ store.catalog_map.OR }}</td>
 		        </tr>
 		        {% endfor %}
 		        {% endif %}
@@ -110,7 +129,7 @@ $(function () {
             yAxis: {
                 min: 0,
                 title: {
-                    text: 'Relative genetic risk'
+                    text: 'Risk relative to average population'
                 }
             },
 

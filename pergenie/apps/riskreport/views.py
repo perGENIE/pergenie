@@ -157,7 +157,7 @@ def trait(request, trait, file_name):
 
             # list for chart
             snps_list = [k for k,v in sorted(tmp_risk_store.items(), key=lambda x:x[1]['RR'])]
-            RR_list = [round(v['RR'], 1) for k,v in sorted(tmp_risk_store.items(), key=lambda x:x[1]['RR'])]
+            RR_list = [v['RR'] for k,v in sorted(tmp_risk_store.items(), key=lambda x:x[1]['RR'])]
 
             break
 
