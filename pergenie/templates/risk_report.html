@@ -108,10 +108,7 @@ $(function () {
                 type: 'bar'
             },
             title: {
-                text: 'Relative genetic risk'
-            },
-            subtitle: {
-                text: ''
+                text: 'log(Risk relative to average population)'
             },
             xAxis: {
                 categories: [{% for trait in risk_traits %}"{% autoescape off %}{{ trait }}{% endautoescape %}",{% endfor %}],
@@ -120,8 +117,8 @@ $(function () {
                 }
             },
             yAxis: {
-                max: 100,
-                min: 0,
+                max: 2,
+                min: -2,
                 title: {
                     text: '[]',
                     align: 'high'
@@ -136,7 +133,7 @@ $(function () {
             plotOptions: {
                 bar: {
                     dataLabels: {
-                        enabled: true
+                        enabled: false
                     }
                 }
             },
@@ -160,27 +157,35 @@ $(function () {
             series: [
                 {
                 name: '{{ tmp_info.name }}',
-                data: {{ risk_values }},
-                dataLabels: {
-                    enabled: true,
-                    rotation: 0,
-                    color: '#FFFFFF',
-                    align: 'right',
-                    x: 0,
-                    y: 0,
-                    formatter: function() {
-                        return this.y;
-                    },
-                    style: {
-                        fontSize: '10px',
-                        fontFamily: 'Verdana, sans-serif'
-                    }
-                }
+
+
+                data: [{% for risk_value in risk_values %}
+                         {% if risk_value < 0 %}{y: {{ risk_value }}, color: '#2ca6f1'}
+                         {% elif risk_value == 0 %}{y: {{ risk_value }},  color: '#8a8a8a'}
+                         {% else %}{y: {{ risk_value }},  color: '#f12ca6'}{% endif %},
+                       {% endfor %}],
+
+
             }]
         });
     });
 });
 </script>
+<!--                 dataLabels: { -->
+<!--                     enabled: true, -->
+<!--                     rotation: 0, -->
+<!--                     color: '#FFFFFF', -->
+<!--                     align: 'right', -->
+<!--                     x: 0, -->
+<!--                     y: 0, -->
+<!--                     formatter: function() { -->
+<!--                         return this.y; -->
+<!--                     }, -->
+<!--                     style: { -->
+<!--                         fontSize: '10px', -->
+<!--                         fontFamily: 'Verdana, sans-serif' -->
+<!--                     } -->
+<!--                 } -->
 
 
 <script type="text/javascript" src="{% static 'js/highcharts/highcharts.js' %}"></script>

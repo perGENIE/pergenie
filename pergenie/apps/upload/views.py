@@ -56,7 +56,7 @@ def index(request):
 
 
                 if not os.path.exists(os.path.join(UPLOAD_DIR, user_id)):
-                    os.mkdir(os.path.join(UPLOAD_DIR, user_id))
+                    os.makedirs(os.path.join(UPLOAD_DIR, user_id))
 
                 with open(os.path.join(UPLOAD_DIR, user_id, call_file.name), 'wb') as fout:
                     for chunk in call_file.chunks():

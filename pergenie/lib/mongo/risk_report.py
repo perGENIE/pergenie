@@ -228,21 +228,34 @@ def risk_calculation(catalog_map, variants_map, population_code, sex, is_LD_bloc
                 risk_report[trait] *= risk_store[trait][rs]['RR']
 
 
+
+    
+
     # FOR DEBUG ONLY
     debug_risk_report = {}
     for trait,value in risk_report.items():
-        if value < 100:
+        if trait in 'Eye color':  # not disease
+            pass
+        else:
+#             if value < 50:
             debug_risk_report[trait] = value
+
 
     risk_report = debug_risk_report
 
 
-#     # convert risk value to log
-#     log_risk_report = {}
-#     for trait,value in risk_report.items():
-#         log_risk_report[trait] = math.log(value)
+    # convert risk value to log
+    log_risk_report = {}
+    for trait,value in risk_report.items():
+        try:
+            log_value = math.log10(value)
+            if -2 < log_value < 2:
+                log_risk_report[trait] = math.log10(value)
 
-#     risk_report = log_risk_report
+        except ValueError:
+            print 'ValueError', trait, value
+
+    risk_report = log_risk_report
 
 
     return risk_store, risk_report
