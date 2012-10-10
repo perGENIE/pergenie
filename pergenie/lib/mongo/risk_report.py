@@ -317,7 +317,8 @@ def _main():
     print args.population, population_code_map[args.population]
 
     risk_store, risk_report = risk_calculation(catalog_map, variants_map, population_code_map[args.population], args.sex,
-                                               args.user_id, args.file_name, args.LD_block_clustering, os.path.join(UPLOAD_DIR, '{}_{}.p'.format(args.user_id, args.file_name)))
+                                               args.user_id, args.file_name, args.LD_block_clustering,
+                                               os.path.join(UPLOAD_DIR, user_id, '{}_{}.p'.format(args.user_id, args.file_name)))
 
 
 

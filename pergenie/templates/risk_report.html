@@ -17,10 +17,14 @@
     </div><!--/span-->
   </div>
 
+
+
+
   <!-- Content start -->
   <!-- Draggable Widgets start -->
 
   {% if risk_reports %}
+
 
   <div class="row-fluid">
     <div class="span12">
@@ -34,16 +38,31 @@
             <form action="{% url apps.riskreport.views.index %}" method="post" enctype="multipart/form-data">
               {% csrf_token %}
 		      <fieldset>
-                
+
                     <select name="file_name" onchange="submit(this.form)">
-                      {% for info in infos%}
-                        {% if info == tmp_info %}
+                      {% for info in infos %}
+                        {% if info == tmp_infos.0 %}
                         <option value="{{ info.name }}" selected>{{ info.name }}</option>
                         {% else%}
                         <option value="{{ info.name }}">{{ info.name }}</option>
                         {% endif %}
                       {% endfor%}
                     </select>
+
+                    <span style="color : #3c3c3c"> with </span>
+
+                    <select name="file_name2" onchange="submit(this.form)">
+                      <option value="-" selected>-</option>
+                      {% for info in infos %}
+                        {% if info == tmp_infos.1 %}
+                        <option value="{{ info.name }}" selected>{{ info.name }}</option>
+                        {% else%}
+                        <option value="{{ info.name }}">{{ info.name }}</option>
+                        {% endif %}
+                      {% endfor%}
+                    </select>
+
+
               </fieldset>
             </form>
 
@@ -154,18 +173,26 @@ $(function () {
             },
 
             series: [
-                {
-                name: '{{ tmp_info.name }}',
+                    {% if tmp_infos|length > 1 %}
+                    {
+                    name: '{{ tmp_infos.1.name }}',
+                    data: [{% for risk_value in risk_values.1 %}
+                             {% if risk_value < 0 %}{y: {{ risk_value }}, color: '#2cf177'}
+                             {% elif risk_value == 0 %}{y: {{ risk_value }},  color: '#8a8a8a'}
+                             {% else %}{y: {{ risk_value }},  color: '#f1772c'}{% endif %},
+                           {% endfor %}],
+                    },
+                    {% endif %}
+                    {
+                    name: '{{ tmp_infos.0.name }}',
+                    data: [{% for risk_value in risk_values.0 %}
+                             {% if risk_value < 0 %}{y: {{ risk_value }}, color: '#2ca6f1'}
+                             {% elif risk_value == 0 %}{y: {{ risk_value }},  color: '#8a8a8a'}
+                             {% else %}{y: {{ risk_value }},  color: '#f12ca6'}{% endif %},
+                           {% endfor %}],
+                    },
 
-
-                data: [{% for risk_value in risk_values %}
-                         {% if risk_value < 0 %}{y: {{ risk_value }}, color: '#2ca6f1'}
-                         {% elif risk_value == 0 %}{y: {{ risk_value }},  color: '#8a8a8a'}
-                         {% else %}{y: {{ risk_value }},  color: '#f12ca6'}{% endif %},
-                       {% endfor %}],
-
-
-            }]
+            ]
         });
     });
 });

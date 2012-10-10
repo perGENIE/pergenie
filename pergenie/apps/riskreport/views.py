@@ -12,6 +12,8 @@ import mongo.risk_report as risk_report
 
 from apps.riskreport.forms import RiskReportForm
 
+UPLOAD_DIR = '/tmp/pergenie'
+
 @require_http_methods(['GET', 'POST'])
 @login_required
 def index(request):
@@ -29,58 +31,75 @@ def index(request):
             # determine file
             infos = list(data_info.find( {'user_id': user_id} ))
             tmp_info = None
+            tmp_infos = []
 
             if not infos:
                 err = 'no data uploaded'
                 break
+            print infos
 
             if request.method == 'POST':
                 form = RiskReportForm(request.POST)
                 if not form.is_valid():
                     err = 'Invalid request'
                     break
-                file_name = request.POST['file_name']
-                print 'file_name from form:', file_name
 
-                print infos
-                for info in infos:
-                    print info['name'], bool(info['name'] == file_name)
-                    if info['name'] == file_name:
-                        tmp_info = info
+                file_names = []
+                file_names.append(request.POST['file_name'])
+                file_names.append(request.POST['file_name2'])
+                for i, file_name in enumerate(file_names):
+                    print 'file_name{0} from form: {1}'.format(i+1, file_name)
+
+                    for info in infos:
+                        print info['name'], bool(info['name'] == file_name)
+                        if info['name'] == file_name:
+                            tmp_info = info
+                            tmp_infos.append(tmp_info)
+                            break
+
+                    if not tmp_info:
+                        err = '{} does not exist'.format(file_name)
                         break
 
-                if not tmp_info:
-                    err = '{} does not exist'.format(file_name)
-                    break
-
             else:
-                tmp_info = infos[0]
-            print 'tmp_info', tmp_info
-
-            # TODO: population mapping
-            # ------------------------
-            population_map = {'Asian': ['African'],
-                              'Europian': ['European', 'Caucasian'],
-                              'African': ['Chinese', 'Japanese', 'Asian'],
-                              'Japanese': ['Japanese', 'Asian'],
-                              'unkown': ['']}
-            population = 'population:{}'.format('+'.join(population_map[tmp_info['population']]))
-
-            catalog_map, variants_map = search_variants.search_variants(tmp_info['user_id'], tmp_info['name'], population)
-
-            population_code_map = {'Asian': 'JPT',
-                                   'Europian': 'CEU',
-                                   'Japanese': 'JPT',
-                                   'unkown': 'unkown'}
-            print tmp_info['population'], population_code_map[tmp_info['population']]
+                tmp_infos.append(infos[0])
+            print '[INFO] tmp_infos', tmp_infos
 
 
-            risk_store, risk_reports = risk_report.risk_calculation(catalog_map, variants_map, population_code_map[tmp_info['population']],
-                                                                    tmp_info['sex'], tmp_info['user_id'], tmp_info['name'], is_LD_block_clustered=False)
+            # TODO: couple veiw (show two genomes at once)
+            risk_values = []
+            for i, tmp_info in enumerate(tmp_infos):
+                # TODO: population mapping
+                # ------------------------
+                population_map = {'Asian': ['African'],
+                                  'Europian': ['European', 'Caucasian'],
+                                  'African': ['Chinese', 'Japanese', 'Asian'],
+                                  'Japanese': ['Japanese', 'Asian'],
+                                  'unkown': ['']}
+                population = 'population:{}'.format('+'.join(population_map[tmp_info['population']]))
 
-            # list for chart
-            risk_traits = [k for k,v in sorted(risk_reports.items(), key=lambda(k,v):(v,k), reverse=True)]
-            risk_values = [round(v, 3) for k,v in sorted(risk_reports.items(), key=lambda(k,v):(v,k), reverse=True)]
+                catalog_map, variants_map = search_variants.search_variants(tmp_info['user_id'], tmp_info['name'], population)
+
+                population_code_map = {'Asian': 'JPT',
+                                       'Europian': 'CEU',
+                                       'Japanese': 'JPT',
+                                       'unkown': 'unkown'}
+                print tmp_info['population'], population_code_map[tmp_info['population']]
+
+
+                risk_store, risk_reports = risk_report.risk_calculation(catalog_map, variants_map, population_code_map[tmp_info['population']],
+                                                                        tmp_info['sex'], tmp_info['user_id'], tmp_info['name'], 
+                                                                        False,
+                                                                        os.path.join(UPLOAD_DIR, user_id, '{}_{}.p'.format(tmp_info['user_id'], tmp_info['name'])))
+
+                # list for chart
+                if i == 0:
+                    risk_traits = [k for k,v in sorted(risk_reports.items(), key=lambda(k,v):(v,k), reverse=True)]
+
+                if i == 0:
+                    risk_values.append([v for k,v in sorted(risk_reports.items(), key=lambda(k,v):(v,k), reverse=True)])
+                elif i == 1:
+                    risk_values.append([risk_reports.get(risk_trait, 0) for risk_trait in risk_traits])
 
             break
 
@@ -89,7 +108,7 @@ def index(request):
                                   {'msg': msg,
                                    'err': err,
                                    'infos': infos,
-                                   'tmp_info': tmp_info,
+                                   'tmp_infos': tmp_infos,
                                    'risk_reports': risk_reports,
                                    'risk_traits': risk_traits,
                                    'risk_values': risk_values})
@@ -149,8 +168,9 @@ def trait(request, trait, file_name):
 
 
             risk_store, risk_reports = risk_report.risk_calculation(catalog_map, variants_map, population_code_map[tmp_info['population']],
-                                                                    tmp_info['sex'], tmp_info['user_id'], tmp_info['name'], is_LD_block_clustered=False)
-
+                                                                    tmp_info['sex'], tmp_info['user_id'], tmp_info['name'],
+                                                                    False,
+                                                                    os.path.join(UPLOAD_DIR, user_id, '{}_{}.p'.format(tmp_info['user_id'], tmp_info['name'])))
 
             tmp_risk_value = risk_reports.get(trait)
             tmp_risk_store = risk_store.get(trait)
