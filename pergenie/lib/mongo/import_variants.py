@@ -50,7 +50,7 @@ def import_variants(file_name, population, file_format, user_id):
                         users_variants.insert(data)
 
                     if i>0 and i%10000 == 0:
-                        upload_status = int( 100 * ( i*0.9 / file_lines ) )
+                        upload_status = int( 100 * ( i*0.9 / file_lines ) + 1 )
                         data_info.update({'user_id': user_id, 'name': file_name}, {"$set": {'status': upload_status}})
                         print '[INFO] status: {}'.format(data_info.find({'user_id': user_id, 'name': file_name})[0]['status'])  #
 

@@ -68,7 +68,7 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_pickled_catalo
 
         # can load from pickled catalog
         if path_to_pickled_catalog:
-           print '[WARNING] try to load catalog from {}...'.format(path_to_pickled_catalog)
+           print '[INFO] try to load catalog from {}...'.format(path_to_pickled_catalog)
            if os.path.exists(path_to_pickled_catalog):
               pickled_catalog = pickle_load_obj(path_to_pickled_catalog)
               for record in pickled_catalog:

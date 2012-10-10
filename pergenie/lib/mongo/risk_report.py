@@ -7,6 +7,10 @@ import os
 import math
 
 import pymongo
+try:
+   import cPickle as pickle
+except ImportError:
+   import pickle
 
 import colors
 import weblio_eng2ja
@@ -16,6 +20,17 @@ from pprint import pprint
 
 HAPMAP_PORT = 10002
 POPULATION_CODE = ['ASW', 'CEU', 'CHB', 'CHD', 'GIH', 'JPT', 'LWK', 'MEX', 'MKK', 'TSI', 'YRI']
+UPLOAD_DIR = '/tmp/pergenie'
+
+def pickle_dump_obj(obj, fout_name):
+    with open(fout_name, 'wb') as fout:
+        pickle.dump(obj, fout, protocol=2)
+
+def pickle_load_obj(fin_name):
+    with open(fin_name, 'rb') as fin:
+        obj = pickle.load(fin)
+    return obj
+
 
 def LD_block_clustering(risk_store, population_code):
     """
@@ -148,7 +163,7 @@ def _relative_risk_to_general_population(freq, OR, zygosities):
         # print >>sys.stderr, colors.blue('{0} is not hom/het/ref'.format(zygosities))
         return 1.0, average_population_risk
 
-def risk_calculation(catalog_map, variants_map, population_code, sex, is_LD_block_clustered):
+def risk_calculation(catalog_map, variants_map, population_code, sex, user_id, file_name, is_LD_block_clustered, path_to_pickled_risk_report=None):
     risk_store = {}
     risk_report = {}
 
@@ -159,6 +174,17 @@ def risk_calculation(catalog_map, variants_map, population_code, sex, is_LD_bloc
      * there are 1 or more ORs for 1 rs. so we need to choice one of them (prioritization)
 
     """
+
+    if path_to_pickled_risk_report:
+        print '[INFO] try to load risk report from {}...'.format(path_to_pickled_risk_report)
+        if os.path.exists(path_to_pickled_risk_report):
+            risk_store, risk_report = pickle_load_obj(path_to_pickled_risk_report)
+            return risk_store, risk_report
+            
+        else:
+            print '[WARNING] but does not exist'
+
+
     for found_id in catalog_map:
         record = catalog_map[found_id]
         rs = record['rs']
@@ -258,6 +284,9 @@ def risk_calculation(catalog_map, variants_map, population_code, sex, is_LD_bloc
     risk_report = log_risk_report
 
 
+    #
+    pickle_dump_obj([risk_store, risk_report], os.path.join(UPLOAD_DIR, user_id, '{}_{}.p'.format(user_id, file_name)))
+
     return risk_store, risk_report
 
 
@@ -288,8 +317,7 @@ def _main():
     print args.population, population_code_map[args.population]
 
     risk_store, risk_report = risk_calculation(catalog_map, variants_map, population_code_map[args.population], args.sex,
-                                               args.LD_block_clustering)
-
+                                               args.user_id, args.file_name, args.LD_block_clustering, os.path.join(UPLOAD_DIR, '{}_{}.p'.format(args.user_id, args.file_name)))
 
 
 

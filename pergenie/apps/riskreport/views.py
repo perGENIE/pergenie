@@ -76,7 +76,7 @@ def index(request):
 
 
             risk_store, risk_reports = risk_report.risk_calculation(catalog_map, variants_map, population_code_map[tmp_info['population']],
-                                                                    tmp_info['sex'], is_LD_block_clustered=False)
+                                                                    tmp_info['sex'], tmp_info['user_id'], tmp_info['name'], is_LD_block_clustered=False)
 
             # list for chart
             risk_traits = [k for k,v in sorted(risk_reports.items(), key=lambda(k,v):(v,k), reverse=True)]
@@ -149,7 +149,7 @@ def trait(request, trait, file_name):
 
 
             risk_store, risk_reports = risk_report.risk_calculation(catalog_map, variants_map, population_code_map[tmp_info['population']],
-                                                                    tmp_info['sex'], is_LD_block_clustered=False)
+                                                                    tmp_info['sex'], tmp_info['user_id'], tmp_info['name'], is_LD_block_clustered=False)
 
 
             tmp_risk_value = risk_reports.get(trait)
