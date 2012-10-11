@@ -163,6 +163,7 @@ def _relative_risk_to_general_population(freq, OR, zygosities):
         # print >>sys.stderr, colors.blue('{0} is not hom/het/ref'.format(zygosities))
         return 1.0, average_population_risk
 
+
 def risk_calculation(catalog_map, variants_map, population_code, sex, user_id, file_name, is_LD_block_clustered, path_to_pickled_risk_report=None):
     risk_store = {}
     risk_report = {}
@@ -175,14 +176,14 @@ def risk_calculation(catalog_map, variants_map, population_code, sex, user_id, f
 
     """
 
-    if path_to_pickled_risk_report:
-        print '[INFO] try to load risk report from {}...'.format(path_to_pickled_risk_report)
-        if os.path.exists(path_to_pickled_risk_report):
-            risk_store, risk_report = pickle_load_obj(path_to_pickled_risk_report)
-            return risk_store, risk_report
+#     if path_to_pickled_risk_report:
+#         print '[INFO] try to load risk report from {}...'.format(path_to_pickled_risk_report)
+#         if os.path.exists(path_to_pickled_risk_report):
+#             risk_store, risk_report = pickle_load_obj(path_to_pickled_risk_report)
+#             return risk_store, risk_report
             
-        else:
-            print '[WARNING] but does not exist'
+#         else:
+#             print '[WARNING] but does not exist'
 
 
     for found_id in catalog_map:
@@ -210,23 +211,36 @@ def risk_calculation(catalog_map, variants_map, population_code, sex, user_id, f
 #                 print colors.yellow("Error with float()"), record['OR_or_beta'], record['trait']
                 break            
 
-            # store records
+
+            # --- previous ---
+#             # store records by trait
+#             if not record['trait'] in risk_store:
+#                 risk_store[record['trait']] = {rs: tmp_risk_data} # initial record
+
+#             else:
+#                 if not rs in risk_store[record['trait']]:
+#                     risk_store[record['trait']][rs] = tmp_risk_data # initial rs
+
+#                 else:
+#                     pass
+# #                     print >>sys.stderr, colors.green('same rs record for same trait. {0} {1}'.format(record['trait'], rs))
+
+            # --- current ---
+            # TODO: store records by trait by study
+            print record['trait'], record['study'], rs
+     
             if not record['trait'] in risk_store:
-                risk_store[record['trait']] = {rs: tmp_risk_data} # initial record
+                risk_store[record['trait']] = {record['study']: {rs: tmp_risk_data}} # initial record
 
             else:
-                if not rs in risk_store[record['trait']]:
-                    risk_store[record['trait']][rs] = tmp_risk_data # initial rs
+                if not record['study'] in risk_store[record['trait']]:
+                    risk_store[record['trait']][record['study']] = {rs: tmp_risk_data} # after initial record
 
                 else:
-                    pass
-#                     print >>sys.stderr, colors.green('same rs record for same trait. {0} {1}'.format(record['trait'], rs))
+                    risk_store[record['trait']][record['study']][rs] = tmp_risk_data
+
             break
 
-
-    # TODO: filtering by sex
-    # if sex:
-    #     pass
 
     if is_LD_block_clustered and not population_code == 'unkown':
         risk_store  = LD_block_clustering(risk_store, population_code)
@@ -240,55 +254,41 @@ def risk_calculation(catalog_map, variants_map, population_code, sex, user_id, f
     * zygosities are determied by # of risk alleles
 
     """
+
+    # TODO : log
     for trait in risk_store:
-        for rs in risk_store[trait]:
-            risk_store[trait][rs]['zyg'] = _zyg(risk_store[trait][rs]['variant_map'],
-                                                             risk_store[trait][rs]['catalog_map']['risk_allele'])
-            risk_store[trait][rs]['RR'], risk_store[trait][rs]['R'] = _relative_risk_to_general_population(risk_store[trait][rs]['catalog_map']['freq'],
-                                                                                                                                     risk_store[trait][rs]['catalog_map']['OR_or_beta'],
-                                                                                                                                     risk_store[trait][rs]['zyg'])
+        for study in risk_store[trait]:
+            for rs in risk_store[trait][study]:
+                risk_store[trait][study][rs]['zyg'] = _zyg(risk_store[trait][study][rs]['variant_map'],
+                                                           risk_store[trait][study][rs]['catalog_map']['risk_allele'])
 
-            if not trait in risk_report:
-                risk_report[trait] = risk_store[trait][rs]['RR']
-            else:
-                risk_report[trait] *= risk_store[trait][rs]['RR']
+                risk_store[trait][study][rs]['RR'], risk_store[trait][study][rs]['R'] = _relative_risk_to_general_population(risk_store[trait][study][rs]['catalog_map']['freq'],
+                                                                                                                             risk_store[trait][study][rs]['catalog_map']['OR_or_beta'],
+                                                                                                                             risk_store[trait][study][rs]['zyg'])
 
-
-
-    
-
-    # FOR DEBUG ONLY
-    debug_risk_report = {}
-    for trait,value in risk_report.items():
-        if trait in 'Eye color':  # not disease
-            pass
-        else:
-#             if value < 50:
-            debug_risk_report[trait] = value
+                if not trait in risk_report:
+                    risk_report[trait] = {study: risk_store[trait][study][rs]['RR']}  # initial
+                else:
+                    if not study in risk_report[trait]:
+                        risk_report[trait][study] = risk_store[trait][study][rs]['RR']  # after initial
+                    else:
+                        risk_report[trait][study] *= risk_store[trait][study][rs]['RR']  # 
 
 
-    risk_report = debug_risk_report
+#     # FOR DEBUG ONLY
+#     debug_risk_report = {}
+#     for trait,value in risk_report.items():
+#         if trait in 'Eye color':  # not disease
+#             pass
+#         else:
+# #             if value < 50:
+#             debug_risk_report[trait] = value
 
 
-    # convert risk value to log
-    log_risk_report = {}
-    for trait,value in risk_report.items():
-        try:
-            log_value = math.log10(value)
-            if -2 < log_value < 2:
-                log_risk_report[trait] = round(math.log10(value),2)
-
-        except ValueError:
-            print 'ValueError', trait, value
+#     risk_report = debug_risk_report
 
 
-
-
-    risk_report = log_risk_report
-
-
-    #
-    pickle_dump_obj([risk_store, risk_report], os.path.join(UPLOAD_DIR, user_id, '{}_{}.p'.format(user_id, file_name)))
+#     pickle_dump_obj([risk_store, risk_report], os.path.join(UPLOAD_DIR, user_id, '{}_{}.p'.format(user_id, file_name)))
 
     return risk_store, risk_report
 
@@ -321,64 +321,89 @@ def _main():
 
     risk_store, risk_report = risk_calculation(catalog_map, variants_map, population_code_map[args.population], args.sex,
                                                args.user_id, args.file_name, args.LD_block_clustering,
-                                               os.path.join(UPLOAD_DIR, user_id, '{}_{}.p'.format(args.user_id, args.file_name)))
+                                               os.path.join(UPLOAD_DIR, args.user_id, '{}_{}.p'.format(args.user_id, args.file_name)))
 
 
+#     pprint(risk_store)
+#     pprint(risk_report
 
-    # Show risk report
+    # Show risk report (value by study)
     # ----------------
     print
     print 'Risk report:'
 
     eng2ja = weblio_eng2ja.WeblioEng2Ja('data/eng2ja.txt', 'data/eng2ja_plus.txt')
 
-    for (k,v) in sorted(risk_report.items(), key=lambda(k,v):(v,k), reverse=True): # sorted by values
+    for (k,v) in risk_report.items(): # sorted by values
         k_ja = eng2ja.try_get(k)
-        v = round(v, 3)
-        if v < 1:
-            print colors.blue('{0} {1} {2}'.format(k, k_ja, v))
-        elif v == 1:
-            print colors.black('{0} {1} {2}'.format(k, k_ja, v))
-        elif 1 <= v <= 2:
-            print colors.yellow('{0} {1} {2}'.format(k, k_ja, v))
-        elif 2 < v:
-            print colors.red('{0} {1} {2}'.format(k, k_ja, v))
+
+        for study, value in sorted(v.items(), key=lambda(study,value):(value,study), reverse=True):
+            value = round(value, 3)
+            if value < 1:
+                print colors.blue('{0} {1} {2}'.format(k, k_ja, value))
+            elif value == 1:
+                print colors.black('{0} {1} {2}'.format(k, k_ja, value))
+            elif 1 <= value <= 2:
+                print colors.yellow('{0} {1} {2}'.format(k, k_ja, value))
+            elif 2 < value:
+                print colors.red('{0} {1} {2}'.format(k, k_ja, value))
 
 
-    # Show more detail
-    # ----------------
-    while True:
-        try:
-            raw_query = raw_input('Trait> ')
-        except EOFError:
-            break
 
-        found_record = risk_store.get(raw_query)
-        if found_record:
-            for (k,v) in sorted(found_record.items(), key=lambda(k,v):(v['catalog_map']['OR_or_beta'],k), reverse=True): # sorted by OR
-                data = (k,
-                        v['catalog_map']['OR_or_beta'],
-                        v['catalog_map']['freq'],
-                        v['catalog_map']['risk_allele'],
-                        v['variant_map'],
-                        v['zyg'],
-                        v['RR'],
-                        v['R'],
-                        v['catalog_map']['initial_sample_size'],
-                        v['catalog_map']['platform'])
+#     # Show risk report
+#     # ----------------
+#     print
+#     print 'Risk report:'
 
-                msg = 'rs:{0} OR:{1} freq:{2} risk-allele:{3} genotype:{4} zyg:{5} RR:{6} R:{7} sample:{8} platform:{9}'.format(*data)
+#     eng2ja = weblio_eng2ja.WeblioEng2Ja('data/eng2ja.txt', 'data/eng2ja_plus.txt')
 
-                if v['variant_map'] == 'na':
-                    print colors.black(msg)
-                elif v['zyg'] == 'RR':
-                    print colors.red(msg)
-                elif v['zyg'] == 'R.':
-                    print colors.yellow(msg)
-                elif v['zyg'] == '..':
-                    print colors.blue(msg)
-                else:
-                    print 'something err...'
+#     for (k,v) in sorted(risk_report.items(), key=lambda(k,v):(v,k), reverse=True): # sorted by values
+#         k_ja = eng2ja.try_get(k)
+#         v = round(v, 3)
+#         if v < 1:
+#             print colors.blue('{0} {1} {2}'.format(k, k_ja, v))
+#         elif v == 1:
+#             print colors.black('{0} {1} {2}'.format(k, k_ja, v))
+#         elif 1 <= v <= 2:
+#             print colors.yellow('{0} {1} {2}'.format(k, k_ja, v))
+#         elif 2 < v:
+#             print colors.red('{0} {1} {2}'.format(k, k_ja, v))
+
+
+#     # Show more detail
+#     # ----------------
+#     while True:
+#         try:
+#             raw_query = raw_input('Trait> ')
+#         except EOFError:
+#             break
+
+#         found_record = risk_store.get(raw_query)
+#         if found_record:
+#             for (k,v) in sorted(found_record.items(), key=lambda(k,v):(v['catalog_map']['OR_or_beta'],k), reverse=True): # sorted by OR
+#                 data = (k,
+#                         v['catalog_map']['OR_or_beta'],
+#                         v['catalog_map']['freq'],
+#                         v['catalog_map']['risk_allele'],
+#                         v['variant_map'],
+#                         v['zyg'],
+#                         v['RR'],
+#                         v['R'],
+#                         v['catalog_map']['initial_sample_size'],
+#                         v['catalog_map']['platform'])
+
+#                 msg = 'rs:{0} OR:{1} freq:{2} risk-allele:{3} genotype:{4} zyg:{5} RR:{6} R:{7} sample:{8} platform:{9}'.format(*data)
+
+#                 if v['variant_map'] == 'na':
+#                     print colors.black(msg)
+#                 elif v['zyg'] == 'RR':
+#                     print colors.red(msg)
+#                 elif v['zyg'] == 'R.':
+#                     print colors.yellow(msg)
+#                 elif v['zyg'] == '..':
+#                     print colors.blue(msg)
+#                 else:
+#                     print 'something err...'
 
 if __name__ == '__main__':
     _main()
