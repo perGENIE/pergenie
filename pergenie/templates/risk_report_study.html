@@ -14,7 +14,8 @@
       <ul class="breadcrumb">
         <li><a href="{% url apps.riskreport.views.index %}">Risk report</a><span class="divider">/</span></li>
         <li class="active">{{ file_name }}<span class="divider">/</span></li>
-        <li class="active">{{ trait_name }}</li>
+        <li class="active">{{ trait_name }}<span class="divider">/</span></li>
+        <li class="active">{{ study }}</li>
       </ul>
     </div><!--/span-->
   </div>
@@ -48,23 +49,40 @@
 <!--               </fieldset> -->
 <!--             </form> -->
 
-             
+            
             <div id="container" style="min-width: 200px; height: 400px; margin: 0 auto"></div>
 
             <table cellpadding="0" cellspacing="0" border="0" class="display datatable" id="risk_reports_table">
               <thead>
               <tr>
                 <th>Risk relative to average population</th>
-                <th>Study</th>
+                <th>SNPs</th>
+                <th>Genotype</th>
+                <th>Risk allele</th>
+                <th>Risk allele frequency</th>
+                <th>OR</th>
               </tr>
               </thead>
 
               <tbody>
-                {% for study in study_list %}
+                {% for snp, store in tmp_risk_store.items %}
                 <tr>
-                  <td class="center">{{ RR_list|listvalue:forloop.counter0 }}</td>
-                  <td></td>
-
+                  <td class="center">{{ store.RR }}</td>
+                  <td class="center">rs{{ snp }}</td>
+                  <td class="center">{% if store.variant_map.0 in store.catalog_map.risk_allele %}
+                                        <span>{{ store.variant_map.0 }}</span>
+                                     {% else %}
+                                        <span style="color : #c5c5c5">{{ store.variant_map.0 }}</span>
+                                     {% endif %}
+                                     {% if store.variant_map.1 in store.catalog_map.risk_allele %}
+                                        <span>{{ store.variant_map.1 }}</span>
+                                     {% else %}
+                                        <span style="color : #c5c5c5">{{ store.variant_map.1 }}</span>
+                                     {% endif %}
+                  </td>
+                  <td class="center">{{ store.catalog_map.risk_allele }}</td>
+                  <td class="center">{{ store.catalog_map.risk_allele_frequency }}</td>
+                  <td class="center">{{ store.catalog_map.OR }}</td>
 		        </tr>
 		        {% endfor %}
               </tbody>
@@ -96,7 +114,7 @@ $(function () {
                 text: '{{ trait_name }}'
             },
             xAxis: {
-                categories: [{% for study in study_list %}"{{ study|slice:":10" }}...",{% endfor %}],
+                categories: [{% for snp in snps_list %}"{{ snp }}",{% endfor %}],
                 labels: {
                     rotation: -45,
                     align: 'right',
@@ -145,7 +163,6 @@ $(function () {
 <script type="text/javascript">
 $(document).ready(function(){
   $('#risk_reports_table').dataTable({
-    "aaSorting": [ [0,'desc'] ],
     "bJQueryUI": true,
     "sPaginationType": "full_numbers",
     "iDisplayLength": 25,

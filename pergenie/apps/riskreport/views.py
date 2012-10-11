@@ -127,6 +127,10 @@ def index(request):
 
 @login_required
 def trait(request, trait, file_name):
+    """
+    view for each trait, show risk value by studies
+    """
+
     user_id = request.user.username
     msg = ''
     err = ''
@@ -190,8 +194,8 @@ def trait(request, trait, file_name):
             study_list = [k for k,v in sorted(tmp_study_value_map.items(), key=lambda(k,v):(v,k), reverse=True)]
             RR_list = [v for k,v in sorted(tmp_study_value_map.items(), key=lambda(k,v):(v,k), reverse=True)]
 
-            print study_list
-            print RR_list
+            print '[DEBUG] study_list', study_list
+            print '[DEBUG] RR_list', RR_list
 
             break
 
@@ -218,7 +222,11 @@ def trait(request, trait, file_name):
 
 
 @login_required
-def study(request, trait, file_name):
+def study(request, trait, file_name, study_name):
+    """
+    view for each study, show RR by rss
+    """
+
     user_id = request.user.username
     msg = ''
     err = ''
@@ -230,6 +238,7 @@ def study(request, trait, file_name):
         data_info = db['data_info']
 
         while True:
+            print '[DEBUG] in view for study'
             # determine file
             infos = list(data_info.find( {'user_id': user_id} ))
             tmp_info = None
@@ -269,14 +278,15 @@ def study(request, trait, file_name):
                                    'unkown': 'unkown'}
             print tmp_info['population'], population_code_map[tmp_info['population']]
 
-
             risk_store, risk_reports = risk_report.risk_calculation(catalog_map, variants_map, population_code_map[tmp_info['population']],
                                                                     tmp_info['sex'], tmp_info['user_id'], tmp_info['name'],
                                                                     False,
                                                                     os.path.join(UPLOAD_DIR, user_id, '{}_{}.p'.format(tmp_info['user_id'], tmp_info['name'])))
 
-            tmp_risk_value = risk_reports.get(trait)
+            print '[DEBUG] in view for study'
+#             tmp_risk_value = risk_reports.get(trait)
             tmp_risk_store = risk_store.get(trait)
+            print tmp_risk_store
 
             # list for chart
             snps_list = [k for k,v in sorted(tmp_risk_store.items(), key=lambda x:x[1]['RR'])]
@@ -291,16 +301,16 @@ def study(request, trait, file_name):
 
 
         return direct_to_template(request,
-                                  'risk_report_trait.html',
+                                  'risk_report_study.html',
                                   {'msg': msg,
                                    'err': err,
                                    'trait_name': trait,
                                    'file_name': file_name,
                                    'infos': infos,
                                    'tmp_info': tmp_info,
-                                   'tmp_risk_value': tmp_risk_value,
                                    'tmp_risk_store': tmp_risk_store,
                                    'snps_list': snps_list,
                                    'RR_list': RR_list,
+                                   'study': study
                                    })
 
