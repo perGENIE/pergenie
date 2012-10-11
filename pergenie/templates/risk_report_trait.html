@@ -22,7 +22,7 @@
   <!-- Content start -->
   <!-- Draggable Widgets start -->
 
-  {% if tmp_risk_value %}
+
   <div class="row-fluid">
     <div class="span12">
       <div class="box grad_colour_dark_blue">
@@ -38,7 +38,7 @@
                 
                     <select name="file_name" onchange="submit(this.form)">
                       {% for info in infos%}
-                        {% if info == tmp_info %}
+                      {% if info == tmp_info %}
                         <option value="{{ info.name }}" selected>{{ info.name }}</option>
                         {% else%}
                         <option value="{{ info.name }}">{{ info.name }}</option>
@@ -48,11 +48,6 @@
               </fieldset>
             </form>
 
-<!--             {{ tmp_risk_store }} -->
-
-<!--             value:{{ tmp_risk_value }} -->
-<!--             snps_list: {{ snps_list }} -->
-<!--             RR_list: {{ RR_list }}  -->
             
             <div id="container" style="min-width: 200px; height: 400px; margin: 0 auto"></div>
 
@@ -99,7 +94,7 @@
       </div>
     </div><!--/span-->
   </div><!--/row-->
-  {% endif %}
+
 
   <!-- Draggable Widgets end -->
   <!-- Content end -->
@@ -120,14 +115,15 @@ $(function () {
                 text: '{{ trait_name }}'
             },
             xAxis: {
-                categories: [{% for snp in snps_list %}'rs{{ snp }}',{% endfor %}],
+                categories: [{% for study in study_list %}"{{ study|slice:":10" }}...",{% endfor %}],
                 labels: {
                     rotation: -45,
                     align: 'right',
                 }
             },
             yAxis: {
-                min: 0,
+                max: 0.5,
+                min: -0.5,
                 title: {
                     text: 'Risk relative to average population'
                 }
@@ -148,8 +144,8 @@ $(function () {
             series: [{
                 name: "{{ file_name }}",
                 data: [{% for RR_value in RR_list %}
-                         {% if RR_value < 1.0 %}{y: {{ RR_value }}, color: '#2ca6f1'}
-                         {% elif RR_value == 1.0 %}{y: {{ RR_value }},  color: '#8a8a8a'}
+                         {% if RR_value < 0 %}{y: {{ RR_value }}, color: '#2ca6f1'}
+                         {% elif RR_value == 0 %}{y: {{ RR_value }},  color: '#8a8a8a'}
                          {% else %}{y: {{ RR_value }},  color: '#f12ca6'}{% endif %},
                        {% endfor %}],
             }

@@ -279,7 +279,7 @@ def risk_calculation(catalog_map, variants_map, population_code, sex, user_id, f
 
                 if tmp_value:
                    # round
-                   tmp_value = round(tmp_value, 2)  #
+                   tmp_value = round(tmp_value, 3)  #
 
                    if not trait in risk_report:
                        risk_report[trait] = {study: tmp_value}  # initial
@@ -288,6 +288,9 @@ def risk_calculation(catalog_map, variants_map, population_code, sex, user_id, f
                            risk_report[trait][study] = tmp_value  # after initial
                        else:
                            risk_report[trait][study] *= tmp_value
+                           risk_report[trait][study] = round(risk_report[trait][study], 2)
+
+
 
 #     # FOR DEBUG ONLY
 #     debug_risk_report = {}

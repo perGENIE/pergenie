@@ -183,6 +183,98 @@ def trait(request, trait, file_name):
                                                                     False,
                                                                     os.path.join(UPLOAD_DIR, user_id, '{}_{}.p'.format(tmp_info['user_id'], tmp_info['name'])))
 
+            tmp_study_value_map = risk_reports.get(trait)
+            tmp_risk_store = risk_store.get(trait)
+
+            # list for chart
+            study_list = [k for k,v in sorted(tmp_study_value_map.items(), key=lambda(k,v):(v,k), reverse=True)]
+            RR_list = [v for k,v in sorted(tmp_study_value_map.items(), key=lambda(k,v):(v,k), reverse=True)]
+
+            print study_list
+            print RR_list
+
+            break
+
+
+#         if not trait.replace('_', ' ') in tmp_risk_store:
+#             err = 'trait not found'
+#             print 'err', err           
+
+
+        return direct_to_template(request,
+                                  'risk_report_trait.html',
+                                  {'msg': msg,
+                                   'err': err,
+                                   'trait_name': trait,
+                                   'file_name': file_name,
+                                   'infos': infos,
+                                   'tmp_info': tmp_info,
+                                   'tmp_risk_value': tmp_risk_value,
+                                   'tmp_risk_store': tmp_risk_store,
+                                   'study_list': study_list,
+                                   'RR_list': RR_list,
+                                   })
+
+
+
+@login_required
+def study(request, trait, file_name):
+    user_id = request.user.username
+    msg = ''
+    err = ''
+    tmp_risk_store = None
+    tmp_risk_value = None
+
+    with pymongo.Connection() as connection:
+        db = connection['pergenie']
+        data_info = db['data_info']
+
+        while True:
+            # determine file
+            infos = list(data_info.find( {'user_id': user_id} ))
+            tmp_info = None
+
+            if not infos:
+                err = 'no data uploaded'
+                break
+
+            print infos
+            print 'file_name', file_name
+            for info in infos:
+                print info['name'], bool(info['name'] == file_name)
+                if info['name'] == file_name:
+                    tmp_info = info
+                    break
+
+            if not tmp_info:
+                err = '{} does not exist'.format(file_name)
+                break
+
+            print 'tmp_info', tmp_info
+
+            # TODO: population mapping
+            # ------------------------
+            population_map = {'Asian': ['African'],
+                              'Europian': ['European', 'Caucasian'],
+                              'African': ['Chinese', 'Japanese', 'Asian'],
+                              'Japanese': ['Japanese', 'Asian'],
+                              'unkown': ['']}
+            population = 'population:{}'.format('+'.join(population_map[tmp_info['population']]))
+
+            catalog_map, variants_map = search_variants.search_variants(tmp_info['user_id'], tmp_info['name'], population)
+
+            population_code_map = {'Asian': 'JPT',
+                                   'Europian': 'CEU',
+                                   'Japanese': 'JPT',
+                                   'unkown': 'unkown'}
+            print tmp_info['population'], population_code_map[tmp_info['population']]
+
+
+            risk_store, risk_reports = risk_report.risk_calculation(catalog_map, variants_map, population_code_map[tmp_info['population']],
+                                                                    tmp_info['sex'], tmp_info['user_id'], tmp_info['name'],
+                                                                    False,
+                                                                    os.path.join(UPLOAD_DIR, user_id, '{}_{}.p'.format(tmp_info['user_id'], tmp_info['name'])))
+
             tmp_risk_value = risk_reports.get(trait)
             tmp_risk_store = risk_store.get(trait)
 
