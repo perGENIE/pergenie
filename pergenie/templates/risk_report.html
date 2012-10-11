@@ -95,7 +95,7 @@
                 {% for trait_name,value in risk_reports.items %}
 
                 <tr>
-                  <td class="center"><a href="{% url apps.riskreport.views.trait trait=trait_name file_name=tmp_info.name%}">{{ trait_name }}</a></td>
+                  <td class="center"><a href="{% url apps.riskreport.views.trait trait=trait_name file_name=tmp_infos.0.name%}">{{ trait_name }}</a></td>
 
                   <td class="center">{{ value }}</td>
 		        </tr>

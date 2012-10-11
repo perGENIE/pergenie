@@ -276,10 +276,13 @@ def risk_calculation(catalog_map, variants_map, population_code, sex, user_id, f
         try:
             log_value = math.log10(value)
             if -2 < log_value < 2:
-                log_risk_report[trait] = math.log10(value)
+                log_risk_report[trait] = round(math.log10(value),2)
 
         except ValueError:
             print 'ValueError', trait, value
+
+
+
 
     risk_report = log_risk_report
 
