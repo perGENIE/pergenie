@@ -89,17 +89,28 @@ def index(request):
 
                 risk_store, risk_reports = risk_report.risk_calculation(catalog_map, variants_map, population_code_map[tmp_info['population']],
                                                                         tmp_info['sex'], tmp_info['user_id'], tmp_info['name'], 
-                                                                        False,
+                                                                        False, True,
                                                                         os.path.join(UPLOAD_DIR, user_id, '{}_{}.p'.format(tmp_info['user_id'], tmp_info['name'])))
 
                 # list for chart
                 if i == 0:
                     risk_traits = [k for k,v in sorted(risk_reports.items(), key=lambda(k,v):(v,k), reverse=True)]
 
+                # TODO: min & max
+                tmp_trait_value_map = {}
+
+                for (trait,studies) in risk_reports.items():
+                    for j, (study, value) in enumerate(sorted(studies.items(), key=lambda(study,value):(value,study), reverse=True)):
+                        if j == 0:
+                            tmp_trait_value_map[trait] = value
+
+                
                 if i == 0:
-                    risk_values.append([v for k,v in sorted(risk_reports.items(), key=lambda(k,v):(v,k), reverse=True)])
+                    values_to_chart = [v for k,v in sorted(tmp_trait_value_map.items(), key=lambda(k,v):(v,k), reverse=True)]
+                    risk_values.append(values_to_chart)
+
                 elif i == 1:
-                    risk_values.append([risk_reports.get(risk_trait, 0) for risk_trait in risk_traits])
+                    risk_values.append([tmp_trait_value_map.get(risk_trait, 1.0) for risk_trait in risk_traits])
 
             break
 
@@ -200,3 +211,4 @@ def trait(request, trait, file_name):
                                    'snps_list': snps_list,
                                    'RR_list': RR_list,
                                    })
+

@@ -164,7 +164,7 @@ def _relative_risk_to_general_population(freq, OR, zygosities):
         return 1.0, average_population_risk
 
 
-def risk_calculation(catalog_map, variants_map, population_code, sex, user_id, file_name, is_LD_block_clustered, path_to_pickled_risk_report=None):
+def risk_calculation(catalog_map, variants_map, population_code, sex, user_id, file_name, is_LD_block_clustered, is_log, path_to_pickled_risk_report=None):
     risk_store = {}
     risk_report = {}
 
@@ -227,7 +227,7 @@ def risk_calculation(catalog_map, variants_map, population_code, sex, user_id, f
 
             # --- current ---
             # TODO: store records by trait by study
-            print record['trait'], record['study'], rs
+#             print record['trait'], record['study'], rs
      
             if not record['trait'] in risk_store:
                 risk_store[record['trait']] = {record['study']: {rs: tmp_risk_data}} # initial record
@@ -255,7 +255,6 @@ def risk_calculation(catalog_map, variants_map, population_code, sex, user_id, f
 
     """
 
-    # TODO : log
     for trait in risk_store:
         for study in risk_store[trait]:
             for rs in risk_store[trait][study]:
@@ -266,14 +265,29 @@ def risk_calculation(catalog_map, variants_map, population_code, sex, user_id, f
                                                                                                                              risk_store[trait][study][rs]['catalog_map']['OR_or_beta'],
                                                                                                                              risk_store[trait][study][rs]['zyg'])
 
-                if not trait in risk_report:
-                    risk_report[trait] = {study: risk_store[trait][study][rs]['RR']}  # initial
-                else:
-                    if not study in risk_report[trait]:
-                        risk_report[trait][study] = risk_store[trait][study][rs]['RR']  # after initial
-                    else:
-                        risk_report[trait][study] *= risk_store[trait][study][rs]['RR']  # 
 
+                tmp_value = risk_store[trait][study][rs]['RR']
+
+                if is_log:
+                   # log
+                   try:
+                      tmp_value = math.log10(risk_store[trait][study][rs]['RR'])
+                   except ValueError:
+                      print 'ValueError', tmp_value
+                      if tmp_value == 0.0:
+                         tmp_value = -2.0
+
+                if tmp_value:
+                   # round
+                   tmp_value = round(tmp_value, 2)  #
+
+                   if not trait in risk_report:
+                       risk_report[trait] = {study: tmp_value}  # initial
+                   else:
+                       if not study in risk_report[trait]:
+                           risk_report[trait][study] = tmp_value  # after initial
+                       else:
+                           risk_report[trait][study] *= tmp_value
 
 #     # FOR DEBUG ONLY
 #     debug_risk_report = {}
@@ -286,7 +300,6 @@ def risk_calculation(catalog_map, variants_map, population_code, sex, user_id, f
 
 
 #     risk_report = debug_risk_report
-
 
 #     pickle_dump_obj([risk_store, risk_report], os.path.join(UPLOAD_DIR, user_id, '{}_{}.p'.format(user_id, file_name)))
 
@@ -320,7 +333,7 @@ def _main():
     print args.population, population_code_map[args.population]
 
     risk_store, risk_report = risk_calculation(catalog_map, variants_map, population_code_map[args.population], args.sex,
-                                               args.user_id, args.file_name, args.LD_block_clustering,
+                                               args.user_id, args.file_name, args.LD_block_clustering, True,
                                                os.path.join(UPLOAD_DIR, args.user_id, '{}_{}.p'.format(args.user_id, args.file_name)))
 
 
@@ -337,7 +350,8 @@ def _main():
     for (k,v) in risk_report.items(): # sorted by values
         k_ja = eng2ja.try_get(k)
 
-        for study, value in sorted(v.items(), key=lambda(study,value):(value,study), reverse=True):
+        for i, (study, value) in enumerate(sorted(v.items(), key=lambda(study,value):(value,study), reverse=True)):
+#             if i == 0:  # show max
             value = round(value, 3)
             if value < 1:
                 print colors.blue('{0} {1} {2}'.format(k, k_ja, value))
