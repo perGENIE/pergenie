@@ -26,6 +26,7 @@
   {% if risk_reports %}
 
 
+
   <div class="row-fluid">
     <div class="span12">
       <div class="box grad_colour_dark_blue">
@@ -149,6 +150,18 @@ $(function () {
                 }
             },
             plotOptions: {
+            series: {
+                shadow:false,
+                cursor:'pointer',
+                    point: {
+                        events: {
+                            click: function() {
+                                location.href = this.options.url;
+                                <!-- window.open(this.options.url); -->
+                            }
+                        }
+                    }
+                },
                 bar: {
                     dataLabels: {
                         enabled: false
@@ -177,18 +190,18 @@ $(function () {
                     {
                     name: '{{ tmp_infos.1.name }}',
                     data: [{% for risk_value in risk_values.1 %}
-                             {% if risk_value < 0 %}{y: {{ risk_value }}, color: '#2cf177'}
-                             {% elif risk_value == 0 %}{y: {{ risk_value }},  color: '#8a8a8a'}
-                             {% else %}{y: {{ risk_value }},  color: '#f1772c'}{% endif %},
+                             {% if risk_value < 0 %}{y: {{ risk_value }}, color: '#2cf177', url:'http://www.google.com'}
+                             {% elif risk_value == 0 %}{y: {{ risk_value }},  color: '#8a8a8a', url:'http://www.google.com'}
+                             {% else %}{y: {{ risk_value }},  color: '#f1772c', url:'http://www.google.com'}{% endif %},
                            {% endfor %}],
                     },
                     {% endif %}
                     {
                     name: '{{ tmp_infos.0.name }}',
                     data: [{% for risk_value in risk_values.0 %}
-                             {% if risk_value < 0 %}{y: {{ risk_value }}, color: '#2ca6f1'}
-                             {% elif risk_value == 0 %}{y: {{ risk_value }},  color: '#8a8a8a'}
-                             {% else %}{y: {{ risk_value }},  color: '#f12ca6'}{% endif %},
+                             {% if risk_value < 0 %}{y: {{ risk_value }}, color: '#2ca6f1', url:'http://www.google.com'}
+                             {% elif risk_value == 0 %}{y: {{ risk_value }},  color: '#8a8a8a', url:'http://www.google.com'}
+                             {% else %}{y: {{ risk_value }},  color: '#f12ca6', url:'http://www.google.com'}{% endif %},
                            {% endfor %}],
                     },
 
