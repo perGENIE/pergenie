@@ -66,7 +66,7 @@
               </fieldset>
             </form>
 
-            <div id="container" style="min-width: 400px; height: 4000px; margin: 0 auto"></div>
+            <div id="container" style="min-width: 200px; height: 2000px; margin: 0 auto"></div>
           </div>
         </div>
       </div>
@@ -95,7 +95,7 @@
                 {% for trait_name,value in risk_reports.items %}
 
                 <tr>
-                  <td class="center"><a href="{% url apps.riskreport.views.trait trait=trait_name file_name=tmp_infos.0.name%}">{{ trait_name }}</a></td>
+                  <td class="center"><a href="{% url apps.riskreport.views.trait trait=trait_name file_name=tmp_infos.0.name %}">{{ trait_name }}</a></td>
 
                   <td class="center">{{ value }}</td>
 		        </tr>
@@ -135,8 +135,8 @@ $(function () {
                 }
             },
             yAxis: {
-                max: 1,
-                min: -1,
+                max: 0.5,
+                min: -0.5,
                 title: {
                     text: '[]',
                     align: 'high'

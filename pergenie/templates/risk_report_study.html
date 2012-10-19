@@ -1,5 +1,5 @@
 {% extends "layout.html" %}
-{% block title %}Risk report - {{ trait_name }}{% endblock %}
+{% block title %}Risk report - {{ studyx_name }}{% endblock %}
 {% block description %}risk report detail{% endblock %}
 <!-- {% block cookie_id %}risk_report_detail{% endblock %} -->
 {% load staticfiles %}
@@ -15,7 +15,7 @@
         <li><a href="{% url apps.riskreport.views.index %}">Risk report</a><span class="divider">/</span></li>
         <li class="active">{{ file_name }}<span class="divider">/</span></li>
         <li class="active">{{ trait_name }}<span class="divider">/</span></li>
-        <li class="active">{{ study }}</li>
+        <li class="active">{{ study_name }}</li>
       </ul>
     </div><!--/span-->
   </div>

@@ -63,7 +63,7 @@
                 {% for study in study_list %}
                 <tr>
                   <td class="center">{{ RR_list|listvalue:forloop.counter0 }}</td>
-                  <td></td>
+                  <td>{{ study }}</td>
 
 		        </tr>
 		        {% endfor %}
@@ -103,8 +103,8 @@ $(function () {
                 }
             },
             yAxis: {
-                max: 0.5,
-                min: -0.5,
+                max: 0.3,
+                min: -0.3,
                 title: {
                     text: 'Risk relative to average population'
                 }

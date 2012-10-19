@@ -38,6 +38,7 @@
                   <th>position</th>
                   <th>ref</th>
                   <th>alt</th>
+                  <th>context</th>
                   {% for file_name, variant in variants.items %}
                   <th>{{ file_name }}</th>
                   {% endfor %}
@@ -47,10 +48,11 @@
               <tbody>
                 <tr>
                   <td>{{ rs }}</td>
-                  <td>{{ dbsnp_record.chrom }}</td>
-                  <td>{{ dbsnp_record.pos }}</td>
-                  <td>{{ dbsnp_record.ref }}</td>
-                  <td>{{ dbsnp_record.alt }}</td>
+                  <td>{{ catalog_record.chr_id }}</td>
+                  <td>{{ catalog_record.chr_pos }}</td>
+                  <td>{{ catalog_record.ref }}</td>
+                  <td>{{ catalog_record.risk_allele }}</td>  
+                  <td>{{ catalog_record.context }}</td>
                   {% for file_name, variant in variants.items %}
                   <td>{{ variant }}</td>
                   {% endfor %}

@@ -216,7 +216,7 @@ def trait(request, trait, file_name):
                                    'tmp_risk_value': tmp_risk_value,
                                    'tmp_risk_store': tmp_risk_store,
                                    'study_list': study_list,
-                                   'RR_list': RR_list,
+                                   'RR_list': RR_list
                                    })
 
 
@@ -311,6 +311,6 @@ def study(request, trait, file_name, study_name):
                                    'tmp_risk_store': tmp_risk_store,
                                    'snps_list': snps_list,
                                    'RR_list': RR_list,
-                                   'study': study
+                                   'study_name': study
                                    })
 
