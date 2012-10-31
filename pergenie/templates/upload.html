@@ -225,6 +225,12 @@
               </tbody>
             </table>
 
+	    <form id="uploaded-file-deleter" style="display: none;"
+		  action="{% url apps.upload.views.delete %}" method="POST" enctype="multipart/form-data">
+              {% csrf_token %}
+	      <input type="hidden" name="name" value="">
+	    </form>
+
           </div>
         </div>
       </div>

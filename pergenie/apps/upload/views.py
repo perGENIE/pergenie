@@ -95,7 +95,7 @@ def index(request):
 @login_required
 def delete(request):
     user_id = request.user.username
-    name = request.GET.get('name')
+    name = request.POST.get('name')
 
     with pymongo.Connection() as connection:
         db = connection['pergenie']
