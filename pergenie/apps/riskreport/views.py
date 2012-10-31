@@ -284,12 +284,7 @@ def study(request, file_name, trait, study_name):
                                                                     tmp_info['sex'], tmp_info['user_id'], tmp_info['name'],
                                                                     False,
                                                                     os.path.join(UPLOAD_DIR, user_id, '{}_{}.p'.format(tmp_info['user_id'], tmp_info['name'])))
-
-
-#             tmp_risk_value = risk_reports.get(trait)
             tmp_risk_store = risk_store.get(trait).get(study_name)
-#             print tmp_risk_store
-
 
             # list for chart
             snps_list = [k for k,v in sorted(tmp_risk_store.items(), key=lambda x:x[1]['RR'])]
