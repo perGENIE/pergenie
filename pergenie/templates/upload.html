@@ -59,14 +59,14 @@
                     <div class="page-header">
                       <h1>Upload <small></small></h1>
                     </div>
-                  
+
                     <p>Before upload your genome files, see the description below:</p>
                     <div class="tooltip-demo well">
                       <p class="muted" style="margin-bottom: 0;">Tight pants next level keffiyeh <a href="#" rel='tooltip' title="first tooltip">you probably</a> haven't heard of them. Photo booth beard raw denim letterpress vegan messenger bag stumptown. Farm-to-table seitan, mcsweeney's fixie sustainable quinoa 8-bit american apparel <a href="#" rel='tooltip' title='Another tooltip'>have a</a> terry richardson vinyl chambray. Beard stumptown, cardigans banh mi lomo thundercats. Tofu biodiesel williamsburg marfa, four loko mcsweeney's cleanse vegan chambray. A <a href="#" rel='tooltip' title='Another one here too'>really ironic</a> artisan whatever keytar, scenester farm-to-table banksy Austin <a href="#" rel='tooltip' title='The last tip!'>twitter handle</a> freegan cred raw denim single-origin coffee viral.
                       </p>
                     </div>
 
-  
+
                     <div class="control-group">
                       <label class="control-label">Genome File</label>
                       <div class="controls">
@@ -148,7 +148,7 @@
         <a href="#" class="destroy box_button_1" title="close">&nbsp;</a>
         <div class="toggle_container">
           <div class="block box_content round_bottom padding_20">
-            
+
 
             <table class="table table-striped table-condensed">
               <thead>
@@ -207,7 +207,7 @@
                       <div class="modal-body"><p>Really delete "{{ uploaded.name }}"?</p></div>
                       <div class="modal-footer">
                         <button class="btn" data-dismiss="modal">No.</button>
-                        <button class="btn btn-primary delete" href="#" id="{{ uploaded.name }}">Yes, delete this data.</button>
+                        <button class="btn btn-primary confirm-delete" href="#" id="{{ uploaded.name }}">Yes, delete this data.</button>
                       </div>
                     </div>
                     {% if uploaded.status %}
