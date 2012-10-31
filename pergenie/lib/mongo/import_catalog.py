@@ -92,8 +92,8 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_pickled_catalo
                   ('first_author', 'First Author', _string),
                   ('date', 'Date', _date),
                   ('jornal', 'Journal', _string),
-                  ('study', 'Study', _string),
-                  ('trait', 'Disease/Trait', _string),
+                  ('study', 'Study', _string_without_slash),
+                  ('trait', 'Disease/Trait', _string_without_slash),
                   ('initial_sample_size', 'Initial Sample Size', _string),
                   ('replication_sample_size', 'Replication Sample Size', _string),
                   ('region', 'Region', _string),
@@ -460,6 +460,17 @@ def _string(text):
     if not text or text in ('NR', 'NS'):
         return None
     else:
+        return text
+
+def _string_without_slash(text):
+    if not text or text in ('NR', 'NS'):
+        return None
+    else:
+        # avoid slash
+        if '/' in text:
+            print '[WARNING] / in', text
+        text = text.replace('/', ' or ')
+
         return text
 
 
