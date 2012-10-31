@@ -96,7 +96,7 @@
                 {% for trait_name,value in risk_reports.items %}
 
                 <tr>
-                  <td class="center"><a href="{% url apps.riskreport.views.trait trait=trait_name file_name=tmp_infos.0.name %}">{{ trait_name }}</a></td>
+                  <td class="center"><a href="{% url apps.riskreport.views.trait file_name=tmp_infos.0.name trait=trait_name %}">{{ trait_name }}</a></td>
 
                   <td class="center">{{ value }}</td>
 		        </tr>
@@ -190,21 +190,21 @@ $(function () {
                     {
                     name: '{{ tmp_infos.1.name }}',
                     data: [{% for risk_value in risk_values.1 %}
-                             {% if risk_value < 0 %}{y: {{ risk_value }}, color: '#2cf177', url:'http://www.google.com'}
-                             {% elif risk_value == 0 %}{y: {{ risk_value }},  color: '#8a8a8a', url:'http://www.google.com'}
-                             {% else %}{y: {{ risk_value }},  color: '#f1772c', url:'http://www.google.com'}{% endif %},
+                             {y: {{ risk_value }},
+                              color: {% if risk_value < 0 %}'#2cf177'{% elif risk_value == 0 %}'#8a8a8a'{% else %}'#f1772c'{% endif %},
+                              url:"{% url apps.riskreport.views.trait trait=risk_traits|listvalue:forloop.counter file_name=tmp_infos.1.name %}"},
                            {% endfor %}],
                     },
-                    {% endif %}
+                    {% else %}
                     {
                     name: '{{ tmp_infos.0.name }}',
                     data: [{% for risk_value in risk_values.0 %}
-                             {% if risk_value < 0 %}{y: {{ risk_value }}, color: '#2ca6f1', url:'http://www.google.com'}
-                             {% elif risk_value == 0 %}{y: {{ risk_value }},  color: '#8a8a8a', url:'http://www.google.com'}
-                             {% else %}{y: {{ risk_value }},  color: '#f12ca6', url:'http://www.google.com'}{% endif %},
+                             {y: {{ risk_value }},
+                              color: {% if risk_value < 0 %}'#2ca6f1'{% elif risk_value == 0 %}'#8a8a8a'{% else %}'#f12ca6'{% endif %}, 
+                              url:"{% url apps.riskreport.views.trait trait=risk_traits|listvalue:forloop.counter file_name=tmp_infos.0.name %}"},
                            {% endfor %}],
                     },
-
+                    {% endif %}
             ]
         });
     });

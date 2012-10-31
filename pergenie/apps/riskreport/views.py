@@ -126,7 +126,7 @@ def index(request):
 
 
 @login_required
-def trait(request, trait, file_name):
+def trait(request, file_name, trait):
     """
     view for each trait, show risk value by studies
     """
@@ -136,6 +136,8 @@ def trait(request, trait, file_name):
     err = ''
     tmp_risk_store = None
     tmp_risk_value = None
+
+    print '[DEBUG]trait', trait
 
     with pymongo.Connection() as connection:
         db = connection['pergenie']
@@ -222,7 +224,7 @@ def trait(request, trait, file_name):
 
 
 @login_required
-def study(request, trait, file_name, study_name):
+def study(request, file_name, trait, study_name):
     """
     view for each study, show RR by rss
     """
@@ -283,10 +285,11 @@ def study(request, trait, file_name, study_name):
                                                                     False,
                                                                     os.path.join(UPLOAD_DIR, user_id, '{}_{}.p'.format(tmp_info['user_id'], tmp_info['name'])))
 
-            print '[DEBUG] in view for study'
+
 #             tmp_risk_value = risk_reports.get(trait)
-            tmp_risk_store = risk_store.get(trait)
-            print tmp_risk_store
+            tmp_risk_store = risk_store.get(trait).get(study_name)
+#             print tmp_risk_store
+
 
             # list for chart
             snps_list = [k for k,v in sorted(tmp_risk_store.items(), key=lambda x:x[1]['RR'])]
@@ -311,6 +314,6 @@ def study(request, trait, file_name, study_name):
                                    'tmp_risk_store': tmp_risk_store,
                                    'snps_list': snps_list,
                                    'RR_list': RR_list,
-                                   'study_name': study
+                                   'study_name': study_name
                                    })
 

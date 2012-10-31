@@ -9,11 +9,11 @@ UPLOAD_DIR = '/tmp/pergenie'
 
 # ref: http://yuku-tech.hatenablog.com/entry/20101112/1289569700
 
-# @task
-# def add(x, y):
-#     logger = Task.get_logger()
-#     logger.info("Adding {0} + {1}".format(x, y))
-# #     return x + y
+@task
+def add(x, y):
+    logger = Task.get_logger()
+    logger.info("Adding {0} + {1}".format(x, y))
+    return x + y
 
 
 @task

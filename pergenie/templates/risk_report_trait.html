@@ -63,7 +63,7 @@
                 {% for study in study_list %}
                 <tr>
                   <td class="center">{{ RR_list|listvalue:forloop.counter0 }}</td>
-                  <td>{{ study }}</td>
+                  <td><a href="{% url apps.riskreport.views.study file_name=tmp_info.name trait=trait_name study_name=study %}">{{ study }}</a></td>
 
 		        </tr>
 		        {% endfor %}
