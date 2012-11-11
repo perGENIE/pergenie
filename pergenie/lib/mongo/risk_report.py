@@ -164,7 +164,8 @@ def _relative_risk_to_general_population(freq, OR, zygosities):
         return 1.0, average_population_risk
 
 
-def risk_calculation(catalog_map, variants_map, population_code, sex, user_id, file_name, is_LD_block_clustered, is_log, path_to_pickled_risk_report=None):
+def risk_calculation(catalog_map, variants_map, population_code, sex, user_id, file_name,
+                     is_LD_block_clustered, is_log, path_to_pickled_risk_report=None):
     risk_store = {}
     risk_report = {}
 
@@ -275,7 +276,7 @@ def risk_calculation(catalog_map, variants_map, population_code, sex, user_id, f
                    except ValueError:
                       print 'ValueError', tmp_value
                       if tmp_value == 0.0:
-                         tmp_value = -2.0
+                         tmp_value = -2.0  # -inf
 
                 if tmp_value:
                    # round

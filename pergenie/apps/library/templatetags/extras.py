@@ -3,6 +3,7 @@ from django.template.defaultfilters import stringfilter
 
 register = template.Library()
 
+import math
 
 """
 to use this sctipt, put this in .html
@@ -68,3 +69,4 @@ def keyvalue(dict, key):
 @register.filter
 def listvalue(list, loopindex_1based):
     return list[loopindex_1based - 1]
+
