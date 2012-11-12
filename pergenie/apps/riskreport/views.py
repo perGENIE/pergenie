@@ -233,12 +233,11 @@ def study(request, file_name, trait, study_name):
 
             # calculate risk
             population = 'population:{}'.format('+'.join(POPULATION_MAP[tmp_info['population']]))
-
             catalog_map, variants_map = search_variants.search_variants(tmp_info['user_id'], tmp_info['name'], population)
-
             risk_store, risk_reports = risk_report.risk_calculation(catalog_map, variants_map, POPULATION_CODE_MAP[tmp_info['population']],
                                                                     tmp_info['sex'], tmp_info['user_id'], tmp_info['name'],
-                                                                    False, True, None) #                                                                     os.path.join(UPLOAD_DIR, user_id, '{}_{}.p'.format(tmp_info['user_id'], tmp_info['name'])))
+                                                                    False, True, None)
+
             tmp_risk_store = risk_store.get(trait).get(study_name)
 
             # list for chart

@@ -278,6 +278,8 @@ def risk_calculation(catalog_map, variants_map, population_code, sex, user_id, f
                       if tmp_value == 0.0:
                          tmp_value = -2.0  # -inf
 
+                risk_store[trait][study][rs]['RR'] = round(tmp_value, 3)
+
                 if tmp_value:
                    # round
                    tmp_value = round(tmp_value, 3)  #
