@@ -1,6 +1,9 @@
 {% extends "layout.html" %}
+
 {% block title %}Tutorial{% endblock %}
 {% block description %}Tutorial{% endblock %}
+
+{% load staticfiles %}
 
 {% block main_container %}          
 <div id="main_container" class="span10">
@@ -25,9 +28,26 @@
           <div class="block box_content round_bottom padding_20">
             <div class="row-fluid">
 
-<!--               <div class="page-header"> -->
-<!--                 <h1>Tutorial</h1> -->
-<!--               </div> -->
+              
+              <h4>まず，genome fileをアップロードします．</h4>
+              <div><img src="{% static 'images/docs/upload.png' %}" width="700"></div>
+              
+              
+
+              <hr>
+              <h4>RiskReportを見てみましょう．</h4>
+              <div><img src="{% static 'images/docs/riskreport_index.png' %}" width="700"></div>
+              <h4>この中で，Amyotrophic lateral sclerosis(ALS, 筋萎縮性側索硬化症)について，詳しくみてみます．</h4>
+
+              <hr>
+              <h4>Amyotrophic lateral sclerosis</h4>
+              <div><img src="{% static 'images/docs/riskreport_trait.png' %}" width="450"></div>
+              
+              <hr>
+              <h4>reference論文Bについて，どのSNPをチェックしているかを詳しくみてみます．</h4>
+              <div><img src="{% static 'images/docs/riskreport_study.png' %}" width="450"></div>
+              
+
               
               
             </div>

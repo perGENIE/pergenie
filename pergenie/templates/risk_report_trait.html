@@ -54,7 +54,8 @@
             <table cellpadding="0" cellspacing="0" border="0" class="display datatable" id="risk_reports_table">
               <thead>
               <tr>
-                <th>Risk relative to average population</th>
+                <th>RR (Risk relative to average population) [log10]</th>
+                <th>RR [real]</th>
                 <th>Study</th>
               </tr>
               </thead>
@@ -63,6 +64,7 @@
                 {% for study in study_list %}
                 <tr>
                   <td class="center">{{ RR_list|listvalue:forloop.counter0 }}</td>
+                  <td class="center">{{ RR_list_real|listvalue:forloop.counter0 }}</td>
                   <td><a href="{% url apps.riskreport.views.study file_name=tmp_info.name trait=trait_name study_name=study %}">{{ study }}</a></td>
 
 		        </tr>
@@ -103,8 +105,8 @@ $(function () {
                 }
             },
             yAxis: {
-                max: 0.3,
-                min: -0.3,
+                max: 0.5,
+                min: -0.5,
                 title: {
                     text: 'Risk relative to average population'
                 }

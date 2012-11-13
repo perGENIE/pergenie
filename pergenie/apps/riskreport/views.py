@@ -170,6 +170,7 @@ def trait(request, file_name, trait):
             if tmp_study_value_map:
                 study_list = [k for k,v in sorted(tmp_study_value_map.items(), key=lambda(k,v):(v,k), reverse=True)]
                 RR_list = [v for k,v in sorted(tmp_study_value_map.items(), key=lambda(k,v):(v,k), reverse=True)]
+                RR_list_real = [round(10**v, 3) for k,v in sorted(tmp_study_value_map.items(), key=lambda(k,v):(v,k), reverse=True)]
             else:
                 err = '{0} is not available for {1}'.format()
 
@@ -187,7 +188,8 @@ def trait(request, file_name, trait):
                                    'tmp_risk_value': tmp_risk_value,
                                    'tmp_risk_store': tmp_risk_store,
                                    'study_list': study_list,
-                                   'RR_list': RR_list
+                                   'RR_list': RR_list,
+                                   'RR_list_real': RR_list_real
                                    })
 
 
