@@ -41,6 +41,8 @@ urlpatterns = patterns('',
     url(r'^upload/status', 'apps.upload.views.status'),
 
     url(r'^tutorial/$', 'apps.tutorial.views.index'),
+    url(r'^tutorial/personal$', 'apps.tutorial.views.personal'),
+    url(r'^tutorial/institution$', 'apps.tutorial.views.institution'),
 )
 
 """

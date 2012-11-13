@@ -47,7 +47,7 @@
   <div class="row-fluid">
     <div class="span12">
       <div class="box grad_colour_dark_blue">
-        <h2 class="box_head round_top"></h2>
+        <h2 class="box_head round_top">Upload</h2>
         <a href="#" class="toggle box_button_2" title="toggle">&nbsp;</a>
         <a href="#" class="destroy box_button_1" title="close">&nbsp;</a>
         <div class="toggle_container">
@@ -56,18 +56,17 @@
                 <form class="form-horizontal" action="{% url apps.upload.views.index %}" method="post" enctype="multipart/form-data">
                   {% csrf_token %}
 		          <fieldset>
-                    <div class="page-header">
-                      <h1>Upload <small></small></h1>
-                    </div>
 
-                    <!-- <p>Before upload your genome files, see the description below:</p> -->
-                    <p>genome fileのアップロードの前に，利用規約をご覧下さい:</p>
-                    <div class="tooltip-demo well">
-                      <p class="muted" style="margin-bottom: 0;">
-                      </p>
- <!-- <a href="#" rel='tooltip' title="first tooltip">you probably</a>  -->
-                    </div>
+<!--                     <div class="page-header"> -->
+<!--                       <small></small> -->
+<!--                     </div> -->
 
+                    <hr>
+<!--                     <div class="tooltip-demo well"> -->
+<!--                       <p class="muted" style="margin-bottom: 0;"> -->
+<!--                       </p> -->
+<!--  <\!-- <a href="#" rel='tooltip' title="first tooltip">you probably</a>  -\-> -->
+<!--                     </div> -->
 
                     <div class="control-group">
                       <label class="control-label">Genome File</label>
@@ -111,6 +110,8 @@
                         </select>
                       </div>
                     </div>
+
+                      <span class="label label-warning">Notice</span> genome fileをアップロードする前に，<a href="#">利用規約</a>をご確認ください．
 
                     <div class="form-actions">
                       <input type="submit" class="btn btn-primary">
