@@ -39,6 +39,8 @@ urlpatterns = patterns('',
     url(r'^upload/$', 'apps.upload.views.index'),
     url(r'^upload/delete', 'apps.upload.views.delete'),
     url(r'^upload/status', 'apps.upload.views.status'),
+
+    url(r'^tutorial/$', 'apps.tutorial.views.index'),
 )
 
 """

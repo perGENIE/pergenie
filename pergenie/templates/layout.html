@@ -55,7 +55,7 @@
           <div class="nav-collapse">
             <ul class="nav">
               <li><a href="{% url apps.frontend.views.logout %}">Logout</a></li>
-              <li> <a data-toggle="modal" href="#aboutModal">&copy; perGENIE</a></li>
+              <li><a data-toggle="modal" href="#aboutModal">&copy; perGENIE</a></li>
             </ul>
             <p class="navbar-text pull-right">
               {% if user %}Logged in as <a href="{% url apps.settings.views.settings %}">{{user.username}}</a>{% else %}Not logged in{% endif %}
@@ -103,11 +103,11 @@
                 <img src="{% static 'images/icons/grey/Laptop.png' %}">
                 <span>Dashboard</span></a></li>
             <li><a href="{% url apps.riskreport.views.index %}">
-                <img src="{% static 'images/icons/grey/Frames.png' %}">
+                <img src="{% static 'images/icons/grey/alert_2.png' %}">
                 <span>RiskReport</span></a></li>
 
             <li><a href="{% url apps.library.views.index %}">
-                <img src="{% static 'images/icons/grey/list_w__images.png' %}">
+                <img src="{% static 'images/icons/grey/Book.png' %}">
                 <span>Library</span>
                 <span class="icon">&nbsp;</span>
               </a>
@@ -123,8 +123,11 @@
             <!--     <img src="{% static 'images/icons/grey/Archive.png' %}"> -->
             <!--     <span>Search</span></li> -->
             <li><a href="{% url apps.upload.views.index %}">
-                <img src="{% static 'images/icons/grey/Images.png' %}">
+                <img src="{% static 'images/icons/grey/bended_arrow_up.png' %}">
                 <span>Upload</span></a></li>
+            <li><a href="{% url apps.tutorial.views.index %}">
+                <img src="{% static 'images/icons/grey/light_bulb.png' %}">
+                <span>Tutorial</span></a></li>
           </ul>
         </div><!--/span-->
 
