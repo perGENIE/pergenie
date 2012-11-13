@@ -70,3 +70,6 @@ def keyvalue(dict, key):
 def listvalue(list, loopindex_1based):
     return list[loopindex_1based - 1]
 
+@register.filter
+def pow10(float, value):
+    return round(10**value, 3)

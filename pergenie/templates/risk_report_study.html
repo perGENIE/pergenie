@@ -55,7 +55,8 @@
             <table cellpadding="0" cellspacing="0" border="0" class="display datatable" id="risk_reports_table">
               <thead>
               <tr>
-                <th>Risk relative to average population</th>
+                <th>RR (Risk relative to average population) [log10]</th>
+                <th>RR [real]</th>
                 <th>SNPs</th>
                 <th>Genotype</th>
                 <th>Risk allele</th>
@@ -68,6 +69,7 @@
                 {% for snp, store in tmp_risk_store.items %}
                 <tr>
                   <td class="center">{{ store.RR }}</td>
+                  <td class="center">{{ store.RR_real }}</td>
                   <td class="center">rs{{ snp }}</td>
                   <td class="center">{% if store.variant_map.0 in store.catalog_map.risk_allele %}
                                         <span>{{ store.variant_map.0 }}</span>
@@ -131,7 +133,7 @@ $(function () {
             tooltip: {
                 formatter: function() {
                     return '<b>'+ this.x +'</b><br/>'+
-                        'Risk value: '+ Highcharts.numberFormat(this.y, 1) + ' <br/>';
+                        'Risk value: '+ Highcharts.numberFormat(this.y, 3) + '[log10] <br/>' ;
                 }
             },
             credits: {
