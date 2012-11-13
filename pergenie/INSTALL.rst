@@ -11,14 +11,11 @@ Getting Started with perGENIE on OS X
         $ sudo port install mongodb rabbitmq-server
 
 
-        *. Launch mongod::
+        $ # Launch mongod
+        $ mongod --dbpath=/path/to/elsewhere
 
-            $ mongod --dbpath=/path/to/elsewhere
-
-
-        *. Launch rabbitmq-server::
-
-            $ sudo rabbitmqctl start
+        $ # Launch rabbitmq-server
+        $ sudo rabbitmqctl start
 
 
     #. Install Python libraries via pip::
@@ -31,6 +28,12 @@ Getting Started with perGENIE on OS X
     #. Initialize database (sqlite)::
     
         $ python manage.py syncdb
+
+
+    #. Initialize celeryd log::
+    
+        $ mkdir -p log
+        $ touch log/celeryd.log
 
 
     #. Launch celeryd::
