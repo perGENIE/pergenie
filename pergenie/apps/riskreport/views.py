@@ -82,21 +82,23 @@ def index(request):
             print infos
 
             if request.method == 'POST':
+                print '[DEBUG] method = POST'
                 form = RiskReportForm(request.POST)
                 if not form.is_valid():
-                    err = 'Invalid request'
+                    err = '不正なリクエストです．'
+                    # err = 'Invalid request'
                     break
 
-                file_names = [request.POST['file_name'], request.POST['file_name2']]
-                for i, file_name in enumerate(file_names):
-                    print 'file_name{0} from form: {1}'.format(i+1, file_name)
+                for i, file_name in enumerate([request.POST['file_name'], request.POST['file_name2']]):
+                    print '[DEBUG] file_name{0} from form: {1}'.format(i+1, file_name)
 
                     for info in infos:
                         print info['name'], bool(info['name'] == file_name)
                         if info['name'] == file_name:
 
-                            if not infos[0]['status'] == 100:
-                                err = '{} is in importing, please wait for seconds...'.format(file_name)
+                            if not info['status'] == 100:
+                                err = '{} は現在読み込み中です．しばらくお待ちください...'.format(file_name)
+                                # err = '{} is in importing, please wait for seconds...'.format(file_name)
 
                             tmp_info = info
                             tmp_infos.append(tmp_info)
@@ -107,9 +109,13 @@ def index(request):
                         break
 
             else:
-                if not infos[0]['status'] == 100:
-                    err = '{} is in importing, please wait for seconds...'.format(file_name)
-                tmp_infos.append(infos[0])
+                print '[DEBUG] method != POST'
+                info = infos[0]
+                file_name = info['name']
+                if not info['status'] == 100:
+                    err = '{} は現在読み込み中です．しばらくお待ちください...'.format(file_name)
+                    # err = '{} is in importing, please wait for seconds...'.format(file_name)
+                tmp_infos.append(info)
 
             print '[INFO] tmp_infos', tmp_infos
 
