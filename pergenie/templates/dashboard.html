@@ -6,14 +6,14 @@
 {% block main_container %}
 <div id="main_container" class="span10">
 
-  <!-- <\!-- Breadcrumb -\->         -->
-  <!-- <div class="row-fluid"> -->
-  <!--   <div class="span12"> -->
-  <!--     <ul class="breadcrumb">                             -->
-  <!--       <li class="active">Dashboard</li> -->
-  <!--     </ul> -->
-  <!--   </div><\!--/span-\-> -->
-  <!-- </div> -->
+  <!-- Breadcrumb -->
+  <div class="row-fluid">
+    <div class="span12">
+      <ul class="breadcrumb">
+        <li class="active">Dashboard</li>
+      </ul>
+    </div><!--/span-->
+  </div>
 
   <!-- Content start -->
   <!-- Draggable Widgets start -->
@@ -89,28 +89,45 @@
   <!--      </div> -->
   <!-- </div><\!--/span-\-> -->
 
-  <div class="span4 column" id="col1">
-    <div class="box grad_colour_dark_blue" id="box_1">
-      <h2 class="box_head round_top">Member Updates</h2>
-      <a href="#" class="settings box_button_3" title="config">&nbsp;</a>
-      <a href="#" class="toggle box_button_2" title="toggle">&nbsp;</a>
-      <a href="#" class="destroy box_button_1" title="close">&nbsp;</a>
-      <div class="toggle_container">
-        <div class="block box_content round_bottom padding_10">
-          <ul class="members">
-            <li>
-              <a href="#">
-                <img src="{% static 'images/member_ph.png'%}" class="member_avatar"/>
-                <strong>Name:</strong> Member 1<br />
-                <strong>Since:</strong> 21/01/2012<br />
-                <strong>Status:</strong> <span class="label label-success">Approved</span>
-              </a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div><!--/span-->
+
+
+  {% if msg %}
+  <div class="alert alert-success">
+    <button type="button" class="close" data-dismiss="alert">×</button>
+    {{ msg }}
+  </div>
+  {% endif %}
+  
+  {% if err %}
+  <div class="alert alert-error">
+    <button type="button" class="close" data-dismiss="alert">×</button>
+    {{ err }}
+  </div>
+  {% endif %}
+  
+
+  <!-- <div class="span4 column" id="col1"> -->
+  <!--   <div class="box grad_colour_dark_blue" id="box_1"> -->
+  <!--     <h2 class="box_head round_top">Member Updates</h2> -->
+  <!--     <a href="#" class="settings box_button_3" title="config">&nbsp;</a> -->
+  <!--     <a href="#" class="toggle box_button_2" title="toggle">&nbsp;</a> -->
+  <!--     <a href="#" class="destroy box_button_1" title="close">&nbsp;</a> -->
+  <!--     <div class="toggle_container"> -->
+  <!--       <div class="block box_content round_bottom padding_10"> -->
+  <!--         <ul class="members"> -->
+  <!--           <li> -->
+  <!--             <a href="#"> -->
+  <!--               <img src="{% static 'images/member_ph.png'%}" class="member_avatar"/> -->
+  <!--               <strong>Name:</strong> Member 1<br /> -->
+  <!--               <strong>Since:</strong> 21/01/2012<br /> -->
+  <!--               <strong>Status:</strong> <span class="label label-success">Approved</span> -->
+  <!--             </a> -->
+  <!--           </li> -->
+  <!--         </ul> -->
+  <!--       </div> -->
+  <!--     </div> -->
+  <!--   </div> -->
+  <!-- </div><\!--/span-\-> -->
 
   <!-- <div class="span4 column" id="col2"> -->
   <!-- 	<div class="box grad_colour_dark_blue" id="box_2"> -->
