@@ -25,7 +25,7 @@ Getting Started with perGENIE on OS X
 
 * Initialize perGENIE
 
-    #. Initialize database (sqlite)::
+    #. Initialize database (require sqlite3)::
     
         $ python manage.py syncdb
 
@@ -43,7 +43,7 @@ Getting Started with perGENIE on OS X
         $ python manage.py celeryd &
 
 
-    #. Launch djnago (wsgi or fcgi)::
+    #. Launch djnago::
 
         $ python manage.py runserver
 

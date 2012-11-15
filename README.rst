@@ -3,12 +3,12 @@ README
 
 * Install perGENIE
 
-    #. See INSTALL.rst
+    *. See INSTALL.rst
 
 
 * Test perGENIE
 
-    #. Tests by django::
+    *. Tests by django::
 
         $ python manage.py test frontend
         $ python manage.py test
@@ -21,7 +21,7 @@ README
         $ python manage.py celeryd &
 
 
-    #. Launch djnago (wsgi or fcgi)::
+    #. Launch djnago::
 
         $ python manage.py runserver
 
