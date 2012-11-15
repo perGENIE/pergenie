@@ -23,7 +23,7 @@ Getting Started with perGENIE on OS X
         $ sudo pip install -r requirements.txt
 
 
-* Launch perGENIE
+* Initialize perGENIE
 
     #. Initialize database (sqlite)::
     
@@ -35,6 +35,8 @@ Getting Started with perGENIE on OS X
         $ mkdir -p log
         $ touch log/celeryd.log
 
+
+* Launch perGENIE:
 
     #. Launch celeryd::
 
