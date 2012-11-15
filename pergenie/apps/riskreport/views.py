@@ -62,6 +62,7 @@ def index(request):
     msg = ''
     err = ''
     risk_reports = None
+    risk_traits = None
     risk_values = None
 
     with pymongo.Connection() as connection:
@@ -75,7 +76,8 @@ def index(request):
             tmp_infos = []
 
             if not infos:
-                err = 'no data uploaded'
+                err = 'データがアップロードされていません．'
+                # err = 'no data uploaded'
                 break
             print infos
 
@@ -93,11 +95,11 @@ def index(request):
                         print info['name'], bool(info['name'] == file_name)
                         if info['name'] == file_name:
 
-                            if not info['status'] == 100:
+                            if not infos[0]['status'] == 100:
                                 err = '{} is in importing, please wait for seconds...'.format(file_name)
-                            else:
-                                tmp_info = info
-                                tmp_infos.append(tmp_info)
+
+                            tmp_info = info
+                            tmp_infos.append(tmp_info)
                             break
 
                     if not tmp_info:
@@ -105,14 +107,16 @@ def index(request):
                         break
 
             else:
+                if not infos[0]['status'] == 100:
+                    err = '{} is in importing, please wait for seconds...'.format(file_name)
                 tmp_infos.append(infos[0])
+
             print '[INFO] tmp_infos', tmp_infos
 
-            risk_reports, risk_traits, risk_values = get_risk_values(tmp_infos)
-            break
+            if not err:
+                risk_reports, risk_traits, risk_values = get_risk_values(tmp_infos)
 
-        if err:
-            risk_reports = None
+            break
 
         return direct_to_template(request,
                                   'risk_report.html',

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*- 
+
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import redirect
@@ -38,20 +40,25 @@ def index(request):
                 file_format = form.cleaned_data['file_format']
 
                 if not call_file:
-                    err = 'Select data file.'
+                    err = 'ファイルを選択して下さい．'
+                    # err = 'Select data file.'
                     break
 
                 if not population:
-                    err = 'Select population.'
+                    err = 'Populationを選択して下さい．'
+                    # err = 'Select population.'
                     break
 
                 print call_file.name
                 if os.path.splitext(call_file.name)[1].lower()[1:] not in ('csv', 'txt', 'vcf'):
-                    err = 'Not allowed file extension.'
+                    err = '許可されいてない拡張子のファイルです．'
+                    # err = 'Not allowed file extension.'
                     break
 
                 if data_info.find({'user_id': user_id, 'name': call_file.name}).count() > 0:
-                    err = 'Same file name exists. If you want to overwrite it, please delete old one.'
+
+                    err = '同じファイル名のファイルがアップロードされています．上書きしたい場合，アップロード済みのファイルを削除して下さい．'
+                    # err = 'Same file name exists. If you want to overwrite it, please delete old one.'
                     break
 
 
@@ -62,7 +69,8 @@ def index(request):
                     for chunk in call_file.chunks():
                         fout.write(chunk)
 
-                msg = 'Successfully uploaded: {}'.format(call_file.name)
+                msg = '{}がアップロードされました．'.format(call_file.name)
+                # msg = 'Successfully uploaded: {}'.format(call_file.name)
 
                 today = str(datetime.datetime.today()).replace('-', '/')
                 info = {'user_id': user_id,
@@ -76,7 +84,8 @@ def index(request):
 
                 # TODO: Throw queue
                 qimport_variants.delay(info)
-                msg += ', and now importing. (sorry, it takes for minutes...)'
+                msg += '現在，読み込んでいます...'
+                # msg += ', and now importing. (sorry, it takes for minutes...)'
 
                 print '[INFO] data_info:', info
 
