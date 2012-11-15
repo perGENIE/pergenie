@@ -92,11 +92,13 @@ def index(request):
                     for info in infos:
                         print info['name'], bool(info['name'] == file_name)
                         if info['name'] == file_name:
-                            tmp_info = info
-                            tmp_infos.append(tmp_info)
-                            break
 
-                    # TODO: if file is in importing, break
+                            if not info['status'] == 100:
+                                err = '{} is in importing, please wait for seconds...'.format(file_name)
+                            else:
+                                tmp_info = info
+                                tmp_infos.append(tmp_info)
+                            break
 
                     if not tmp_info:
                         err = '{} does not exist'.format(file_name)
@@ -108,6 +110,9 @@ def index(request):
 
             risk_reports, risk_traits, risk_values = get_risk_values(tmp_infos)
             break
+
+        if err:
+            risk_reports = None
 
         return direct_to_template(request,
                                   'risk_report.html',
