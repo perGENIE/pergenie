@@ -111,10 +111,11 @@ def delete(request):
         data_info = db['data_info']
         variant = db['variant']
 
-        # TODO: prohibit removal while importing is in operation
         print list(data_info.find())
         print user_id, name
-        if data_info.find_one({'user_id': user_id, 'name': name})['status']:
+
+        # if data_info.find_one({'user_id': user_id, 'name': name})['status']:
+        if data_info.find_one({'user_id': user_id, 'name': name}):
             data_info.remove({'user_id': user_id, 'name': name})
 
     return redirect('apps.upload.views.index')
