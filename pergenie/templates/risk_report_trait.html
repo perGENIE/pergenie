@@ -142,6 +142,25 @@ $(function () {
                     text: 'RR'
                 }
             },
+            plotOptions: {
+            series: {
+                shadow:true,
+                cursor:'pointer',
+                    point: {
+                        events: {
+                            click: function() {
+                                location.href = this.options.url;
+                                <!-- window.open(this.options.url); -->
+                            }
+                        }
+                    }
+                },
+                bar: {
+                    dataLabels: {
+                        enabled: false
+                    }
+                }
+            },
 
             tooltip: {
                 formatter: function() {
@@ -155,14 +174,15 @@ $(function () {
             legend: {
                 enabled: false
             },
-            series: [{
+            series: [
+                {
                 name: "{{ file_name }}",
                 data: [{% for RR_value in RR_list %}
-                         {% if RR_value < 0 %}{y: {{ RR_value }}, color: '#2ca6f1'}
-                         {% elif RR_value == 0 %}{y: {{ RR_value }},  color: '#8a8a8a'}
-                         {% else %}{y: {{ RR_value }},  color: '#f12ca6'}{% endif %},
-                       {% endfor %}],
-            }
+                         {y: {{ RR_value }}, 
+                          color: {% if risk_value < 0 %}'#2ca6f1'{% elif risk_value == 0 %}'#8a8a8a'{% else %}'#f12ca6'{% endif %},
+                          url:"{% url apps.riskreport.views.study file_name=file_name trait=trait_name study_name=study_list|listvalue:forloop.counter %}"},
+                         {% endfor %}],
+                },
             ]
 
 
