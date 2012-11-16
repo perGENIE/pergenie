@@ -43,11 +43,11 @@
             </form>
 
 	    {% if is_succeeded %}
-	    <div class="alert alert-">{{ message }}</div>
+	    <div class="alert alert-">{% autoescape off %}{{ message }}{% endautoescape %}</div>
 	    {% endif %}
 
 	    {% if has_error %}
-	    <div class="alert alert-error">{{ message }}</div>
+	    <div class="alert alert-error">{% autoescape off %}{{ message }}{% endautoescape %}</div>
 	    {% endif %}
           </div>
         </div>

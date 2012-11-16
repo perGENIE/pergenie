@@ -23,6 +23,8 @@ def index(request):
                 msg = 'まずは，genome fileをアップロードしましょう!'
                 break
 
+            break
+
     return direct_to_template(request,
                               'dashboard.html',
                               {'msg': msg, 'err': err})

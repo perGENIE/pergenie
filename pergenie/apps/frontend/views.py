@@ -5,6 +5,9 @@ from django.template import RequestContext
 from django.views.decorators.http import require_http_methods
 from apps.frontend.forms import LoginForm, RegisterForm
 
+from django.core.urlresolvers import reverse
+from django.views.generic.simple import direct_to_template
+
 import pymongo
 
 
@@ -43,6 +46,7 @@ def logout(request):
 
 @require_http_methods(['GET', 'POST'])
 def register(request):
+
     params = {'is_succeeded': False,
               'has_error': False,
               'message': ''}
@@ -62,7 +66,7 @@ def register(request):
 
                 except:
                     params['has_error'] = True
-                    params['message'] = 'Already registered'
+                    params['message'] = 'Already registered.  <a href="{}">login</a>'.format(reverse('apps.frontend.views.login'))
 
                 else:
                     params['is_succeeded'] = True
@@ -78,7 +82,8 @@ def register(request):
             params['message'] = 'Invalid request'
 
 
-    return _render_to_response('register.html', params, request)
+    return direct_to_template(request, 'register.html', params)
+    # return _render_to_response('register.html', params, request)
 
 
 def settings(request):
