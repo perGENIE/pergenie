@@ -123,8 +123,8 @@ $(function () {
                 }
             },
             yAxis: {
-                max: 0.5,
-                min: -0.5,
+                max: 1.0,
+                min: -1.0,
                 title: {
                     text: 'Risk relative to average population'
                 }
@@ -145,11 +145,11 @@ $(function () {
             series: [{
                 name: "{{ file_name }}",
                 data: [{% for RR_value in RR_list %}
-                         {% if RR_value < 0 %}{y: {{ RR_value }}, color: '#2ca6f1'}
-                         {% elif RR_value == 0 %}{y: {{ RR_value }},  color: '#8a8a8a'}
-                         {% else %}{y: {{ RR_value }},  color: '#f12ca6'}{% endif %},
+                         {y: {{ RR_value }},
+                          color: {% if risk_value > 0 %}'#2ca6f1'{% elif risk_value == 0 %}'#8a8a8a'{% else %}'#f12ca6'{% endif %},
+                          },
                        {% endfor %}],
-            }
+                },
             ]
 
 

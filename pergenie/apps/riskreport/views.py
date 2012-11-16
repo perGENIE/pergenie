@@ -31,6 +31,10 @@ POPULATION_CODE_MAP = {'Asian': 'JPT',
                        'unkown': 'unkown'}
 
 def get_risk_values(tmp_infos):
+    """ """
+
+    # TODO: merge to get_risk_infos
+
     for i, tmp_info in enumerate(tmp_infos):
         # calculate risk
         population = 'population:{}'.format('+'.join(POPULATION_MAP[tmp_info['population']]))
@@ -51,9 +55,84 @@ def get_risk_values(tmp_infos):
 
         elif i >= 1:
             risk_values.append([tmp_map.get(trait, 0) for trait in risk_traits])
-            
+
     return risk_reports, risk_traits, risk_values
 
+
+def get_risk_infos(user_id, file_name, trait_name=None, study_name=None):
+    msg, err = '', ''
+    infos, tmp_info, tmp_risk_store  = None, None, None
+    RR_list, RR_list_real, study_list, snps_list = [], [], [], []
+
+    with pymongo.Connection() as connection:
+        db = connection['pergenie']
+        data_info = db['data_info']
+
+        while True:
+            # determine file
+            infos = list(data_info.find( {'user_id': user_id} ))
+            tmp_info = None
+
+            if not infos:
+                err = 'データがアップロードされていません．'
+                # err = 'no data uploaded'
+                break
+
+            for info in infos:
+                if info['name'] == file_name:
+                    tmp_info = info
+                    break
+            if not tmp_info:
+                err = 'そのようなファイルはありません．{}'.format(file_name)
+                # err = 'no such file {}'.format(file_name)
+                break
+
+            print '[DEBUG] tmp_info', tmp_info
+
+            # calculate risk
+            population = 'population:{}'.format('+'.join(POPULATION_MAP[tmp_info['population']]))
+            catalog_map, variants_map = search_variants.search_variants(tmp_info['user_id'], tmp_info['name'], population)
+            risk_store, risk_reports = risk_report.risk_calculation(catalog_map, variants_map, POPULATION_CODE_MAP[tmp_info['population']],
+                                                                    tmp_info['sex'], tmp_info['user_id'], tmp_info['name'],
+                                                                    False, True, None)
+                                                                    # os.path.join(UPLOAD_DIR, user_id, '{}_{}.p'.format(tmp_info['user_id'], tmp_info['name'])))
+
+
+            if study_name and trait_name:
+                tmp_risk_store = risk_store.get(trait_name).get(study_name)
+
+                snps_list = [k for k,v in sorted(tmp_risk_store.items(), key=lambda x:x[1]['RR'])]
+                RR_list = [v['RR'] for k,v in sorted(tmp_risk_store.items(), key=lambda x:x[1]['RR'])]
+
+                if not trait_name.replace('_', ' ') in tmp_risk_store:
+                    err = 'そのようなtraitはありません'
+                    # err = 'trait not found'
+                    break
+
+            elif not study_name and trait_name:
+                tmp_risk_store = risk_store.get(trait_name)
+                tmp_study_value_map = risk_reports.get(trait_name)
+                study_list = [k for k,v in sorted(tmp_study_value_map.items(), key=lambda(k,v):(v,k), reverse=True)]
+
+                # list for chart
+                RR_list = [v for k,v in sorted(tmp_study_value_map.items(), key=lambda(k,v):(v,k), reverse=True)]
+                RR_list_real = [round(10**v, 3) for k,v in sorted(tmp_study_value_map.items(), key=lambda(k,v):(v,k), reverse=True)]
+
+            else:
+                pass
+
+            break
+
+        risk_infos = {'msg':msg, 'err': err, 'infos': infos, 'tmp_info': tmp_info,
+                      'RR_list': RR_list, 'RR_list_real': RR_list_real, 'study_list': study_list,
+                      'file_name': file_name, 'trait_name': trait_name, 'study_name': study_name,
+                      'snps_list': snps_list, 'tmp_risk_store': tmp_risk_store}
+
+        print '[DEBUG]',
+        pprint(risk_infos)
+
+        return risk_infos
+        
 
 @require_http_methods(['GET', 'POST'])
 @login_required
@@ -138,148 +217,22 @@ def index(request):
 @login_required
 def trait(request, file_name, trait):
     """
-    view for each trait, show risk value by studies
+    show risk value by studies, for each trait
     """
 
     user_id = request.user.username
-    msg = ''
-    err = ''
-    tmp_risk_store = None
-    tmp_risk_value = None
+    risk_infos = get_risk_infos(user_id, file_name, trait)
 
-    with pymongo.Connection() as connection:
-        db = connection['pergenie']
-        data_info = db['data_info']
-
-        while True:
-            # determine file
-            infos = list(data_info.find( {'user_id': user_id} ))
-            tmp_info = None
-
-            if not infos:
-                err = 'no data uploaded'
-                break
-
-            print infos
-            print 'file_name', file_name
-            for info in infos:
-                print info['name'], bool(info['name'] == file_name)
-                if info['name'] == file_name:
-                    tmp_info = info
-                    break
-
-            print 'tmp_info', tmp_info
-
-            # calculate risk
-            population = 'population:{}'.format('+'.join(POPULATION_MAP[tmp_info['population']]))
-            catalog_map, variants_map = search_variants.search_variants(tmp_info['user_id'], tmp_info['name'], population)
-            risk_store, risk_reports = risk_report.risk_calculation(catalog_map, variants_map, POPULATION_CODE_MAP[tmp_info['population']],
-                                                                    tmp_info['sex'], tmp_info['user_id'], tmp_info['name'],
-                                                                    False, True, None)
-                                                                    # os.path.join(UPLOAD_DIR, user_id, '{}_{}.p'.format(tmp_info['user_id'], tmp_info['name'])))
-
-            tmp_study_value_map = risk_reports.get(trait)
-            tmp_risk_store = risk_store.get(trait)
-
-            # list for chart
-            if tmp_study_value_map:
-                study_list = [k for k,v in sorted(tmp_study_value_map.items(), key=lambda(k,v):(v,k), reverse=True)]
-                RR_list = [v for k,v in sorted(tmp_study_value_map.items(), key=lambda(k,v):(v,k), reverse=True)]
-                RR_list_real = [round(10**v, 3) for k,v in sorted(tmp_study_value_map.items(), key=lambda(k,v):(v,k), reverse=True)]
-            else:
-                err = '{0} is not available for {1}'.format()
-
-
-            break
-
-        return direct_to_template(request,
-                                  'risk_report_trait.html',
-                                  {'msg': msg,
-                                   'err': err,
-                                   'trait_name': trait,
-                                   'file_name': file_name,
-                                   'infos': infos,
-                                   'tmp_info': tmp_info,
-                                   'tmp_risk_value': tmp_risk_value,
-                                   'tmp_risk_store': tmp_risk_store,
-                                   'study_list': study_list,
-                                   'RR_list': RR_list,
-                                   'RR_list_real': RR_list_real
-                                   })
-
+    return direct_to_template(request, 'risk_report_trait.html', risk_infos)
 
 
 @login_required
 def study(request, file_name, trait, study_name):
     """
-    view for each study, show RR by rss
+    show RR by rss, for each study
     """
 
     user_id = request.user.username
-    msg = ''
-    err = ''
-    tmp_risk_store = None
-    tmp_risk_value = None
+    risk_infos = get_risk_infos(user_id, file_name, trait_name=trait, study_name=study_name)
 
-    with pymongo.Connection() as connection:
-        db = connection['pergenie']
-        data_info = db['data_info']
-
-        while True:
-            # determine file
-            infos = list(data_info.find( {'user_id': user_id} ))
-            tmp_info = None
-
-            if not infos:
-                err = 'no data uploaded'
-                break
-
-            print infos
-            print 'file_name', file_name
-            for info in infos:
-                print info['name'], bool(info['name'] == file_name)
-                if info['name'] == file_name:
-                    tmp_info = info
-                    break
-
-            if not tmp_info:
-                err = '{} does not exist'.format(file_name)
-                break
-
-            print 'tmp_info', tmp_info
-
-            # calculate risk
-            population = 'population:{}'.format('+'.join(POPULATION_MAP[tmp_info['population']]))
-            catalog_map, variants_map = search_variants.search_variants(tmp_info['user_id'], tmp_info['name'], population)
-            risk_store, risk_reports = risk_report.risk_calculation(catalog_map, variants_map, POPULATION_CODE_MAP[tmp_info['population']],
-                                                                    tmp_info['sex'], tmp_info['user_id'], tmp_info['name'],
-                                                                    False, True, None)
-
-            tmp_risk_store = risk_store.get(trait).get(study_name)
-
-            # list for chart
-            snps_list = [k for k,v in sorted(tmp_risk_store.items(), key=lambda x:x[1]['RR'])]
-            RR_list = [v['RR'] for k,v in sorted(tmp_risk_store.items(), key=lambda x:x[1]['RR'])]
-
-            break
-
-
-        if not trait.replace('_', ' ') in risk_store:
-            err = 'trait not found'
-            print 'err', err           
-
-
-        return direct_to_template(request,
-                                  'risk_report_study.html',
-                                  {'msg': msg,
-                                   'err': err,
-                                   'trait_name': trait,
-                                   'file_name': file_name,
-                                   'infos': infos,
-                                   'tmp_info': tmp_info,
-                                   'tmp_risk_store': tmp_risk_store,
-                                   'snps_list': snps_list,
-                                   'RR_list': RR_list,
-                                   'study_name': study_name
-                                   })
-
+    return direct_to_template(request, 'risk_report_study.html', risk_infos)
