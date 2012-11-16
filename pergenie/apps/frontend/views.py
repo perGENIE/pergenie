@@ -70,7 +70,8 @@ def register(request):
 
                 else:
                     params['is_succeeded'] = True
-                    params['message'] = 'You have successfully registered!'
+                    password = password1
+                    # params['message'] = 'You have successfully registered!'
 
             else:
                 params['has_error'] = True
@@ -82,7 +83,20 @@ def register(request):
             params['message'] = 'Invalid request'
 
 
-    return direct_to_template(request, 'register.html', params)
+    if params['is_succeeded']:
+        # verbose ?
+        user = authenticate(username=user_id,
+                            password=password)
+
+        if user:
+            auth_login(request, user)
+            return redirect('apps.dashboard.views.index')
+
+        else:
+            params['error'] = 'invalid mail address or password'
+
+    else:
+        return direct_to_template(request, 'register.html', params)
     # return _render_to_response('register.html', params, request)
 
 
