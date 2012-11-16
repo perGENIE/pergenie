@@ -179,7 +179,7 @@ $(function () {
                 name: "{{ file_name }}",
                 data: [{% for RR_value in RR_list %}
                          {y: {{ RR_value }}, 
-                          color: {% if risk_value > 0 %}'#2ca6f1'{% elif risk_value == 0 %}'#8a8a8a'{% else %}'#f12ca6'{% endif %},
+                          color: {% if RR_value < 0 %}'#2ca6f1'{% elif RR_value == 0 %}'#8a8a8a'{% else %}'#f12ca6'{% endif %},
                           url:"{% url apps.riskreport.views.study file_name=file_name trait=trait_name study_name=study_list|listvalue:forloop.counter %}"},
                          {% endfor %}],
                 },
