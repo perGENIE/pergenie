@@ -6,4 +6,4 @@ syntax: glob
 .\#*
 pergenie/db.sqlite3
 *.log
-pergenie/settings/common.py
+pergenie/settings/staging.py
