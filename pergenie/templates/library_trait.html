@@ -17,6 +17,23 @@
     </div><!--/span-->
   </div>
 
+
+  {% if msg %}
+  <div class="alert alert-success">
+    <button type="button" class="close" data-dismiss="alert">×</button>
+    {{ msg }}
+  </div>
+  {% endif %}
+  
+  {% if err %}
+  <div class="alert alert-error">
+    <button type="button" class="close" data-dismiss="alert">×</button>
+    {{ err }}
+  </div>
+  {% endif %}
+
+
+  {% if library_list %}
   <!-- Content start -->
   <!-- Draggable Widgets start -->
   <div class="row-fluid">
@@ -72,6 +89,8 @@
       </div>
     </div>
   </div>
+  {% endif %}
+
 </div>
 {% endblock %}
 

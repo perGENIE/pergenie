@@ -7,14 +7,14 @@ import pymongo
 import colors
 import search_catalog
 
-def search_variants(user_id, file_name, query):
+def search_variants(user_id, file_name, query, query_type=None):
     with pymongo.Connection() as connection:
         db = connection['pergenie']
         catalog = db['catalog']
         variants = db['variants'][user_id][file_name]
         print variants
         
-        catalog_records = search_catalog.search_catalog_by_query(query).sort('trait', 1)
+        catalog_records = search_catalog.search_catalog_by_query(query, query_type=query_type).sort('trait', 1)
 
         tmp_catalog_map = {}
         found_id = 0

@@ -31,7 +31,7 @@ def _split_query(raw_query):
             yield '', ''
 
 
-def search_catalog_by_query(raw_query):
+def search_catalog_by_query(raw_query, query_type=None):
 
     # parse & build query
     sub_queries = []
@@ -42,32 +42,37 @@ def search_catalog_by_query(raw_query):
 
                  # 'gene': ['mapped_genes.gene_symbol', 'reported_genes.gene_symbol']
 
-    for query_type, query in _split_query(raw_query):
-        or_queries = []
-        print 'query: {0}: {1}'.format(query_type, query)
-        print query.split(OR_SYMBOL)
+    if query_type == 'trait':
+        sub_queries.append({'trait': raw_query})
 
-        if query_type == 'gene':
-            for or_sub_query in query.split(OR_SYMBOL):
-                or_queries.append({'reported_genes.gene_symbol': re.compile(or_sub_query, re.IGNORECASE)})
-                or_queries.append({'mapped_genes.gene_symbol': re.compile(or_sub_query, re.IGNORECASE)})
+    else:
+        for query_type, query in _split_query(raw_query):
+            or_queries = []
+            print 'query: {0}: {1}'.format(query_type, query)
+            print query.split(OR_SYMBOL)
 
-        elif query_type == 'rs' or  query_type == 'chr':  ### complete match only
-            # for or_sub_query in query.split(OR_SYMBOL):
-            #     or_sub_query = int(or_sub_query)
-            #     or_queries.append({query_map[query_type]: re.compile(or_sub_query, re.IGNORECASE)})
-            sub_queries.append({query_map[query_type]: int(query)})
+            if query_type == 'gene':
+                for or_sub_query in query.split(OR_SYMBOL):
+                    or_queries.append({'reported_genes.gene_symbol': re.compile(or_sub_query, re.IGNORECASE)})
+                    or_queries.append({'mapped_genes.gene_symbol': re.compile(or_sub_query, re.IGNORECASE)})
 
-        elif query_type in query_map:
-            for or_sub_query in query.split(OR_SYMBOL):
-                or_queries.append({query_map[query_type]: re.compile(or_sub_query, re.IGNORECASE)})
+            elif query_type == 'rs' or  query_type == 'chr':  ### complete match only
+                # for or_sub_query in query.split(OR_SYMBOL):
+                #     or_sub_query = int(or_sub_query)
+                #     or_queries.append({query_map[query_type]: re.compile(or_sub_query, re.IGNORECASE)})
+                sub_queries.append({query_map[query_type]: int(query)})
 
-        else:
-            for or_sub_query in query.split(OR_SYMBOL):
-                or_queries.append({'trait': re.compile(or_sub_query, re.IGNORECASE)})
+            elif query_type in query_map:
+                for or_sub_query in query.split(OR_SYMBOL):
+                    or_queries.append({query_map[query_type]: re.compile(or_sub_query, re.IGNORECASE)})
 
-        if or_queries:
-            sub_queries.append({'$or': or_queries})
+            else:
+                for or_sub_query in query.split(OR_SYMBOL):
+                    or_queries.append({'trait': re.compile(or_sub_query, re.IGNORECASE)})
+
+            if or_queries:
+                sub_queries.append({'$or': or_queries})
+    
 
     with pymongo.Connection() as connection:
         db = connection['pergenie']
@@ -82,9 +87,10 @@ def search_catalog_by_query(raw_query):
 def _main():
     arg_parser = argparse.ArgumentParser()
     arg_parser.add_argument('query')
+    arg_parser.add_argument('--type')
     args = arg_parser.parse_args()
 
-    found_records = search_catalog_by_query(args.query)
+    found_records = search_catalog_by_query(args.query, query_type=args.type)
 
     for record in found_records.sort('trait', 1):
         print record['snps'], record['trait'], record['risk_allele'], record['risk_allele_frequency'], record['OR_or_beta'], record['initial_sample_size']

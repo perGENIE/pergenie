@@ -21,6 +21,9 @@ MY_TRAIT_LIST_JA = my_trait_list.my_trait_list_ja
 from apps.library.forms import LibraryForm
 from pergenie.settings import common
 
+from pprint import pprint 
+import colors
+
 @require_http_methods(['GET', 'POST'])
 @login_required
 # def index(response):
@@ -125,39 +128,40 @@ def trait(request, trait):
     user_id = request.user.username
     err = ''
 
+    query = trait.replace('_', ' ')
+    library_list = []
+    variants_maps = {}
+    
     if not trait.replace('_', ' ') in MY_TRAIT_LIST:
         err = 'trait not found'
-        print 'err', err
-        
-        return direct_to_template(request,
-                                  'library_trait_index.html',
-                                  {'err': err,
-                                   'my_trait_list': MY_TRAIT_LIST,
-                                   'my_trait_list_ja': MY_TRAIT_LIST_JA
-                                   })
 
+    else:
+       with pymongo.Connection() as connection:
+           db = connection['pergenie']
+           data_info = db['data_info']
 
-    with pymongo.Connection() as connection:
-        db = connection['pergenie']
-        data_info = db['data_info']
+           uploadeds = list(data_info.find( {'user_id': user_id}))
+           file_names = [uploaded['name'] for uploaded in uploadeds]
 
-        uploadeds = list(data_info.find( {'user_id': user_id}))
-        file_names = [uploaded['name'] for uploaded in uploadeds]
+           variants_maps = {}
+           for file_name in file_names:
+               library_map, variants_maps[file_name] = search_variants.search_variants(user_id, file_name, query, 'trait')
 
-        query = '"{}"'.format(trait.replace('_', ' '))
-        variants_maps = {}
-        for file_name in file_names:
-            library_map, variants_maps[file_name] = search_variants.search_variants(user_id, file_name, query)
-        library_list = [library_map[found_id] for found_id in library_map] ###
+           pprint(library_map)
+           print 
+           print variants_maps
+           print 
 
-        return direct_to_template(request,
-                                  'library_trait.html',
-                                  {'err': err,
-                                   'trait_name': query,
-                                   'library_list': library_list,
-                                   'variants_maps': variants_maps})
+           library_list = [library_map[found_id] for found_id in library_map] ###
 
-    # return direct_to_template(response, 'library_trait.html')
+    print colors.green('[ERROR]'), err
+
+    return direct_to_template(request,
+                              'library_trait.html',
+                              {'err': err,
+                               'trait_name': query,
+                               'library_list': library_list,
+                               'variants_maps': variants_maps})
 
 
 # TODO: table view for snps
