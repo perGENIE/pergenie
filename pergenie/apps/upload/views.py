@@ -44,9 +44,19 @@ def index(request):
                     # err = 'Select data file.'
                     break
 
-                if not population:
+                #TODO: validate file
+
+                if not population or population not in ('unkown', 'Asian', 'Europian', 'Japanese'):
                     err = 'Populationを選択して下さい．'
                     # err = 'Select population.'
+                    break
+
+                if not sex or sex not in ('unkown', 'male', 'female'):
+                    err = 'Sexを選択して下さい．'
+                    break
+
+                if not file_format or file_format not in ('andme', 'navi', 'vcf', 'tmmb'):
+                    err = 'File Formatを選択して下さい．'
                     break
 
                 print call_file.name
