@@ -49,12 +49,12 @@ def index(request):
                     # err = 'Select data file.'
                     break
 
-                if not population or population not in ('unkown', 'Asian', 'Europian', 'Japanese'):
+                if not population or population not in ('unknown', 'Asian', 'Europian', 'Japanese'):
                     err = 'Populationを選択して下さい．'
                     # err = 'Select population.'
                     break
 
-                if not sex or sex not in ('unkown', 'male', 'female'):
+                if not sex or sex not in ('unknown', 'male', 'female'):
                     err = 'Sexを選択して下さい．'
                     break
 
@@ -98,7 +98,7 @@ def index(request):
                 m = magic.Magic(mime_encoding=True)
                 magic_filetype = m.from_file(uploaded_file_path)
                 if not magic_filetype in ('us-ascii'):
-                    err = '許可されていないファイルタイプです．'
+                    err = '許可されていないファイルタイプ，あるいは許可されていないエンコーディングです．'
                     print '[DEBUG]', magic_filetype
                     try:
                         os.remove(uploaded_file_path)
