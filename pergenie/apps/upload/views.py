@@ -14,6 +14,7 @@ from lib.tasks import qimport_variants
 from apps.upload.forms import UploadForm
 
 UPLOAD_DIR = '/tmp/pergenie'
+UPLOAD_GENOMEFILE_SIZE_LIMIT = 104857600  # 100Mbytes = 104857600
 
 @require_http_methods(['GET', 'POST'])
 @login_required
@@ -44,8 +45,6 @@ def index(request):
                     # err = 'Select data file.'
                     break
 
-                #TODO: validate file
-
                 if not population or population not in ('unkown', 'Asian', 'Europian', 'Japanese'):
                     err = 'Populationを選択して下さい．'
                     # err = 'Select population.'
@@ -59,22 +58,30 @@ def index(request):
                     err = 'File Formatを選択して下さい．'
                     break
 
-                print call_file.name
+
+                # validate uploaded file
+                if call_file.size > UPLOAD_GENOMEFILE_SIZE_LIMIT:
+                    err = 'ファイルサイズが制限を超えています．'
+                    break
+
                 if os.path.splitext(call_file.name)[1].lower()[1:] not in ('csv', 'txt', 'vcf'):
                     err = '許可されいてない拡張子のファイルです．'
                     # err = 'Not allowed file extension.'
                     break
 
-                if data_info.find({'user_id': user_id, 'name': call_file.name}).count() > 0:
+                # if call_file.
+                # print 
+                
 
+                if data_info.find({'user_id': user_id, 'name': call_file.name}).count() > 0:
                     err = '同じファイル名のファイルがアップロードされています．上書きしたい場合，アップロード済みのファイルを削除して下さい．'
                     # err = 'Same file name exists. If you want to overwrite it, please delete old one.'
                     break
 
-
                 if not os.path.exists(os.path.join(UPLOAD_DIR, user_id)):
                     os.makedirs(os.path.join(UPLOAD_DIR, user_id))
 
+                # handle uploaded file
                 with open(os.path.join(UPLOAD_DIR, user_id, call_file.name), 'wb') as fout:
                     for chunk in call_file.chunks():
                         fout.write(chunk)
