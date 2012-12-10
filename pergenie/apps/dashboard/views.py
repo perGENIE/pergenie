@@ -5,13 +5,15 @@ from django.views.generic.simple import direct_to_template
 
 import pymongo
 
+from django.conf import settings
+
 @login_required
 def index(request):
     user_id = request.user.username
     msg = ''
     err = ''
 
-    with pymongo.Connection() as connection:
+    with pymongo.Connection(port=settings.MONGO_PORT) as connection:
         db = connection['pergenie']
         data_info = db['data_info']
 

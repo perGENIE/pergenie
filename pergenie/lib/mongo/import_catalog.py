@@ -29,7 +29,7 @@ def pickle_load_obj(fin_name):
         obj = pickle.load(fin)
     return obj
 
-def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_pickled_catalog=None):
+def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_pickled_catalog=None, mongo_port=27017):
     print 'Loading mim2gene.txt...'
     with open(path_to_mim2gene, 'rb') as fin:
         for record in csv.DictReader(fin, delimiter='\t'):
@@ -51,7 +51,7 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_pickled_catalo
     #         eng2ja[record['eng']] = record['ja']
     eng2ja = weblio_eng2ja.WeblioEng2Ja('data/eng2ja.txt', 'data/eng2ja_plus.txt')
 
-    with pymongo.Connection() as connection:
+    with pymongo.Connection(port=mongo_port) as connection:
         catalog = connection['pergenie']['catalog']
         dbsnp = connection['dbsnp']['B132']  #
         
@@ -555,9 +555,11 @@ def _main():
     parser.add_argument('gwascatalog', help='path to gwascatalog.txt')
     parser.add_argument('mim2gene', help='path to mim2gene.txt')
     parser.add_argument('--pickled_catalog', help='path to pickled catalog')
+    parser.add_argument('--mongo-port', default=27017)
     args = parser.parse_args()
 
-    import_catalog(args.gwascatalog, args.mim2gene, args.pickled_catalog)
+    import_catalog(args.gwascatalog, args.mim2gene, args.pickled_catalog, args.mongo_port)
+    print '[INFO] MONGO_PORT', args.mongo_port
 
 if __name__ == '__main__':
     _main()

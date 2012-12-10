@@ -19,10 +19,10 @@ class VariantParseError(Exception):
     def __str__(self):
         return repr(self.value)
 
-def import_variants(file_name, population, file_format, user_id):
+def import_variants(file_name, population, file_format, user_id, mongo_port=27017):
     """doc"""
     
-    with pymongo.Connection() as connection:
+    with pymongo.Connection(port=mongo_port) as connection:
         db = connection['pergenie']
         users_variants = db['variants'][user_id][file_name]
         data_info = db['data_info']
@@ -179,9 +179,10 @@ def _main():
     parser.add_argument('population')
     parser.add_argument('file_format')
     parser.add_argument('user_id')
+    parser.add_argument('--mongo-port', default=27017)
     args = parser.parse_args()
 
-    import_variants(args.file_name, args.population, args.file_format, args.user_id)
+    import_variants(args.file_name, args.population, args.file_format, args.user_id, args.mongo_port)
 
 
 if __name__ == '__main__':

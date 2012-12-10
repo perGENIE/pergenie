@@ -23,7 +23,7 @@ def index(request):
     msg = ''
     err = ''
 
-    with pymongo.Connection() as connection:
+    with pymongo.Connection(port=settings.MONGO_PORT) as connection:
         db = connection['pergenie']
         data_info = db['data_info']
 
@@ -140,7 +140,7 @@ def delete(request):
     user_id = request.user.username
     name = request.POST.get('name')
 
-    with pymongo.Connection() as connection:
+    with pymongo.Connection(port=settings.MONGO_PORT) as connection:
         db = connection['pergenie']
         data_info = db['data_info']
         variant = db['variant']
@@ -165,7 +165,7 @@ def status(request):
         user_id = request.user.username
 
 
-        with pymongo.Connection() as connection:
+        with pymongo.Connection(port=settings.MONGO_PORT) as connection:
             db = connection['pergenie']
             data_info = db['data_info']
 

@@ -19,7 +19,8 @@ MY_TRAIT_LIST = my_trait_list.my_trait_list
 MY_TRAIT_LIST_JA = my_trait_list.my_trait_list_ja
 
 from apps.library.forms import LibraryForm
-from pergenie.settings import common
+
+from django.conf import settings
 
 from pprint import pprint 
 import colors
@@ -33,7 +34,7 @@ def index(request):
 
     if request.method == 'POST':
         # if query:
-        with pymongo.Connection() as connection:
+        with pymongo.Connection(port=settings.MONGO_PORT) as connection:
             db = connection['pergenie']
             data_info = db['data_info']
 
@@ -64,9 +65,9 @@ def summary_index(request):
     err = ''
 
     # TODO: error handling ?
-    with open(os.path.join(common.BASE_DIR, 'lib', 'mongo', 'catalog_summary.p'), 'rb') as fin:
+    with open(os.path.join(settings.BASE_DIR, 'lib', 'mongo', 'catalog_summary.p'), 'rb') as fin:
         catalog_summary = pickle.load(fin)
-        with open(os.path.join(common.BASE_DIR, 'lib', 'mongo', 'field_names.p'), 'rb') as fin:
+        with open(os.path.join(settings.BASE_DIR, 'lib', 'mongo', 'field_names.p'), 'rb') as fin:
             field_names = pickle.load(fin)
             
             print field_names
@@ -92,7 +93,7 @@ def summary(request, field_name):
     user_id = request.user.username
     err = ''
 
-    with open(os.path.join(common.BASE_DIR, 'lib', 'mongo', 'catalog_summary.p'), 'rb') as fin:
+    with open(os.path.join(settings.BASE_DIR, 'lib', 'mongo', 'catalog_summary.p'), 'rb') as fin:
         catalog_summary = pickle.load(fin)
 
         uniqs_counts = catalog_summary.get(field_name)
@@ -136,7 +137,7 @@ def trait(request, trait):
         err = 'trait not found'
 
     else:
-       with pymongo.Connection() as connection:
+       with pymongo.Connection(port=settings.MONGO_PORT) as connection:
            db = connection['pergenie']
            data_info = db['data_info']
 
@@ -170,7 +171,7 @@ def snps_index(request):
     user_id = request.user.username
     err = ''
 
-    with open(os.path.join(common.BASE_DIR, 'lib', 'mongo', 'catalog_summary.p'), 'rb') as fin:
+    with open(os.path.join(settings.BASE_DIR, 'lib', 'mongo', 'catalog_summary.p'), 'rb') as fin:
         catalog_summary = pickle.load(fin)
 
         uniq_snps_list = list(catalog_summary['snps'])
@@ -195,7 +196,7 @@ def snps(request, rs):
     user_id = request.user.username
     err = ''
 
-    with pymongo.Connection() as connection:
+    with pymongo.Connection(port=settings.MONGO_PORT) as connection:
         db = connection['pergenie']
         data_info = db['data_info']
         uploadeds = list(data_info.find( {'user_id': user_id}))

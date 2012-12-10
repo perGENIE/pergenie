@@ -7,8 +7,8 @@ import pymongo
 import colors
 import search_catalog
 
-def search_variants(user_id, file_name, query, query_type=None):
-    with pymongo.Connection() as connection:
+def search_variants(user_id, file_name, query, query_type=None, mongo_port=27017):
+    with pymongo.Connection(port=mongo_port) as connection:
         db = connection['pergenie']
         catalog = db['catalog']
         variants = db['variants'][user_id][file_name]
@@ -89,9 +89,10 @@ def _main():
     parser.add_argument('-u', '--user_id', required=True)
     parser.add_argument('-v', '--file_name', required=True)
     parser.add_argument('-q', '--query', required=True)
+    parser.add_argument('--mongo-port', default=27017)
     args = parser.parse_args()
    
-    catalog_map, variants_map = search_variants(args.user_id, args.file_name, args.query)
+    catalog_map, variants_map = search_variants(args.user_id, args.file_name, args.query, args.mongo_port)
 
 
     for found_id in catalog_map:

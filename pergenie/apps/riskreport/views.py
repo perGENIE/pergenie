@@ -54,7 +54,7 @@ def get_risk_infos(user_id, file_name, trait_name=None, study_name=None):
     infos, tmp_info, tmp_risk_store  = None, None, None
     RR_list, RR_list_real, study_list, snps_list = [], [], [], []
 
-    with pymongo.Connection() as connection:
+    with pymongo.Connection(port=settings.MONGO_PORT) as connection:
         db = connection['pergenie']
         data_info = db['data_info']
 
@@ -134,7 +134,7 @@ def index(request):
     risk_traits = None
     risk_values = None
 
-    with pymongo.Connection() as connection:
+    with pymongo.Connection(port=settings.MONGO_PORT) as connection:
         db = connection['pergenie']
         data_info = db['data_info']
 

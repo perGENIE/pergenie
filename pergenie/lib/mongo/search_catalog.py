@@ -31,7 +31,7 @@ def _split_query(raw_query):
             yield '', ''
 
 
-def search_catalog_by_query(raw_query, query_type=None):
+def search_catalog_by_query(raw_query, query_type=None, mongo_port=27017):
 
     # parse & build query
     sub_queries = []
@@ -74,7 +74,7 @@ def search_catalog_by_query(raw_query, query_type=None):
                 sub_queries.append({'$or': or_queries})
     
 
-    with pymongo.Connection() as connection:
+    with pymongo.Connection(port=mongo_port) as connection:
         db = connection['pergenie']
         catalog = db['catalog']
         query = {'$and': sub_queries}
@@ -85,12 +85,13 @@ def search_catalog_by_query(raw_query, query_type=None):
 
 
 def _main():
-    arg_parser = argparse.ArgumentParser()
-    arg_parser.add_argument('query')
-    arg_parser.add_argument('--type')
-    args = arg_parser.parse_args()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('query')
+    parser.add_argument('--type')
+    parser.add_argument('--mongo-port', default=27017)
+    args = parser.parse_args()
 
-    found_records = search_catalog_by_query(args.query, query_type=args.type)
+    found_records = search_catalog_by_query(args.query, query_type=args.type, mongo_port=args.mongo_port)
 
     for record in found_records.sort('trait', 1):
         print record['snps'], record['trait'], record['risk_allele'], record['risk_allele_frequency'], record['OR_or_beta'], record['initial_sample_size']
