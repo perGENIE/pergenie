@@ -14,8 +14,7 @@ import magic
 from lib.tasks import qimport_variants
 from apps.upload.forms import UploadForm
 
-UPLOAD_DIR = '/tmp/pergenie'
-UPLOAD_GENOMEFILE_SIZE_LIMIT = 104857600  # 100Mbytes = 104857600
+from django.conf import settings
 
 @require_http_methods(['GET', 'POST'])
 @login_required
@@ -65,7 +64,7 @@ def index(request):
 
                 """Security: validate that uploaded file is valid"""
 
-                if call_file.size > UPLOAD_GENOMEFILE_SIZE_LIMIT:
+                if call_file.size > settings.UPLOAD_GENOMEFILE_SIZE_LIMIT:
                     err = 'ファイルサイズが制限を超えています．'
                     break
 
@@ -85,11 +84,11 @@ def index(request):
                     # err = 'Same file name exists. If you want to overwrite it, please delete old one.'
                     break
 
-                if not os.path.exists(os.path.join(UPLOAD_DIR, user_id)):
-                    os.makedirs(os.path.join(UPLOAD_DIR, user_id))
+                if not os.path.exists(os.path.join(settings.UPLOAD_DIR, user_id)):
+                    os.makedirs(os.path.join(settings.UPLOAD_DIR, user_id))
 
                 # UploadedFile object to a file
-                uploaded_file_path = os.path.join(UPLOAD_DIR, user_id, call_file.name)
+                uploaded_file_path = os.path.join(settings.UPLOAD_DIR, user_id, call_file.name)
                 with open(uploaded_file_path, 'wb') as fout:
                     for chunk in call_file.chunks():
                         fout.write(chunk)

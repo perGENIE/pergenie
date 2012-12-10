@@ -11,10 +11,16 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from django.test.client import Client
 
+import pymongo
+
 class SimpleTest(TestCase):
     def setUp(self):
         self.client = Client()
         user = User.objects.create_user('temp', '', 'temp')
+        
+        # # TODO: Load db for test
+        # connection = pymongo.Connection()
+
 
     def test_upload_valid(self):
         response = self.client.get('/upload/')
@@ -29,8 +35,11 @@ class SimpleTest(TestCase):
             # assert something like 'population': 'aaa' -> err = 'populationを...'
 
             # TODO: need to test with MongoDB
-            # いまのままだと，data_info.findができてないので，
-            # err = '同じファイル名のファイルが...' になってしまっている．
+            # いまのままだと，本番用のdbをみにいってる...
+
+            # TODO: qimport動いてないっぽい?
+            
+            
 
         #
         self.failUnlessEqual(response.status_code, 200)

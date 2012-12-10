@@ -17,18 +17,8 @@ import colors
 
 from apps.riskreport.forms import RiskReportForm
 
-UPLOAD_DIR = '/tmp/pergenie'
+from django.conf import settings
 
-POPULATION_MAP = {'Asian': ['African'],
-                  'Europian': ['European', 'Caucasian'],
-                  'African': ['Chinese', 'Japanese', 'Asian'],
-                  'Japanese': ['Japanese', 'Asian'],
-                  'unkown': ['']}
-
-POPULATION_CODE_MAP = {'Asian': 'JPT',
-                       'Europian': 'CEU',
-                       'Japanese': 'JPT',
-                       'unkown': 'unkown'}
 
 def get_risk_values(tmp_infos):
     """ """
@@ -37,12 +27,12 @@ def get_risk_values(tmp_infos):
 
     for i, tmp_info in enumerate(tmp_infos):
         # calculate risk
-        population = 'population:{}'.format('+'.join(POPULATION_MAP[tmp_info['population']]))
+        population = 'population:{}'.format('+'.join(settings.POPULATION_MAP[tmp_info['population']]))
         catalog_map, variants_map = search_variants.search_variants(tmp_info['user_id'], tmp_info['name'], population)
-        risk_store, risk_reports = risk_report.risk_calculation(catalog_map, variants_map, POPULATION_CODE_MAP[tmp_info['population']],
+        risk_store, risk_reports = risk_report.risk_calculation(catalog_map, variants_map, settings.POPULATION_CODE_MAP[tmp_info['population']],
                                                                 tmp_info['sex'], tmp_info['user_id'], tmp_info['name'], 
                                                                 False,  True, None)
-                                                                # os.path.join(UPLOAD_DIR, user_id, '{}_{}.p'.format(tmp_info['user_id'], tmp_info['name'])))
+                                                                # os.path.join(settings.UPLOAD_DIR, user_id, '{}_{}.p'.format(tmp_info['user_id'], tmp_info['name'])))
 
         # list for chart
         tmp_map = {}
@@ -90,12 +80,12 @@ def get_risk_infos(user_id, file_name, trait_name=None, study_name=None):
             print '[DEBUG] tmp_info', tmp_info
 
             # calculate risk
-            population = 'population:{}'.format('+'.join(POPULATION_MAP[tmp_info['population']]))
+            population = 'population:{}'.format('+'.join(settings.POPULATION_MAP[tmp_info['population']]))
             catalog_map, variants_map = search_variants.search_variants(tmp_info['user_id'], tmp_info['name'], population)
-            risk_store, risk_reports = risk_report.risk_calculation(catalog_map, variants_map, POPULATION_CODE_MAP[tmp_info['population']],
+            risk_store, risk_reports = risk_report.risk_calculation(catalog_map, variants_map, settings.POPULATION_CODE_MAP[tmp_info['population']],
                                                                     tmp_info['sex'], tmp_info['user_id'], tmp_info['name'],
                                                                     False, True, None)
-                                                                    # os.path.join(UPLOAD_DIR, user_id, '{}_{}.p'.format(tmp_info['user_id'], tmp_info['name'])))
+                                                                    # os.path.join(settings.UPLOAD_DIR, user_id, '{}_{}.p'.format(tmp_info['user_id'], tmp_info['name'])))
 
 
             if study_name and trait_name:
