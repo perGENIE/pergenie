@@ -7,11 +7,11 @@ import os
 import subprocess
 import csv
 import time
+import datetime
+
 import pymongo
 
 import colors
-
-UPLOAD_DIR = '/tmp/pergenie'
 
 class VariantParseError(Exception):
     def __init__(self, value):
@@ -19,47 +19,62 @@ class VariantParseError(Exception):
     def __str__(self):
         return repr(self.value)
 
-def import_variants(file_name, population, file_format, user_id, mongo_port=27017):
+def import_variants(file_path, population, sex, file_format, user_id, mongo_port=27017):
     """doc"""
+
+    # remove dots from file_name
+    file_name = file_path.split('/')[-1]
+    file_name_cleaned = file_name.replace('.', '').replace(' ', '')
+    print >>sys.stderr, '[INFO] collection name: {}'.format(file_name_cleaned)
     
     with pymongo.Connection(port=mongo_port) as connection:
         db = connection['pergenie']
-        users_variants = db['variants'][user_id][file_name]
+        users_variants = db['variants'][user_id][file_name_cleaned]
         data_info = db['data_info']
-        data_info.update({'user_id': user_id, 'name': file_name}, {"$set": {'status': 1}})
- 
+
         # ensure this variants file is not imported
         if users_variants.find_one():
             db.drop_collection(users_variants)
-            print >>sys.stderr, '[WARNING] dropped old collection of {}'.format(file_name)
+            print >>sys.stderr, colors.yellow('[WARNING] dropped old collection of {}'.format(file_name_cleaned))
 
-        variant_file_path = os.path.join(UPLOAD_DIR, user_id, file_name)
-        print '[INFO] variant_file_path:', variant_file_path
+        print >>sys.stderr, '[INFO] Countiong input lines ...',
+        file_lines = int(subprocess.check_output(['wc', '-l', file_path]).split()[0])
+        print >>sys.stderr, 'done. # of lines: {}'.format(file_lines)
 
-        print '[INFO] Countiong input lines ...',
-        file_lines = int(subprocess.check_output(['wc', '-l', variant_file_path]).split()[0])
-        print 'done. # of lines: {}'.format(file_lines)
 
-        print >>sys.stderr, '[INFO] Start importing {} ...'.format(file_name)
+        today = str(datetime.datetime.today()).replace('-', '/')
+        info = {'user_id': user_id,
+                'name': file_name_cleaned,
+                'raw_name': file_name,
+                'date': today,
+                'population': population,
+                'sex': sex,
+                'file_format': file_format,
+                'status': float(1.0)}
+
+        data_info.update({'user_id': user_id, 'name': file_name_cleaned}, {"$set": info}, upsert=True)
+
+        print >>sys.stderr,'[INFO] Start importing {0} as {1}...'.format(file_name, file_name_cleaned)
         prev_collections = db.collection_names()
 
         try:
-            with open(variant_file_path, 'rb') as fin:
+            with open(file_path, 'rb') as fin:
                 for i,data in enumerate(parse_lines(fin, file_format)):
                     if data['rs']:
                         users_variants.insert(data)
 
                     if i>0 and i%10000 == 0:
                         upload_status = int( 100 * ( i*0.9 / file_lines ) + 1 )
-                        data_info.update({'user_id': user_id, 'name': file_name}, {"$set": {'status': upload_status}})
-                        print '[INFO] status: {}'.format(data_info.find({'user_id': user_id, 'name': file_name})[0]['status'])  #
+                        data_info.update({'user_id': user_id, 'name': file_name_cleaned}, {"$set": {'status': upload_status}})
+                        print '[INFO] status: {}'.format(data_info.find({'user_id': user_id, 'name': file_name_cleaned})[0]['status'])
 
                 print >>sys.stderr,'[INFO] ensure_index ...'
                 users_variants.ensure_index('rs', unique=True)  # ok?
 
-                data_info.update({'user_id': user_id, 'name': file_name}, {"$set": {'status': 100}})
+                data_info.update({'user_id': user_id, 'name': file_name_cleaned}, {"$set": {'status': 100}})
 
-                print >>sys.stderr,'[INFO] done. added collection {}'.format(set(db.collection_names()) - set(prev_collections))
+                print >>sys.stderr, '[INFO] status: {}'.format(data_info.find({'user_id': user_id, 'name': file_name_cleaned})[0]['status'])
+                print >>sys.stderr, '[INFO] done. added collection {}'.format(set(db.collection_names()) - set(prev_collections))
             return None
 
         except VariantParseError, e:
@@ -175,15 +190,17 @@ def _string(text):
 
 def _main():
     parser = argparse.ArgumentParser(description='import variants file into mongodb')
-    parser.add_argument('file_name')
-    parser.add_argument('population')
-    parser.add_argument('file_format')
-    parser.add_argument('user_id')
+    parser.add_argument('--file-paths', metavar='filepath', nargs='+', required=True)
+    parser.add_argument('--population', required=True)
+    parser.add_argument('--sex', required=True)
+    parser.add_argument('--file-format', required=True)
+    parser.add_argument('--user-id', required=True)
     parser.add_argument('--mongo-port', default=27017)
     args = parser.parse_args()
 
-    import_variants(args.file_name, args.population, args.file_format, args.user_id, args.mongo_port)
-
+    for file_path in args.file_paths:
+        print colors.blue('[INFO] import {}'.format(file_path))
+        import_variants(file_path, args.population, args.sex, args.file_format, args.user_id, args.mongo_port)
 
 if __name__ == '__main__':
     _main()

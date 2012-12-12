@@ -109,16 +109,20 @@ def index(request):
                 msg = '{}がアップロードされました．'.format(call_file.name)
                 # msg = 'Successfully uploaded: {}'.format(call_file.name)
 
+                # TODO: check if clery is alive
+                
                 today = str(datetime.datetime.today()).replace('-', '/')
+                file_name_cleaned = call_file.name.replace('.', '').replace(' ', '')
+
                 info = {'user_id': user_id,
-                        'name': call_file.name,
+                        'name': file_name_cleaned,
+                        'raw_name': call_file.name,
                         'date': today,
                         'population': population,
                         'sex': sex,
                         'file_format': file_format,
                         'status': float(0.0)}
                 data_info.insert(info)
-
 
                 qimport_variants.delay(info)
                 msg += '現在，読み込んでいます...'
