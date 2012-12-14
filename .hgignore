@@ -8,3 +8,5 @@ pergenie/db.sqlite3
 *.log
 pergenie/settings/develop.py
 pergenie/settings/staging.py
+data/misc
+pergenie/build
