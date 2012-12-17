@@ -11,8 +11,10 @@ django-jinja==0.3
 django-registration==0.8
 ipython==0.13.1
 kombu==2.4.6
+lockfile==0.9.1
 numpy==1.6.2
 pymongo==2.3
+python-daemon==1.6
 python-dateutil==1.5
 python-magic==0.4.3
 readline==6.2.4.1

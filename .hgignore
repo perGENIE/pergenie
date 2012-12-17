@@ -9,6 +9,7 @@ pergenie/db.sqlite3
 pergenie/settings/develop.py
 pergenie/settings/staging.py
 data/misc
+misc
 pergenie/build
 perGENIE.egg-info
 dist
