@@ -1,4 +1,3 @@
-#!/usr/bin/env python2.7
 # -*- coding: utf-8 -*-
 
 import argparse
@@ -28,6 +27,7 @@ def pickle_load_obj(fin_name):
     with open(fin_name, 'rb') as fin:
         obj = pickle.load(fin)
     return obj
+
 
 def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_pickled_catalog=None, mongo_port=27017):
     print 'Loading mim2gene.txt...'
@@ -550,16 +550,16 @@ def _genes_from_ids(text):
         return result
 
 
-def _main():
-    parser = argparse.ArgumentParser(description='import gwascatalog.txt to the database')
-    parser.add_argument('gwascatalog', help='path to gwascatalog.txt')
-    parser.add_argument('mim2gene', help='path to mim2gene.txt')
-    parser.add_argument('--pickled_catalog', help='path to pickled catalog')
-    parser.add_argument('--mongo-port', default=27017)
-    args = parser.parse_args()
+# def _main():
+#     parser = argparse.ArgumentParser(description='import gwascatalog.txt to the database')
+#     parser.add_argument('gwascatalog', help='path to gwascatalog.txt')
+#     parser.add_argument('mim2gene', help='path to mim2gene.txt')
+#     parser.add_argument('--pickled_catalog', help='path to pickled catalog')
+#     parser.add_argument('--mongo-port', default=27017)
+#     args = parser.parse_args()
 
-    import_catalog(args.gwascatalog, args.mim2gene, args.pickled_catalog, args.mongo_port)
-    print '[INFO] MONGO_PORT', args.mongo_port
+#     import_catalog(args.gwascatalog, args.mim2gene, args.pickled_catalog, args.mongo_port)
+#     print '[INFO] MONGO_PORT', args.mongo_port
 
-if __name__ == '__main__':
-    _main()
+# if __name__ == '__main__':
+#     _main()

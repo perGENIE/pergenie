@@ -1,12 +1,18 @@
 # -*- coding: utf-8 -*-
 
 from django.core.management.base import BaseCommand
-from optparse import make_option
+from django.conf import settings
 
-from signal import SIGTSTP, SIGABRT
-import sys, os
+from optparse import make_option
+import sys
+import os
+import datetime
 
 from termcolor import colored
+
+import mongo.get_catalog as get_catalog
+import mongo.clean_catalog as clean_catalog
+import mongo.import_catalog as import_catalog
 
 class Command(BaseCommand):
     option_list = BaseCommand.option_list + (
@@ -20,14 +26,30 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         if options["gwascatalog"]:
-            # try:
-            #     self.shout.open()
-            #     self.shout.close()
-            # except shout.ShoutException as exception:
-            #     print "Error: " + str(exception)
-            #     return
+            self.stdout.write('[INFO] Try to import latest gwascatalog...\n')
 
-            self.stdout.write("hello\n")
+            # check if gwascatalog.<today>.txt is exists
+            d = datetime.datetime.today()
+            today = '{0}_{1}_{2}'.format(d.year, d.month, d.day)
+            latest_catalog = os.path.join('data', 'gwascatalog.' + today + '.txt')
+            if os.path.exists(latest_catalog):
+                self.stdout.write('[INFO] Latest gwascatalog exists.\n')
+
+            else:
+                # get latest gwascatalog from official web site
+                self.stdout.write('[INFO] Getting latest gwascatalog form official web site...\n')
+                get_catalog.get_catalog(url=settings.GWASCATALOG_URL, dst=latest_catalog)
+                
+            # do `clean_catalog`
+            self.stdout.write('[INFO] Cleaning latest gwascatalog...\n')
+            clean_catalog.clean_catalog(latest_catalog, latest_catalog.replace('.txt', '.cleaned.txt'))
+            
+
+            # TODO: do `import_catalog`. collection name: [catalog][<today>]
+
+            # TODO: do test_gatalog
+
+            # TODO: update 'latest' catalog in db.catalog_info
             
 
         else:
