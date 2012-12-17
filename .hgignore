@@ -12,3 +12,4 @@ data/misc
 pergenie/build
 perGENIE.egg-info
 dist
+celeryd.pid

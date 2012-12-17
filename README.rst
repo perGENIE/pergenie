@@ -1,9 +1,9 @@
-========
-perGENIE
-========
+===============
+perGENIE README
+===============
 
-README
-------
+HOW TO USE
+----------
 
 * Install perGENIE
 
@@ -22,7 +22,7 @@ README
 
     #. Launch celeryd::
 
-        $ python manage.py celeryd &
+        $ python manage.py celeryd_detach
 
 
     #. Launch djnago::
@@ -31,6 +31,18 @@ README
 
 
     #. Access localhost:8000 from browser, then you will see login page.
+
+        *. If you get errors, 
+        
+            *. "python module import error"
+
+                *. Installation via pip may have failed.
+
+            *. "connection refused"
+
+                *. Installation of MongoDB or RabbitMQ failed.
+
+                *. Or launching MongoDB or RabbitMQ failed.
 
 
 Installation Guides
@@ -67,32 +79,4 @@ Getting Started with perGENIE on OS X
 
     #. Initialize celeryd log::
     
-        $ mkdir -p log
         $ touch log/celeryd.log
-
-
-* Launch perGENIE:
-
-    #. Launch celeryd::
-
-        $ python manage.py celeryd &
-
-
-    #. Launch djnago::
-
-        $ python manage.py runserver
-
-
-    #. Access localhost:8000 from browser, then you will see login page.
-
-        *. You may get errors, 
-        
-            *. "python module import error"
-
-                *. Installation via pip may have failed.
-
-            *. "connection refused"
-
-                *. Installation of MongoDB or RabbitMQ failed.
-
-                *. Or launching MongoDB or RabbitMQ failed.
