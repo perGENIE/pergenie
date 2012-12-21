@@ -37,9 +37,8 @@ class Command(BaseCommand):
             self.stdout.write('[INFO] Force {}\n'.format(options['force']))
 
             # check if gwascatalog.<today>.txt is exists
-            d = datetime.datetime.today()
-            today = '{0}_{1}_{2}'.format(d.year, d.month, d.day)
-            latest_catalog = os.path.join('data', 'gwascatalog.' + today + '.txt')
+            today = datetime.date.today()
+            latest_catalog = os.path.join('data', 'gwascatalog.' + str(today).replace('-', '_') + '.txt')
 
             if os.path.exists(latest_catalog) and not options['force']:
                 self.stdout.write('[INFO] Latest gwascatalog exists.\n')
@@ -66,17 +65,39 @@ class Command(BaseCommand):
 
             # TODO: do test_gatalog for db.catalog.<today>
 
-            # TODO: update 'latest' catalog in db.catalog_info
-#             with pymongo.Connection(port=settings.MONGO_PORT) as connection:
-#                 catalog_info = connection['pergenie']['catalog_info']
+            # update 'latest' catalog in db.catalog_info
+            today_date = datetime.datetime.strptime(str(datetime.date.today()), '%Y-%m-%d')
+            with pymongo.Connection(port=settings.MONGO_PORT) as connection:
+                print '[INFO] MongoDB port: {}'.format(settings.MONGO_PORT)
+                catalog_info = connection['pergenie']['catalog_info']
 
-#                 catalog_info_document = catalog_info.find_one()
-#                 if catalog_info_document:
-#                     prev = catalog_info_document['latest']
-#                 else:
-#                     prev = None
-#                 catalog_info.update({'latest': today}, )
-                
+                latest_document = catalog_info.find_one({'status': 'latest'})
+
+                print '[DEBUG] latest_document:', latest_document
+                print '[DEBUG] today_date:', today_date
+
+                if latest_document:
+                    latest_date = latest_document['date']
+
+                else:
+                    # no latest, so today_date is latest
+                    latest_date = today_date
+                    catalog_info.update({'status': 'latest'}, {'$set': {'date': latest_date}}, upsert=True)
+                    print '[INFO] first time to  import catalog!'
+                    print '[INFO] today_date:', today_date
+
+                # check if today_date is newer than latest
+                if today_date > latest_date:
+                    # update latest
+                    prev_date = latest_date
+                    catalog_info.update({'status': 'latest'}, {'$set': {'date': latest_date}}, upsert=True)
+                    catalog_info.update({'status': 'prev'}, {'$set': {'date': prev_date}}, upsert=True)
+                    print '[INFO] updated latest in db.catalog_info'
+                    print '[INFO] today_date:', today_date
+
+                else:
+                    # do not update
+                    pass
 
         else:
             self.print_help("import", "help")
