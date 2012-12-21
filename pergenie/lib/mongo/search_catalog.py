@@ -32,6 +32,18 @@ def _split_query(raw_query):
 
 
 def search_catalog_by_query(raw_query, query_type=None, mongo_port=27017):
+    """
+    Search catalog by query.
+
+    Note:
+    This function is used from ...
+      * search_variants.py to get catalog records with population:<query>+<query>+...
+      * ...
+
+    TODO:
+    unify to use <query_type>:<query>+<query>+...
+    """
+
 
     # parse & build query
     sub_queries = []
@@ -44,6 +56,9 @@ def search_catalog_by_query(raw_query, query_type=None, mongo_port=27017):
 
     if query_type == 'trait':
         sub_queries.append({'trait': raw_query})
+    elif query_type == 'population':
+        sub_queries.append({'initial_sample_size': re.compile(raw_query)})
+
 
     else:
         for query_type, query in _split_query(raw_query):
@@ -61,6 +76,11 @@ def search_catalog_by_query(raw_query, query_type=None, mongo_port=27017):
                 #     or_sub_query = int(or_sub_query)
                 #     or_queries.append({query_map[query_type]: re.compile(or_sub_query, re.IGNORECASE)})
                 sub_queries.append({query_map[query_type]: int(query)})
+
+            elif query_type == 'population':
+                for or_sub_query in query.split(OR_SYMBOL):
+                    or_queries.append({'initial_sample_size': re.compile(or_sub_query)})
+
 
             elif query_type in query_map:
                 for or_sub_query in query.split(OR_SYMBOL):
@@ -85,6 +105,10 @@ def search_catalog_by_query(raw_query, query_type=None, mongo_port=27017):
 
 
 def _main():
+    """
+    e.g., $ python search_catalog.py "population:European+Caucasian"
+    """
+    
     parser = argparse.ArgumentParser()
     parser.add_argument('query')
     parser.add_argument('--type')
