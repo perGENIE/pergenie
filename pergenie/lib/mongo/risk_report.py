@@ -7,10 +7,6 @@ import os
 import math
 
 import pymongo
-try:
-   import cPickle as pickle
-except ImportError:
-   import pickle
 
 import colors
 import weblio_eng2ja
@@ -21,15 +17,6 @@ from pprint import pprint
 HAPMAP_PORT = 10002
 POPULATION_CODE = ['ASW', 'CEU', 'CHB', 'CHD', 'GIH', 'JPT', 'LWK', 'MEX', 'MKK', 'TSI', 'YRI']
 UPLOAD_DIR = '/tmp/pergenie'
-
-def pickle_dump_obj(obj, fout_name):
-    with open(fout_name, 'wb') as fout:
-        pickle.dump(obj, fout, protocol=2)
-
-def pickle_load_obj(fin_name):
-    with open(fin_name, 'rb') as fin:
-        obj = pickle.load(fin)
-    return obj
 
 
 def LD_block_clustering(risk_store, population_code):
@@ -165,7 +152,7 @@ def _relative_risk_to_general_population(freq, OR, zygosities):
 
 
 def risk_calculation(catalog_map, variants_map, population_code, sex, user_id, file_name,
-                     is_LD_block_clustered, is_log, path_to_pickled_risk_report=None):
+                     is_LD_block_clustered, is_log):
     risk_store = {}
     risk_report = {}
 
@@ -176,16 +163,6 @@ def risk_calculation(catalog_map, variants_map, population_code, sex, user_id, f
      * there are 1 or more ORs for 1 rs. so we need to choice one of them (prioritization)
 
     """
-
-#     if path_to_pickled_risk_report:
-#         print '[INFO] try to load risk report from {}...'.format(path_to_pickled_risk_report)
-#         if os.path.exists(path_to_pickled_risk_report):
-#             risk_store, risk_report = pickle_load_obj(path_to_pickled_risk_report)
-#             return risk_store, risk_report
-            
-#         else:
-#             print '[WARNING] but does not exist'
-
 
     for found_id in catalog_map:
         record = catalog_map[found_id]
@@ -294,21 +271,6 @@ def risk_calculation(catalog_map, variants_map, population_code, sex, user_id, f
                            risk_report[trait][study] *= tmp_value
                            risk_report[trait][study] = round(risk_report[trait][study], 2)
 
-
-
-#     # FOR DEBUG ONLY
-#     debug_risk_report = {}
-#     for trait,value in risk_report.items():
-#         if trait in 'Eye color':  # not disease
-#             pass
-#         else:
-# #             if value < 50:
-#             debug_risk_report[trait] = value
-
-
-#     risk_report = debug_risk_report
-
-#     pickle_dump_obj([risk_store, risk_report], os.path.join(UPLOAD_DIR, user_id, '{}_{}.p'.format(user_id, file_name)))
 
     return risk_store, risk_report
 
