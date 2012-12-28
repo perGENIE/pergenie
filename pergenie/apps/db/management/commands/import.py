@@ -7,9 +7,10 @@ from optparse import make_option
 import sys
 import os
 import datetime
-
 from termcolor import colored
 import pymongo
+
+from utils.date import today_date, today_str
 
 import mongo.get_catalog as get_catalog
 import mongo.clean_catalog as clean_catalog
@@ -31,15 +32,12 @@ class Command(BaseCommand):
         # ),
     )
 
-
-
     def handle(self, *args, **options):
         if options["gwascatalog"]:
             self.stdout.write('[INFO] Try to import latest gwascatalog...\n')
 
             # check if gwascatalog.<today>.txt is exists
-            today = datetime.date.today()
-            latest_catalog = os.path.join('data', 'gwascatalog.' + str(today).replace('-', '_') + '.txt')
+            latest_catalog = os.path.join('data', 'gwascatalog.' + today_str + '.txt')
 
             if os.path.exists(latest_catalog):
                 self.stdout.write('[INFO] Latest gwascatalog exists.\n')
@@ -71,7 +69,6 @@ class Command(BaseCommand):
                 # TODO: do risk report as test. (check if import catalog was succeed & odd records were handeled)
 
             # update 'latest' catalog in db.catalog_info
-            today_date = datetime.datetime.strptime(str(datetime.date.today()), '%Y-%m-%d')
             with pymongo.Connection(port=settings.MONGO_PORT) as connection:
                 print '[INFO] MongoDB port: {}'.format(settings.MONGO_PORT)
                 catalog_info = connection['pergenie']['catalog_info']
