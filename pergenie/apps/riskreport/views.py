@@ -40,7 +40,7 @@ def upsert_riskreport(tmp_info, mongo_port=settings.MONGO_PORT):
         data_info.update({'user_id': tmp_info['user_id'], 'name':tmp_info['name'] }, {"$set": {'riskreport': today_date}}, upsert=True)
 
 
-def get_risk_values_for_chart(tmp_infos):
+def get_risk_values_for_indexpage(tmp_infos):
     """Return risk values (for one or two files) for chart.
     """
 
@@ -73,83 +73,8 @@ def get_risk_values_for_chart(tmp_infos):
             elif i >= 1:
                 risk_values.append([tmp_map.get(trait, 0) for trait in risk_traits])
 
-    return risk_reports, risk_traits, risk_values
+    return risk_reports, risk_traits, risk_values        
 
-
-# def get_risk_infos(user_id, file_name, trait_name=None, study_name=None):
-#     msg, err = '', ''
-#     infos, tmp_info, tmp_risk_store  = None, None, None
-#     RR_list, RR_list_real, study_list, snps_list = [], [], [], []
-
-#     with pymongo.Connection(port=settings.MONGO_PORT) as connection:
-#         db = connection['pergenie']
-#         data_info = db['data_info']
-
-#         while True:
-#             # determine file
-#             infos = list(data_info.find( {'user_id': user_id} ))
-#             tmp_info = None
-
-#             if not infos:
-#                 err = 'データがアップロードされていません．'
-#                 # err = 'no data uploaded'
-#                 break
-
-#             for info in infos:
-#                 if info['name'] == file_name:
-#                     tmp_info = info
-#                     break
-#             if not tmp_info:
-#                 err = 'そのようなファイルはありません．{}'.format(file_name)
-#                 # err = 'no such file {}'.format(file_name)
-#                 break
-
-#             print '[DEBUG] tmp_info', tmp_info
-
-#             # calculate risk
-#             population = 'population:{}'.format('+'.join(settings.POPULATION_MAP[tmp_info['population']]))
-#             catalog_map, variants_map = search_variants.search_variants(tmp_info['user_id'], tmp_info['name'], population)
-#             risk_store, risk_reports = risk_report.risk_calculation(catalog_map, variants_map, settings.POPULATION_CODE_MAP[tmp_info['population']],
-#                                                                     tmp_info['sex'], tmp_info['user_id'], tmp_info['name'],
-#                                                                     False, True)
-#                                                                     # os.path.join(settings.UPLOAD_DIR, user_id, '{}_{}.p'.format(tmp_info['user_id'], tmp_info['name'])))
-
-
-#             if study_name and trait_name:
-#                 tmp_risk_store = risk_store.get(trait_name).get(study_name)
-
-#                 snps_list = [k for k,v in sorted(tmp_risk_store.items(), key=lambda x:x[1]['RR'])]
-#                 RR_list = [v['RR'] for k,v in sorted(tmp_risk_store.items(), key=lambda x:x[1]['RR'])]
-
-#                 if not trait_name.replace('_', ' ') in tmp_risk_store:
-#                     err = 'そのようなtraitはありません'
-#                     # err = 'trait not found'
-#                     break
-
-#             elif not study_name and trait_name:
-#                 tmp_risk_store = risk_store.get(trait_name)
-#                 tmp_study_value_map = risk_reports.get(trait_name)
-#                 study_list = [k for k,v in sorted(tmp_study_value_map.items(), key=lambda(k,v):(v,k), reverse=True)]
-
-#                 # list for chart
-#                 RR_list = [v for k,v in sorted(tmp_study_value_map.items(), key=lambda(k,v):(v,k), reverse=True)]
-#                 RR_list_real = [round(10**v, 3) for k,v in sorted(tmp_study_value_map.items(), key=lambda(k,v):(v,k), reverse=True)]
-
-#             else:
-#                 pass
-
-#             break
-
-#         risk_infos = {'msg':msg, 'err': err, 'infos': infos, 'tmp_info': tmp_info,
-#                       'RR_list': RR_list, 'RR_list_real': RR_list_real, 'study_list': study_list,
-#                       'file_name': file_name, 'trait_name': trait_name, 'study_name': study_name,
-#                       'snps_list': snps_list, 'tmp_risk_store': tmp_risk_store}
-
-#         print '[DEBUG]',
-#         pprint(risk_infos)
-
-#         return risk_infos
-        
 
 @require_http_methods(['GET', 'POST'])
 @login_required
@@ -213,7 +138,7 @@ def index(request):
                 tmp_infos.append(info)
 
             if not err:
-                risk_reports, risk_traits, risk_values = get_risk_values_for_chart(tmp_infos)
+                risk_reports, risk_traits, risk_values = get_risk_values_for_indexpage(tmp_infos)
 
             break
 
@@ -222,13 +147,74 @@ def index(request):
                                    'risk_reports': risk_reports, 'risk_traits': risk_traits, 'risk_values': risk_values})
 
 
+def get_risk_infos_for_subpage(user_id, file_name, trait_name=None, study_name=None):
+    msg, err = '', ''
+    infos, tmp_info, tmp_risk_store  = None, None, None
+    RR_list, RR_list_real, study_list, snps_list = [], [], [], []
+
+    with pymongo.Connection(port=settings.MONGO_PORT) as connection:
+        db = connection['pergenie']
+        data_info = db['data_info']
+
+        while True:
+            # determine file
+            tmp_data_info = data_info.find_one({'user_id': user_id, 'name': file_name})
+
+            if not tmp_data_info:
+                err = 'そのようなファイルはありません．{}'.format(file_name) # 'no such file {}'.format(file_name)
+                break
+
+            # check if riskreport.<user>.<file_name> exist and latest in data_info
+            risk_report_date = tmp_data_info.get('riskreport', None)
+
+            risk_report_obj = os.path.join(settings.RISKREPORT_CACHE_DIR, user_id, 'risk_reports.{0}.{1}.p'.format(user_id, file_name))
+            if not os.path.exists(risk_report_obj) or (today_date > risk_report_date):
+                upsert_riskreport(tmp_info)
+
+            # load latest risk_store.p & risk_report.p
+            risk_store = pickle_load_obj(os.path.join(settings.RISKREPORT_CACHE_DIR, user_id, 'risk_store.{0}.{1}.p'.format(user_id, file_name)))
+            risk_reports = pickle_load_obj(os.path.join(settings.RISKREPORT_CACHE_DIR, user_id, 'risk_reports.{0}.{1}.p'.format(user_id, file_name)))
+
+
+            if study_name and trait_name:
+                tmp_risk_store = risk_store.get(trait_name).get(study_name)
+
+                snps_list = [k for k,v in sorted(tmp_risk_store.items(), key=lambda x:x[1]['RR'])]
+                RR_list = [v['RR'] for k,v in sorted(tmp_risk_store.items(), key=lambda x:x[1]['RR'])]
+
+                if not trait_name.replace('_', ' ') in tmp_risk_store:
+                    err = 'そのようなtraitはありません' # 'trait not found'
+                    break
+
+            elif not study_name and trait_name:
+                tmp_risk_store = risk_store.get(trait_name)
+                tmp_study_value_map = risk_reports.get(trait_name)
+                study_list = [k for k,v in sorted(tmp_study_value_map.items(), key=lambda(k,v):(v,k), reverse=True)]
+
+                # list for chart
+                RR_list = [v for k,v in sorted(tmp_study_value_map.items(), key=lambda(k,v):(v,k), reverse=True)]
+                RR_list_real = [round(10**v, 3) for k,v in sorted(tmp_study_value_map.items(), key=lambda(k,v):(v,k), reverse=True)]
+
+            else:
+                pass
+
+            break
+
+        risk_infos = {'msg':msg, 'err': err, 'infos': infos, 'tmp_info': tmp_info,
+                      'RR_list': RR_list, 'RR_list_real': RR_list_real, 'study_list': study_list,
+                      'file_name': file_name, 'trait_name': trait_name, 'study_name': study_name,
+                      'snps_list': snps_list, 'tmp_risk_store': tmp_risk_store}
+
+        return risk_infos
+
+
 @login_required
 def trait(request, file_name, trait):
     """Show risk value by studies, for each trait.
     """
 
     user_id = request.user.username
-    risk_infos = get_risk_infos(user_id, file_name, trait)
+    risk_infos = get_risk_infos_for_subpage(user_id, file_name, trait)
 
     return direct_to_template(request, 'risk_report_trait.html', risk_infos)
 
@@ -239,6 +225,6 @@ def study(request, file_name, trait, study_name):
     """
 
     user_id = request.user.username
-    risk_infos = get_risk_infos(user_id, file_name, trait_name=trait, study_name=study_name)
+    risk_infos = get_risk_infos_for_subpage(user_id, file_name, trait_name=trait, study_name=study_name)
 
     return direct_to_template(request, 'risk_report_study.html', risk_infos)
