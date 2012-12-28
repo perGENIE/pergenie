@@ -41,9 +41,15 @@ def index(request):
             for user_data in user_datas:
                 risk_report_latest_date[user_data['name']] = user_data['riskreport']
 
-                # TODO: if riskreport is outdated, show diff of records (& link to riskreport)
+                # if riskreport is outdated, show diff of records (& link to riskreport)
                 if today_date > user_data['riskreport']:
                     err += '\n {} outdated'.format(user_data['name'])
+                    err += '\n last risk report: {}'.format(user_data['riskreport'])
+                    
+                for added_date in sorted(catalog_summary.get('added').items()):
+                    print added_date[0],  catalog_latest_importing_document['date']
+                    if added_date[0] > catalog_latest_importing_document['date']:
+                        err += '\n {1} new records {0}'.format(added_date[0], added_date[1])
 
             # determine file
             infos = list(data_info.find( {'user_id': user_id} ))
