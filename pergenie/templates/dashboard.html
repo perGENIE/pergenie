@@ -105,10 +105,17 @@
   </div>
   {% endif %}
 
-  {% if catalog_latest_date %}
+  {% if catalog_latest_importing_date %}
   <div class="alert alert-success">
     <button type="button" class="close" data-dismiss="alert">×</button>
-    latest catalog: {{ catalog_latest_date }}
+    latest catalog import: {{ catalog_latest_importing_date }}
+  </div>
+  {% endif %}
+
+  {% if catalog_latest_new_records_data %}
+  <div class="alert alert-success">
+    <button type="button" class="close" data-dismiss="alert">×</button>
+    latest new catalog records: {{ catalog_latest_new_records_data }}
   </div>
   {% endif %}
 

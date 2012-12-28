@@ -4,10 +4,11 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic.simple import direct_to_template
 from django.conf import settings
 
-import datetime
+import os
 import pymongo
 
-from utils.date import today_date, today_str
+from utils.io import pickle_load_obj
+from utils.date import today_date
 
 @login_required
 def index(request):
@@ -21,14 +22,18 @@ def index(request):
         data_info = db['data_info']
 
         while True:
-            # latest catalog's date
-            catalog_latest_document = catalog_info.find_one({'status': 'latest'})
-            if catalog_latest_document:
-                catalog_latest_date = str(catalog_latest_document['date'].date()).replace('-', '_')
+            # latest catalog importing date
+            catalog_latest_importing_document = catalog_info.find_one({'status': 'latest'})
+            if catalog_latest_importing_document:
+                catalog_latest_importing_date = str(catalog_latest_importing_document['date'].date()).replace('-', '_')
             else:
                 # TODO: error handling
-                catalog_latest_date = None
+                catalog_latest_importing_date = None
                 err = 'latest catalog does not exist'
+
+            # latest new catalog records date
+            catalog_summary = pickle_load_obj(os.path.join(settings.CATALOG_SUMMARY_CACHE_DIR, 'catalog_summary.p'))
+            catalog_latest_new_records_data = sorted(catalog_summary.get('added').items())[-1]
 
             # user's latest riskreport date
             risk_report_latest_date = {}
@@ -52,5 +57,6 @@ def index(request):
     return direct_to_template(request,
                               'dashboard.html',
                               {'msg': msg, 'err': err,
-                               'catalog_latest_date': catalog_latest_date,
+                               'catalog_latest_importing_date': catalog_latest_importing_date,
+                               'catalog_latest_new_records_data': catalog_latest_new_records_data,
                                'risk_report_latest_date': risk_report_latest_date})
