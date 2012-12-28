@@ -65,9 +65,9 @@ def summary_index(request):
     err = ''
 
     # TODO: error handling ?
-    with open(os.path.join(settings.BASE_DIR, 'lib', 'mongo', 'catalog_summary.p'), 'rb') as fin:
+    with open(os.path.join(settings.CATALOG_SUMMARY_CACHE_DIR, 'catalog_summary.p'), 'rb') as fin:
         catalog_summary = pickle.load(fin)
-        with open(os.path.join(settings.BASE_DIR, 'lib', 'mongo', 'field_names.p'), 'rb') as fin:
+        with open(os.path.join(settings.CATALOG_SUMMARY_CACHE_DIR, 'field_names.p'), 'rb') as fin:
             field_names = pickle.load(fin)
             
             print field_names
@@ -82,18 +82,16 @@ def summary_index(request):
 
     print catalog_uniqs_counts
 
-    return direct_to_template(request,
-                              'library_summary_index.html',
+    return direct_to_template(request, 'library_summary_index.html',
                               {'err': err,
-                               'catalog_uniqs_counts': catalog_uniqs_counts
-                               })
+                               'catalog_uniqs_counts': catalog_uniqs_counts})
 
 @login_required
 def summary(request, field_name):
     user_id = request.user.username
     err = ''
 
-    with open(os.path.join(settings.BASE_DIR, 'lib', 'mongo', 'catalog_summary.p'), 'rb') as fin:
+    with open(os.path.join(settings.CATALOG_SUMMARY_CACHE_DIR, 'catalog_summary.p'), 'rb') as fin:
         catalog_summary = pickle.load(fin)
 
         uniqs_counts = catalog_summary.get(field_name)
@@ -103,12 +101,10 @@ def summary(request, field_name):
             err = 'not found'
             uniqs_counts = {}
 
-        return direct_to_template(request,
-                                  'library_summary.html',
+        return direct_to_template(request, 'library_summary.html',
                                   {'err': err,
                                    'uniqs_counts': uniqs_counts,
-                                   'field_name': field_name
-                                   })
+                                   'field_name': field_name})
 
 
 @login_required

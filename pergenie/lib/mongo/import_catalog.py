@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from django.conf import settings
+
 import argparse
 import os
 import csv
@@ -8,30 +10,17 @@ import time
 import re
 import sys
 import pymongo
-try:
-   import cPickle as pickle
-except ImportError:
-   import pickle
 
+from utils.io import pickle_dump_obj, pickle_load_obj
 import weblio_eng2ja
 import colors
 
 _g_gene_symbol_map = {}  # { Gene Symbol => (Entrez Gene ID, OMIM Gene ID) }
 _g_gene_id_map = {}      # { Entrez Gene ID => (Gene Symbol, OMIM Gene ID) }
 
-def pickle_dump_obj(obj, fout_name):
-    with open(fout_name, 'wb') as fout:
-        pickle.dump(obj, fout, protocol=2)
-
-def pickle_load_obj(fin_name):
-    with open(fin_name, 'rb') as fin:
-        obj = pickle.load(fin)
-    return obj
-
-
-def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_pickled_catalog=None, mongo_port=None):
-    if mongo_port is None:
-       mongo_port = settings.MONGO_PORT
+def import_catalog(path_to_gwascatalog, path_to_mim2gene, mongo_port):
+    """doc
+    """
 
     print 'Loading mim2gene.txt...'
     with open(path_to_mim2gene, 'rb') as fin:
@@ -72,20 +61,6 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_pickled_catalo
             print '[WARNING] so strand-check will be skipped'
             dbsnp = None
 
-        # can load from pickled catalog
-        if path_to_pickled_catalog:
-           print '[INFO] try to load catalog from {}...'.format(path_to_pickled_catalog)
-           if os.path.exists(path_to_pickled_catalog):
-              pickled_catalog = pickle_load_obj(path_to_pickled_catalog)
-              for record in pickled_catalog:
-                 catalog.insert(record)
-              print '[INFO] import catalog done'
-              return
-           else:
-              print '[WARNING] but does not exist'
-              print '[WARNING] so load from flatfile {}'.format(path_to_gwascatalog)
-
-        
         my_fields = [('my_added', 'Date Added to MyCatalog', _date),
                      ('who_added', 'Who Added', _string),
                      ('activated', 'Activated', _integer),
@@ -139,7 +114,6 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_pickled_catalo
         print '[INFO] Importing gwascatalog.txt...'
         trait_dict = {}
         catalog_summary = {}
-        to_pickle_catalog = []
         with open(path_to_gwascatalog, 'rb') as fin:
             for i,record in enumerate(csv.DictReader(fin, delimiter='\t')):# , quotechar="'"):
                 # print >>sys.stderr, i
@@ -195,7 +169,6 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_pickled_catalo
                                     except KeyError:
                                         catalog_summary[field] = {value: 1}
 
-                        to_pickle_catalog.append(data)
                         catalog.insert(data)
 
             # TODO: indexing target
@@ -207,12 +180,10 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_pickled_catalo
     print '[INFO] # of traits:', len(trait_dict)
     print '[INFO] # of documents in catalog (after):', catalog.count()
     
-    pickle_dump_obj(catalog_summary, 'catalog_summary.p')
-    pickle_dump_obj(field_names, 'field_names.p')
-    pickle_dump_obj(to_pickle_catalog, 'catalog.p')
+    pickle_dump_obj(catalog_summary, os.path.join(settings.CATALOG_SUMMARY_CACHE_DIR, 'catalog_summary.p'))
+    pickle_dump_obj(field_names, os.path.join(settings.CATALOG_SUMMARY_CACHE_DIR, 'field_names.p'))
     print '[INFO] dumped catalog_summary.p as pickle'
     print '[INFO] dumped field_names.p as pickle'
-    print '[INFO] dumped catalog.p as pickle'
 
     # write out my_trait_list & my_trait_list_ja
     with open('my_trait_list.py', 'w') as my_trait_list:
@@ -554,18 +525,3 @@ def _genes_from_ids(text):
                 result.append(_gene(None, entrez_gene_id, None))
 
         return result
-
-
-# def _main():
-#     parser = argparse.ArgumentParser(description='import gwascatalog.txt to the database')
-#     parser.add_argument('gwascatalog', help='path to gwascatalog.txt')
-#     parser.add_argument('mim2gene', help='path to mim2gene.txt')
-#     parser.add_argument('--pickled_catalog', help='path to pickled catalog')
-#     parser.add_argument('--mongo-port', default=27017)
-#     args = parser.parse_args()
-
-#     import_catalog(args.gwascatalog, args.mim2gene, args.pickled_catalog, args.mongo_port)
-#     print '[INFO] MONGO_PORT', args.mongo_port
-
-# if __name__ == '__main__':
-#     _main()

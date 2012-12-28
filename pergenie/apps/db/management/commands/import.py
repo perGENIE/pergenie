@@ -59,10 +59,8 @@ class Command(BaseCommand):
 
             # TODO: import latest gwascatalog as db.catalog.<today>
             import_catalog.import_catalog(path_to_gwascatalog=latest_catalog_cleaned,
-                                          path_to_mim2gene=os.path.join('data', 'mim2gene.txt'),
-                                          path_to_pickled_catalog=None,
+                                          path_to_mim2gene=settings.PATH_TO_MIM2GENE,
                                           mongo_port=settings.MONGO_PORT)
-
 
             # TODO: do test_gatalog for db.catalog.<today>
                 # TODO: check if latestet `date added` is newer or equal to prev's one. (check if download was succeed)
