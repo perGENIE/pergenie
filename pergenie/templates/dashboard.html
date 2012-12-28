@@ -104,6 +104,13 @@
     {{ err }}
   </div>
   {% endif %}
+
+  {% if catalog_latest_date %}
+  <div class="alert alert-success">
+    <button type="button" class="close" data-dismiss="alert">×</button>
+    latest catalog: {{ catalog_latest_date }}
+  </div>
+  {% endif %}
   
 
   <!-- <div class="span4 column" id="col1"> -->

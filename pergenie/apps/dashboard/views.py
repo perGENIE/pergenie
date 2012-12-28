@@ -17,6 +17,14 @@ def index(request):
         db = connection['pergenie']
         data_info = db['data_info']
 
+        latest_document = db['catalog_info'].find_one({'status': 'latest'})
+        if latest_document:
+            latest_date = str(latest_document['date'].date()).replace('-', '_')
+        else:
+            # TODO: error handling
+            latest_date = None
+            err = 'latest catalog does not exist!'
+
         while True:
             # determine file
             infos = list(data_info.find( {'user_id': user_id} ))
@@ -29,4 +37,5 @@ def index(request):
 
     return direct_to_template(request,
                               'dashboard.html',
-                              {'msg': msg, 'err': err})
+                              {'msg': msg, 'err': err,
+                               'catalog_latest_date': latest_date})
