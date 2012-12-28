@@ -55,7 +55,10 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_pickled_catalo
     eng2ja = weblio_eng2ja.WeblioEng2Ja('data/weblio/eng2ja.txt', 'data/weblio/eng2ja_plus.txt')
 
     with pymongo.Connection(port=mongo_port) as connection:
-        catalog = connection['pergenie']['catalog']
+        catalog_date_raw = os.path.basename(path_to_gwascatalog).split('.')[1]
+        catalog_date = datetime.datetime.strptime(catalog_date_raw , '%Y_%m_%d')
+
+        catalog = connection['pergenie']['catalog'][catalog_date_raw]
         dbsnp = connection['dbsnp']['B132']  #
         
         # ensure db.catalog does not exist
@@ -139,7 +142,7 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_pickled_catalo
         to_pickle_catalog = []
         with open(path_to_gwascatalog, 'rb') as fin:
             for i,record in enumerate(csv.DictReader(fin, delimiter='\t')):# , quotechar="'"):
-                print >>sys.stderr, i
+                # print >>sys.stderr, i
                 data = {}
                 for dict_name, record_name, converter in fields:
                     try:
@@ -172,7 +175,7 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_pickled_catalo
                         # for DEGUG
                         if type(data['OR']) == float:
                            data['OR_or_beta'] = data['OR']
-                           print data['OR_or_beta'], data['OR'], 'rs{}'.format(data['snps'])
+                           # print data['OR_or_beta'], data['OR'], 'rs{}'.format(data['snps'])
                         else:
                            data['OR_or_beta'] = None
 

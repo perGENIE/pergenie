@@ -1,17 +1,19 @@
 syntax: glob
 .DS_Store
-*.pyc
 *~
 \#*
 .\#*
+*.pyc
+*.egg
+build
+dist
+bin
+perGENIE.egg-info
 pergenie/db.sqlite3
 *.log
 pergenie/settings/develop.py
 pergenie/settings/staging.py
 data/*
 misc
-pergenie/build
-perGENIE.egg-info
-dist
 celeryd.pid
 static/vendor

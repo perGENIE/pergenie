@@ -23,39 +23,42 @@ class Command(BaseCommand):
             dest="gwascatalog",
             help=colored("Import GWAS Catalog into database", "green")
         ),
-        make_option(
-            "-f",
-            action="store_true",
-            dest="force",
-            help=colored("force", "green")
-        ),
+        # make_option(
+        #     "-f",
+        #     action="store_true",
+        #     dest="force",
+        #     help=colored("force", "green")
+        # ),
     )
+
+
 
     def handle(self, *args, **options):
         if options["gwascatalog"]:
             self.stdout.write('[INFO] Try to import latest gwascatalog...\n')
-            self.stdout.write('[INFO] Force {}\n'.format(options['force']))
 
             # check if gwascatalog.<today>.txt is exists
             today = datetime.date.today()
             latest_catalog = os.path.join('data', 'gwascatalog.' + str(today).replace('-', '_') + '.txt')
 
-            if os.path.exists(latest_catalog) and not options['force']:
+            if os.path.exists(latest_catalog):
                 self.stdout.write('[INFO] Latest gwascatalog exists.\n')
             else:
                 # get latest gwascatalog from official web site
                 self.stdout.write('[INFO] Getting latest gwascatalog form official web site...\n')
                 get_catalog.get_catalog(url=settings.GWASCATALOG_URL, dst=latest_catalog)
             
+
             latest_catalog_cleaned = latest_catalog.replace('.txt', '.cleaned.txt')
 
-            if os.path.exists(latest_catalog_cleaned) and not options['force']:
+            if os.path.exists(latest_catalog_cleaned):
                 self.stdout.write('[INFO] Latest gwascatalog.cleaned exists.\n')
             else:
                 # do `clean_catalog`
                 self.stdout.write('[INFO] Cleaning latest gwascatalog...\n')
                 clean_catalog.clean_catalog(latest_catalog, latest_catalog_cleaned)
                 
+
             # TODO: import latest gwascatalog as db.catalog.<today>
             import_catalog.import_catalog(path_to_gwascatalog=latest_catalog_cleaned,
                                           path_to_mim2gene=os.path.join('data', 'mim2gene.txt'),
@@ -64,6 +67,8 @@ class Command(BaseCommand):
 
 
             # TODO: do test_gatalog for db.catalog.<today>
+                # TODO: check if latestet `date added` is newer or equal to prev's one. (check if download was succeed)
+                # TODO: do risk report as test. (check if import catalog was succeed & odd records were handeled)
 
             # update 'latest' catalog in db.catalog_info
             today_date = datetime.datetime.strptime(str(datetime.date.today()), '%Y-%m-%d')

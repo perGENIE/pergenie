@@ -95,8 +95,17 @@ def search_catalog_by_query(raw_query, query_type=None, mongo_port=27017):
     
 
     with pymongo.Connection(port=mongo_port) as connection:
-        db = connection['pergenie']
-        catalog = db['catalog']
+        latest_document = connection['pergenie']['catalog_info'].find_one({'status': 'latest'})  # -> datetime.datetime(2012, 12, 12, 0, 0)
+
+        if latest_document:
+            latest_date = str(latest_document['date'].date()).replace('-', '_')  # -> '2012_12_12'
+            catalog = connection['pergenie']['catalog'][latest_date]
+            print '[DEBUG] ', catalog
+        else:
+            # TODO: error handling 
+            print '[ERROR] latest does not exist in catalog_info!'
+            return None
+
         query = {'$and': sub_queries}
         print query
         catalog_records = catalog.find(query)# .sort('snps', 1)
