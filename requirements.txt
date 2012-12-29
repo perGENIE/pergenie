@@ -17,7 +17,6 @@ pymongo==2.3
 python-daemon==1.6
 python-dateutil==1.5
 python-magic==0.4.3
-readline==6.2.4.1
 requests==0.14.1
 termcolor==1.1.0
 wsgiref==0.1.2

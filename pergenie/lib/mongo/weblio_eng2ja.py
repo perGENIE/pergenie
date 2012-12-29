@@ -5,7 +5,7 @@ import argparse
 import time
 import csv
 import re
-import readline        
+# import readline        
 
 class WeblioEng2Ja(object):
     def __init__(self, path_to_eng2ja, path_to_eng2ja_plus):
@@ -49,30 +49,30 @@ class WeblioEng2Ja(object):
         else:
             return self.split_get(raw_query)
 
-def main():
-    parser = argparse.ArgumentParser(description='')
-    parser.add_argument('path_to_eng2ja')
-    parser.add_argument('path_to_eng2ja_plus')
-    args = parser.parse_args()
+# def main():
+#     parser = argparse.ArgumentParser(description='')
+#     parser.add_argument('path_to_eng2ja')
+#     parser.add_argument('path_to_eng2ja_plus')
+#     args = parser.parse_args()
 
-    eng2ja = WeblioEng2Ja(args.path_to_eng2ja, args.path_to_eng2ja_plus)
-    eng2ja.test()
+#     eng2ja = WeblioEng2Ja(args.path_to_eng2ja, args.path_to_eng2ja_plus)
+#     eng2ja.test()
 
-    # ---------
-    # InterFace
-    while True:
-        try:
-            raw_query = raw_input('Query> ')
-        except EOFError:
-            break
+#     # ---------
+#     # InterFace
+#     while True:
+#         try:
+#             raw_query = raw_input('Query> ')
+#         except EOFError:
+#             break
         
-        print '.get()', eng2ja.get(raw_query)
-        print '.split_get()', eng2ja.split_get(raw_query)
-        print '.try_get()', eng2ja.try_get(raw_query)
+#         print '.get()', eng2ja.get(raw_query)
+#         print '.split_get()', eng2ja.split_get(raw_query)
+#         print '.try_get()', eng2ja.try_get(raw_query)
 
 
-if __name__ == '__main__':
-    import doctest
-    doctest.testmod()
+# if __name__ == '__main__':
+#     import doctest
+#     doctest.testmod()
 
-    main()
+#     main()

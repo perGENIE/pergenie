@@ -17,3 +17,4 @@ data/*
 misc
 celeryd.pid
 static/vendor
+config
