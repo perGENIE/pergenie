@@ -17,8 +17,8 @@ import pymongo
 # logging with colors
 import logging
 from termcolor import colored
-import clogging
-log = clogging.ColorLogging(logging.getLogger(__name__))
+import color_log
+log = color_log.ColorLogging(logging.getLogger(__name__))
 log.setLevel(logging.DEBUG)
 stdout = logging.StreamHandler()
 stdout.setLevel(logging.DEBUG)

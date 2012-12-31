@@ -4,7 +4,7 @@ import urllib
 import sys
 
 def get_catalog(url, dst):
-    """Get latest gwascatalog.txt from NHGRI's web site
+    """Get latest gwascatalog.txt from NHGRI's web site.
     """
     
     # if not url:
