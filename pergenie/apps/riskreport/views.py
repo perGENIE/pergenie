@@ -50,10 +50,13 @@ def get_risk_values_for_indexpage(tmp_infos):
 
         for i, tmp_info in enumerate(tmp_infos):
             # check if riskreport.<user>.<file_name> exist and latest in data_info
-            tmp_data_info = data_info.find_one({'user_id':tmp_info['user_id'] , 'name':tmp_info['name']})
+            tmp_data_info = data_info.find_one({'user_id':tmp_info['user_id'],
+                                                'name':tmp_info['name']})
             risk_report_date = tmp_data_info.get('riskreport', None)
+            risk_report_obj = os.path.join(settings.RISKREPORT_CACHE_DIR,
+                                           tmp_info['user_id'],
+                                           'risk_reports.{0}.{1}.p'.format(tmp_info['user_id'], tmp_info['name']))
 
-            risk_report_obj = os.path.join(settings.RISKREPORT_CACHE_DIR, tmp_info['user_id'], 'risk_reports.{0}.{1}.p'.format(tmp_info['user_id'], tmp_info['name']))
             if not os.path.exists(risk_report_obj) or (today_date > risk_report_date):
                 upsert_riskreport(tmp_info)
 

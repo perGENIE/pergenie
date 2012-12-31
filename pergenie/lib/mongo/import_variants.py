@@ -32,12 +32,15 @@ def import_variants(file_path, population, sex, file_format, user_id, mongo_port
         users_variants = db['variants'][user_id][file_name_cleaned]
         data_info = db['data_info']
 
+        data_info.update({'user_id': user_id, 'name': file_name_cleaned}, {"$set": {'file_name_cleaned': file_name_cleaned}}, upsert=True)
+
         # ensure this variants file is not imported
         if users_variants.find_one():
             db.drop_collection(users_variants)
             print >>sys.stderr, colors.yellow('[WARNING] dropped old collection of {}'.format(file_name_cleaned))
 
         print >>sys.stderr, '[INFO] Countiong input lines ...',
+        print >>sys.stderr, '[INFO] {}'.format(file_path)
         file_lines = int(subprocess.check_output(['wc', '-l', file_path]).split()[0])
         print >>sys.stderr, 'done. # of lines: {}'.format(file_lines)
 

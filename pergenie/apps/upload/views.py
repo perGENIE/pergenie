@@ -79,7 +79,7 @@ def index(request):
                     # err = 'Not allowed file extension.'
                     break
 
-                if data_info.find({'user_id': user_id, 'name': call_file.name}).count() > 0:
+                if data_info.find({'user_id': user_id, 'raw_name': call_file.name}).count() > 0:
                     err = '同じファイル名のファイルがアップロードされています．上書きしたい場合，アップロード済みのファイルを削除して下さい．'
                     # err = 'Same file name exists. If you want to overwrite it, please delete old one.'
                     break
@@ -87,7 +87,7 @@ def index(request):
                 if not os.path.exists(os.path.join(settings.UPLOAD_DIR, user_id)):
                     os.makedirs(os.path.join(settings.UPLOAD_DIR, user_id))
 
-                # UploadedFile object to a file
+                # convert UploadedFile object to a file
                 uploaded_file_path = os.path.join(settings.UPLOAD_DIR, user_id, call_file.name)
                 with open(uploaded_file_path, 'wb') as fout:
                     for chunk in call_file.chunks():
@@ -107,6 +107,7 @@ def index(request):
                     break
 
                 msg = '{}がアップロードされました．'.format(call_file.name)
+                print '[INFO] uploaded_file_path', uploaded_file_path
                 # msg = 'Successfully uploaded: {}'.format(call_file.name)
 
                 # TODO: check if clery is alive
@@ -152,9 +153,13 @@ def delete(request):
         print list(data_info.find())
         print user_id, name
 
-        # if data_info.find_one({'user_id': user_id, 'name': name})['status']:
         if data_info.find_one({'user_id': user_id, 'name': name}):
             data_info.remove({'user_id': user_id, 'name': name})
+            
+        #
+        users_variants = db['variants'][user_id][data_info['file_name_cleaned']]
+        db.drop_collection(users_variants)
+        print '[INFO] dropped ccollection {}'.format(users_variants)
 
     return redirect('apps.upload.views.index')
 
