@@ -231,3 +231,4 @@ def study(request, file_name, trait, study_name):
     risk_infos = get_risk_infos_for_subpage(user_id, file_name, trait_name=trait, study_name=study_name)
 
     return direct_to_template(request, 'risk_report_study.html', risk_infos)
+

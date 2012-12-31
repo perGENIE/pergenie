@@ -13,11 +13,10 @@ import weblio_eng2ja
 import search_variants
 
 from pprint import pprint
+import doctest
 
 HAPMAP_PORT = 10002
 POPULATION_CODE = ['ASW', 'CEU', 'CHB', 'CHD', 'GIH', 'JPT', 'LWK', 'MEX', 'MKK', 'TSI', 'YRI']
-UPLOAD_DIR = '/tmp/pergenie'
-
 
 def LD_block_clustering(risk_store, population_code):
     """
@@ -112,20 +111,42 @@ def LD_block_clustering(risk_store, population_code):
 
 
 def _zyg(genotype, risk_allele):
+    """
+    >>> _zyg('na', '')
+    'NA'
+    >>> _zyg('AA', 'A')
+    'RR'
+    >>> _zyg('AT', 'A')
+    'R.'
+    >>> _zyg('TT', 'A')
+    '..'
+    """
+    
     if genotype == 'na':
         return 'NA'
 
     try:
         return {0:'..', 1:'R.', 2:'RR'}[genotype.count(risk_allele)]
     except TypeError:
-        print >>sys.stderr, colors.purple('genotype?? genotype:{0} risk-allele {1} '.format(genotype, risk_allele))
+        print >>sys.stderr, 'genotype?? genotype:{0} risk-allele {1} '.format(genotype, risk_allele)  ###
         return '..'
 
 
 def _relative_risk_to_general_population(freq, OR, zygosities):
+    """
+    >>> _relative_risk_to_general_population(0.28, 1.37, 'NA')
+    (1.0, 1.22)
+    >>> _relative_risk_to_general_population(0.28, 1.37, 'RR')
+    (1.5, 1.22)
+    >>> _relative_risk_to_general_population(0.28, 1.37, 'R.')
+    (1.1, 1.22)
+    >>> _relative_risk_to_general_population(0.28, 1.37, '..')
+    (0.8, 1.22)
+    """
+
     try:
         prob_hom = freq**2
-        prob_het = freq*(1-freq)
+        prob_het = 2*freq*(1-freq)
         prob_ref = (1-freq)**2
 
         OR_hom = OR**2
@@ -138,18 +159,10 @@ def _relative_risk_to_general_population(freq, OR, zygosities):
         risk_het = OR_het/average_population_risk
         risk_ref = OR_ref/average_population_risk
 
-        # print 'RR:{0}, R.:{1}, ..:{2}, NA:1.0'.format(round(risk_hom,3), round(risk_het,3), round(risk_ref,3))
-
     except TypeError:
-        # print >>sys.stderr, colors.blue('freq:{0} OR:{1} ...'.format(freq, OR))
-        return 1.0
+        return 1.0, 1.0  ###
 
-    try: 
-        return round({'RR':risk_hom, 'R.':risk_het, '..':risk_ref, 'NA': 1.0}[zygosities], 1), average_population_risk
-    except KeyError:
-        # print >>sys.stderr, colors.blue('{0} is not hom/het/ref'.format(zygosities))
-        return 1.0, average_population_risk
-
+    return round({'RR':risk_hom, 'R.':risk_het, '..':risk_ref, 'NA': 1.0}.get(zygosities, 1.0), 1), round(average_population_risk, 2)
 
 def risk_calculation(catalog_map, variants_map, population_code, sex, user_id, file_name,
                      is_LD_block_clustered, is_log):
@@ -275,118 +288,123 @@ def risk_calculation(catalog_map, variants_map, population_code, sex, user_id, f
     return risk_store, risk_report
 
 
-def _main():
-    parser = argparse.ArgumentParser(description='e.g. risk_report.py -u demo -f 585.23andme.270.txt -p Europian')
-    parser.add_argument('-u', '--user_id', required=True)
-    parser.add_argument('-f', '--file_name', required=True)
-    parser.add_argument('-p', '--population', required=True, choices=['Asian', 'Europian', 'African', 'Japanese', 'none']) ###
-    parser.add_argument('--sex', choices=['male', 'female'])
-    parser.add_argument('-L', '--LD_block_clustering', action='store_true')
-    args = parser.parse_args()
+# def _main():
+#     parser = argparse.ArgumentParser(description='e.g. risk_report.py -u demo -f 585.23andme.270.txt -p Europian')
+#     parser.add_argument('-u', '--user_id', required=True)
+#     parser.add_argument('-f', '--file_name', required=True)
+#     parser.add_argument('-p', '--population', required=True, choices=['Asian', 'Europian', 'African', 'Japanese', 'none']) ###
+#     parser.add_argument('--sex', choices=['male', 'female'])
+#     parser.add_argument('-L', '--LD_block_clustering', action='store_true')
+#     args = parser.parse_args()
 
-    # TODO: population mapping
-    # ------------------------
-    population_map = {'African': ['African'],
-                      'Europian': ['European', 'Caucasian'],
-                      'Asian': ['Chinese', 'Japanese', 'Asian'],
-                      'Japanese': ['Japanese', 'Asian'],
-                      'none': ['']}
-    population = 'population:{}'.format('+'.join(population_map[args.population]))
+#     # TODO: population mapping
+#     # ------------------------
+#     population_map = {'African': ['African'],
+#                       'Europian': ['European', 'Caucasian'],
+#                       'Asian': ['Chinese', 'Japanese', 'Asian'],
+#                       'Japanese': ['Japanese', 'Asian'],
+#                       'none': ['']}
+#     population = 'population:{}'.format('+'.join(population_map[args.population]))
 
-    catalog_map, variants_map = search_variants.search_variants(args.user_id, args.file_name, population)
-
-
-    population_code_map = {'Europian': 'CEU',
-                           'Japanese': 'JPT',
-                           'none': 'CEU'}
-    print args.population, population_code_map[args.population]
-
-    risk_store, risk_report = risk_calculation(catalog_map, variants_map, population_code_map[args.population], args.sex,
-                                               args.user_id, args.file_name, args.LD_block_clustering, True,
-                                               os.path.join(UPLOAD_DIR, args.user_id, '{}_{}.p'.format(args.user_id, args.file_name)))
+#     catalog_map, variants_map = search_variants.search_variants(args.user_id, args.file_name, population)
 
 
-#     pprint(risk_store)
-#     pprint(risk_report
+#     population_code_map = {'Europian': 'CEU',
+#                            'Japanese': 'JPT',
+#                            'none': 'CEU'}
+#     print args.population, population_code_map[args.population]
 
-    # Show risk report (value by study)
-    # ----------------
-    print
-    print 'Risk report:'
-
-    eng2ja = weblio_eng2ja.WeblioEng2Ja('data/eng2ja.txt', 'data/eng2ja_plus.txt')
-
-    for (k,v) in risk_report.items(): # sorted by values
-        k_ja = eng2ja.try_get(k)
-
-        for i, (study, value) in enumerate(sorted(v.items(), key=lambda(study,value):(value,study), reverse=True)):
-#             if i == 0:  # show max
-            value = round(value, 3)
-            if value < 1:
-                print colors.blue('{0} {1} {2}'.format(k, k_ja, value))
-            elif value == 1:
-                print colors.black('{0} {1} {2}'.format(k, k_ja, value))
-            elif 1 <= value <= 2:
-                print colors.yellow('{0} {1} {2}'.format(k, k_ja, value))
-            elif 2 < value:
-                print colors.red('{0} {1} {2}'.format(k, k_ja, value))
+#     risk_store, risk_report = risk_calculation(catalog_map, variants_map, population_code_map[args.population], args.sex,
+#                                                args.user_id, args.file_name, args.LD_block_clustering, True,
+#                                                os.path.join(UPLOAD_DIR, args.user_id, '{}_{}.p'.format(args.user_id, args.file_name)))
 
 
+# #     pprint(risk_store)
+# #     pprint(risk_report
 
-#     # Show risk report
+#     # Show risk report (value by study)
 #     # ----------------
 #     print
 #     print 'Risk report:'
 
 #     eng2ja = weblio_eng2ja.WeblioEng2Ja('data/eng2ja.txt', 'data/eng2ja_plus.txt')
 
-#     for (k,v) in sorted(risk_report.items(), key=lambda(k,v):(v,k), reverse=True): # sorted by values
+#     for (k,v) in risk_report.items(): # sorted by values
 #         k_ja = eng2ja.try_get(k)
-#         v = round(v, 3)
-#         if v < 1:
-#             print colors.blue('{0} {1} {2}'.format(k, k_ja, v))
-#         elif v == 1:
-#             print colors.black('{0} {1} {2}'.format(k, k_ja, v))
-#         elif 1 <= v <= 2:
-#             print colors.yellow('{0} {1} {2}'.format(k, k_ja, v))
-#         elif 2 < v:
-#             print colors.red('{0} {1} {2}'.format(k, k_ja, v))
+
+#         for i, (study, value) in enumerate(sorted(v.items(), key=lambda(study,value):(value,study), reverse=True)):
+# #             if i == 0:  # show max
+#             value = round(value, 3)
+#             if value < 1:
+#                 print colors.blue('{0} {1} {2}'.format(k, k_ja, value))
+#             elif value == 1:
+#                 print colors.black('{0} {1} {2}'.format(k, k_ja, value))
+#             elif 1 <= value <= 2:
+#                 print colors.yellow('{0} {1} {2}'.format(k, k_ja, value))
+#             elif 2 < value:
+#                 print colors.red('{0} {1} {2}'.format(k, k_ja, value))
 
 
-#     # Show more detail
-#     # ----------------
-#     while True:
-#         try:
-#             raw_query = raw_input('Trait> ')
-#         except EOFError:
-#             break
 
-#         found_record = risk_store.get(raw_query)
-#         if found_record:
-#             for (k,v) in sorted(found_record.items(), key=lambda(k,v):(v['catalog_map']['OR_or_beta'],k), reverse=True): # sorted by OR
-#                 data = (k,
-#                         v['catalog_map']['OR_or_beta'],
-#                         v['catalog_map']['freq'],
-#                         v['catalog_map']['risk_allele'],
-#                         v['variant_map'],
-#                         v['zyg'],
-#                         v['RR'],
-#                         v['R'],
-#                         v['catalog_map']['initial_sample_size'],
-#                         v['catalog_map']['platform'])
+# #     # Show risk report
+# #     # ----------------
+# #     print
+# #     print 'Risk report:'
 
-#                 msg = 'rs:{0} OR:{1} freq:{2} risk-allele:{3} genotype:{4} zyg:{5} RR:{6} R:{7} sample:{8} platform:{9}'.format(*data)
+# #     eng2ja = weblio_eng2ja.WeblioEng2Ja('data/eng2ja.txt', 'data/eng2ja_plus.txt')
 
-#                 if v['variant_map'] == 'na':
-#                     print colors.black(msg)
-#                 elif v['zyg'] == 'RR':
-#                     print colors.red(msg)
-#                 elif v['zyg'] == 'R.':
-#                     print colors.yellow(msg)
-#                 elif v['zyg'] == '..':
-#                     print colors.blue(msg)
-#                 else:
-#                     print 'something err...'
+# #     for (k,v) in sorted(risk_report.items(), key=lambda(k,v):(v,k), reverse=True): # sorted by values
+# #         k_ja = eng2ja.try_get(k)
+# #         v = round(v, 3)
+# #         if v < 1:
+# #             print colors.blue('{0} {1} {2}'.format(k, k_ja, v))
+# #         elif v == 1:
+# #             print colors.black('{0} {1} {2}'.format(k, k_ja, v))
+# #         elif 1 <= v <= 2:
+# #             print colors.yellow('{0} {1} {2}'.format(k, k_ja, v))
+# #         elif 2 < v:
+# #             print colors.red('{0} {1} {2}'.format(k, k_ja, v))
+
+
+# #     # Show more detail
+# #     # ----------------
+# #     while True:
+# #         try:
+# #             raw_query = raw_input('Trait> ')
+# #         except EOFError:
+# #             break
+
+# #         found_record = risk_store.get(raw_query)
+# #         if found_record:
+# #             for (k,v) in sorted(found_record.items(), key=lambda(k,v):(v['catalog_map']['OR_or_beta'],k), reverse=True): # sorted by OR
+# #                 data = (k,
+# #                         v['catalog_map']['OR_or_beta'],
+# #                         v['catalog_map']['freq'],
+# #                         v['catalog_map']['risk_allele'],
+# #                         v['variant_map'],
+# #                         v['zyg'],
+# #                         v['RR'],
+# #                         v['R'],
+# #                         v['catalog_map']['initial_sample_size'],
+# #                         v['catalog_map']['platform'])
+
+# #                 msg = 'rs:{0} OR:{1} freq:{2} risk-allele:{3} genotype:{4} zyg:{5} RR:{6} R:{7} sample:{8} platform:{9}'.format(*data)
+
+# #                 if v['variant_map'] == 'na':
+# #                     print colors.black(msg)
+# #                 elif v['zyg'] == 'RR':
+# #                     print colors.red(msg)
+# #                 elif v['zyg'] == 'R.':
+# #                     print colors.yellow(msg)
+# #                 elif v['zyg'] == '..':
+# #                     print colors.blue(msg)
+# #                 else:
+# #                     print 'something err...'
+
+def _test():
+    import doctest, risk_report
+    doctest.testmod()
 
 if __name__ == '__main__':
-    _main()
+    # _main()
+    _test()
