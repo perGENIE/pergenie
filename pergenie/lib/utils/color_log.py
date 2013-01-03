@@ -11,34 +11,31 @@ ANSI colored Python logging.(color_log.py)
 import logging
 from termcolor import colored
 
-class ColorLogging(object):
-    colormap = dict(
-        debug=dict(color='grey', attrs=['bold']),
-        info=dict(color='white'),
-        warn=dict(color='yellow', attrs=['bold']),
-        warning=dict(color='yellow', attrs=['bold']),
-        error=dict(color='red'),
-        critical=dict(color='red', attrs=['bold']),
-        )
-
+class getColorLogger(object):
+    color_map = {debug : {color: 'grey', attrs: ['bold'])},
+                 info : {color: 'white'},
+                 warn: {color: 'yellow', attrs: ['bold']},
+                 error: {color: 'red'},
+                 fatal: {color: 'red', attrs: ['bold']},
+                 }
+    
     def __init__(self, logger):
-        self._log = logger
-
-        self._log.setLevel(logging.DEBUG) ###
+        self.logger = logging.getLogger(__name__)
+        self.logger.setLevel(logging.DEBUG) ###
         self.stdout = logging.StreamHandler()
         self.stdout.setLevel(logging.DEBUG) ###
         self.stdout.setFormatter(logging.Formatter('%(asctime)s [%(levelname)s] %(message)s'))
-        self._log.addHandler(self.stdout)
+        self.logger.addHandler(self.stdout)
 
-    def __getattr__(self, name):
-        if name in ['debug', 'info', 'warn', 'warning', 'error', 'critical']:
-            return lambda s, *args: getattr(self._log, name)(
-                colored(s, **self.colormap[name]), *args)
+    def __getattr__(self, status):
+        if status in ('debug', 'info', 'warn', 'error', 'fatal'):
+            return lambda s, *args: getattr(self.logger, status)(
+                colored(s, **self.colormap[status]), *args)
 
-        return getattr(self._log, name)
+        return getattr(self.logger, status)
 
 if __name__ == '__main__':
-    log = ColorLogging(logging.getLogger(__name__))
+    log = getColorLogger()
 
     log.debug("booooring . . .")
     log.info("pleasing anecdote")

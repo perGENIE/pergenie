@@ -128,7 +128,7 @@ def _zyg(genotype, risk_allele):
     try:
         return {0:'..', 1:'R.', 2:'RR'}[genotype.count(risk_allele)]
     except TypeError:
-        print >>sys.stderr, 'genotype?? genotype:{0} risk-allele {1} '.format(genotype, risk_allele)  ###
+        log.('genotype?? genotype:{0} risk-allele {1} '.format(genotype, risk_allele))  ###
         return '..'
 
 
