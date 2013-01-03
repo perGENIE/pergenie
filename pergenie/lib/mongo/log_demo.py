@@ -12,14 +12,16 @@ sys.path.append(os.path.join(BASE_DIR, 'lib'))
 import logging
 from utils import color_log
 
-log = color_log.ColorLogging(logging.getLogger(__name__))
-log.setLevel(logging.DEBUG)
-stdout = logging.StreamHandler()
-stdout.setLevel(logging.DEBUG)
-stdout.setFormatter(logging.Formatter('%(asctime)s [%(levelname)s] %(message)s'))
-log.addHandler(stdout)
+
+# log.setLevel(logging.DEBUG)
+# stdout = logging.StreamHandler()
+# stdout.setLevel(logging.DEBUG)
+# stdout.setFormatter(logging.Formatter('%(asctime)s [%(levelname)s] %(message)s'))
+# log.addHandler(stdout)
 
 def _main():
+    log = color_log.ColorLogging(logging.getLogger(__name__))
+    
     log.info('path_to_LD_data_dir {}'.format(1))
     log.warn('kill')
 
