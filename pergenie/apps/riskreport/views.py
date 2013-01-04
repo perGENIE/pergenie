@@ -6,17 +6,17 @@ from django.views.generic.simple import direct_to_template
 from django.conf import settings
 from apps.riskreport.forms import RiskReportForm
 
-import datetime
 import os
-import numpy as np
-from pprint import pprint
 import pymongo
-from termcolor import colored
+import numpy as np
+import datetime
 
 import mongo.search_variants as search_variants
 import mongo.risk_report as risk_report
 from utils.io import pickle_dump_obj, pickle_load_obj
 from utils.date import today_date, today_str
+from utils import clogging
+log = clogging.getColorLogger(__name__)
 
 
 def upsert_riskreport(tmp_info, mongo_port=settings.MONGO_PORT):
@@ -107,7 +107,7 @@ def index(request):
                 """User chose file_name via select box & requested as POST
                 """
 
-                print '[DEBUG] method = POST'
+                log.debug('method == POST')
 
                 form = RiskReportForm(request.POST)
                 if not form.is_valid():
@@ -115,7 +115,7 @@ def index(request):
                     break
 
                 for i, file_name in enumerate([request.POST['file_name'], request.POST['file_name2']]):
-                    print '[DEBUG] file_name{0} from form: {1}'.format(i+1, file_name)
+                    log.debug('file_name: {0} from form: {1}'.format(i+1, file_name))
 
                     for info in infos:
                         if info['name'] == file_name:
@@ -131,7 +131,7 @@ def index(request):
                         break
 
             else:
-                print '[DEBUG] method != POST'
+                log.debug('method != POST')
 
                 # choose first file_name by default
                 info = infos[0]

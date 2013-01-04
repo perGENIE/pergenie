@@ -10,7 +10,6 @@ from django.views.generic.simple import direct_to_template
 
 import pymongo
 
-
 def index(request):
     return redirect('apps.frontend.views.login')
 

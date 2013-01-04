@@ -6,15 +6,17 @@ from django.shortcuts import redirect
 from django.utils import simplejson
 from django.views.decorators.http import require_http_methods
 from django.views.generic.simple import direct_to_template
+from django.conf import settings
+from apps.upload.forms import UploadForm
 
 import datetime
 import os
 import pymongo
 import magic
 from lib.tasks import qimport_variants
-from apps.upload.forms import UploadForm
+from utils import clogging
+log = clogging.getColorLogger(__name__)
 
-from django.conf import settings
 
 @require_http_methods(['GET', 'POST'])
 @login_required
@@ -70,7 +72,6 @@ def index(request):
 
                 if not call_file.content_type == 'text/plain':
                     err = '許可されていないファイルタイプです．'
-                    print '[DEBUG]', call_file.content_type
 
                 # still need to validate that the file contains the content that the content-type header claims -- "trust but verify."
 
@@ -98,16 +99,16 @@ def index(request):
                 magic_filetype = m.from_file(uploaded_file_path)
                 if not magic_filetype in ('us-ascii'):
                     err = '許可されていないファイルタイプ，あるいは許可されていないエンコーディングです．'
-                    print '[DEBUG]', magic_filetype
+                    log.debug('magic_filetype {}'.format(magic_filetype))
                     try:
                         os.remove(uploaded_file_path)
                     except OSError:
-                        print '[ERROR] could not remove invalid uploaded file'
+                        log.debug('[ERROR] could not remove invalid uploaded file')
                     
                     break
 
                 msg = '{}がアップロードされました．'.format(call_file.name)
-                print '[INFO] uploaded_file_path', uploaded_file_path
+                log.debug('uploaded_file_path: {}'.format(uploaded_file_path))
                 # msg = 'Successfully uploaded: {}'.format(call_file.name)
 
                 # TODO: check if clery is alive
@@ -129,14 +130,13 @@ def index(request):
                 msg += '現在，読み込んでいます...'
                 # msg += ', and now importing...'
 
-                print '[INFO] data_info:', info
-
                 break
 
         uploadeds = list(data_info.find( {'user_id': user_id} ))
-
-    return direct_to_template(request,
-                              'upload.html',
+    
+    if err:
+        log.error('UPLOAD err: {}')
+    return direct_to_template(request, 'upload.html',
                               {'msg': msg, 'err': err, 'uploadeds': uploadeds})
 
 
@@ -150,8 +150,8 @@ def delete(request):
         data_info = db['data_info']
         variant = db['variant']
 
-        print list(data_info.find())
-        print user_id, name
+        log.info('data_info.find(): {})'.format(list(data_info.find())))
+        log.info('user_id: {0} name: {1}'.format(user_id, name))
 
         if data_info.find_one({'user_id': user_id, 'name': name}):
             data_info.remove({'user_id': user_id, 'name': name})
@@ -159,7 +159,7 @@ def delete(request):
         #
         users_variants = db['variants'][user_id][data_info['file_name_cleaned']]
         db.drop_collection(users_variants)
-        print '[INFO] dropped ccollection {}'.format(users_variants)
+        log.debug('dropped ccollection {}'.format(users_variants))
 
     return redirect('apps.upload.views.index')
 

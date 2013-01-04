@@ -6,9 +6,12 @@ from django.conf import settings
 
 import os
 import pymongo
+from pprint import pformat
 
 from utils.io import pickle_load_obj
 from utils.date import today_date
+from utils import clogging
+log = clogging.getColorLogger(__name__)
 
 @login_required
 def index(request):
@@ -48,7 +51,7 @@ def index(request):
                         err += '\n last risk report: {}'.format(user_data['riskreport'])
 
                     for added_date in sorted(catalog_summary.get('added').items()):
-                        print added_date[0],  catalog_latest_importing_document['date']
+                        # print added_date[0],  catalog_latest_importing_document['date']
                         if added_date[0] > catalog_latest_importing_document['date']:
                             err += '\n {1} new records {0}'.format(added_date[0], added_date[1])
 
@@ -61,9 +64,10 @@ def index(request):
 
             break
 
-    return direct_to_template(request,
-                              'dashboard.html',
-                              {'msg': msg, 'err': err,
-                               'catalog_latest_importing_date': catalog_latest_importing_date,
-                               'catalog_latest_new_records_data': catalog_latest_new_records_data,
-                               'risk_report_latest_date': risk_report_latest_date})
+    msgs = {'msg': msg, 'err': err,
+            'catalog_latest_importing_date': catalog_latest_importing_date,
+            'catalog_latest_new_records_data': catalog_latest_new_records_data,
+            'risk_report_latest_date': risk_report_latest_date}
+
+    log.info('msgs: {}'.format(pformat(msgs)))
+    return direct_to_template(request, 'dashboard.html', msgs)

@@ -15,6 +15,9 @@ import search_variants
 from pprint import pprint
 import doctest
 
+from utils import clogging
+log = clogging.getColorLogger(__name__)
+
 HAPMAP_PORT = 10002
 POPULATION_CODE = ['ASW', 'CEU', 'CHB', 'CHD', 'GIH', 'JPT', 'LWK', 'MEX', 'MKK', 'TSI', 'YRI']
 
@@ -128,7 +131,7 @@ def _zyg(genotype, risk_allele):
     try:
         return {0:'..', 1:'R.', 2:'RR'}[genotype.count(risk_allele)]
     except TypeError:
-        log.('genotype?? genotype:{0} risk-allele {1} '.format(genotype, risk_allele))  ###
+        log.warn('genotype?? genotype:{0} risk-allele {1} '.format(genotype, risk_allele))  ###
         return '..'
 
 
@@ -264,7 +267,7 @@ def risk_calculation(catalog_map, variants_map, population_code, sex, user_id, f
                    try:
                       tmp_value = math.log10(risk_store[trait][study][rs]['RR'])
                    except ValueError:
-                      print 'ValueError', tmp_value
+                      log.err('ValueError {}'.format(tmp_value))
                       if tmp_value == 0.0:
                          tmp_value = -2.0  # -inf
 

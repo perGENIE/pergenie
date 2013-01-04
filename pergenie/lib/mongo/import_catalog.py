@@ -12,8 +12,11 @@ import sys
 import pymongo
 
 from utils.io import pickle_dump_obj, pickle_load_obj
+from utils import clogging
+log = clogging.getColorLogger(__name__)
+
 import weblio_eng2ja
-import colors
+# import colors
 
 _g_gene_symbol_map = {}  # { Gene Symbol => (Entrez Gene ID, OMIM Gene ID) }
 _g_gene_id_map = {}      # { Entrez Gene ID => (Gene Symbol, OMIM Gene ID) }
@@ -22,7 +25,7 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, mongo_port):
     """doc
     """
 
-    print 'Loading mim2gene.txt...'
+    log.debug('Loading mim2gene.txt...')
     with open(path_to_mim2gene, 'rb') as fin:
         for record in csv.DictReader(fin, delimiter='\t'):
             gene_type = record['Type'].lower()
@@ -53,12 +56,12 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, mongo_port):
         # ensure db.catalog does not exist
         if catalog.find_one():
             connection['pergenie'].drop_collection(catalog)
-            print '[WARNING] dropped old collection'
+            log.info('dropped old collection')
         assert catalog.count() == 0
 
         if not dbsnp.find_one():
-            print '[WARNING] dbsnp.B132 does not exist in mongodb ...'
-            print '[WARNING] so strand-check will be skipped'
+            log.warn('dbsnp.B132 does not exist in mongodb ...')
+            log.warn('so strand-check will be skipped')
             dbsnp = None
 
         my_fields = [('my_added', 'Date Added to MyCatalog', _date),
@@ -109,14 +112,13 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, mongo_port):
         field_names = [field[0:2] for field in fields] + post_fields
 
         fields = my_fields + fields
-        print '[INFO] # of fields:', len(fields)
+        log.info('# of fields: {}'.format(len(fields)))
 
-        print '[INFO] Importing gwascatalog.txt...'
+        log.debug('Importing gwascatalog.txt...')
         trait_dict = {}
         catalog_summary = {}
         with open(path_to_gwascatalog, 'rb') as fin:
             for i,record in enumerate(csv.DictReader(fin, delimiter='\t')):# , quotechar="'"):
-                # print >>sys.stderr, i
                 data = {}
                 for dict_name, record_name, converter in fields:
                     try:
@@ -128,12 +130,12 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, mongo_port):
                 data['eng2ja'] = eng2ja.try_get(data['trait'])
 
                 if (not data['snps']) or (not data['strongest_snp_risk_allele']):
-                    print colors.green('[WARNING] absence of "snps" or "strongest_snp_risk_allele" {0} {1}. pubmed_id:{2}'.format(data['snps'], data['strongest_snp_risk_allele'], data['pubmed_id']))
+                    log.warn('absence of "snps" or "strongest_snp_risk_allele" {0} {1}. pubmed_id:{2}'.format(data['snps'], data['strongest_snp_risk_allele'], data['pubmed_id']))
                 else:
 
                     rs, data['risk_allele'] = _risk_allele(data['strongest_snp_risk_allele'], dbsnp)
                     if data['snps'] != rs:
-                        print colors.red('[WARNING] "snps" != "risk_allele": {0} != {1}'.format(data['snps'], rs))
+                        log.warn('"snps" != "risk_allele": {0} != {1}'.format(data['snps'], rs))
 
                     else:
                         try:
@@ -177,13 +179,13 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, mongo_port):
     # for trait,ok_count in sorted(trait_dict.items(), key=lambda x:x[1]):
     #     print '[INFO]', trait, ok_count
             
-    print '[INFO] # of traits:', len(trait_dict)
-    print '[INFO] # of documents in catalog (after):', catalog.count()
+    log.info('# of traits: {}'.format(len(trait_dict)))
+    log.info('# of documents in catalog (after): {}'.format(catalog.count()))
     
     pickle_dump_obj(catalog_summary, os.path.join(settings.CATALOG_SUMMARY_CACHE_DIR, 'catalog_summary.p'))
     pickle_dump_obj(field_names, os.path.join(settings.CATALOG_SUMMARY_CACHE_DIR, 'field_names.p'))
-    print '[INFO] dumped catalog_summary.p as pickle'
-    print '[INFO] dumped field_names.p as pickle'
+    log.info('dumped catalog_summary.p as pickle')
+    log.info('dumped field_names.p as pickle')
 
     # write out my_trait_list & my_trait_list_ja
     with open('my_trait_list.py', 'w') as my_trait_list:
@@ -197,7 +199,7 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, mongo_port):
         print >>my_trait_list, 'my_trait_list_ja =',
         print >>my_trait_list,  trait_list_ja
 
-    print '[INFO] import catalog done'
+    log.info('import catalog done')
     return
 
 def identfy_OR_or_beta(OR_or_beta, CI_95):
@@ -257,11 +259,11 @@ def _CI_text(text):
 
             try:
                if not len(CIs) == 3:
-                  print '{0} {1} {2}'.format(text, texts[0][0], CIs)
+                  log.warn('{0} {1} {2}'.format(text, texts[0][0], CIs))
                   if CIs[0] == '' and CIs[1] == '-' and CIs[3] == '-':  # [-2.13040-19.39040]
                      result['CI'] = [(-1)*float(CIs[2]), float(CIs[4])]
                   else:
-                     print  '{0} {1}'.format(text, texts)
+                     log.warn('{0} {1}'.format(text, texts))
                      time.sleep(2)
                else:
                   result['CI'] = [float(CIs[0]), float(CIs[2])]
@@ -302,7 +304,7 @@ def _OR_or_beta(text):
             if match:
                 value = float(match.group())
             else:
-                print >>sys.stderr, 'OR_or_beta? {}'.format(text)
+                log.warn('OR_or_beta? {}'.format(text))
                 return None
 
         return value
@@ -324,15 +326,13 @@ def _rss(text):
 
     else:
         if len(text.split(',')) != 1:
-            msg = '[WARNING] in _rss, more than one rs: {}'
-            print >>sys.stderr, msg.format(text)
+            log.warn('in _rss, more than one rs: {}'.format(text))
             return None   # 
 
         try:
             return int(text.replace('rs', ''))
         except ValueError:
-            msg = '[WARNING] in _rss, failed to convert to int: {}'
-            print >>sys.stderr, msg.format(text)
+            log.warn('in _rss, failed to convert to int: {}'.format(text))
             return None   # 
 
 
@@ -352,7 +352,7 @@ def _risk_allele(text, dbsnp):
         try:
             rs, risk_allele = reg_risk_allele.findall(text)[0]
         except (ValueError, IndexError):
-            print '[WARNING] failed to parse "strongest_snp_risk_allele": {}'.format(text)
+            log.warn('failed to parse "strongest_snp_risk_allele": {}'.format(text))
             return text, None
 
         #
@@ -362,7 +362,7 @@ def _risk_allele(text, dbsnp):
 
 
         if not risk_allele in ('A', 'T', 'G', 'C'):
-            print colors.green('[WARNING] allele is not (A,T,G,C): {}'.format(text))
+            log.warn('allele is not (A,T,G,C): {}'.format(text))
             return text, None
 
         # *** Check if record is in dbSNP REF, ALT ***
@@ -371,7 +371,7 @@ def _risk_allele(text, dbsnp):
             if dbsnp:
                 tmp_rs_record = list(dbsnp.find({'rs':int(rs)}))
                 if not tmp_rs_record:
-                    print colors.black('rs{0} is not in dbSNP ...').format(rs)
+                    log.warn('rs{0} is not in dbSNP ...'.format(rs))
                     return int(rs), risk_allele + '?'
                 assert len(tmp_rs_record) < 2, text
 
@@ -387,22 +387,22 @@ def _risk_allele(text, dbsnp):
                     rev_risk_allele = RV_map[risk_allele]
                     if 'RV' in tmp_rs_record[0]['info']:
                         if rev_risk_allele in ref_alt:
-                            print colors.yellow('[WARNING] for {0}, {1}(RV) is in REF:{2}, ALT:{3}, so return RVed. rs{4}'.format(risk_allele, rev_risk_allele, ref, alt, rs))
+                            log.warn('for {0}, {1}(RV) is in REF:{2}, ALT:{3}, so return RVed. rs{4}'.format(risk_allele, rev_risk_allele, ref, alt, rs))
                             risk_allele = rev_risk_allele
 
                         else:
-                            print colors.red('[WARNING] both {0} and {1}(RV) are not in REF:{2}, ALT:{3} ... rs{4}'.format(risk_allele, rev_risk_allele, ref, alt, rs))
+                            log.warn('both {0} and {1}(RV) are not in REF:{2}, ALT:{3} ... rs{4}'.format(risk_allele, rev_risk_allele, ref, alt, rs))
                             risk_allele += '?'
 
                     # Although not RV, challenge supposing as RV
                     else:
-                        print colors.blue('[WARNING] {0} is not in REF:{1}, ALT:{2} and not RV, '.format(risk_allele, ref, alt)),
+                        log.warn('{0} is not in REF:{1}, ALT:{2} and not RV, '.format(risk_allele, ref, alt))
                         if rev_risk_allele in ref_alt:
-                            print colors.purple('but somehow {0}(RV) is in REF, ALT ... rs{1}'.format(rev_risk_allele, rs))
+                            log.warn('but somehow {0}(RV) is in REF, ALT ... rs{1}'.format(rev_risk_allele, rs))
                             risk_allele = rev_risk_allele + '?'
 
                         else:
-                            print colors.red('and {0}(RV) is not in REF, ALT. rs{1}'.format(rev_risk_allele, rs))
+                            log.warn('and {0}(RV) is not in REF, ALT. rs{1}'.format(rev_risk_allele, rs))
                             risk_allele += '?'
 
         return int(rs), risk_allele
@@ -445,7 +445,7 @@ def _string_without_slash(text):
     else:
         # avoid slash
         if '/' in text:
-            print '[WARNING] / in', text
+            log.warn('/ in {}'.format(text))
         text = text.replace('/', ' or ')
 
         return text
