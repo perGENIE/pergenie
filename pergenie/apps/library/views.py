@@ -31,6 +31,10 @@ import colors
 def index(request):
     user_id = request.user.username
     err = ''
+    msgs = {}
+
+    msgs['dbsnp_version'] = settings.DBSNP_VERSION
+    msgs['refgenome_version'] = settings.REFGENOME_VERSION
 
     if request.method == 'POST':
         # if query:
@@ -52,12 +56,12 @@ def index(request):
                                        'catalog_list': catalog_list,
                                        'variants_map': variants_map})
 
-    return direct_to_template(request,
-                              'library.html',
-                              {'err': err,
-                               'my_trait_list': MY_TRAIT_LIST,
-                               'my_trait_list_ja': MY_TRAIT_LIST_JA,
-                               })
+    msgs['err'] = err
+    msgs['my_trait_list'] = MY_TRAIT_LIST,
+    msgs['my_trait_list_ja'] = MY_TRAIT_LIST_JA
+    
+    return direct_to_template(request, 'library.html', msgs)
+
 
 @login_required
 def summary_index(request):

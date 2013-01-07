@@ -14,21 +14,10 @@ from termcolor import colored
 from utils.date import today_date, today_str
 from utils import clogging
 log = clogging.getColorLogger(__name__)
+from utils.io import get_url_content, get_pdf_content
 
-import mongo.get_catalog as get_catalog
 import mongo.clean_catalog as clean_catalog
 import mongo.import_catalog as import_catalog
-
-def get_catalog(url, dst):
-    """Get latest gwascatalog.txt from NHGRI's web site."""
-    
-    # if not url:
-    #     url = 'http://www.genome.gov/admin/gwascatalog.txt'
-
-    log.info('Getting from {} ...'.format(url))
-    
-    # TODO: error handling
-    urllib.urlretrieve(url, dst)
 
 
 class Command(BaseCommand):
@@ -59,7 +48,9 @@ class Command(BaseCommand):
             else:
                 # get latest gwascatalog from official web site
                 log.info('Getting latest gwascatalog form official web site...')
-                get_catalog.get_catalog(url=settings.GWASCATALOG_URL, dst=latest_catalog)
+                log.info('Getting from {} ...'.format(url))  # url = 'http://www.genome.gov/admin/gwascatalog.txt'
+
+                get_url_content(url=settings.GWASCATALOG_URL, dst=latest_catalog)
             
 
             latest_catalog_cleaned = latest_catalog.replace('.txt', '.cleaned.txt')
@@ -76,6 +67,11 @@ class Command(BaseCommand):
             import_catalog.import_catalog(path_to_gwascatalog=latest_catalog_cleaned,
                                           path_to_mim2gene=settings.PATH_TO_MIM2GENE,
                                           mongo_port=settings.MONGO_PORT)
+
+            # TODO: get latest information of gwascatalog (dbSNP version & refgenome version)
+            # form .pdf -> x
+            # from .html -> TODO
+
 
             # TODO: do test_gatalog for db.catalog.<today>
                 # TODO: check if latestet `date added` is newer or equal to prev's one. (check if download was succeed)
