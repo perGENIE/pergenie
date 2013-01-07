@@ -28,17 +28,3 @@ class SimpleTestCase(TestCase):
         """ """
         self.failUnlessEqual(self.client.login(username='anonymous', password='anonymous'), False)
         self.failUnlessEqual(self.client.login(username='temp', password='temp'), True)
-
-    def test_login_required(self):
-        """ """
-
-        # attempt to access /dashboard/ without login
-        # -> redirect to /login/?next=/dashboard/
-        response = self.client.get('/dashboard/')
-        self.failUnlessEqual(response.status_code, 302)
-
-        # attempt to access /dashboard/ after login
-        self.client.login(username='temp', password='temp')
-        response = self.client.get('/dashboard/')
-        self.failUnlessEqual(response.status_code, 200)
-
