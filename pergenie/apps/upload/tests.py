@@ -21,7 +21,7 @@ class SimpleTest(TestCase):
 
         # TODO: mongo
 
-
+ 
         # TDOO: >>> csrf_client = Client(enforce_csrf_checks=True)
 
 
@@ -68,7 +68,6 @@ class SimpleTest(TestCase):
         #     self.client.login(username=self.test_user_id, password=self.test_user_password)
         #     response = self.client.get(page)
         #     self.failUnlessEqual(response.status_code, 200)
-
 
     #         # '{"status": "ok", "error_message": null, "uploaded_files": {}}'
 
