@@ -4,6 +4,8 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic.simple import direct_to_template
 from django.conf import settings
 
+from django.utils.translation import ugettext as _
+
 import os
 import pymongo
 from pprint import pformat
@@ -59,7 +61,9 @@ def index(request):
             infos = list(data_info.find( {'user_id': user_id} ))
 
             if not infos:
-                msg = 'まずは，genome fileをアップロードしましょう!'
+                # msg = _('まずは，genome fileをアップロードしましょう!')
+                # Translators: This message appears on the home page only
+                msg = _('First, upload your genome file!')
                 break
 
             break
