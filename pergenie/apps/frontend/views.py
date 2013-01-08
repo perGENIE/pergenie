@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*- 
+
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.models import User
 from django.shortcuts import redirect, render_to_response
@@ -5,6 +7,8 @@ from django.template import RequestContext
 from django.views.decorators.http import require_http_methods
 from django.core.urlresolvers import reverse
 from django.views.generic.simple import direct_to_template
+from django.utils import translation
+from django.utils.translation import ugettext as _
 from django.conf import settings
 
 from django.db import IntegrityError
@@ -44,10 +48,10 @@ def login(request):
                 return redirect('apps.dashboard.views.index')
 
             else:
-                params['error'] = 'invalid mail address or password'
+                params['error'] = _('invalid mail address or password')
 
         else:
-            params['error'] = 'Invalid request'
+            params['error'] = _('Invalid request')
 
     return direct_to_template(request, 'login.html', params)
 
@@ -87,34 +91,33 @@ def register(request):
                 except IntegrityError, e:
                     # not unique user_id
                     params['has_error'] = True
-                    params['message'] = 'Already registered.  <a href="{}">login</a>'.format(reverse('apps.frontend.views.login'))
+                    params['message'] = _('Already registered.') + ' <a href="{}">login</a>'.format(reverse('apps.frontend.views.login'))
                     log.error('IntegrityError: {}'.format(e))
 
                 except ReservedUserIDError, e:
                     # user_id is reserved user_id
                     params['has_error'] = True
-                    params['message'] = 'Already registered.  <a href="{}">login</a>'.format(reverse('apps.frontend.views.login'))
+                    params['message'] = _('Already registered.') + ' <a href="{}">login</a>'.format(reverse('apps.frontend.views.login'))
                     log.error('ReservedUserIDError: {}'.format(e))
 
                 except:
                     #
                     params['has_error'] = True
-                    params['message'] = 'Unexpected error'
-                    log.error('Unexpected error')
+                    params['message'] = _('Unexpected error.')
 
                 else:
                     params['is_succeeded'] = True
                     password = password1
-                    params['message'] = 'You have successfully registered!'
+                    # params['message'] = _('You have successfully registered!')
 
             else:
                 params['has_error'] = True
-                params['message'] = 'Passwords doesn\'t match'
+                params['message'] = _('Passwords do not match.')
 
 
         else:
             params['has_error'] = True
-            params['message'] = 'Invalid request'
+            params['message'] = _('Invalid request.')
 
 
     if params['is_succeeded']:
@@ -127,7 +130,7 @@ def register(request):
             return redirect('apps.dashboard.views.index')
 
         else:
-            params['error'] = 'invalid mail address or password'
+            params['error'] = _('Invalid mail address or password.')
 
     else:
         return direct_to_template(request, 'register.html', params)

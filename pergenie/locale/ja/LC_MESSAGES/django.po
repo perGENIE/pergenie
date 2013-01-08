@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-08 16:06+0900\n"
+"POT-Creation-Date: 2013-01-08 23:21+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,6 +19,30 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0\n"
 
 #. Translators: This message appears on the home page only
-#: apps/dashboard/views.py:66
+#: apps/dashboard/views.py:69
 msgid "First, upload your genome file!"
 msgstr "まずは，genome fileをアップロードしましょう!"
+
+#: apps/frontend/views.py:51 apps/frontend/views.py:134
+msgid "invalid mail address or password"
+msgstr "メールアドレスかパスワードが正しくありません．"
+
+#: apps/frontend/views.py:54 apps/frontend/views.py:121
+msgid "Invalid request"
+msgstr "不正なリクエストです．"
+
+#: apps/frontend/views.py:94 apps/frontend/views.py:100
+msgid "Already registered."
+msgstr "すでに登録済みです．"
+
+#: apps/frontend/views.py:106
+msgid "Unexpected error"
+msgstr "予期しないエラーが発生しました．"
+
+#: apps/frontend/views.py:112
+msgid "You have successfully registered!"
+msgstr "登録完了です．"
+
+#: apps/frontend/views.py:116
+msgid "Passwords doesn't match"
+msgstr "パスワードが一致していません．"
