@@ -1,7 +1,8 @@
+# -*- coding: utf-8 -*- 
+
 from django.contrib.auth.models import User
 from django.test import TestCase
 from django.test.client import Client
-
 from django.conf import settings
 
 from pprint import pprint 
@@ -65,6 +66,15 @@ class SimpleTestCase(TestCase):
 
         menu_bar_user_id = 'Logged in as <a href="/settings/">{}</a>'.format(self.test_user_id)
         self.failUnlessEqual(bool(menu_bar_user_id in response.content), True)
+
+
+    def test_logout(self):
+        self.client.login(username=self.test_user_id, password=self.test_user_password)
+        response = self.client.get('/dashboard/')
+        response = self.client.get('/logout/')# , follow=True)
+        self.failUnlessEqual(response.status_code, 302)
+        
+        # TODO: check cookies & session data
 
 
     # def test_msg(self):

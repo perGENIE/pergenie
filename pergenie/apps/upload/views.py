@@ -163,7 +163,7 @@ def delete(request):
 
     return redirect('apps.upload.views.index')
 
-
+@login_required
 def status(request):
     if not request.user or not request.user.username:
         result = {'status': 'error',
