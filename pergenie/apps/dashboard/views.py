@@ -3,6 +3,7 @@
 from django.contrib.auth.decorators import login_required
 from django.views.generic.simple import direct_to_template
 from django.conf import settings
+from django.utils import translation
 from django.utils.translation import ugettext as _
 
 import os
@@ -19,6 +20,10 @@ def index(request):
     user_id = request.user.username
     msg = ''
     err = ''
+
+    # log.debug('request.LANGUAGE_CODE {}'.format(request.LANGUAGE_CODE))
+    log.debug('translation.get_language() {}'.format(translation.get_language()))
+    # translation.activate('ja')
 
     with pymongo.Connection(port=settings.MONGO_PORT) as connection:
         db = connection['pergenie']
