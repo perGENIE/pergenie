@@ -5,6 +5,11 @@ from django.views.generic.simple import direct_to_template
 from django.utils import translation
 from django.utils.translation import ugettext as _
 from django.conf import settings
+<<<<<<< local
+=======
+from django.utils import translation
+from django.utils.translation import ugettext as _
+>>>>>>> other
 
 import os
 import pymongo
