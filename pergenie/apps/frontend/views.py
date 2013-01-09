@@ -13,6 +13,8 @@ from django.conf import settings
 
 from django.db import IntegrityError
 
+from smtplib import SMTPRecipientsRefused
+
 from apps.frontend.forms import LoginForm, RegisterForm
 
 from utils import clogging
@@ -75,6 +77,8 @@ def register(request):
             password1 = form.cleaned_data['password1']
             password2 = form.cleaned_data['password2']
 
+            # TODO: validate email is name@example.com
+
             if password1 == password2:
                 try:
                     # check if user_id is not RESERVED_ID like 'test'
@@ -118,6 +122,7 @@ def register(request):
         else:
             params['has_error'] = True
             params['message'] = _('Invalid request.')
+            # contains null password
 
 
     if params['is_succeeded']:
@@ -126,8 +131,18 @@ def register(request):
                             password=password)
 
         if user:
-            auth_login(request, user)
-            return redirect('apps.dashboard.views.index')
+            # auth_login(request, user)
+            # return redirect('apps.dashboard.views.index')
+            try:
+                user.email_user('welcome', 'hello world')
+            except SMTPRecipientsRefused:
+                log.error('invalid email-address assumed')
+            except:
+                log.error('unecpected emaiil_user error')
+                
+            # TODO: not redirect to login, but redirect to register_completed
+            #       or show message: 'Please check email ...'
+            return direct_to_template(request, 'login.html')
 
         else:
             params['error'] = _('Invalid mail address or password.')
