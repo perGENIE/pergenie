@@ -19,3 +19,4 @@ celeryd.pid
 static/vendor
 config
 pergenie/tmp
+*.orig

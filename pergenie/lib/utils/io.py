@@ -7,8 +7,6 @@ try:
 except ImportError:
    import pickle
 
-import pyPdf
-
 
 def pickle_dump_obj(obj, fout_name):
     with open(fout_name, 'wb') as fout:
@@ -33,18 +31,24 @@ def get_url_content(url, dst):
     # TODO: error handling
     urllib.urlretrieve(url, dst)
 
+try:
+   import pyPdf
 
-def get_pdf_content(path):
-    """Get PDF-content from .pdf
-    
-    ref: http://code.activestate.com/recipes/511465/
-    """
+   def get_pdf_content(path):
+      """Get PDF-content from .pdf
+      
+      ref: http://code.activestate.com/recipes/511465/
+      """
+      
+      content = []
 
-    content = []
+      pdf = pyPdf.PdfFileReader(file(path, "rb"))
+      for i in range(0, pdf.getNumPages()):
+         content.append(pdf.getPage(i).extractText())
+         
+      return content
 
-    pdf = pyPdf.PdfFileReader(file(path, "rb"))
-    for i in range(0, pdf.getNumPages()):
-        content.append(pdf.getPage(i).extractText())
+except ImportError:
+   pass
 
-    return content
 
