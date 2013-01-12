@@ -2,16 +2,15 @@
 
 from django.conf import settings
 
-import argparse
 import os
 import csv
 import datetime
 import time
 import re
-import sys
+# import sys
 import pymongo
 
-from utils.io import pickle_dump_obj, pickle_load_obj
+from utils.io import pickle_dump_obj
 from utils import clogging
 log = clogging.getColorLogger(__name__)
 
@@ -20,6 +19,7 @@ import weblio_eng2ja
 
 _g_gene_symbol_map = {}  # { Gene Symbol => (Entrez Gene ID, OMIM Gene ID) }
 _g_gene_id_map = {}      # { Entrez Gene ID => (Gene Symbol, OMIM Gene ID) }
+
 
 def import_catalog(path_to_gwascatalog, path_to_mim2gene, mongo_port):
     """doc
@@ -38,7 +38,6 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, mongo_port):
             _g_gene_symbol_map[gene_symbol] = entrez_gene_id, omim_gene_id
             _g_gene_id_map[entrez_gene_id] = gene_symbol, omim_gene_id
 
-
     # print 'Loading eng2ja.txt...'
     # eng2ja = {}
     # with open(path_to_eng2ja, 'rb') as fin:
@@ -48,11 +47,11 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, mongo_port):
 
     with pymongo.Connection(port=mongo_port) as connection:
         catalog_date_raw = os.path.basename(path_to_gwascatalog).split('.')[1]
-        catalog_date = datetime.datetime.strptime(catalog_date_raw , '%Y_%m_%d')
+        # catalog_date = datetime.datetime.strptime(catalog_date_raw , '%Y_%m_%d')
 
         catalog = connection['pergenie']['catalog'][catalog_date_raw]
-        dbsnp = connection['dbsnp']['B132']  #
-        
+        dbsnp = connection['dbsnp']['B132']
+
         # ensure db.catalog does not exist
         if catalog.find_one():
             connection['pergenie'].drop_collection(catalog)
@@ -108,7 +107,7 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, mongo_port):
         post_fields = [('risk_allele', 'Risk Allele'),
                        ('eng2ja', 'Disease/Trait (in Japanese)'),
                        ('OR', 'OR')]
-        
+
         field_names = [field[0:2] for field in fields] + post_fields
 
         fields = my_fields + fields
@@ -178,10 +177,10 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, mongo_port):
 
     # for trait,ok_count in sorted(trait_dict.items(), key=lambda x:x[1]):
     #     print '[INFO]', trait, ok_count
-            
+
     log.info('# of traits: {}'.format(len(trait_dict)))
     log.info('# of documents in catalog (after): {}'.format(catalog.count()))
-    
+
     pickle_dump_obj(catalog_summary, os.path.join(settings.CATALOG_SUMMARY_CACHE_DIR, 'catalog_summary.p'))
     pickle_dump_obj(field_names, os.path.join(settings.CATALOG_SUMMARY_CACHE_DIR, 'field_names.p'))
     log.info('dumped catalog_summary.p as pickle')
@@ -192,33 +191,34 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, mongo_port):
         trait_list = [k for k in trait_dict.keys()]
         print >>my_trait_list, '# -*- coding: utf-8 -*- '
         print >>my_trait_list, 'my_trait_list =',
-        print >>my_trait_list,  trait_list  
+        print >>my_trait_list, trait_list
 
         trait_list_ja = [eng2ja.try_get(trait) for trait in trait_list]
         print >>my_trait_list, ''
         print >>my_trait_list, 'my_trait_list_ja =',
-        print >>my_trait_list,  trait_list_ja
+        print >>my_trait_list, trait_list_ja
 
     log.info('import catalog done')
     return
 
+
 def identfy_OR_or_beta(OR_or_beta, CI_95):
-   if CI_95['text']:
-      # TODO: convert beta to OR if can
-      OR = 'beta:{}'.format(OR_or_beta)
+    if CI_95['text']:
+        # TODO: convert beta to OR if can
+        OR = 'beta:{}'.format(OR_or_beta)
 
-   else:
-      if OR_or_beta:
-         OR = float(OR_or_beta)
+    else:
+        if OR_or_beta:
+            OR = float(OR_or_beta)
 
-         #
-         if OR < 1.0:  # somehow beta without text in 95% CI ?
-            OR = 'beta:{}?'.format(OR_or_beta)
+            #
+            if OR < 1.0:  # somehow beta without text in 95% CI ?
+                OR = 'beta:{}?'.format(OR_or_beta)
 
-      else:
-         OR = None
-      
-   return OR
+        else:
+            OR = None
+
+    return OR
 
 
 def _CI_text(text):
@@ -286,6 +286,7 @@ def _CI_text(text):
 
    return result
 
+
 def _OR_or_beta(text):
     """
     * parse odds-ratio or beta-coeff.
@@ -298,7 +299,7 @@ def _OR_or_beta(text):
         return None
     else:
         try:
-            value =  float(text)
+            value = float(text)
         except ValueError:
             match = re.match('\d*\.\d+', text)
             if match:
@@ -327,13 +328,13 @@ def _rss(text):
     else:
         if len(text.split(',')) != 1:
             log.warn('in _rss, more than one rs: {}'.format(text))
-            return None   # 
+            return None   #
 
         try:
             return int(text.replace('rs', ''))
         except ValueError:
             log.warn('in _rss, failed to convert to int: {}'.format(text))
-            return None   # 
+            return None   #
 
 
 def _risk_allele(text, dbsnp):
@@ -343,7 +344,7 @@ def _risk_allele(text, dbsnp):
     """
 
     reg_risk_allele = re.compile('rs(\d+)\-(\S+)')
-    RV_map = {'A':'T', 'T':'A', 'G':'C', 'C':'G'}
+    RV_map = {'A': 'T', 'T': 'A', 'G': 'C', 'C': 'G'}
 
     if not text or text in ('NR', 'NS'):
         return None, None
@@ -360,7 +361,6 @@ def _risk_allele(text, dbsnp):
             # print colors.green('[WARNING] allele is "?": {}'.format(text))
             return int(rs), risk_allele
 
-
         if not risk_allele in ('A', 'T', 'G', 'C'):
             log.warn('allele is not (A,T,G,C): {}'.format(text))
             return text, None
@@ -369,7 +369,7 @@ def _risk_allele(text, dbsnp):
         else:
             # Check if record is in dbSNP (if dbsnp is available)
             if dbsnp:
-                tmp_rs_record = list(dbsnp.find({'rs':int(rs)}))
+                tmp_rs_record = list(dbsnp.find({'rs': int(rs)}))
                 if not tmp_rs_record:
                     log.warn('rs{0} is not in dbSNP ...'.format(rs))
                     return int(rs), risk_allele + '?'
@@ -438,6 +438,7 @@ def _string(text):
         return None
     else:
         return text
+
 
 def _string_without_slash(text):
     if not text or text in ('NR', 'NS'):

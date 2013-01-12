@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
 
 import os
-
+import urllib
 try:
-   import cPickle as pickle
+    import cPickle as pickle
 except ImportError:
-   import pickle
+    import pickle
 
 
 def pickle_dump_obj(obj, fout_name):
     with open(fout_name, 'wb') as fout:
         pickle.dump(obj, fout, protocol=2)
+
 
 def pickle_load_obj(fin_name):
     with open(fin_name, 'rb') as fin:
@@ -27,28 +28,26 @@ def touch(filename, times=None):
 
 def get_url_content(url, dst):
     """Get content form url"""
-    
+
     # TODO: error handling
     urllib.urlretrieve(url, dst)
 
 try:
-   import pyPdf
+    import pyPdf
 
-   def get_pdf_content(path):
-      """Get PDF-content from .pdf
-      
-      ref: http://code.activestate.com/recipes/511465/
-      """
-      
-      content = []
+    def get_pdf_content(path):
+        """Get PDF-content from .pdf
 
-      pdf = pyPdf.PdfFileReader(file(path, "rb"))
-      for i in range(0, pdf.getNumPages()):
-         content.append(pdf.getPage(i).extractText())
-         
-      return content
+        ref: http://code.activestate.com/recipes/511465/
+        """
+
+        content = []
+
+        pdf = pyPdf.PdfFileReader(file(path, "rb"))
+        for i in range(0, pdf.getNumPages()):
+            content.append(pdf.getPage(i).extractText())
+
+        return content
 
 except ImportError:
-   pass
-
-
+    pass

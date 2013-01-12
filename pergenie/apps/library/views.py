@@ -1,13 +1,14 @@
-# -*- coding: utf-8 -*- 
+# -*- coding: utf-8 -*-
 import os
 try:
-   import cPickle as pickle
+    import cPickle as pickle
 except ImportError:
-   import pickle
+    import pickle
 
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 from django.views.generic.simple import direct_to_template
+# from django.utils.translation import ugettext as _
 
 import pymongo
 from lib.mongo import search_variants
@@ -18,12 +19,13 @@ from lib.mongo import my_trait_list
 MY_TRAIT_LIST = my_trait_list.my_trait_list
 MY_TRAIT_LIST_JA = my_trait_list.my_trait_list_ja
 
-from apps.library.forms import LibraryForm
+# from apps.library.forms import LibraryForm
 
 from django.conf import settings
 
-from pprint import pprint 
+from pprint import pprint
 import colors
+
 
 @require_http_methods(['GET', 'POST'])
 @login_required
@@ -42,7 +44,7 @@ def index(request):
             db = connection['pergenie']
             data_info = db['data_info']
 
-            uploadeds = list(data_info.find( {'user_id': user_id} ))
+            uploadeds = list(data_info.find({'user_id': user_id}))
             file_name = uploadeds[0]['name']
 
             query = '"{}"'.format(CatalogForm.query)
@@ -59,7 +61,7 @@ def index(request):
     msgs['err'] = err
     msgs['my_trait_list'] = MY_TRAIT_LIST,
     msgs['my_trait_list_ja'] = MY_TRAIT_LIST_JA
-    
+
     return direct_to_template(request, 'library.html', msgs)
 
 
@@ -132,28 +134,28 @@ def trait(request, trait):
     query = trait.replace('_', ' ')
     library_list = []
     variants_maps = {}
-    
+
     if not trait.replace('_', ' ') in MY_TRAIT_LIST:
         err = 'trait not found'
 
     else:
-       with pymongo.Connection(port=settings.MONGO_PORT) as connection:
-           db = connection['pergenie']
-           data_info = db['data_info']
+        with pymongo.Connection(port=settings.MONGO_PORT) as connection:
+            db = connection['pergenie']
+            data_info = db['data_info']
 
-           uploadeds = list(data_info.find( {'user_id': user_id}))
-           file_names = [uploaded['name'] for uploaded in uploadeds]
+            uploadeds = list(data_info.find({'user_id': user_id}))
+            file_names = [uploaded['name'] for uploaded in uploadeds]
 
-           variants_maps = {}
-           for file_name in file_names:
-               library_map, variants_maps[file_name] = search_variants.search_variants(user_id, file_name, query, 'trait')
+            variants_maps = {}
+            for file_name in file_names:
+                library_map, variants_maps[file_name] = search_variants.search_variants(user_id, file_name, query, 'trait')
 
-           pprint(library_map)
-           print 
-           print variants_maps
-           print 
+            pprint(library_map)
+            print
+            print variants_maps
+            print
 
-           library_list = [library_map[found_id] for found_id in library_map] ###
+            library_list = [library_map[found_id] for found_id in library_map] ###
 
     print colors.green('[ERROR]'), err
 
@@ -168,7 +170,7 @@ def trait(request, trait):
 # TODO: table view for snps
 @login_required
 def snps_index(request):
-    user_id = request.user.username
+    # user_id = request.user.username
     err = ''
 
     with open(os.path.join(settings.BASE_DIR, 'lib', 'mongo', 'catalog_summary.p'), 'rb') as fin:
@@ -182,6 +184,7 @@ def snps_index(request):
                                'uniq_snps_list': uniq_snps_list
                                })
 
+                               
 @login_required
 def snps(request, rs):
     """
@@ -199,7 +202,7 @@ def snps(request, rs):
     with pymongo.Connection(port=settings.MONGO_PORT) as connection:
         db = connection['pergenie']
         data_info = db['data_info']
-        uploadeds = list(data_info.find( {'user_id': user_id}))
+        uploadeds = list(data_info.find({'user_id': user_id}))
         file_names = [uploaded['name'] for uploaded in uploadeds]
 
         # data from uploaded files

@@ -4,17 +4,16 @@ from django.core.management.base import BaseCommand
 from django.conf import settings
 
 from optparse import make_option
-import sys
+# import sys
 import os
-import datetime
-import urllib
+# import datetime
 import pymongo
 from termcolor import colored
 
 from utils.date import today_date, today_str
 from utils import clogging
 log = clogging.getColorLogger(__name__)
-from utils.io import get_url_content, get_pdf_content
+from utils.io import get_url_content
 
 import mongo.clean_catalog as clean_catalog
 import mongo.import_catalog as import_catalog
@@ -48,10 +47,9 @@ class Command(BaseCommand):
             else:
                 # get latest gwascatalog from official web site
                 log.info('Getting latest gwascatalog form official web site...')
-                log.info('Getting from {} ...'.format(url))  # url = 'http://www.genome.gov/admin/gwascatalog.txt'
+                log.info('Getting from {} ...'.format(settings.GWASCATALOG_URL))
 
                 get_url_content(url=settings.GWASCATALOG_URL, dst=latest_catalog)
-            
 
             latest_catalog_cleaned = latest_catalog.replace('.txt', '.cleaned.txt')
 
@@ -61,7 +59,6 @@ class Command(BaseCommand):
                 # do `clean_catalog`
                 log.info('Cleaning latest gwascatalog...')
                 clean_catalog.clean_catalog(latest_catalog, latest_catalog_cleaned)
-                
 
             # TODO: import latest gwascatalog as db.catalog.<today>
             import_catalog.import_catalog(path_to_gwascatalog=latest_catalog_cleaned,
