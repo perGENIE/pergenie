@@ -3,7 +3,10 @@
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 from django.views.generic.simple import direct_to_template
+from django.utils import translation
+from django.utils.translation import ugettext as _
 from django.conf import settings
+
 from apps.riskreport.forms import RiskReportForm
 
 import os
@@ -19,6 +22,11 @@ from utils import clogging
 log = clogging.getColorLogger(__name__)
 
 
+    # # log.debug('request.LANGUAGE_CODE {}'.format(request.LANGUAGE_CODE))
+    # log.debug('translation.get_language() {}'.format(translation.get_language()))
+    # # translation.activate('ja')
+
+
 def upsert_riskreport(tmp_info, mongo_port=settings.MONGO_PORT):
     """Upsert risk report for <file_name> of <user>.
     """
@@ -32,12 +40,11 @@ def upsert_riskreport(tmp_info, mongo_port=settings.MONGO_PORT):
     # dump as pickle
     pickle_dump_obj(risk_store, os.path.join(settings.RISKREPORT_CACHE_DIR, tmp_info['user_id'], 'risk_store.{0}.{1}.p'.format(tmp_info['user_id'], tmp_info['name'])))
     pickle_dump_obj(risk_reports, os.path.join(settings.RISKREPORT_CACHE_DIR, tmp_info['user_id'], 'risk_reports.{0}.{1}.p'.format(tmp_info['user_id'], tmp_info['name'])))
-    
+
     # upsert data_info['riskreport'] = today
     with pymongo.Connection(port=settings.MONGO_PORT) as connection:
         data_info = connection['pergenie']['data_info']
-        
-        data_info.update({'user_id': tmp_info['user_id'], 'name':tmp_info['name'] }, {"$set": {'riskreport': today_date}}, upsert=True)
+        data_info.update({'user_id': tmp_info['user_id'], 'name': tmp_info['name'] }, {"$set": {'riskreport': today_date}}, upsert=True)
 
 
 def get_risk_values_for_indexpage(tmp_infos):
@@ -50,8 +57,8 @@ def get_risk_values_for_indexpage(tmp_infos):
 
         for i, tmp_info in enumerate(tmp_infos):
             # check if riskreport.<user>.<file_name> exist and latest in data_info
-            tmp_data_info = data_info.find_one({'user_id':tmp_info['user_id'],
-                                                'name':tmp_info['name']})
+            tmp_data_info = data_info.find_one({'user_id': tmp_info['user_id'],
+                                                'name': tmp_info['name']})
             risk_report_date = tmp_data_info.get('riskreport', None)
             risk_report_obj = os.path.join(settings.RISKREPORT_CACHE_DIR,
                                            tmp_info['user_id'],
@@ -76,7 +83,7 @@ def get_risk_values_for_indexpage(tmp_infos):
             elif i >= 1:
                 risk_values.append([tmp_map.get(trait, 0) for trait in risk_traits])
 
-    return risk_reports, risk_traits, risk_values        
+    return risk_reports, risk_traits, risk_values
 
 
 @require_http_methods(['GET', 'POST'])
@@ -95,12 +102,12 @@ def index(request):
 
         while True:
             # determine file
-            infos = list(data_info.find( {'user_id': user_id} ))
+            infos = list(data_info.find({'user_id': user_id}))
             tmp_info = None
             tmp_infos = []
 
             if not infos:
-                err = 'データがアップロードされていません．' # 'no data uploaded'
+                err = _('no data uploaded')
                 break
 
             if request.method == 'POST':
@@ -111,7 +118,7 @@ def index(request):
 
                 form = RiskReportForm(request.POST)
                 if not form.is_valid():
-                    err = '不正なリクエストです．' # 'Invalid request'
+                    err = _('Invalid request.')
                     break
 
                 for i, file_name in enumerate([request.POST['file_name'], request.POST['file_name2']]):
@@ -120,14 +127,15 @@ def index(request):
                     for info in infos:
                         if info['name'] == file_name:
                             if not info['status'] == 100:
-                                err = '{} は現在読み込み中です．しばらくお待ちください...'.format(file_name) # '{} is in importing, please wait for seconds...'
+                                # err = str(file_name) + _(' is in importing, please wait for seconds...')
+                                err = _('%(file_name)s is in importing, please wait for seconds...') % {'file_name': file_name}
 
                             tmp_info = info
                             tmp_infos.append(tmp_info)
                             break
 
                     if not tmp_info:
-                        err = '{} does not exist'.format(file_name)
+                        err = _('no such file %(file_name)s') % {'file_name': file_name}
                         break
 
             else:
@@ -137,7 +145,7 @@ def index(request):
                 info = infos[0]
                 file_name = info['name']
                 if not info['status'] == 100:
-                    err = '{} は現在読み込み中です．しばらくお待ちください...'.format(file_name) # '{} is in importing, please wait for seconds...'.format(file_name)
+                    err = _('%(file_name)s is in importing, please wait for seconds...') % {'file_name': file_name}
                 tmp_infos.append(info)
 
             if not err:
@@ -164,7 +172,7 @@ def get_risk_infos_for_subpage(user_id, file_name, trait_name=None, study_name=N
             tmp_data_info = data_info.find_one({'user_id': user_id, 'name': file_name})
 
             if not tmp_data_info:
-                err = 'そのようなファイルはありません．{}'.format(file_name) # 'no such file {}'.format(file_name)
+                err = _('no such file %(file_name)s') % {'file_name': file_name}
                 break
 
             # check if riskreport.<user>.<file_name> exist and latest in data_info
@@ -186,7 +194,7 @@ def get_risk_infos_for_subpage(user_id, file_name, trait_name=None, study_name=N
                 RR_list = [v['RR'] for k,v in sorted(tmp_risk_store.items(), key=lambda x:x[1]['RR'])]
 
                 if not trait_name.replace('_', ' ') in tmp_risk_store:
-                    err = 'そのようなtraitはありません' # 'trait not found'
+                    err = _('trait not found')
                     break
 
             elif not study_name and trait_name:
@@ -203,7 +211,7 @@ def get_risk_infos_for_subpage(user_id, file_name, trait_name=None, study_name=N
 
             break
 
-        risk_infos = {'msg':msg, 'err': err, 'infos': infos, 'tmp_info': tmp_info,
+        risk_infos = {'msg': msg, 'err': err, 'infos': infos, 'tmp_info': tmp_info,
                       'RR_list': RR_list, 'RR_list_real': RR_list_real, 'study_list': study_list,
                       'file_name': file_name, 'trait_name': trait_name, 'study_name': study_name,
                       'snps_list': snps_list, 'tmp_risk_store': tmp_risk_store}
@@ -231,4 +239,3 @@ def study(request, file_name, trait, study_name):
     risk_infos = get_risk_infos_for_subpage(user_id, file_name, trait_name=trait, study_name=study_name)
 
     return direct_to_template(request, 'risk_report_study.html', risk_infos)
-

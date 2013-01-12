@@ -15,7 +15,6 @@ from utils import clogging
 log = clogging.getColorLogger(__name__)
 
 import weblio_eng2ja
-# import colors
 
 _g_gene_symbol_map = {}  # { Gene Symbol => (Entrez Gene ID, OMIM Gene ID) }
 _g_gene_id_map = {}      # { Entrez Gene ID => (Gene Symbol, OMIM Gene ID) }
@@ -142,18 +141,15 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, mongo_port):
                         except KeyError:
                             trait_dict[data['trait']] = 1
 
-
                         # identfy OR or beta & TODO: convert beta to OR if can
                         data['OR'] = identfy_OR_or_beta(data['OR_or_beta'], data['CI_95'])
 
-
                         # for DEGUG
                         if type(data['OR']) == float:
-                           data['OR_or_beta'] = data['OR']
-                           # print data['OR_or_beta'], data['OR'], 'rs{}'.format(data['snps'])
+                            data['OR_or_beta'] = data['OR']
+                            # print data['OR_or_beta'], data['OR'], 'rs{}'.format(data['snps'])
                         else:
-                           data['OR_or_beta'] = None
-
+                            data['OR_or_beta'] = None
 
                         # catalog summary
                         # TODO: support gene records
@@ -222,69 +218,69 @@ def identfy_OR_or_beta(OR_or_beta, CI_95):
 
 
 def _CI_text(text):
-   """
-   * 95% Confident interval
+    """
+    * 95% Confident interval
 
-     * if is beta coeff., there is text. elif OR, no text.
-   """
-   result = {}
+      * if is beta coeff., there is text. elif OR, no text.
+    """
+    result = {}
 
-   if not text or text in ('NR', 'NS'):  # nothing or NR or NS
-      result['CI'] = None
-      result['text'] = None
+    if not text or text in ('NR', 'NS'):  # nothing or NR or NS
+        result['CI'] = None
+        result['text'] = None
 
-   else:
-      re_CI_text = re.compile('\[(.+)\](.*)')
-      texts = re_CI_text.findall(text)
-      
-      if not len(texts) == 1:  # only text
-         result['CI'] = None
-         re_CInone_text = re.compile('(.*)')
-         texts = re_CInone_text.findall(text)
-         assert len(text[0]) == 1, '{0} {1}'.format(text, texts)
-         result['text']  = texts[0][0]
+    else:
+        re_CI_text = re.compile('\[(.+)\](.*)')
+        texts = re_CI_text.findall(text)
 
-      else:
-         assert len(texts[0]) == 2, '{0} {1}'.format(text, texts)  # [] & text
-
-         #
-         if ']' in texts[0][0]:  # [] ] somehow there is ] at end... like [0.006-0.01] ml/min/1.73 m2 decrease]
-            retry_re_CI_text = re.compile('\[(.+)\](.*)\]')
-            texts = retry_re_CI_text.findall(text)
-
-         if texts[0][0] in ('NR', 'NS'):
+        if not len(texts) == 1:  # only text
             result['CI'] = None
-         else:
-            CIs = re.split('(, | - |- | -| |-|)', str(texts[0][0]))
+            re_CInone_text = re.compile('(.*)')
+            texts = re_CInone_text.findall(text)
+            assert len(text[0]) == 1, '{0} {1}'.format(text, texts)
+            result['text']  = texts[0][0]
 
-            try:
-               if not len(CIs) == 3:
-                  log.warn('{0} {1} {2}'.format(text, texts[0][0], CIs))
-                  if CIs[0] == '' and CIs[1] == '-' and CIs[3] == '-':  # [-2.13040-19.39040]
-                     result['CI'] = [(-1)*float(CIs[2]), float(CIs[4])]
-                  else:
-                     log.warn('{0} {1}'.format(text, texts))
-                     time.sleep(2)
-               else:
-                  result['CI'] = [float(CIs[0]), float(CIs[2])]
+        else:
+            assert len(texts[0]) == 2, '{0} {1}'.format(text, texts)  # [] & text
 
-            except ValueError:
-               #
-               if CIs[2] == '.5.00':
-                  CIs[2] = float(5.00)
-                  result['CI'] = [float(CIs[0]), float(CIs[2])]
-               #
-               elif texts[0][0] == 'mg/dl decrease':
-                  result['CI'] = None
-                  result['text'] = 'mg/dl decrease'
-                  return result
+            #
+            if ']' in texts[0][0]:  # [] ] somehow there is ] at end... like [0.006-0.01] ml/min/1.73 m2 decrease]
+                retry_re_CI_text = re.compile('\[(.+)\](.*)\]')
+                texts = retry_re_CI_text.findall(text)
 
-         if texts[0][1]:  # beta coeff.
-            result['text']  = texts[0][1].lstrip()
-         else:  # OR
-            result['text'] = None
+            if texts[0][0] in ('NR', 'NS'):
+                result['CI'] = None
+            else:
+                CIs = re.split('(, | - |- | -| |-|)', str(texts[0][0]))
 
-   return result
+                try:
+                    if not len(CIs) == 3:
+                        log.warn('{0} {1} {2}'.format(text, texts[0][0], CIs))
+                        if CIs[0] == '' and CIs[1] == '-' and CIs[3] == '-':  # [-2.13040-19.39040]
+                            result['CI'] = [(-1) * float(CIs[2]), float(CIs[4])]
+                        else:
+                            log.warn('{0} {1}'.format(text, texts))
+                            time.sleep(2)
+                    else:
+                        result['CI'] = [float(CIs[0]), float(CIs[2])]
+
+                except ValueError:
+                    #
+                    if CIs[2] == '.5.00':
+                        CIs[2] = float(5.00)
+                        result['CI'] = [float(CIs[0]), float(CIs[2])]
+                    #
+                    elif texts[0][0] == 'mg/dl decrease':
+                        result['CI'] = None
+                        result['text'] = 'mg/dl decrease'
+                        return result
+
+            if texts[0][1]:  # beta coeff.
+                result['text']  = texts[0][1].lstrip()
+            else:  # OR
+                result['text'] = None
+
+    return result
 
 
 def _OR_or_beta(text):
@@ -358,7 +354,7 @@ def _risk_allele(text, dbsnp):
 
         #
         if risk_allele == '?':
-            # print colors.green('[WARNING] allele is "?": {}'.format(text))
+            # log.warn('allele is "?": {}'.format(text))
             return int(rs), risk_allele
 
         if not risk_allele in ('A', 'T', 'G', 'C'):

@@ -53,7 +53,7 @@ def login(request):
                 params['error'] = _('invalid mail address or password')
 
         else:
-            params['error'] = _('Invalid request')
+            params['error'] = _('Invalid request.')
 
     return direct_to_template(request, 'login.html', params)
 

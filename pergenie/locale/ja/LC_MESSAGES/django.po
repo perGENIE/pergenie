@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-13 00:36+0900\n"
+"POT-Creation-Date: 2013-01-13 03:54+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,8 +27,10 @@ msgstr "まずは，genome fileをアップロードしましょう!"
 msgid "invalid mail address or password"
 msgstr "メールアドレスかパスワードが正しくありません．"
 
-#: apps/frontend/views.py:56
-msgid "Invalid request"
+#: apps/frontend/views.py:56 apps/frontend/views.py:124
+#: apps/riskreport/views.py:121
+#, fuzzy
+msgid "Invalid request."
 msgstr "不正なリクエストです．"
 
 #: apps/frontend/views.py:98 apps/frontend/views.py:104
@@ -45,15 +47,31 @@ msgstr "予期しないエラーが発生しました．"
 msgid "Passwords do not match."
 msgstr "パスワードが一致していません．"
 
-#: apps/frontend/views.py:124
-#, fuzzy
-msgid "Invalid request."
-msgstr "不正なリクエストです．"
-
 #: apps/frontend/views.py:148
 #, fuzzy
 msgid "Invalid mail address or password."
 msgstr "メールアドレスかパスワードが正しくありません．"
+
+#: apps/riskreport/views.py:110
+msgid "no data uploaded"
+msgstr "データがアップロードされていません．"
+
+#: apps/riskreport/views.py:131 apps/riskreport/views.py:148
+#, python-format
+msgid "%(file_name)s is in importing, please wait for seconds..."
+msgstr "%(file_name)s は現在読み込み中です．しばらくお待ちください..."
+
+#: apps/riskreport/views.py:138 apps/riskreport/views.py:175
+#, python-format
+msgid "no such file %(file_name)s"
+msgstr "そのようなファイルはありません．%(file_name)s"
+
+#: apps/riskreport/views.py:197
+msgid "trait not found"
+msgstr "そのようなtraitはありません"
+
+#~ msgid "Invalid request"
+#~ msgstr "不正なリクエストです．"
 
 #~ msgid "You have successfully registered!"
 #~ msgstr "登録完了です．"
