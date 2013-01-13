@@ -1,9 +1,9 @@
-# -*- coding: utf-8 -*- 
+# -*- coding: utf-8 -*-
 
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.models import User
-from django.shortcuts import redirect, render_to_response
-from django.template import RequestContext
+from django.shortcuts import redirect  # , render_to_response
+# from django.template import RequestContext
 from django.views.decorators.http import require_http_methods
 from django.core.urlresolvers import reverse
 from django.views.generic.simple import direct_to_template
@@ -20,11 +20,13 @@ from apps.frontend.forms import LoginForm, RegisterForm
 from utils import clogging
 log = clogging.getColorLogger(__name__)
 
-import pymongo
+# import pymongo
+
 
 class ReservedUserIDError(Exception):
     def __init__(self, value):
         self.value = value
+
     def __str__(self):
         # return repr(self.value)
         return str(self.value)
@@ -57,6 +59,7 @@ def login(request):
 
     return direct_to_template(request, 'login.html', params)
 
+
 def logout(request):
     auth_logout(request)
     return redirect('apps.frontend.views.index')
@@ -87,7 +90,7 @@ def register(request):
 
                     #TODO: check if user_id is valid char. not ", ', \, ...
                     #
-                    # 
+                    #
 
                     user = User.objects.create_user(user_id, user_id, password1)
                     user.save()
@@ -139,7 +142,7 @@ def register(request):
                 log.error('invalid email-address assumed')
             except:
                 log.error('unecpected emaiil_user error')
-                
+
             # TODO: not redirect to login, but redirect to register_completed
             #       or show message: 'Please check email ...'
             return direct_to_template(request, 'login.html')

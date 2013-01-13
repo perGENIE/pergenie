@@ -1,5 +1,6 @@
 {% extends "frontend_layout.html" %}
 {% load staticfiles %}
+{% load i18n %}
 {% block title %}Login{% endblock %}
 {% block cookie_id %}login{% endblock %}
 {% block description %}login{% endblock %}
@@ -31,7 +32,7 @@
 	    {% if error %}
 	    <div class="alert alert-error">{{ error }}</div>
 	    {% endif %}
-            <a href="{% url apps.frontend.views.register %}">新規アカウント登録</a>
+            <a href="{% url apps.frontend.views.register %}">{% trans "Create an account." %}</a>
           </div>
         </div>
       </div>
