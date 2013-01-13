@@ -1,35 +1,29 @@
 # -*- coding: utf-8 -*-
 import os
-try:
-    import cPickle as pickle
-except ImportError:
-    import pickle
 
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 from django.views.generic.simple import direct_to_template
-# from django.utils.translation import ugettext as _
-
-import pymongo
-from lib.mongo import search_variants
-from lib.mongo import search_catalog
-
-# TODO: rewrite ?
-from lib.mongo import my_trait_list
-MY_TRAIT_LIST = my_trait_list.my_trait_list
-MY_TRAIT_LIST_JA = my_trait_list.my_trait_list_ja
-
-# from apps.library.forms import LibraryForm
-
+from django.utils.translation import get_language
+from django.utils.translation import ugettext as _
 from django.conf import settings
 
-from pprint import pprint
-import colors
+from apps.library.forms import LibraryForm
+
+import pymongo
+
+from lib.mongo import search_variants
+from lib.mongo import search_catalog
+from utils.io import pickle_load_obj
+from utils import clogging
+log = clogging.getColorLogger(__name__)
+
+MY_TRAIT_LIST = pickle_load_obj(os.path.join(settings.CATALOG_SUMMARY_CACHE_DIR, 'trait_list.p'))
+MY_TRAIT_LIST_JA = pickle_load_obj(os.path.join(settings.CATALOG_SUMMARY_CACHE_DIR, 'trait_list_ja.p'))
 
 
 @require_http_methods(['GET', 'POST'])
 @login_required
-# def index(response):
 def index(request):
     user_id = request.user.username
     err = ''
@@ -47,9 +41,9 @@ def index(request):
             uploadeds = list(data_info.find({'user_id': user_id}))
             file_name = uploadeds[0]['name']
 
-            query = '"{}"'.format(CatalogForm.query)
+            query = '"{}"'.format(LibraryForm.query)
             catalog_map, variants_map = search_variants.search_variants(user_id, file_name, query)
-            catalog_list = [catalog_map[found_id] for found_id in catalog_map] ### somehow catalog_map.found_id does not work in templete...
+            catalog_list = [catalog_map[found_id] for found_id in catalog_map]  # somehow catalog_map.found_id does not work in templete...
 
             return direct_to_template(request,
                                       'library_trait.html',
@@ -59,7 +53,7 @@ def index(request):
                                        'variants_map': variants_map})
 
     msgs['err'] = err
-    msgs['my_trait_list'] = MY_TRAIT_LIST,
+    msgs['my_trait_list'] = MY_TRAIT_LIST
     msgs['my_trait_list_ja'] = MY_TRAIT_LIST_JA
 
     return direct_to_template(request, 'library.html', msgs)
@@ -67,55 +61,47 @@ def index(request):
 
 @login_required
 def summary_index(request):
-    # user_id = request.user.username
     err = ''
 
     # TODO: error handling ?
-    with open(os.path.join(settings.CATALOG_SUMMARY_CACHE_DIR, 'catalog_summary.p'), 'rb') as fin:
-        catalog_summary = pickle.load(fin)
-        with open(os.path.join(settings.CATALOG_SUMMARY_CACHE_DIR, 'field_names.p'), 'rb') as fin:
-            field_names = pickle.load(fin)
+    catalog_summary = pickle_load_obj(os.path.join(settings.CATALOG_SUMMARY_CACHE_DIR, 'catalog_summary.p'))
+    field_names = pickle_load_obj(os.path.join(settings.CATALOG_SUMMARY_CACHE_DIR, 'field_names.p'))
 
-            print field_names
+    catalog_uniqs_counts = {}
 
-            catalog_uniqs_counts = {}
+    for field_name in field_names:
+        uniqs = catalog_summary.get(field_name[0])
 
-            for field_name in field_names:
-                uniqs = catalog_summary.get(field_name[0])
+        if uniqs:
+            catalog_uniqs_counts[field_name] = len(uniqs)
 
-                if uniqs:
-                    catalog_uniqs_counts[field_name] = len(uniqs)
-
-    print catalog_uniqs_counts
+    log.debug('catalog_uniqs_counts', catalog_uniqs_counts)
 
     return direct_to_template(request, 'library_summary_index.html',
                               {'err': err,
                                'catalog_uniqs_counts': catalog_uniqs_counts})
 
+
 @login_required
 def summary(request, field_name):
-    user_id = request.user.username
     err = ''
 
-    with open(os.path.join(settings.CATALOG_SUMMARY_CACHE_DIR, 'catalog_summary.p'), 'rb') as fin:
-        catalog_summary = pickle.load(fin)
+    catalog_summary = pickle_load_obj(os.path.join(settings.CATALOG_SUMMARY_CACHE_DIR, 'catalog_summary.p'))
+    uniqs_counts = catalog_summary.get(field_name)
 
-        uniqs_counts = catalog_summary.get(field_name)
+    # TODO: 404?
+    if not uniqs_counts:
+        err = 'not found'
+        uniqs_counts = {}
 
-        # TODO: 404?
-        if not uniqs_counts:
-            err = 'not found'
-            uniqs_counts = {}
-
-        return direct_to_template(request, 'library_summary.html',
-                                  {'err': err,
-                                   'uniqs_counts': uniqs_counts,
-                                   'field_name': field_name})
+    return direct_to_template(request, 'library_summary.html',
+                              {'err': err,
+                               'uniqs_counts': uniqs_counts,
+                               'field_name': field_name})
 
 
 @login_required
 def trait_index(request):
-    user_id = request.user.username
     err = ''
 
     return direct_to_template(request,
@@ -150,14 +136,12 @@ def trait(request, trait):
             for file_name in file_names:
                 library_map, variants_maps[file_name] = search_variants.search_variants(user_id, file_name, query, 'trait')
 
-            pprint(library_map)
-            print
-            print variants_maps
-            print
+            # pprint(library_map)
+            # print variants_maps
 
-            library_list = [library_map[found_id] for found_id in library_map] ###
+            library_list = [library_map[found_id] for found_id in library_map]  ###
 
-    print colors.green('[ERROR]'), err
+    log.error(err)
 
     return direct_to_template(request,
                               'library_trait.html',
@@ -170,13 +154,10 @@ def trait(request, trait):
 # TODO: table view for snps
 @login_required
 def snps_index(request):
-    # user_id = request.user.username
     err = ''
 
-    with open(os.path.join(settings.BASE_DIR, 'lib', 'mongo', 'catalog_summary.p'), 'rb') as fin:
-        catalog_summary = pickle.load(fin)
-
-        uniq_snps_list = list(catalog_summary['snps'])
+    catalog_summary = pickle_load_obj(os.path.join(settings.CATALOG_SUMMARY_CACHE_DIR, 'catalog_summary.p'))
+    uniq_snps_list = list(catalog_summary['snps'])
 
     return direct_to_template(request,
                               'library_snps_index.html',
@@ -214,7 +195,7 @@ def snps(request, rs):
         # data from dbsnp
         dbsnp = connection['dbsnp']['B132']
         dbsnp_record = dbsnp.find_one({'rs': rs})
-        print 'dbsnp_record', dbsnp_record
+        log.debug('dbsnp_record {}'.format(dbsnp_record))
 
         # TODO: data from HapMap
         # * allele freq by polulation (with allele strand dbsnp oriented)
@@ -226,17 +207,15 @@ def snps(request, rs):
         catalog_record = catalog_records[0]
         if catalog_record['risk_allele_frequency']:
             catalog_record.update({'allele1': catalog_record['risk_allele'],
-                           'allele1_freq': catalog_record['risk_allele_frequency']*100,
-                           'allele2': 'other',
-                           'allele2_freq': (1 - catalog_record['risk_allele_frequency'])*100
-                           })
+                                   'allele1_freq': catalog_record['risk_allele_frequency']*100,
+                                   'allele2': 'other',
+                                   'allele2_freq': (1 - catalog_record['risk_allele_frequency'])*100})
         else:
             err = 'allele frequency is not available...'
             catalog_record.update({'allele1': catalog_record['risk_allele'],
-                           'allele1_freq': None,
-                           'allele2': 'other',
-                           'allele2_freq': None
-                           })
+                                   'allele1_freq': None,
+                                   'allele2': 'other',
+                                   'allele2_freq': None})
     else:
         catalog_record = None
 

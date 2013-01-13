@@ -10,7 +10,6 @@ import math
 import pymongo
 
 import colors
-import weblio_eng2ja
 import search_variants
 
 from pprint import pprint

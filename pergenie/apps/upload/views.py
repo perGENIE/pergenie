@@ -6,7 +6,7 @@ from django.shortcuts import redirect
 from django.utils import simplejson
 from django.views.decorators.http import require_http_methods
 from django.views.generic.simple import direct_to_template
-from django.utils import translation
+from django.utils.translation import get_language
 from django.utils.translation import ugettext as _
 from django.conf import settings
 from apps.upload.forms import UploadForm
@@ -27,7 +27,7 @@ def index(request):
     msg = ''
     err = ''
 
-    log.debug('translation.get_language() {}'.format(translation.get_language()))
+    log.debug('translation.get_language() {}'.format(get_language()))
 
     with pymongo.Connection(port=settings.MONGO_PORT) as connection:
         db = connection['pergenie']
