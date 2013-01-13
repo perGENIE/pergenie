@@ -1,5 +1,5 @@
 eng	ja
-5-HTT brain serotonin transporter levels	5-HTT brain serotonin transporter levels
+5-HTT brain serotonin transporter levels	脳内セロトニントランスポーター(5-HTT)密度
 AB1-42	AB1-42
 AIDS	AIDS
 AIDS progression	AIDS進行
@@ -39,20 +39,20 @@ Alzheimer's disease	アルツハイマー病
 Alzheimer's disease (age of onset)	アルツハイマー病 (発症年齢)
 Alzheimer's disease (late onset)	アルツハイマー病 (遅発型)
 Alzheimer's disease biomarkers	アルツハイマー病バイオマーカー
-#
-Amygdala reactivity	Amygdala reactivity
-Amyloid A Levels	Amyloid A Levels
+Amygdala reactivity	扁桃体の反応性
+Amyloid A Levels	アミロイドAタンパク質濃度
 Amyotrophic lateral sclerosis	筋萎縮性側索硬化症
-Amyotrophic lateral sclerosis (age of onset)	Amyotrophic lateral sclerosis (age of onset)
-Amyotrophic lateral sclerosis (interaction)	Amyotrophic lateral sclerosis (interaction)
-Androgen levels	Androgen levels
-Angiotensin-converting enzyme activity	Angiotensin-converting enzyme activity
-Ankle-brachial index 	Ankle-brachial index
+Amyotrophic lateral sclerosis (age of onset)	筋萎縮性側索硬化症 (発症年齢)
+Amyotrophic lateral sclerosis (interaction)	筋萎縮性側索硬化症 (interaction)
+Androgen levels	アンドロゲン濃度
+Angiotensin-converting enzyme activity	アンジオテンシン変換酵素活性
+Ankle-brachial index 	足関節・上腕血圧指数(ABI)
 Ankylosing spondylitis	強直性脊椎炎
 Anorexia nervosa	拒食症
-Anthropometric traits	Anthropometric traits
+Anthropometric traits	人体計測的な形質
 Anti-cyclic Citrullinated Peptide Antibody	抗環状シトルリン化ペプチド抗体
-Anticoagulant levels	Anticoagulant levels
+Anticoagulant levels	抗凝固薬レベル
+#
 Antineutrophil cytoplasmic antibody-associated vasculitis 	Antineutrophil cytoplasmic antibody-associated vasculitis
 Antipsychotic drug-induced weight gain	Antipsychotic drug-induced weight gain
 Antipsychotic-induced QTc interval prolongation	Antipsychotic-induced QTc interval prolongation
