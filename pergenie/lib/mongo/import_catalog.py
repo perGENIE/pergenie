@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from django.conf import settings
-
 import os
 import csv
 import datetime
@@ -14,17 +12,16 @@ from utils.io import pickle_dump_obj
 from utils import clogging
 log = clogging.getColorLogger(__name__)
 
-import weblio_eng2ja
-
 _g_gene_symbol_map = {}  # { Gene Symbol => (Entrez Gene ID, OMIM Gene ID) }
 _g_gene_id_map = {}      # { Entrez Gene ID => (Gene Symbol, OMIM Gene ID) }
 
 
-def import_catalog(path_to_gwascatalog, path_to_mim2gene, mongo_port):
+def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja,
+                   catalog_summary_cache_dir, mongo_port):
     """doc
     """
 
-    log.debug('Loading mim2gene.txt...')
+    log.debug('Loading mim2gene.txt ...')
     with open(path_to_mim2gene, 'rb') as fin:
         for record in csv.DictReader(fin, delimiter='\t'):
             gene_type = record['Type'].lower()
@@ -37,12 +34,15 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, mongo_port):
             _g_gene_symbol_map[gene_symbol] = entrez_gene_id, omim_gene_id
             _g_gene_id_map[entrez_gene_id] = gene_symbol, omim_gene_id
 
-    # print 'Loading eng2ja.txt...'
-    # eng2ja = {}
-    # with open(path_to_eng2ja, 'rb') as fin:
-    #     for record in csv.DictReader(fin, delimiter='/'):
-    #         eng2ja[record['eng']] = record['ja']
-    eng2ja = weblio_eng2ja.WeblioEng2Ja('data/weblio/eng2ja.txt', 'data/weblio/eng2ja_plus.txt')
+    log.debug('Loading gwascatalog.traits.translated.tsv ...')
+    eng2ja = {}
+    with open(path_to_eng2ja, 'rb') as fin:
+        for record in csv.DictReader(fin, delimiter='\t'):
+            if record['eng'] == '#':  # ignore `#`
+                log.debug(record['eng'])
+                pass
+            else:
+                eng2ja[record['eng']] = record['ja']
 
     with pymongo.Connection(port=mongo_port) as connection:
         catalog_date_raw = os.path.basename(path_to_gwascatalog).split('.')[1]
@@ -113,7 +113,6 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, mongo_port):
         log.info('# of fields: {}'.format(len(fields)))
 
         log.debug('Importing gwascatalog.txt...')
-        trait_dict = {}
         catalog_summary = {}
         with open(path_to_gwascatalog, 'rb') as fin:
             for i,record in enumerate(csv.DictReader(fin, delimiter='\t')):# , quotechar="'"):
@@ -124,8 +123,8 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, mongo_port):
                     except KeyError:
                         pass
 
-                # Weblio eng2ja
-                data['eng2ja'] = eng2ja.try_get(data['trait'])
+                # eng2ja
+                data['eng2ja'] = eng2ja.get(data['trait'])
 
                 if (not data['snps']) or (not data['strongest_snp_risk_allele']):
                     log.warn('absence of "snps" or "strongest_snp_risk_allele" {0} {1}. pubmed_id:{2}'.format(data['snps'], data['strongest_snp_risk_allele'], data['pubmed_id']))
@@ -136,11 +135,6 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, mongo_port):
                         log.warn('"snps" != "risk_allele": {0} != {1}'.format(data['snps'], rs))
 
                     else:
-                        try:
-                            trait_dict[data['trait']] += 1
-                        except KeyError:
-                            trait_dict[data['trait']] = 1
-
                         # identfy OR or beta & TODO: convert beta to OR if can
                         data['OR'] = identfy_OR_or_beta(data['OR_or_beta'], data['CI_95'])
 
@@ -151,7 +145,6 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, mongo_port):
                         else:
                             data['OR_or_beta'] = None
 
-                        # catalog summary
                         # TODO: support gene records
                         for field,value in data.items():
                             if '_gene' in field or field == 'CI_95':
@@ -171,30 +164,21 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, mongo_port):
             # TODO: indexing target
             # catalog.create_index([('snps', pymongo.ASCENDING)])
 
-    # for trait,ok_count in sorted(trait_dict.items(), key=lambda x:x[1]):
-    #     print '[INFO]', trait, ok_count
-
-    log.info('# of traits: {}'.format(len(trait_dict)))
     log.info('# of documents in catalog (after): {}'.format(catalog.count()))
 
-    pickle_dump_obj(catalog_summary, os.path.join(settings.CATALOG_SUMMARY_CACHE_DIR, 'catalog_summary.p'))
-    pickle_dump_obj(field_names, os.path.join(settings.CATALOG_SUMMARY_CACHE_DIR, 'field_names.p'))
-    log.info('dumped catalog_summary.p as pickle')
-    log.info('dumped field_names.p as pickle')
+    # dump as pickle
+    pickle_dump_obj(catalog_summary, os.path.join(catalog_summary_cache_dir, 'catalog_summary.p'))
+    pickle_dump_obj(field_names, os.path.join(catalog_summary_cache_dir, 'field_names.p'))
+    log.info('dumped catalog_summary.p, field_names.p as pickle')
 
-    # write out my_trait_list & my_trait_list_ja
-    with open('my_trait_list.py', 'w') as my_trait_list:
-        trait_list = [k for k in trait_dict.keys()]
-        print >>my_trait_list, '# -*- coding: utf-8 -*- '
-        print >>my_trait_list, 'my_trait_list =',
-        print >>my_trait_list, trait_list
-
-        trait_list_ja = [eng2ja.try_get(trait) for trait in trait_list]
-        print >>my_trait_list, ''
-        print >>my_trait_list, 'my_trait_list_ja =',
-        print >>my_trait_list, trait_list_ja
+    trait_list = list(catalog_summary['trait'])
+    trait_list_ja = [eng2ja.get(trait, trait) for trait in list(catalog_summary['trait'])]
+    pickle_dump_obj(trait_list, os.path.join(catalog_summary_cache_dir, 'trait_list.p'))
+    pickle_dump_obj(trait_list_ja, os.path.join(catalog_summary_cache_dir, 'trait_list_ja.p'))
+    log.info('dumped trait_list.p, trait_list_ja.p as pickle')
 
     log.info('import catalog done')
+
     return
 
 

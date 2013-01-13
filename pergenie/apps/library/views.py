@@ -50,7 +50,7 @@ def index(request):
             query = '"{}"'.format(CatalogForm.query)
             catalog_map, variants_map = search_variants.search_variants(user_id, file_name, query)
             catalog_list = [catalog_map[found_id] for found_id in catalog_map] ### somehow catalog_map.found_id does not work in templete...
-            
+
             return direct_to_template(request,
                                       'library_trait.html',
                                       {'err': err,
@@ -75,9 +75,9 @@ def summary_index(request):
         catalog_summary = pickle.load(fin)
         with open(os.path.join(settings.CATALOG_SUMMARY_CACHE_DIR, 'field_names.p'), 'rb') as fin:
             field_names = pickle.load(fin)
-            
+
             print field_names
-            
+
             catalog_uniqs_counts = {}
 
             for field_name in field_names:
@@ -101,7 +101,7 @@ def summary(request, field_name):
         catalog_summary = pickle.load(fin)
 
         uniqs_counts = catalog_summary.get(field_name)
-        
+
         # TODO: 404?
         if not uniqs_counts:
             err = 'not found'
@@ -184,7 +184,7 @@ def snps_index(request):
                                'uniq_snps_list': uniq_snps_list
                                })
 
-                               
+
 @login_required
 def snps(request, rs):
     """
