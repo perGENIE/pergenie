@@ -1,5 +1,5 @@
 #!/usr/bin/env python2.7
-# -*- coding: utf-8 -*- 
+# -*- coding: utf-8 -*-
 
 
 import argparse
@@ -26,11 +26,11 @@ def LD_block_clustering(risk_store, population_code):
     """
     LD block (r^2) clustering
     -------------------------
-    
+
     * to avoid duplication of ORs
 
       * use r^2 from HapMap by populaitons
-    
+
     """
 
     risk_store_LD_clustered = {}
@@ -93,7 +93,7 @@ def LD_block_clustering(risk_store, population_code):
                     # get one rs from each blocks
                     one_rs_index = [rs_LD_block_map.values().index(i+1) for i in range(max(rs_LD_block_map.values()))]
                     LD_blocked_rss = [rs_LD_block_map.items()[index][0] for index in one_rs_index]
-            
+
                     # save risk records of LD block clusterd rss
                     for rs, catalog_record in rss.items():
 #                         print rss
@@ -108,7 +108,7 @@ def LD_block_clustering(risk_store, population_code):
             else:
                 risk_store_LD_clustered[trait] = rss
 
-            print 
+            print
 
 
     return risk_store_LD_clustered
@@ -125,7 +125,7 @@ def _zyg(genotype, risk_allele):
     >>> _zyg('TT', 'A')
     '..'
     """
-    
+
     if genotype == 'na':
         return 'NA'
 
@@ -185,7 +185,7 @@ def risk_calculation(catalog_map, variants_map, population_code, sex, user_id, f
         record = catalog_map[found_id]
         rs = record['rs']
         variant = variants_map[rs]
-        
+
         while True:
             tmp_risk_data = {'catalog_map': record, 'variant_map': variant, 'zyg': None, 'RR': None}
 
@@ -204,7 +204,7 @@ def risk_calculation(catalog_map, variants_map, population_code, sex, user_id, f
                     break
             except (TypeError, ValueError):
 #                 print colors.yellow("Error with float()"), record['OR_or_beta'], record['trait']
-                break            
+                break
 
 
             # --- previous ---
@@ -223,7 +223,7 @@ def risk_calculation(catalog_map, variants_map, population_code, sex, user_id, f
             # --- current ---
             # TODO: store records by trait by study
 #             print record['trait'], record['study'], rs
-     
+
             if not record['trait'] in risk_store:
                 risk_store[record['trait']] = {record['study']: {rs: tmp_risk_data}} # initial record
 
@@ -239,7 +239,7 @@ def risk_calculation(catalog_map, variants_map, population_code, sex, user_id, f
 
     if is_LD_block_clustered and not population_code == 'unkown':
         risk_store  = LD_block_clustering(risk_store, population_code)
-    
+
 
     """
     Calculate risk
