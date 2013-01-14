@@ -3,7 +3,7 @@
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 from django.views.generic.simple import direct_to_template
-from django.utils import translation
+from django.utils.translation import get_language
 from django.utils.translation import ugettext as _
 from django.conf import settings
 
@@ -21,10 +21,10 @@ from utils.date import today_date, today_str
 from utils import clogging
 log = clogging.getColorLogger(__name__)
 
-
-    # # log.debug('request.LANGUAGE_CODE {}'.format(request.LANGUAGE_CODE))
-    # log.debug('translation.get_language() {}'.format(translation.get_language()))
-    # # translation.activate('ja')
+MY_TRAIT_LIST = pickle_load_obj(os.path.join(settings.CATALOG_SUMMARY_CACHE_DIR, 'trait_list.p'))
+MY_TRAIT_LIST_JA = pickle_load_obj(os.path.join(settings.CATALOG_SUMMARY_CACHE_DIR, 'trait_list_ja.p'))
+MY_TRAIT_DICT_ENG2JA = dict(zip(MY_TRAIT_LIST, MY_TRAIT_LIST_JA))
+MY_TRAIT_DICT_JA2ENG = dict(zip(MY_TRAIT_LIST_JA, MY_TRAIT_LIST))
 
 
 def upsert_riskreport(tmp_info, mongo_port=settings.MONGO_PORT):
@@ -96,6 +96,9 @@ def index(request):
     risk_traits = None
     risk_values = None
 
+    browser_language = get_language()
+    log.debug('translation.get_language() {}'.format(browser_language))
+
     with pymongo.Connection(port=settings.MONGO_PORT) as connection:
         db = connection['pergenie']
         data_info = db['data_info']
@@ -151,6 +154,10 @@ def index(request):
             if not err:
                 risk_reports, risk_traits, risk_values = get_risk_values_for_indexpage(tmp_infos)
 
+            if browser_language == 'ja':
+                risk_traits_ja = [MY_TRAIT_DICT_ENG2JA.get(trait, trait) for trait in risk_traits]
+                risk_traits = risk_traits_ja
+
             break
 
         return direct_to_template(request, 'risk_report.html',
@@ -163,11 +170,23 @@ def get_risk_infos_for_subpage(user_id, file_name, trait_name=None, study_name=N
     infos, tmp_info, tmp_risk_store  = None, None, None
     RR_list, RR_list_real, study_list, snps_list = [], [], [], []
 
+    browser_language = get_language()
+    log.debug('translation.get_language() {}'.format(browser_language))
+
     with pymongo.Connection(port=settings.MONGO_PORT) as connection:
         db = connection['pergenie']
         data_info = db['data_info']
 
         while True:
+            # reverse translation (to English)
+            log.debug(trait_name)
+            trait_name_eng = MY_TRAIT_DICT_JA2ENG.get(trait_name, trait_name)
+            trait_name = trait_name_eng
+            log.debug(trait_name)
+            if not trait_name in MY_TRAIT_LIST:
+                err = _('trait not found')
+                break
+
             # determine file
             tmp_data_info = data_info.find_one({'user_id': user_id, 'name': file_name})
 
@@ -186,16 +205,15 @@ def get_risk_infos_for_subpage(user_id, file_name, trait_name=None, study_name=N
             risk_store = pickle_load_obj(os.path.join(settings.RISKREPORT_CACHE_DIR, user_id, 'risk_store.{0}.{1}.p'.format(user_id, file_name)))
             risk_reports = pickle_load_obj(os.path.join(settings.RISKREPORT_CACHE_DIR, user_id, 'risk_reports.{0}.{1}.p'.format(user_id, file_name)))
 
-
             if study_name and trait_name:
                 tmp_risk_store = risk_store.get(trait_name).get(study_name)
 
                 snps_list = [k for k,v in sorted(tmp_risk_store.items(), key=lambda x:x[1]['RR'])]
                 RR_list = [v['RR'] for k,v in sorted(tmp_risk_store.items(), key=lambda x:x[1]['RR'])]
 
-                if not trait_name.replace('_', ' ') in tmp_risk_store:
-                    err = _('trait not found')
-                    break
+                # if not trait_name.replace('_', ' ') in tmp_risk_store:
+                #     err = _('trait not found')
+                #     break
 
             elif not study_name and trait_name:
                 tmp_risk_store = risk_store.get(trait_name)
@@ -208,6 +226,13 @@ def get_risk_infos_for_subpage(user_id, file_name, trait_name=None, study_name=N
 
             else:
                 pass
+
+            # translation to Japanese
+            if browser_language == 'ja':
+                log.debug('trans')
+                trait_name_ja = MY_TRAIT_DICT_ENG2JA.get(trait_name)
+                trait_name = trait_name_ja
+                log.debug(trait_name)
 
             break
 

@@ -42,7 +42,8 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja,
                 log.debug(record['eng'])
                 pass
             else:
-                eng2ja[record['eng']] = record['ja']
+                _ja = unicode(record['ja'], 'utf-8')
+                eng2ja[record['eng']] = _ja
 
     with pymongo.Connection(port=mongo_port) as connection:
         catalog_date_raw = os.path.basename(path_to_gwascatalog).split('.')[1]
@@ -166,7 +167,7 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja,
 
     log.info('# of documents in catalog (after): {}'.format(catalog.count()))
 
-    # dump as pickle
+    # dump as pickle (always overwrite)
     pickle_dump_obj(catalog_summary, os.path.join(catalog_summary_cache_dir, 'catalog_summary.p'))
     pickle_dump_obj(field_names, os.path.join(catalog_summary_cache_dir, 'field_names.p'))
     log.info('dumped catalog_summary.p, field_names.p as pickle')

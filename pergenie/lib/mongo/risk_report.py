@@ -167,6 +167,7 @@ def _relative_risk_to_general_population(freq, OR, zygosities):
 
     return round({'RR':risk_hom, 'R.':risk_het, '..':risk_ref, 'NA': 1.0}.get(zygosities, 1.0), 1), round(average_population_risk, 2)
 
+
 def risk_calculation(catalog_map, variants_map, population_code, sex, user_id, file_name,
                      is_LD_block_clustered, is_log):
     risk_store = {}
@@ -259,34 +260,32 @@ def risk_calculation(catalog_map, variants_map, population_code, sex, user_id, f
                                                                                                                              risk_store[trait][study][rs]['catalog_map']['OR_or_beta'],
                                                                                                                              risk_store[trait][study][rs]['zyg'])
 
-
                 tmp_value = risk_store[trait][study][rs]['RR']
 
                 if is_log:
                    # log
-                   try:
-                      tmp_value = math.log10(risk_store[trait][study][rs]['RR'])
-                   except ValueError:
-                      log.err('ValueError {}'.format(tmp_value))
-                      if tmp_value == 0.0:
-                         tmp_value = -2.0  # -inf
+                    try:
+                        tmp_value = math.log10(risk_store[trait][study][rs]['RR'])
+                    except ValueError:
+                        log.error('ValueError {}'.format(tmp_value))
+                        if tmp_value == 0.0:
+                            tmp_value = -2.0  # -inf
 
                 risk_store[trait][study][rs]['RR_real'] = risk_store[trait][study][rs]['RR']
                 risk_store[trait][study][rs]['RR'] = round(tmp_value, 3)
 
                 if tmp_value:
-                   # round
-                   tmp_value = round(tmp_value, 3)  #
+                    # round
+                    tmp_value = round(tmp_value, 3)  # ##
 
-                   if not trait in risk_report:
-                       risk_report[trait] = {study: tmp_value}  # initial
-                   else:
-                       if not study in risk_report[trait]:
-                           risk_report[trait][study] = tmp_value  # after initial
-                       else:
-                           risk_report[trait][study] *= tmp_value
-                           risk_report[trait][study] = round(risk_report[trait][study], 2)
-
+                    if not trait in risk_report:
+                        risk_report[trait] = {study: tmp_value}  # initial
+                    else:
+                        if not study in risk_report[trait]:
+                            risk_report[trait][study] = tmp_value  # after initial
+                        else:
+                            risk_report[trait][study] *= tmp_value
+                            risk_report[trait][study] = round(risk_report[trait][study], 2)
 
     return risk_store, risk_report
 

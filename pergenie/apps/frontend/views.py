@@ -7,7 +7,7 @@ from django.shortcuts import redirect  # , render_to_response
 from django.views.decorators.http import require_http_methods
 from django.core.urlresolvers import reverse
 from django.views.generic.simple import direct_to_template
-from django.utils import translation
+# from django.utils import translation
 from django.utils.translation import ugettext as _
 from django.conf import settings
 
@@ -115,7 +115,7 @@ def register(request):
                 else:
                     params['is_succeeded'] = True
                     password = password1
-                    # params['message'] = _('You have successfully registered!')
+                    params['message'] = _('You have successfully registered!')
 
             else:
                 params['has_error'] = True
@@ -134,18 +134,21 @@ def register(request):
                             password=password)
 
         if user:
-            # auth_login(request, user)
-            # return redirect('apps.dashboard.views.index')
-            try:
-                user.email_user('welcome', 'hello world')
-            except SMTPRecipientsRefused:
-                log.error('invalid email-address assumed')
-            except:
-                log.error('unecpected emaiil_user error')
+            auth_login(request, user)
+            return redirect('apps.dashboard.views.index')
+
+            # TODO: register with e-mail validation
+
+            # try:
+            #     user.email_user('welcome', 'hello world')
+            # except SMTPRecipientsRefused:
+            #     log.error('invalid email-address assumed')
+            # except:
+            #     log.error('unecpected emaiil_user error')
 
             # TODO: not redirect to login, but redirect to register_completed
             #       or show message: 'Please check email ...'
-            return direct_to_template(request, 'login.html')
+            # return direct_to_template(request, 'login.html')
 
         else:
             params['error'] = _('Invalid mail address or password.')
