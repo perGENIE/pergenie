@@ -13,7 +13,10 @@ from django.conf import settings
 
 from django.db import IntegrityError
 
-from smtplib import SMTPRecipientsRefused
+from django.core.mail import send_mail, BadHeaderError
+from smtplib import SMTPException
+
+import pymongo
 
 from apps.frontend.forms import LoginForm, RegisterForm
 
@@ -129,29 +132,93 @@ def register(request):
 
 
     if params['is_succeeded']:
-        # verbose ?
-        user = authenticate(username=user_id,
-                            password=password)
+        # ?
+#         user = authenticate(username=user_id,
+#                             password=password)
+
+        """
+        Registration with e-mail validation
+        """
 
         if user:
-            auth_login(request, user)
-            return redirect('apps.dashboard.views.index')
+            if not settings.ACCOUNT_ACTIVATION:
+                auth_login(request, user)
+                return redirect('apps.dashboard.views.index')
 
-            # TODO: register with e-mail validation
+            else:
+                # Generate activation_key
+                activation_key = User.objects.make_random_password(length=settings.ACCOUNT_ACTIVATION_KEY_LENGTH)
 
-            # try:
-            #     user.email_user('welcome', 'hello world')
-            # except SMTPRecipientsRefused:
-            #     log.error('invalid email-address assumed')
-            # except:
-            #     log.error('unecpected emaiil_user error')
+                # add activation_key info to mongodb.user_info
+                with pymongo.Connection(port=settings.MONGO_PORT) as connection:
+                    db = connection['pergenie']
+                    user_info = db['user_info']
 
-            # TODO: not redirect to login, but redirect to register_completed
-            #       or show message: 'Please check email ...'
-            # return direct_to_template(request, 'login.html')
+                    # TODO: verify this user_id is unique
+                    user_info.update({'user_id': user_id},
+                                     {"$set": {'risk_report_show_level': 'show_all',
+                                               'activation_key': activation_key}},
+                                     upsert=True)
+
+                log.debug(user_info.find({'user_id': user_id}))
+
+                # Deactivate user activation
+                user.is_active = False
+                user.save()
+
+                # Send a mail with activation_key to user
+                email_title = "Welcome to perGENIE"
+                email_body = """
+to activate and use your account, click the link below or copy and paste it into your web browser's address bar
+%(activation_key)s
+""" % {'activation_key': activation_key}
+
+                try:
+                    user.email_user(subject=email_title,
+                                    message=email_body)
+                except SMTPException:
+                    log.error('invalid email-address assumed')
+                except:
+                    log.error('invalid email-address assumed')
+
+                # TODO: not redirect to login, but redirect to register_completed
+                #       or show message: 'Please check email ...'
+                # return direct_to_template(request, 'login.html')
+
+            #     return redirect('apps.frontend.views.register_completed')
+                msgs = {}
+                return direct_to_template(request, 'register_completed.html', msgs)
 
         else:
+            # which case ?
             params['error'] = _('Invalid mail address or password.')
 
     else:
         return direct_to_template(request, 'register.html', params)
+
+
+def activation(request, activation_key):
+    """Activate user by activation key.
+    """
+
+    msgs = {}
+
+    # TODO: if incorrect activation_key, 404?
+    #       or, in urls.py, [a-z][]...{length} only accepts
+
+    # find the user who has this activation key
+    with pymongo.Connection(port=settings.MONGO_PORT) as connection:
+        db = connection['pergenie']
+        user_info = db['user_info']
+        challenging_user_info = user_info.find_one({'activation_key': activation_key})
+
+        # TODO: verify this user_id is unique
+        # activate
+        if challenging_user_info:
+            challenging_user = User.objects.get(username__exact=challenging_user_info['user_id'])
+            challenging_user.is_active = True
+            challenging_user.save()
+
+            # TODO: send a mail to user? 'your account has been activated.'
+
+    return direct_to_template(request, 'activation_completed.html', msgs)

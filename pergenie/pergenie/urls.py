@@ -1,7 +1,4 @@
 from django.conf.urls import patterns, include, url
-from django.conf import settings
-
-# Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 admin.autodiscover()
 
@@ -26,13 +23,11 @@ urlpatterns = patterns('',
     url(r'^logout/$', 'apps.frontend.views.logout'),
     url(r'^register/$', 'apps.frontend.views.register'),
 
-    url(r'^accounts/', include('registration.backends.default.urls')), 
-    # registration.backends.default.urls or registration.urls
-    # TODO: revise registration settings
+    # TODO: re for activation_key is ok?
+    url(r'^activation/(?P<activation_key>\w+)/$', 'apps.frontend.views.activation'),
 
     url(r'^dashboard/$', 'apps.dashboard.views.index'),
     url(r'^settings/$', 'apps.settings.views.settings'),
-                       
 
     url(r'^riskreport/$', 'apps.riskreport.views.index'),
     url(r'^riskreport/(?P<file_name>[^/]*)/(?P<trait>[^/]*)/$', 'apps.riskreport.views.trait'),
@@ -55,10 +50,6 @@ urlpatterns = patterns('',
     url(r'^tutorial/institution$', 'apps.tutorial.views.institution'),
 )
 
-if 'rosetta' in settings.INSTALLED_APPS:
-    urlpatterns += patterns('',
-        url(r'^rosetta/', include('rosetta.urls')),
-    )
 
 """
 How Django processes a request
