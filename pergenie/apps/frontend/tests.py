@@ -5,6 +5,7 @@ from django.test import TestCase
 from django.test.client import Client
 from django.conf import settings
 
+
 class SimpleTestCase(TestCase):
     def setUp(self):
         # create test user
@@ -42,33 +43,23 @@ class SimpleTestCase(TestCase):
         # success
         self.failUnlessEqual(self.client.login(username=self.test_user_id, password=self.test_user_password), True)
 
-
     def test_register(self):
         # passwords do not match
         response = self.client.post('/register/', {'user_id': self.test_user_id,
                                                    'password1': 'pwd1',
                                                    'password2': 'pwd2'})
-        self.failUnlessEqual(bool(response.context['message'] == 'Passwords do not match.'), True)
+        self.failUnlessEqual(response.context['error'], 'Passwords do not match.')
 
         # reserved_user_id
         response = self.client.post('/register/', {'user_id': self.test_user_id,
                                                    'password1': self.test_user_password,
                                                    'password2': self.test_user_password})
-        self.failUnlessEqual(bool('Already registered.' in response.context['message']), True)
+        self.failUnlessEqual(response.context['error'], 'Already registered.')
 
         # success
         response = self.client.post('/register/', {'user_id': 'user',
                                                    'password1': 'pwd1',
                                                    'password2': 'pwd1'}, follow=True)
         self.failUnlessEqual(response.status_code, 200)
-        self.failUnlessEqual(bool('<title>Dashboard - perGENIE</title>' in response.content), True)
+        self.failUnlessEqual(bool('<title>Register completed - perGENIE</title>' in response.content), True)
         # TODO: check auth
-        
-        
-
-
-
-
-
-
-

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from django.contrib.sites.models import Site
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.models import User
 from django.shortcuts import redirect  # , render_to_response
@@ -13,9 +14,10 @@ from django.conf import settings
 
 from django.db import IntegrityError
 
-from django.core.mail import send_mail, BadHeaderError
+# from django.core.mail import send_mail, BadHeaderError
 from smtplib import SMTPException
 
+import os
 import pymongo
 
 from apps.frontend.forms import LoginForm, RegisterForm
@@ -85,7 +87,9 @@ def register(request):
             # TODO: check if user_id(=email address) is valid emamil address. like user@example.com
 
             if user_id in settings.RESERVED_USER_ID:
-                params['error'] = _('is RESERVED_ID')
+                params['error'] = _('Already registered.')
+                params['login_url'] = reverse('apps.frontend.views.login')
+                log.debug('Reserved user_id')
                 break
 
             try:
@@ -95,7 +99,7 @@ def register(request):
                 # not unique user_id
                 params['error'] = _('Already registered.')
                 params['login_url'] = reverse('apps.frontend.views.login')
-                log.error('IntegrityError: {}'.format(e))
+                log.debug('IntegrityError')
                 break
             except:
                 params['error'] = _('Unexpected error')
@@ -138,10 +142,13 @@ def register(request):
 
             # Send a mail with activation_key to user
             email_title = "Welcome to perGENIE"
+            activation_url = os.path.join(str(Site.objects.get_current()), 'activation', activation_key)
+            if not activation_url.endswith(os.path.sep):
+                activation_url += os.path.sep
             email_body = """
 to activate and use your account, click the link below or copy and paste it into your web browser's address bar
-%(activation_key)s
-""" % {'activation_key': activation_key}
+%(activation_url)s
+""" % {'activation_url': activation_url}
 
             log.debug('try mail')
             try:
