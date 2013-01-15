@@ -43,13 +43,12 @@
 	      </table>
             </form>
 
-	    {% if is_succeeded %}
-	    <div class="alert alert-">{% autoescape off %}{{ message }}{% endautoescape %}</div>
+
+	    {% if error %}
+	    <div class="alert alert-error">{{ error }}
+	    {% if login_url %}<a href="{{ login_url }}">login<a>{% endif %}</div>
 	    {% endif %}
 
-	    {% if has_error %}
-	    <div class="alert alert-error">{% autoescape off %}{{ message }}{% endautoescape %}</div>
-	    {% endif %}
           </div>
         </div>
       </div>

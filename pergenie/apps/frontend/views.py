@@ -23,17 +23,6 @@ from apps.frontend.forms import LoginForm, RegisterForm
 from utils import clogging
 log = clogging.getColorLogger(__name__)
 
-# import pymongo
-
-
-class ReservedUserIDError(Exception):
-    def __init__(self, value):
-        self.value = value
-
-    def __str__(self):
-        # return repr(self.value)
-        return str(self.value)
-
 
 def index(request):
     return redirect('apps.frontend.views.login')
@@ -72,129 +61,109 @@ def logout(request):
 def register(request):
 
     params = {'is_succeeded': False,
-              'has_error': False,
-              'message': ''}
+              'error': '',
+              'login_url': ''}
 
     if request.method == 'POST':
-        form = RegisterForm(request.POST)
+        while True:
+            form = RegisterForm(request.POST)
 
-        if form.is_valid():
+            if not form.is_valid():
+                params['error'] = _('Invalid request.')
+                # contains `null input` case
+                break
+
             user_id = form.cleaned_data['user_id']
             password1 = form.cleaned_data['password1']
             password2 = form.cleaned_data['password2']
 
-            # TODO: validate email is name@example.com
+            if password1 != password2:
+                params['error'] = _('Passwords do not match.')
+                break
 
-            if password1 == password2:
-                try:
-                    # check if user_id is not RESERVED_ID like 'test'
-                    if user_id in settings.RESERVED_USER_ID:
-                        raise ReservedUserIDError, '"{}" is RESERVED_ID'.format(user_id)
+            # TODO: check if user_id is valid char. not ", ', \, ...
+            # TODO: check if user_id(=email address) is valid emamil address. like user@example.com
 
-                    #TODO: check if user_id is valid char. not ", ', \, ...
-                    #
-                    #
+            if user_id in settings.RESERVED_USER_ID:
+                params['error'] = _('is RESERVED_ID')
+                break
 
-                    user = User.objects.create_user(user_id, user_id, password1)
-                    user.save()
+            try:
+                user = User.objects.create_user(user_id, user_id, password1)
+                user.save()
+            except IntegrityError, e:
+                # not unique user_id
+                params['error'] = _('Already registered.')
+                params['login_url'] = reverse('apps.frontend.views.login')
+                log.error('IntegrityError: {}'.format(e))
+                break
+            except:
+                params['error'] = _('Unexpected error')
+                log.error('Unexpected error: {}'.format(e))
+                break
 
-                except IntegrityError, e:
-                    # not unique user_id
-                    params['has_error'] = True
-                    params['message'] = _('Already registered.') + ' <a href="{}">login</a>'.format(reverse('apps.frontend.views.login'))
-                    log.error('IntegrityError: {}'.format(e))
+            params['is_succeeded'] = True
+            # password = password1
+            # _('You have successfully registered!')
 
-                except ReservedUserIDError, e:
-                    # user_id is reserved user_id
-                    params['has_error'] = True
-                    params['message'] = _('Already registered.') + ' <a href="{}">login</a>'.format(reverse('apps.frontend.views.login'))
-                    log.error('ReservedUserIDError: {}'.format(e))
-
-                except:
-                    #
-                    params['has_error'] = True
-                    params['message'] = _('Unexpected error.')
-
-                else:
-                    params['is_succeeded'] = True
-                    password = password1
-                    params['message'] = _('You have successfully registered!')
-
-            else:
-                params['has_error'] = True
-                params['message'] = _('Passwords do not match.')
-
-
-        else:
-            params['has_error'] = True
-            params['message'] = _('Invalid request.')
-            # contains null password
-
-
-    if params['is_succeeded']:
-        # ?
-#         user = authenticate(username=user_id,
-#                             password=password)
-
-        """
-        Registration with e-mail validation
-        """
-
-        if user:
+            """
+            * Simple registration (without mail verification)
+            """
             if not settings.ACCOUNT_ACTIVATION:
                 auth_login(request, user)
                 return redirect('apps.dashboard.views.index')
 
-            else:
-                # Generate activation_key
-                activation_key = User.objects.make_random_password(length=settings.ACCOUNT_ACTIVATION_KEY_LENGTH)
+            """
+            * Registration with mail verification
+            """
+            # Generate activation_key
+            activation_key = User.objects.make_random_password(length=settings.ACCOUNT_ACTIVATION_KEY_LENGTH)
 
-                # add activation_key info to mongodb.user_info
-                with pymongo.Connection(port=settings.MONGO_PORT) as connection:
-                    db = connection['pergenie']
-                    user_info = db['user_info']
+            # add activation_key info to mongodb.user_info
+            with pymongo.Connection(port=settings.MONGO_PORT) as connection:
+                db = connection['pergenie']
+                user_info = db['user_info']
 
-                    # TODO: verify this user_id is unique
-                    user_info.update({'user_id': user_id},
-                                     {"$set": {'risk_report_show_level': 'show_all',
-                                               'activation_key': activation_key}},
-                                     upsert=True)
+                # TODO: verify this user_id is unique
+                user_info.update({'user_id': user_id},
+                                 {"$set": {'risk_report_show_level': 'show_all',
+                                           'activation_key': activation_key}},
+                                 upsert=True)
 
-                log.debug(user_info.find({'user_id': user_id}))
+                log.debug(list(user_info.find({'user_id': user_id})))
 
-                # Deactivate user activation
-                user.is_active = False
-                user.save()
+            # Deactivate user activation
+            user.is_active = False
+            user.save()
 
-                # Send a mail with activation_key to user
-                email_title = "Welcome to perGENIE"
-                email_body = """
+            # Send a mail with activation_key to user
+            email_title = "Welcome to perGENIE"
+            email_body = """
 to activate and use your account, click the link below or copy and paste it into your web browser's address bar
 %(activation_key)s
 """ % {'activation_key': activation_key}
 
-                try:
-                    user.email_user(subject=email_title,
-                                    message=email_body)
-                except SMTPException:
-                    log.error('invalid email-address assumed')
-                except:
-                    log.error('invalid email-address assumed')
+            log.debug('try mail')
+            try:
+                user.email_user(subject=email_title,
+                                message=email_body)
+                log.debug('mail sent')
+                log.debug(params)
+                return direct_to_template(request, 'register_completed.html')
 
-                # TODO: not redirect to login, but redirect to register_completed
-                #       or show message: 'Please check email ...'
-                # return direct_to_template(request, 'login.html')
+            except SMTPException:
+                params['error'] = _('Invalid mail address assumed.')
+                log.debug('mail failed')
+                break
+            except:
+                log.debug('mail failed')
+                break
+                params['error'] = _('Invalid mail address assumed.')
 
-            #     return redirect('apps.frontend.views.register_completed')
-                msgs = {}
-                return direct_to_template(request, 'register_completed.html', msgs)
+            break
 
-        else:
-            # which case ?
-            params['error'] = _('Invalid mail address or password.')
-
-    else:
-        return direct_to_template(request, 'register.html', params)
+    log.debug(params)
+    return direct_to_template(request, 'register.html', params)
 
 
 def activation(request, activation_key):
