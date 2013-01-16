@@ -167,6 +167,7 @@ to activate and use your account, click the link below or copy and paste it into
                 break
                 params['error'] = _('Invalid mail address assumed.')
 
+            # TODO: delete user
             break
 
     log.debug(params)

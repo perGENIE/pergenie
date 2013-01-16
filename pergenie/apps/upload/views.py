@@ -16,6 +16,7 @@ import os
 import pymongo
 import magic
 from lib.tasks import qimport_variants
+from utils.date import today_date, today_str
 from utils import clogging
 log = clogging.getColorLogger(__name__)
 
@@ -112,7 +113,8 @@ def index(request):
 
                 # TODO: check if clery is alive
 
-                today = str(datetime.datetime.today()).replace('-', '/')
+                # today = str(datetime.datetime.today()).replace('-', '/')
+                today = str(datetime.datetime.today()).split('.')[-2]
                 file_name_cleaned = call_file.name.replace('.', '').replace(' ', '')
 
                 info = {'user_id': user_id,

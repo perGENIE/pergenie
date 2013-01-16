@@ -154,6 +154,10 @@ def index(request):
             if not err:
                 risk_reports, risk_traits, risk_values = get_risk_values_for_indexpage(tmp_infos)
 
+            if not risk_reports or not risk_traits:
+                err = _('Could not calculate risk. Invalid genome file assumed.')
+                break
+
             if browser_language == 'ja':
                 risk_traits_ja = [MY_TRAIT_DICT_ENG2JA.get(trait, trait) for trait in risk_traits]
                 risk_traits = risk_traits_ja
