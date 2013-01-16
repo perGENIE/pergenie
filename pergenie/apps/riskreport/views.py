@@ -12,7 +12,8 @@ from apps.riskreport.forms import RiskReportForm
 import os
 import pymongo
 import numpy as np
-import datetime
+from pprint import pprint
+# import datetime
 
 import mongo.search_variants as search_variants
 import mongo.risk_report as risk_report
@@ -35,11 +36,15 @@ def upsert_riskreport(tmp_info, mongo_port=settings.MONGO_PORT):
     population = 'population:{}'.format('+'.join(settings.POPULATION_MAP[tmp_info['population']]))
     catalog_map, variants_map = search_variants.search_variants(tmp_info['user_id'], tmp_info['name'], population)
     risk_store, risk_reports = risk_report.risk_calculation(catalog_map, variants_map, settings.POPULATION_CODE_MAP[tmp_info['population']],
-                                                            tmp_info['sex'], tmp_info['user_id'], tmp_info['name'], False,  True)
+                                                            tmp_info['sex'], tmp_info['user_id'], tmp_info['name'], False, True)
 
     # dump as pickle
-    pickle_dump_obj(risk_store, os.path.join(settings.RISKREPORT_CACHE_DIR, tmp_info['user_id'], 'risk_store.{0}.{1}.p'.format(tmp_info['user_id'], tmp_info['name'])))
-    pickle_dump_obj(risk_reports, os.path.join(settings.RISKREPORT_CACHE_DIR, tmp_info['user_id'], 'risk_reports.{0}.{1}.p'.format(tmp_info['user_id'], tmp_info['name'])))
+    pickle_dump_obj(risk_store, os.path.join(settings.RISKREPORT_CACHE_DIR,
+                                             tmp_info['user_id'],
+                                             'risk_store.{0}.{1}.p'.format(tmp_info['user_id'], tmp_info['name'])))
+    pickle_dump_obj(risk_reports, os.path.join(settings.RISKREPORT_CACHE_DIR,
+                                               tmp_info['user_id'],
+                                               'risk_reports.{0}.{1}.p'.format(tmp_info['user_id'], tmp_info['name'])))
 
     # upsert data_info['riskreport'] = today
     with pymongo.Connection(port=settings.MONGO_PORT) as connection:
@@ -68,8 +73,12 @@ def get_risk_values_for_indexpage(tmp_infos):
                 upsert_riskreport(tmp_info)
 
             # load latest risk_store.p & risk_report.p
-            risk_store = pickle_load_obj(os.path.join(settings.RISKREPORT_CACHE_DIR, tmp_info['user_id'], 'risk_store.{0}.{1}.p'.format(tmp_info['user_id'], tmp_info['name'])))
-            risk_reports = pickle_load_obj(os.path.join(settings.RISKREPORT_CACHE_DIR, tmp_info['user_id'], 'risk_reports.{0}.{1}.p'.format(tmp_info['user_id'], tmp_info['name'])))
+            # risk_store = pickle_load_obj(os.path.join(settings.RISKREPORT_CACHE_DIR,
+            #                                           tmp_info['user_id'],
+            #                                           'risk_store.{0}.{1}.p'.format(tmp_info['user_id'], tmp_info['name'])))
+            risk_reports = pickle_load_obj(os.path.join(settings.RISKREPORT_CACHE_DIR,
+                                                        tmp_info['user_id'],
+                                                        'risk_reports.{0}.{1}.p'.format(tmp_info['user_id'], tmp_info['name'])))
 
             # create list for chart
             tmp_map = {}
@@ -198,35 +207,42 @@ def get_risk_infos_for_subpage(user_id, file_name, trait_name=None, study_name=N
                 err = _('no such file %(file_name)s') % {'file_name': file_name}
                 break
 
-            # check if riskreport.<user>.<file_name> exist and latest in data_info
+            # check if riskreport.<user>.<file_name>.p exist and is latest in data_info
             risk_report_date = tmp_data_info.get('riskreport', None)
-
             risk_report_obj = os.path.join(settings.RISKREPORT_CACHE_DIR, user_id, 'risk_reports.{0}.{1}.p'.format(user_id, file_name))
-            if not os.path.exists(risk_report_obj) or (today_date > risk_report_date):
+            if not os.path.exists(risk_report_obj) or not risk_report_date or (today_date > risk_report_date):
                 upsert_riskreport(tmp_info)
 
             # load latest risk_store.p & risk_report.p
-            risk_store = pickle_load_obj(os.path.join(settings.RISKREPORT_CACHE_DIR, user_id, 'risk_store.{0}.{1}.p'.format(user_id, file_name)))
-            risk_reports = pickle_load_obj(os.path.join(settings.RISKREPORT_CACHE_DIR, user_id, 'risk_reports.{0}.{1}.p'.format(user_id, file_name)))
+            try:
+                risk_store = pickle_load_obj(os.path.join(settings.RISKREPORT_CACHE_DIR, user_id, 'risk_store.{0}.{1}.p'.format(user_id, file_name)))
+                risk_reports = pickle_load_obj(os.path.join(settings.RISKREPORT_CACHE_DIR, user_id, 'risk_reports.{0}.{1}.p'.format(user_id, file_name)))
+            except IOError:
+                err = _('Could not calculete risk. Invalid genome file assumed.')
+                log.error('{0} {1}: could not load pickle fle (IOError)'.format(user_id, file_name))
+                break
+            except:
+                err = _('Could not calculete risk. Invalid genome file assumed.')
+                log.error('{0} {1}: could not load pickle fle (Unexpected Error)'.format(user_id, file_name))
+                break
 
             if study_name and trait_name:
+                # for a view for a study
+
                 tmp_risk_store = risk_store.get(trait_name).get(study_name)
 
                 snps_list = [k for k,v in sorted(tmp_risk_store.items(), key=lambda x:x[1]['RR'])]
                 RR_list = [v['RR'] for k,v in sorted(tmp_risk_store.items(), key=lambda x:x[1]['RR'])]
 
-                # if not trait_name.replace('_', ' ') in tmp_risk_store:
-                #     err = _('trait not found')
-                #     break
-
             elif not study_name and trait_name:
-                tmp_risk_store = risk_store.get(trait_name)
-                tmp_study_value_map = risk_reports.get(trait_name)
-                study_list = [k for k,v in sorted(tmp_study_value_map.items(), key=lambda(k,v):(v,k), reverse=True)]
+                # for a view for a trait
 
-                # list for chart
-                RR_list = [v for k,v in sorted(tmp_study_value_map.items(), key=lambda(k,v):(v,k), reverse=True)]
-                RR_list_real = [round(10**v, 3) for k,v in sorted(tmp_study_value_map.items(), key=lambda(k,v):(v,k), reverse=True)]
+                tmp_risk_store = risk_store.get(trait_name)
+                tmp_risk_reports = risk_reports.get(trait_name)
+
+                study_list = [k for k,v in sorted(tmp_risk_reports.items(), key=lambda(k,v):(v,k), reverse=True)]
+                RR_list = [tmp_risk_reports[study] for study in study_list]
+                RR_list_real = [round(10**tmp_risk_reports[study], 3) for study in study_list]
 
             else:
                 pass
@@ -244,6 +260,7 @@ def get_risk_infos_for_subpage(user_id, file_name, trait_name=None, study_name=N
                       'RR_list': RR_list, 'RR_list_real': RR_list_real, 'study_list': study_list,
                       'file_name': file_name, 'trait_name': trait_name, 'study_name': study_name,
                       'snps_list': snps_list, 'tmp_risk_store': tmp_risk_store}
+        pprint(risk_infos)
 
         return risk_infos
 

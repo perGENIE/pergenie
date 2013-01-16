@@ -1,4 +1,5 @@
 {% extends "layout.html" %}
+{% load i18n %}
 {% block title %}Risk report - {{ trait_name }}{% endblock %}
 {% block description %}risk report detail{% endblock %}
 <!-- {% block cookie_id %}risk_report_detail{% endblock %} -->
@@ -31,11 +32,11 @@
         <a href="#" class="destroy box_button_1" title="close">&nbsp;</a>
         <div class="toggle_container">
           <div class="block box_content round_bottom padding_20">
-            
+
 <!--             <form action="{% url apps.riskreport.views.index %}" method="post" enctype="multipart/form-data"> -->
 <!--               {% csrf_token %} -->
 <!-- 		      <fieldset> -->
-                
+
 <!--                     <select name="file_name" onchange="submit(this.form)"> -->
 <!--                       {% for info in infos%} -->
 <!--                       {% if info == tmp_info %} -->
@@ -47,9 +48,8 @@
 <!--                     </select> -->
 <!--               </fieldset> -->
 <!--             </form> -->
-             
-            <div id="container" style="max-width: 400px; height: 300px; margin: 0 auto"></div>
 
+            <div id="container" style="max-width: 400px; height: 300px; margin: 0 auto"></div>
           </div>
         </div>
       </div>
@@ -62,10 +62,7 @@
         <a href="#" class="destroy box_button_1" title="close">&nbsp;</a>
         <div class="toggle_container">
           <div class="block box_content round_bottom padding_20">
-
             <!-- <div style="max-width: 400px; height: 300px; margin: 0 auto"></div> -->
-
-
           </div>
         </div>
       </div>
@@ -87,15 +84,15 @@
               <tr>
                 <th>RR [log10]</th>
                 <th>RR [real]</th>
-                <th>Study</th>
+                <th>{% trans "Study name" %}</th>
               </tr>
               </thead>
 
               <tbody>
                 {% for study in study_list %}
                 <tr>
-                  <td class="center">{{ RR_list|listvalue:forloop.counter0 }}</td>
-                  <td class="center">{{ RR_list_real|listvalue:forloop.counter0 }}</td>
+                  <td class="center">{{ RR_list|listvalue:forloop.counter0 }} {{ forloop.counter0 }}</td>
+                  <td class="center">{{ RR_list_real|listvalue:forloop.counter0 }} {{ forloop.counter0 }}</td>
                   <td><a href="{% url apps.riskreport.views.study file_name=file_name trait=trait_name study_name=study %}">{{ study }}</a></td>
 
 		        </tr>
@@ -178,9 +175,9 @@ $(function () {
                 {
                 name: "{{ file_name }}",
                 data: [{% for RR_value in RR_list %}
-                         {y: {{ RR_value }}, 
+                         {y: {{ RR_value }},
                           color: {% if RR_value < 0 %}'#2ca6f1'{% elif RR_value == 0 %}'#8a8a8a'{% else %}'#f12ca6'{% endif %},
-                          url:"{% url apps.riskreport.views.study file_name=file_name trait=trait_name study_name=study_list|listvalue:forloop.counter %}"},
+                          url:"{% url apps.riskreport.views.study file_name=file_name trait=trait_name study_name=study_list|listvalue:forloop.counter0 %}"},
                          {% endfor %}],
                 },
             ]
@@ -188,7 +185,7 @@ $(function () {
 
         });
     });
-    
+
 });
 </script>
 

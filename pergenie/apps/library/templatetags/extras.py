@@ -60,15 +60,19 @@ def underbar2space(s):
     return s.replace('_', ' ')
 
 
-# 
+#
 @register.filter
 def keyvalue(dict, key):
     return dict[key]
 
-#
 @register.filter
-def listvalue(list, loopindex_1based):
-    return list[loopindex_1based - 1]
+def listvalue(list, index):
+    """
+    in templetes, somehow list.forloop.counter0 does not work.
+    so use this like:
+    {{ list|listvalue:forloop.counter0}}
+    """
+    return list[index]
 
 @register.filter
 def pow10(float, value):
