@@ -27,7 +27,7 @@
   <div class="row-fluid">
     <div class="span6">
       <div class="box grad_colour_dark_blue">
-        <h2 class="box_head round_top">Studies for {{ trait_name }}</h2>
+        <h2 class="box_head round_top">{{ trait_name }}</h2>
         <a href="#" class="toggle box_button_2" title="toggle">&nbsp;</a>
         <a href="#" class="destroy box_button_1" title="close">&nbsp;</a>
         <div class="toggle_container">
@@ -62,6 +62,7 @@
         <a href="#" class="destroy box_button_1" title="close">&nbsp;</a>
         <div class="toggle_container">
           <div class="block box_content round_bottom padding_20">
+            {{ trait_name }} ...
             <!-- <div style="max-width: 400px; height: 300px; margin: 0 auto"></div> -->
           </div>
         </div>
@@ -91,21 +92,18 @@
               <tbody>
                 {% for study in study_list %}
                 <tr>
-                  <td class="center">{{ RR_list|listvalue:forloop.counter0 }} {{ forloop.counter0 }}</td>
-                  <td class="center">{{ RR_list_real|listvalue:forloop.counter0 }} {{ forloop.counter0 }}</td>
+                  <td class="center">{{ RR_list|listvalue:forloop.counter0 }}</td>
+                  <td class="center">{{ RR_list_real|listvalue:forloop.counter0 }}</td>
                   <td><a href="{% url apps.riskreport.views.study file_name=file_name trait=trait_name study_name=study %}">{{ study }}</a></td>
-
 		        </tr>
 		        {% endfor %}
               </tbody>
             </table>
-
           </div>
         </div>
       </div>
     </div><!--/span-->
   </div><!--/row-->
-
 
   <!-- Draggable Widgets end -->
   <!-- Content end -->
@@ -162,7 +160,7 @@ $(function () {
             tooltip: {
                 formatter: function() {
                     return '<b>'+ this.x +'</b><br/>'+
-                        'Risk value: '+ Highcharts.numberFormat(this.y, 1) + '[log10] <br/>';
+                        'Risk value: '+ Highcharts.numberFormat(this.y, 2) + '[log10] <br/>';
                 }
             },
             credits: {

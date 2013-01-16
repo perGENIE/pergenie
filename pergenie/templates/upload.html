@@ -151,7 +151,7 @@
         <h3 id="uploadModalLabel">Help for Upload</h3>
       </div>
       <div class="modal-body">
-        
+
         <ul class="unstyled">
           <li><h4>Genome File</h4></li>
           <li>アップロードするgenome fileを選んで下さい．</li>
@@ -174,7 +174,7 @@
           </ul>
 
         </ul>
-        
+
         <div class="modal-footer">
         <button class="btn" data-dismiss="modal">Close</button>
         </div>
@@ -245,7 +245,7 @@
                     <!--   <i class="icon-edit icon-white"></i> -->
                     <!--   Edit -->
                     <!-- </a> -->
-                    <div id="deleteModal{{ forloop.counter }}" class="modal hide fade in delete" style="display: none;">
+                    <div id="deleteModal{{ forloop.counter0 }}" class="modal hide fade in delete" style="display: none;">
                       <div class="modal-header"></div>
                       <div class="modal-body"><p>Really delete "{{ uploaded.name }}"?</p></div>
                       <div class="modal-footer">
@@ -259,11 +259,11 @@
                       </div>
                     </div>
                     {% if uploaded.status %}
-                    <a data-toggle="modal" href="#deleteModal{{ forloop.counter }}" class="btn btn-danger">
+                    <a data-toggle="modal" href="#deleteModal{{ forloop.counter0 }}" class="btn btn-danger">
                       <i class="icon-trash icon-white"></i>Delete
                     {% else %}
 <!--                     <a href="#" class="btn btn-danger disabled"> -->
-                    <a data-toggle="modal" href="#deleteModal{{ forloop.counter }}" class="btn btn-danger">
+                    <a data-toggle="modal" href="#deleteModal{{ forloop.counter0 }}" class="btn btn-danger">
                       <i class="icon-trash icon-white"></i>Delete
                     {% endif%}
 		          </td>
