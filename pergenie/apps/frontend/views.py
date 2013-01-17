@@ -35,21 +35,26 @@ def login(request):
     params = {'erorr': ''}
 
     if request.method == 'POST':
-        form = LoginForm(request.POST)
+        while True:
+            form = LoginForm(request.POST)
 
-        if form.is_valid():
+            if not form.is_valid():
+                params['error'] = _('Invalid request.')
+                break
+
             user = authenticate(username=form.cleaned_data['user_id'],
                                 password=form.cleaned_data['password'])
 
-            if user:
-                auth_login(request, user)
-                return redirect('apps.dashboard.views.index')
-
-            else:
+            if user is None:
                 params['error'] = _('invalid mail address or password')
+                break
 
-        else:
-            params['error'] = _('Invalid request.')
+            if not user.is_active:
+                params['error'] = _('invalid mail address or password')
+                break
+
+            auth_login(request, user)
+            return redirect('apps.dashboard.views.index')
 
     return direct_to_template(request, 'login.html', params)
 
