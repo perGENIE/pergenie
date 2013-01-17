@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-13 14:52+0900\n"
+"POT-Creation-Date: 2013-01-17 16:55+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,106 +23,216 @@ msgstr ""
 msgid "First, upload your genome file!"
 msgstr "まずは，genome fileをアップロードしましょう!"
 
-#: apps/frontend/views.py:55
+#: apps/frontend/views.py:49
 msgid "invalid mail address or password"
 msgstr "メールアドレスかパスワードが正しくありません．"
 
-#: apps/frontend/views.py:58 apps/frontend/views.py:127
-#: apps/riskreport/views.py:121
+#: apps/frontend/views.py:52 apps/frontend/views.py:73
+#: apps/riskreport/views.py:133
 msgid "Invalid request."
-msgstr "不正なリクエストです．"
+msgstr "入力が正しくありません．"
 
-#: apps/frontend/views.py:101 apps/frontend/views.py:107
-msgid "Already registered."
-msgstr "すでに登録済みです．"
-
-#: apps/frontend/views.py:113
-msgid "Unexpected error."
-msgstr "予期しないエラーが発生しました．"
-
-#: apps/frontend/views.py:122
+#: apps/frontend/views.py:84
 msgid "Passwords do not match."
 msgstr "パスワードが一致していません．"
 
-#: apps/frontend/views.py:151
-msgid "Invalid mail address or password."
+#: apps/frontend/views.py:88 apps/frontend/views.py:98
+msgid "Already registered."
+msgstr "すでに登録済みです．"
+
+#: apps/frontend/views.py:103
+#, fuzzy
+msgid "Unexpected error"
+msgstr "予期しないエラーが発生しました．"
+
+#: apps/frontend/views.py:159
+#, fuzzy
+msgid "Invalid mail address assumed."
 msgstr "メールアドレスかパスワードが正しくありません．"
 
-#: apps/riskreport/views.py:110
+#: apps/riskreport/views.py:122
 msgid "no data uploaded"
 msgstr "データがアップロードされていません．"
 
-#: apps/riskreport/views.py:131 apps/riskreport/views.py:148
+#: apps/riskreport/views.py:143 apps/riskreport/views.py:160
 #, python-format
 msgid "%(file_name)s is in importing, please wait for seconds..."
 msgstr "%(file_name)s は現在読み込み中です．しばらくお待ちください..."
 
-#: apps/riskreport/views.py:138 apps/riskreport/views.py:175
+#: apps/riskreport/views.py:150 apps/riskreport/views.py:207
 #, python-format
 msgid "no such file %(file_name)s"
 msgstr "そのようなファイルはありません．%(file_name)s"
 
-#: apps/riskreport/views.py:197
+#: apps/riskreport/views.py:167 apps/riskreport/views.py:221
+#: apps/riskreport/views.py:225
+msgid "Could not calculate risk. Invalid genome file assumed."
+msgstr ""
+"リスク値を計算できませんでした．ゲノムファイルのフォーマットが正しくない可能"
+"性があります．"
+
+#: apps/riskreport/views.py:200
 msgid "trait not found"
 msgstr "そのようなtraitはありません"
 
-#: apps/upload/views.py:41
+#: apps/upload/views.py:42
 msgid "Invalid request"
 msgstr "不正なリクエストです．"
 
-#: apps/upload/views.py:53
+#: apps/upload/views.py:54
 msgid "Select data file."
 msgstr "ファイルを選択して下さい．"
 
-#: apps/upload/views.py:57
+#: apps/upload/views.py:58
 msgid "Select population."
 msgstr "Populationを選択して下さい．"
 
-#: apps/upload/views.py:61
+#: apps/upload/views.py:62
 msgid "Select sex."
 msgstr "Sexを選択して下さい．"
 
-#: apps/upload/views.py:65
+#: apps/upload/views.py:66
 msgid "Select file format."
 msgstr "File Formatを選択して下さい．"
 
-#: apps/upload/views.py:71
+#: apps/upload/views.py:72
 msgid "too large file size"
 msgstr "ファイルサイズが制限を超えています．"
 
-#: apps/upload/views.py:75
+#: apps/upload/views.py:76
 msgid "file type not allowed"
 msgstr "許可されていないファイルタイプです．"
 
-#: apps/upload/views.py:80
+#: apps/upload/views.py:81
 msgid "file extension not allowdn"
 msgstr "許可されいてない拡張子のファイルです．"
 
-#: apps/upload/views.py:84
+#: apps/upload/views.py:85
 msgid ""
 "Same file name exists. If you want to overwrite it, please delete old one."
 msgstr ""
 "同じファイル名のファイルがアップロードされています．上書きしたい場合，アップ"
 "ロード済みのファイルを削除して下さい．"
 
-#: apps/upload/views.py:100
+#: apps/upload/views.py:101
 msgid "file type not allowed, or encoding not allowed"
 msgstr ""
 "許可されていないファイルタイプ，あるいは許可されていないエンコーディングで"
 "す．"
 
-#: apps/upload/views.py:109
+#: apps/upload/views.py:110
 #, python-format
 msgid "%(file_name)s uploaded."
 msgstr "%(file_name)s がアップロードされました．"
 
-#: apps/upload/views.py:129
+#: apps/upload/views.py:131
 msgid ", and now importing..."
 msgstr "現在，読み込んでいます..."
 
-#: templates/login.html:34
+#: misc/registration/admin.py:23
+msgid "Activate users"
+msgstr ""
+
+#: misc/registration/admin.py:43
+msgid "Re-send activation emails"
+msgstr ""
+
+#: misc/registration/forms.py:35
+msgid "Username"
+msgstr ""
+
+#: misc/registration/forms.py:36
+msgid "This value may contain only letters, numbers and @/./+/-/_ characters."
+msgstr ""
+
+#: misc/registration/forms.py:39
+msgid "E-mail"
+msgstr ""
+
+#: misc/registration/forms.py:41
+msgid "Password"
+msgstr ""
+
+#: misc/registration/forms.py:43
+msgid "Password (again)"
+msgstr ""
+
+#: misc/registration/forms.py:53
+msgid "A user with that username already exists."
+msgstr ""
+
+#: misc/registration/forms.py:67
+#, fuzzy
+msgid "The two password fields didn't match."
+msgstr "パスワードが一致していません．"
+
+#: misc/registration/forms.py:78
+msgid "I have read and agree to the Terms of Service"
+msgstr ""
+
+#: misc/registration/forms.py:79
+msgid "You must agree to the terms to register"
+msgstr ""
+
+#: misc/registration/forms.py:95
+msgid ""
+"This email address is already in use. Please supply a different email "
+"address."
+msgstr ""
+
+#: misc/registration/forms.py:122
+msgid ""
+"Registration using free email addresses is prohibited. Please supply a "
+"different email address."
+msgstr ""
+
+#: misc/registration/models.py:176
+msgid "user"
+msgstr ""
+
+#: misc/registration/models.py:177
+msgid "activation key"
+msgstr ""
+
+#: misc/registration/models.py:182
+msgid "registration profile"
+msgstr ""
+
+#: misc/registration/models.py:183
+msgid "registration profiles"
+msgstr ""
+
+#: templates/404.html:21
+msgid "Sorry, the page you requested may have been moved or deleted."
+msgstr ""
+
+#: templates/500.html:21
+msgid ""
+"Sorry, the server encountered an internal error or misconfiguration and was "
+"unable to complete your request."
+msgstr ""
+
+#: templates/activation_completed.html:25
+msgid "Thanks for signing up! Now you can "
+msgstr ""
+
+#: templates/activation_completed.html:25
+msgid " and start contributing!"
+msgstr ""
+
+#: templates/login.html:35
 msgid "Create an account."
 msgstr "新規アカウント登録"
+
+#: templates/register_completed.html:25
+msgid ""
+"Registration completed. An activation link has been sent to the email "
+"address you supplied, along with instructions for activating your account."
+msgstr "登録が完了しました．メールに記載されたリンクからアカウントを有効して下さい．"
+
+#: templates/risk_report_trait.html:88
+msgid "Study name"
+msgstr "論文名"
 
 #~ msgid "You have successfully registered!"
 #~ msgstr "登録完了です．"

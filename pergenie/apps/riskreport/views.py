@@ -218,11 +218,11 @@ def get_risk_infos_for_subpage(user_id, file_name, trait_name=None, study_name=N
                 risk_store = pickle_load_obj(os.path.join(settings.UPLOAD_DIR, user_id, 'risk_store.{0}.{1}.p'.format(user_id, file_name)))
                 risk_reports = pickle_load_obj(os.path.join(settings.UPLOAD_DIR, user_id, 'risk_reports.{0}.{1}.p'.format(user_id, file_name)))
             except IOError:
-                err = _('Could not calculete risk. Invalid genome file assumed.')
+                err = _('Could not calculate risk. Invalid genome file assumed.')
                 log.error('{0} {1}: could not load pickle fle (IOError)'.format(user_id, file_name))
                 break
             except:
-                err = _('Could not calculete risk. Invalid genome file assumed.')
+                err = _('Could not calculate risk. Invalid genome file assumed.')
                 log.error('{0} {1}: could not load pickle fle (Unexpected Error)'.format(user_id, file_name))
                 break
 

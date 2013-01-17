@@ -19,7 +19,7 @@
         <div class="toggle_container">
           <div class="block box_content round_bottom padding_20">
 
-            <form class="form-horizontal" action="{% url apps.frontend.views.register %}" method="POST" id="password-form">
+            <form class="form-horizontal" action="." method="POST">
 	      {% csrf_token %}
           <!--     <table> -->
 	      <!--   <tr> -->
@@ -42,21 +42,21 @@
 	      <!-- </table> -->
 
   <div class="control-group">
-    <label class="control-label" for="email">Email</label>
+    <label class="control-label" for="user_id">Email</label>
     <div class="controls">
-      <input class="span3" type="text" id="email" placeholder="you@example.com">
+      <input class="span3" type="text" name="user_id" placeholder="you@example.com">
     </div>
   </div>
   <div class="control-group">
     <label class="control-label" for="password1">Password</label>
     <div class="controls">
-      <input class="span3" type="password" id="password1" placeholder="password">
+      <input class="span3" type="password" name="password1" placeholder="password">
     </div>
   </div>
   <div class="control-group">
     <label class="control-label" for="password2">Re-type Password</label>
     <div class="controls">
-      <input class="span3" type="password" id="password2" placeholder="password">
+      <input class="span3" type="password" name="password2" placeholder="password">
     </div>
   </div>
   <div class="control-group">

@@ -61,7 +61,6 @@ def logout(request):
 
 @require_http_methods(['GET', 'POST'])
 def register(request):
-
     params = {'is_succeeded': False,
               'error': '',
               'login_url': ''}
@@ -79,12 +78,11 @@ def register(request):
             password1 = form.cleaned_data['password1']
             password2 = form.cleaned_data['password2']
 
+            # TODO: check if user_id is valid char. not ", ', \, ...
+
             if password1 != password2:
                 params['error'] = _('Passwords do not match.')
                 break
-
-            # TODO: check if user_id is valid char. not ", ', \, ...
-            # TODO: check if user_id(=email address) is valid emamil address. like user@example.com
 
             if user_id in settings.RESERVED_USER_ID:
                 params['error'] = _('Already registered.')
@@ -157,17 +155,16 @@ to activate and use your account, click the link below or copy and paste it into
                 log.debug('mail sent')
                 log.debug(params)
                 return direct_to_template(request, 'register_completed.html')
-
-            except SMTPException:
+            except:  # SMTPException:
                 params['error'] = _('Invalid mail address assumed.')
                 log.debug('mail failed')
-                break
-            except:
-                log.debug('mail failed')
-                break
-                params['error'] = _('Invalid mail address assumed.')
 
-            # TODO: delete user
+                # send activation_key faild, so delete user
+                user_info.remove({'user_id': user_id})
+                user.delete()
+
+                break
+
             break
 
     log.debug(params)
