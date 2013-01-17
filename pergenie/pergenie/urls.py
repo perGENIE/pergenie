@@ -23,8 +23,9 @@ urlpatterns = patterns('',
     url(r'^logout/$', 'apps.frontend.views.logout'),
     url(r'^register/$', 'apps.frontend.views.register'),
 
-    # TODO: re for activation_key is ok?
+    # Activation
     url(r'^activation/(?P<activation_key>\w+)/$', 'apps.frontend.views.activation'),
+    # or [a-fA-F0-9]{40}
 
     url(r'^dashboard/$', 'apps.dashboard.views.index'),
     url(r'^settings/$', 'apps.settings.views.settings'),

@@ -8,14 +8,14 @@ from django.shortcuts import redirect  # , render_to_response
 from django.views.decorators.http import require_http_methods
 from django.core.urlresolvers import reverse
 from django.views.generic.simple import direct_to_template
-# from django.utils import translation
 from django.utils.translation import ugettext as _
 from django.conf import settings
 
 from django.db import IntegrityError
 
-# from django.core.mail import send_mail, BadHeaderError
+from django.core.mail import send_mail
 from smtplib import SMTPException
+from django.http import Http404
 
 import os
 import pymongo
@@ -118,14 +118,17 @@ def register(request):
             """
             * Registration with mail verification
             """
-            # Generate activation_key
-            activation_key = User.objects.make_random_password(length=settings.ACCOUNT_ACTIVATION_KEY_LENGTH)
-
-            # add activation_key info to mongodb.user_info
             with pymongo.Connection(port=settings.MONGO_PORT) as connection:
                 db = connection['pergenie']
                 user_info = db['user_info']
 
+                # Generate unique activation_key
+                while True:
+                    activation_key = User.objects.make_random_password(length=settings.ACCOUNT_ACTIVATION_KEY_LENGTH)
+                    if not user_info.find_one({'activation_key': activation_key}):
+                        break
+
+                # add activation_key info to mongodb.user_info
                 # TODO: verify this user_id is unique
                 user_info.update({'user_id': user_id},
                                  {"$set": {'risk_report_show_level': 'show_all',
@@ -143,10 +146,20 @@ def register(request):
             activation_url = os.path.join(str(Site.objects.get_current()), 'activation', activation_key)
             if not activation_url.endswith(os.path.sep):
                 activation_url += os.path.sep
-            email_body = """
-to activate and use your account, click the link below or copy and paste it into your web browser's address bar
+            email_body = """Welcome to perGENIE!
+
+To complete your registration, please visit this URL:
+
 %(activation_url)s
-""" % {'activation_url': activation_url}
+
+If you have problems with signing up, please contact us at %(support_email)s
+
+
+perGENIE teams
+
+--
+This email address is SEND ONLY, NO-REPLY.
+""" % {'activation_url': activation_url, 'support_email': settings.SUPPORT_EMAIL}
 
             log.debug('try mail')
             try:
@@ -154,7 +167,7 @@ to activate and use your account, click the link below or copy and paste it into
                                 message=email_body)
                 log.debug('mail sent')
                 log.debug(params)
-                return direct_to_template(request, 'register_completed.html')
+                return direct_to_template(request, 'registeration_completed.html')
             except:  # SMTPException:
                 params['error'] = _('Invalid mail address assumed.')
                 log.debug('mail failed')
@@ -175,10 +188,7 @@ def activation(request, activation_key):
     """Activate user by activation key.
     """
 
-    msgs = {}
-
-    # TODO: if incorrect activation_key, 404?
-    #       or, in urls.py, [a-z][]...{length} only accepts
+    params = {'error':''}
 
     # find the user who has this activation key
     with pymongo.Connection(port=settings.MONGO_PORT) as connection:
@@ -186,13 +196,44 @@ def activation(request, activation_key):
         user_info = db['user_info']
         challenging_user_info = user_info.find_one({'activation_key': activation_key})
 
-        # TODO: verify this user_id is unique
-        # activate
-        if challenging_user_info:
+        while True:
+            if activation_key == '':  # no need?
+                raise Http404
+
+            if not challenging_user_info:
+                # invalid activation_key
+                raise Http404
+
             challenging_user = User.objects.get(username__exact=challenging_user_info['user_id'])
+
+            if challenging_user.is_active:  # no need?
+                # already activated
+                raise Http404
+
+            # activate
             challenging_user.is_active = True
             challenging_user.save()
 
-            # TODO: send a mail to user? 'your account has been activated.'
+            # delete activation_key in mongodb
+            user_info.update({'user_id': challenging_user_info['user_id']},
+                             {"$set": {'activation_key': ''}})
 
-    return direct_to_template(request, 'activation_completed.html', msgs)
+            # send user a mail notification that 'your account has been activated.'
+            try:
+                challenging_user.email_user(subject='Your account has been activated',
+                                            message="""Your account has been activated!
+
+If this account activation is not intended by you, ....
+
+perGENIE teams
+
+--
+This email address is SEND ONLY, NO-REPLY.
+""")
+            except:  # smtplib.SMTPException
+                params['error'] = 'Activation successful, but failed to send you notification email...'
+                log.error('Failed to send notification. {}'.format(challenging_user_info['user_id']))
+
+            break
+
+    return direct_to_template(request, 'activation_completed.html', params)
