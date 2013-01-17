@@ -1,0 +1,29 @@
+{% extends "frontend_layout.html" %}
+{% load staticfiles %}
+{% load i18n %}
+{% block title %}404 Page not found{% endblock %}
+{% block cookie_id %}404{% endblock %}
+{% block description %}404 Page not found{% endblock %}
+
+{% block main_container %}
+<div class="container-fluid">
+  <div class="row-fluid">
+    <div class="span4">&nbsp;</div>
+    <div class="span4"><a href="{% url apps.frontend.views.index %}"><img class="login_logo" src="{% static 'images/logo.png' %}"></a></div>
+  </div>
+  <div class="row-fluid">
+    <div class="span4">&nbsp;</div>
+    <div class="span4">
+      <div class="box grad_colour_dark_blue">
+        <h2 class="box_head round_top">404 Page not found</h2>
+        <div class="toggle_container">
+          <div class="block box_content round_bottom padding_20">
+            {% trans "Sorry, the page you requested may have been moved or deleted." %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div><!--/.fluid-container-->
+
+{% endblock %}
