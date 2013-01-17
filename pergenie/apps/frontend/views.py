@@ -12,15 +12,13 @@ from django.utils.translation import ugettext as _
 from django.conf import settings
 
 from django.db import IntegrityError
-
-from django.core.mail import send_mail
-from smtplib import SMTPException
 from django.http import Http404
 
 import os
 import pymongo
 
 from apps.frontend.forms import LoginForm, RegisterForm
+from django.forms import ValidationError
 
 from utils import clogging
 log = clogging.getColorLogger(__name__)
@@ -87,6 +85,10 @@ def register(request):
 
             if password1 != password2:
                 params['error'] = _('Passwords do not match.')
+                break
+
+            if len(password1) < int(settings.MIN_PASSWORD_LENGTH):
+                params['error'] = _('Passwords too short (passwords should be longer than %(min_password_length)s characters).' % {'min_password_length': settings.MIN_PASSWORD_LENGTH})
                 break
 
             if user_id in settings.RESERVED_USER_ID:
