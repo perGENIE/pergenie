@@ -44,6 +44,11 @@
     </div>
   </div>
 
+  {% if is_DEMO_USER %}
+  {% if err %}
+  <div class="alert alert-error">{{ err }}</div>
+  {% endif %}
+  {% else %}
   <div class="row-fluid">
     <div class="span12">
       <div class="box grad_colour_dark_blue">
@@ -284,7 +289,9 @@
       </div>
     </div>
   </div>
+  {% endif %}
 </div>
+
 {% endblock %}
 
 {% block js %}

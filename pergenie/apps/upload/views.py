@@ -27,6 +27,14 @@ def index(request):
     user_id = request.user.username
     msg = ''
     err = ''
+    uploadeds = None
+    is_DEMO_USER = False
+
+    if user_id == settings.DEMO_USER_ID:
+        is_DEMO_USER = True
+        err = _('Sorry, this page is only for registered users.')
+        return direct_to_template(request, 'upload.html',
+                                  {'msg': msg, 'err': err, 'uploadeds': uploadeds, 'is_DEMO_USER': is_DEMO_USER})
 
     log.debug('translation.get_language() {}'.format(get_language()))
 
@@ -137,13 +145,16 @@ def index(request):
     if err:
         log.error('UPLOAD err: {}')
     return direct_to_template(request, 'upload.html',
-                              {'msg': msg, 'err': err, 'uploadeds': uploadeds})
+                              {'msg': msg, 'err': err, 'uploadeds': uploadeds, 'is_DEMO_USER': is_DEMO_USER})
 
 
 @login_required
 def delete(request):
     user_id = request.user.username
     name = request.POST.get('name')
+
+    if user_id == settings.DEMO_USER_ID:
+        return redirect('apps.upload.views.index')
 
     with pymongo.Connection(port=settings.MONGO_PORT) as connection:
         db = connection['pergenie']
