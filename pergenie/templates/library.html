@@ -29,7 +29,7 @@
         <a href="#" class="destroy box_button_1" title="close">&nbsp;</a>
         <div class="toggle_container">
           <div class="block box_content round_bottom padding_20">
-            
+
                 <div class="page-header">
                   <h1>Library indexes <small>Indexes for library (database, source) which perGENIE uses for risk calculation. </small></h1>
                 </div>
@@ -41,87 +41,31 @@
                       <th>Description</th>
                       <th>Source</th>
                     </tr>
-                  </thead>   
+                  </thead>
                   <tbody>
                     <tr>
                       <td class="center"><a href="{% url apps.library.views.trait_index %}">Trait index</a></td>
                       <td class="center">Traits or diseases in source.</td>
                       <td class="center">
                         <span class="label label-success">GWAS Catalog</span>
-                      </td>                                       
+                      </td>
                     </tr>
                     <tr>
                       <td class="center"><a href="{% url apps.library.views.snps_index %}">SNPs index</a></td>
                       <td class="center">SNPs in source.</td>
                       <td class="center">
                         <span class="label label-success">GWAS Catalog</span>
-                      </td>                                       
+                      </td>
                     </tr>
                   </tbody>
-                </table>  
-                
+                </table>
+
           </div>
         </div>
       </div>
     </div>
   </div>
-
-
-
-  <!-- Content start -->
-  <!-- Draggable Widgets start -->
-  <div class="row-fluid">
-    <div class="span12">
-      <div class="box grad_colour_dark_blue" id="box_1">
-        <h2 class="box_head round_top"></h2>
-        <a href="#" class="toggle box_button_2" title="toggle">&nbsp;</a>
-        <a href="#" class="destroy box_button_1" title="close">&nbsp;</a>
-
-        <div class="toggle_container">
-          <div class="block box_content round_bottom std_padding">
-            <div class="row-fluid">
-              <div class="span12 box_padding_20">
-
-                <h2>Query Search</h2>
-                <div id='manual_input'>
-                  <p>Input format:
-                    <code><a href='#dbsnp_example' class='input_example'>dbSNP IDs</a></code>
-                    <code><a href='#bed_example' class='input_example'>BED</a></code>
-                    <code><a href='#vcf_example' class='input_example'>VCF</a></code></p>
-                <form action="{% url apps.library.views.index %}" method="get">
-                  <textarea id="input_text" name="data" rows="12" wrap="off"></textarea><br>
-
-                  
-                  
-                  <input type="submit" value="Submit">
-
-
-                  <!--  <input type="text" name="query" value="{% if query %}{{ query }}{% endif %}"> -->
-
-<!--                   <textarea rows="12" id="input_text" name="queries" value="{% if queries %}{{ queries }}{% endif %}"></textarea><br> -->
-<!--                   <input type="submit" value="search"> -->
-
-                </form>
-                </div>
-
-                {% if msg %}
-                <div class="alert alert-success">
-                  <button type="button" class="close" data-dismiss="alert">×</button>
-                  {{ msg }}
-                </div>
-                {% endif %}
-
-                {% if query  %}
-                Search result for query "{{ query }}"<br>
-                {% endif %}
-
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+</div>
 {% endblock %}
 
 
