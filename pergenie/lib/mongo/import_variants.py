@@ -26,7 +26,7 @@ def import_variants(file_path, population, sex, file_format, user_id, mongo_port
     file_name = file_path.split('/')[-1]
     file_name_cleaned = file_name.replace('.', '').replace(' ', '')
     print >>sys.stderr, '[INFO] collection name: {}'.format(file_name_cleaned)
-    
+
     with pymongo.Connection(port=mongo_port) as connection:
         db = connection['pergenie']
         users_variants = db['variants'][user_id][file_name_cleaned]
@@ -43,7 +43,6 @@ def import_variants(file_path, population, sex, file_format, user_id, mongo_port
         print >>sys.stderr, '[INFO] {}'.format(file_path)
         file_lines = int(subprocess.check_output(['wc', '-l', file_path]).split()[0])
         print >>sys.stderr, 'done. # of lines: {}'.format(file_lines)
-
 
         today = str(datetime.datetime.today()).replace('-', '/')
         info = {'user_id': user_id,
@@ -131,7 +130,7 @@ def parse_lines(handle, file_format):
                     ref_genome_version = 'b36'
                 elif 'build 37' in line:
                     ref_genome_version = 'b37'
-            
+
 
     # Parse record lines by fieldnames
     fieldnames = [x[1] for x in parse_map['fields']]
@@ -143,10 +142,10 @@ def parse_lines(handle, file_format):
             except VariantParseError:
                 data[dict_name] = None
                 data['info'] = record.get(record_name, None)
-            
+
         if file_format == 'tmmb':
             data['genotype'] = data['genotype1'] + data['genotype2']
-            
+
         yield data
 
 

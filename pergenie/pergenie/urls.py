@@ -28,7 +28,7 @@ urlpatterns = patterns('',
     # or [a-fA-F0-9]{40}
 
     url(r'^dashboard/$', 'apps.dashboard.views.index'),
-    url(r'^settings/$', 'apps.settings.views.settings'),
+    url(r'^settings/$', 'apps.settings.views.user_settings'),
 
     url(r'^riskreport/$', 'apps.riskreport.views.index'),
     url(r'^riskreport/(?P<file_name>[^/]*)/(?P<trait>[^/]*)/$', 'apps.riskreport.views.trait'),

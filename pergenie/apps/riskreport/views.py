@@ -156,12 +156,13 @@ def index(request):
                 # choose first file_name by default
                 info = infos[0]
                 file_name = info['name']
+                print info
                 if not info['status'] == 100:
                     err = _('%(file_name)s is in importing, please wait for seconds...') % {'file_name': file_name}
+                    break
                 tmp_infos.append(info)
 
-            if not err:
-                risk_reports, risk_traits, risk_values = get_risk_values_for_indexpage(tmp_infos)
+            risk_reports, risk_traits, risk_values = get_risk_values_for_indexpage(tmp_infos)
 
             if not risk_reports or not risk_traits:
                 err = _('Could not calculate risk. Invalid genome file assumed.')

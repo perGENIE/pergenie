@@ -30,6 +30,7 @@ def index(request):
     uploadeds = None
     is_DEMO_USER = False
 
+    # DEMO_USER mode
     if user_id == settings.DEMO_USER_ID:
         is_DEMO_USER = True
         err = _('Sorry, this page is only for registered users.')
@@ -151,26 +152,39 @@ def index(request):
 @login_required
 def delete(request):
     user_id = request.user.username
-    name = request.POST.get('name')
-
-    if user_id == settings.DEMO_USER_ID:
-        return redirect('apps.upload.views.index')
+    name = request.POST.get('name')  # is cleaned_name
 
     with pymongo.Connection(port=settings.MONGO_PORT) as connection:
         db = connection['pergenie']
         data_info = db['data_info']
-        # variant = db['variant']
 
-        log.info('data_info.find(): {})'.format(list(data_info.find())))
-        log.info('user_id: {0} name: {1}'.format(user_id, name))
+        while True:
+            # DEMO_USER mode
+            if user_id == settings.DEMO_USER_ID:
+                break
 
-        if data_info.find_one({'user_id': user_id, 'name': name}):
-            data_info.remove({'user_id': user_id, 'name': name})
+            log.info('user_id: {0} name: {1}'.format(user_id, name))
+            target = data_info.find_one({'user_id': user_id, 'name': name})['name']
 
-        #
-        users_variants = db['variants'][user_id][data_info['file_name_cleaned']]
-        db.drop_collection(users_variants)
-        log.debug('dropped ccollection {}'.format(users_variants))
+            if not target:
+                log.error('requested file does not exists')
+                break
+
+            # delete `collection` of variants
+            target_collection = db['variants'][user_id][name]
+            db.drop_collection(target_collection)
+            log.debug('dropped ccollection {}'.format(target_collection))
+
+            # delete `document` of user_info
+            if data_info.find_one({'user_id': user_id, 'name': name}):
+                data_info.remove({'user_id': user_id, 'name': name})
+
+            # delete `uploaded file`
+            target_file = os.path.join(settings.UPLOAD_DIR, user_id, name)
+            os.remove(target_file)  # rm <file>
+            # shutil.rmtree(target_dir)  # rm -r <dir>
+
+            break
 
     return redirect('apps.upload.views.index')
 
