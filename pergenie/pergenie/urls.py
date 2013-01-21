@@ -22,6 +22,7 @@ urlpatterns = patterns('',
     url(r'^login/$', 'apps.frontend.views.login'),
     url(r'^logout/$', 'apps.frontend.views.logout'),
     url(r'^register/$', 'apps.frontend.views.register'),
+    url(r'^try_demo/$', 'apps.frontend.views.try_demo'),  # ok?
 
     # Activation
     url(r'^activation/(?P<activation_key>\w+)/$', 'apps.frontend.views.activation'),

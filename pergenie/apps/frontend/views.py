@@ -28,6 +28,13 @@ def index(request):
     return redirect('apps.frontend.views.login')
 
 
+def try_demo(request):
+    user = authenticate(username=settings.DEMO_USER_ID,
+                        password=settings.DEMO_USER_PASSWORD)
+    auth_login(request, user)
+    return redirect('apps.dashboard.views.index')
+
+
 @require_http_methods(['GET', 'POST'])
 def login(request):
     params = {'erorr': ''}
@@ -40,8 +47,14 @@ def login(request):
                 params['error'] = _('Invalid request.')
                 break
 
-            user = authenticate(username=form.cleaned_data['user_id'],
-                                password=form.cleaned_data['password'])
+            user_id = form.cleaned_data['user_id']
+            password = form.cleaned_data['password']
+
+            if user_id in settings.RESERVED_USER_ID:
+                params['error'] = _('invalid mail address or password')
+                break
+
+            user = authenticate(username=user_id, password=password)
 
             if user is None:
                 params['error'] = _('invalid mail address or password')

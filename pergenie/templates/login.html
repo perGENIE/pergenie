@@ -11,6 +11,7 @@
     <div class="span3">&nbsp;</div>
     <div class="span6"><a href="{% url apps.frontend.views.index %}"><img class="login_logo" src="{% static 'images/logo.png' %}"></a></div>
   </div>
+
   <div class="row-fluid">
     <div class="span3">&nbsp;</div>
     <div class="span6">
@@ -38,6 +39,21 @@
       </div>
     </div>
   </div>
+
+  <div class="row-fluid">
+    <div class="span3">&nbsp;</div>
+    <div class="span6">
+      <div class="box grad_colour_dark_blue">
+        <div class="toggle_container">
+          <div class="block box_content round_bottom padding_20">
+            <a href="{% url apps.frontend.views.try_demo %}">{% trans "Dry DEMO!" %}</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
 </div><!--/.fluid-container-->
 
 {% endblock %}
