@@ -13,10 +13,11 @@ pergenie/db.sqlite3
 *.log
 pergenie/settings/develop.py
 pergenie/settings/staging.py
-data/*
+data/gwascatalog*
 misc
 celeryd.pid
 static/vendor
 config
 pergenie/tmp
 *.orig
+*.p
