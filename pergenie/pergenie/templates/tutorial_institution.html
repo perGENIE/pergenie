@@ -1,0 +1,48 @@
+{% extends "layout.html" %}
+{% block title %}Tutorial{% endblock %}
+{% block description %}Tutorial{% endblock %}
+
+{% block main_container %}          
+<div id="main_container" class="span10">
+
+  <!-- <\!-- Breadcrumb -\-> -->
+  <!-- <div class="row-fluid"> -->
+  <!--   <div class="span12"> -->
+  <!--     <ul class="breadcrumb"> -->
+  <!--       <li class="active">Catalog</li> -->
+  <!--     </ul> -->
+  <!--   </div><\!--/span-\-> -->
+  <!-- </div> -->
+            
+  <!-- Content start -->                     
+  <!-- Draggable Widgets start -->
+  <div class="row-fluid">
+    <div class="span12">
+      <div class="box grad_colour_dark_blue" id="box_1">
+        <h2 class="box_head round_top"></h2>
+        <div class="toggle_container">
+          <div class="block box_content round_bottom padding_20">
+            <div class="row-fluid">
+
+              <div class="page-header">
+                <h1>Tutorial</h1>
+              </div>
+              
+              <dl>
+                <dt><a href="{% url apps.tutorial.views.personal %}">個人向けの利用例</a></dt>
+                <dd>genomeデータを持っている個人向けのチュートリアルです．1人〜3人分のgenomeデータでの利用を想定しています．</dd>
+                <br>
+                <dt><a href="{% url apps.tutorial.views.institution %}">医療・研究機関向けの利用例</a></dt>
+                <dd>大人数のgenomeデータでの利用を想定した，医療・研究機関向けのチュートリアルです．</dd>
+              </dl>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div><!--/span-->
+  </div><!--/row-->
+  <!-- Draggable Widgets end -->
+  <!-- Content end -->
+</div>
+{% endblock %}

@@ -1,0 +1,103 @@
+{% extends "layout.html" %}
+{% block title %}Settings{% endblock %}
+{% block description %}settings{% endblock %}
+
+{% block main_container %}          
+<div id="main_container" class="span10">
+
+  <!-- <\!-- Breadcrumb -\-> -->
+  <!-- <div class="row-fluid"> -->
+  <!--   <div class="span12"> -->
+  <!--     <ul class="breadcrumb"> -->
+  <!--       <li class="active">Catalog</li> -->
+  <!--     </ul> -->
+  <!--   </div><\!--/span-\-> -->
+  <!-- </div> -->
+            
+  <!-- Content start -->                     
+  <!-- Draggable Widgets start -->
+  <div class="row-fluid">
+    <div class="span12">
+      <div class="box grad_colour_dark_blue" id="box_1">
+        <h2 class="box_head round_top"></h2>
+        <div class="toggle_container">
+          <div class="block box_content round_bottom padding_20">
+            <div class="row-fluid">
+
+              <div class="page-header">
+                <h1>User settings</h1>
+              </div>
+              
+              <form class="form-horizontal" action="{% url apps.settings.views.user_settings %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+		        <fieldset>
+                  
+                  <!-- <label class="radio"> -->
+                  <!--   <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked> -->
+                  <!--   Option one is this and that—be sure to include why it's great -->
+                  <!-- </label> -->
+                  <!-- <label class="radio"> -->
+                  <!--   <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2"> -->
+                  <!--   Option two can be something else and selecting it will deselect option one -->
+                  <!-- </label> -->
+
+                  <p>Risk Report</p>
+
+                  current {{ current_settings.risk_report_show_level }}
+
+                    <div class="control-group">
+                      <label class="control-label">Show level</label>
+                      <div class="controls">
+                        <select name="show_level">
+                          
+                          {% if current_settings.risk_report_show_level == "not_show_all" %}
+                          <option value="show_all">Show all trait/disease</option>
+
+
+                          <option value="not_show_all" selected>Do not show some trait/disease</option>
+                          {% else %}
+                          <option value="show_all">Show all trait/disease</option>
+
+
+                          <option value="not_show_all">Do not show some trait/disease</option>
+                          {% endif %}
+
+
+
+                        </select>
+                      </div>
+                    </div>
+
+                  
+                  <div class="form-actions">
+                    <input type="submit" class="btn btn-primary">
+                    <input type="reset" value="reset" class="btn">
+                  </div>
+
+                  {% if msg %}
+                  <div class="alert alert-success">
+                    <!-- <button type="button" class="close" data-dismiss="alert">×</button> -->
+                    {{ msg }}
+                  </div>
+                  {% endif %}
+                  
+                  {% if err %}
+                  <div class="alert alert-error">
+                    <!-- <button type="button" class="close" data-dismiss="alert">×</button> -->
+                    {{ err }}
+                  </div>
+                  {% endif %}
+                  
+                </fieldset>
+              </form>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div><!--/span-->
+  </div><!--/row-->
+  <!-- Draggable Widgets end -->
+  <!-- Content end -->
+</div>
+{% endblock %}

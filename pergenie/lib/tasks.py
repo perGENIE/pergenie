@@ -24,17 +24,13 @@ def qimport_variants(data_info):
     logger.info(pformat(data_info))
 
     file_path = os.path.join(settings.UPLOAD_DIR, data_info['user_id'], data_info['raw_name'])
-
     import_error_state = import_variants.import_variants(file_path,
                                                          data_info['population'],
                                                          data_info['sex'],
                                                          data_info['file_format'],
-                                                         data_info['user_id'],
-                                                         settings.MONGO_PORT,
-                                                         settings.MONGO_USER,
-                                                         settings.MONGO_PASSWORD)
+                                                         data_info['user_id'])
 
     if import_error_state:
         err = ', but import failed...' + import_error_state
 
-    os.remove(file_path)
+    # os.remove(file_path)

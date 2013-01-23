@@ -9,6 +9,7 @@ distribute==0.6.28
 django-celery==3.0.9
 django-jinja==0.3
 django-registration==0.8
+ipython==0.13.1
 kombu==2.4.6
 lockfile==0.9.1
 numpy==1.6.2

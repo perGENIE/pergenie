@@ -16,7 +16,6 @@ import os
 import pymongo
 import magic
 from lib.tasks import qimport_variants
-from utils.date import today_date, today_str
 from utils import clogging
 log = clogging.getColorLogger(__name__)
 
@@ -27,22 +26,11 @@ def index(request):
     user_id = request.user.username
     msg = ''
     err = ''
-    uploadeds = None
-    is_DEMO_USER = False
-
-    # DEMO_USER mode
-    if user_id == settings.DEMO_USER_ID:
-        is_DEMO_USER = True
-        err = _('Sorry, this page is only for registered users.')
-        return direct_to_template(request, 'upload.html',
-                                  {'msg': msg, 'err': err, 'uploadeds': uploadeds, 'is_DEMO_USER': is_DEMO_USER})
 
     log.debug('translation.get_language() {}'.format(get_language()))
 
     with pymongo.Connection(port=settings.MONGO_PORT) as connection:
         db = connection['pergenie']
-        db.authenticate(settings.MONGO_USER, settings.MONGO_PASSWORD)
-
         data_info = db['data_info']
 
         if request.method == 'POST':
@@ -124,8 +112,7 @@ def index(request):
 
                 # TODO: check if clery is alive
 
-                # today = str(datetime.datetime.today()).replace('-', '/')
-                today = str(datetime.datetime.today()).split('.')[-2]
+                today = str(datetime.datetime.today()).replace('-', '/')
                 file_name_cleaned = call_file.name.replace('.', '').replace(' ', '')
 
                 info = {'user_id': user_id,
@@ -148,48 +135,35 @@ def index(request):
     if err:
         log.error('UPLOAD err: {}')
     return direct_to_template(request, 'upload.html',
-                              {'msg': msg, 'err': err, 'uploadeds': uploadeds, 'is_DEMO_USER': is_DEMO_USER})
+                              {'msg': msg, 'err': err, 'uploadeds': uploadeds})
 
 
 @login_required
 def delete(request):
     user_id = request.user.username
-    name = request.POST.get('name')  # is cleaned_name
+    name = request.POST.get('name')
 
     with pymongo.Connection(port=settings.MONGO_PORT) as connection:
         db = connection['pergenie']
-        db.authenticate(settings.MONGO_USER, settings.MONGO_PASSWORD)
-
         data_info = db['data_info']
+        # variant = db['variant']
 
-        while True:
-            # DEMO_USER mode
-            if user_id == settings.DEMO_USER_ID:
-                break
+        log.info('data_info.find(): {})'.format(list(data_info.find())))
+        log.info('user_id: {0} name: {1}'.format(user_id, name))
 
-            log.info('user_id: {0} name: {1}'.format(user_id, name))
-            target = data_info.find_one({'user_id': user_id, 'name': name})['name']
+        # delete collection `variants.user_id.filename`
+        users_variants = 'variants.{0}.{1}'.format(user_id, name)
+        db.drop_collection(users_variants)
+        log.debug('dropped ccollection {}'.format(users_variants))
 
-            if not target:
-                log.error('requested file does not exists')
-                break
+        # delete `file`
+        filepath = os.path.join(settings.UPLOAD_DIR, user_id, data_info.find_one({'user_id': user_id, 'name': name})['raw_name'])
+        if os.path.exists(filepath):
+            os.remove(filepath)
 
-            # delete `collection` of variants
-            target_collection = db['variants'][user_id][name]
-            db.drop_collection(target_collection)
-            log.debug('dropped ccollection {}'.format(target_collection))
-
-            # delete `uploaded file`
-            target_file = os.path.join(settings.UPLOAD_DIR, user_id, data_info.find_one({'user_id': user_id, 'name': name})['raw_name'])
-            os.remove(target_file)  # rm <file>
-            # shutil.rmtree(target_dir)  # rm -r <dir>
-
-            # delete `document` of user_info
-            if data_info.find_one({'user_id': user_id, 'name': name}):
-                data_info.remove({'user_id': user_id, 'name': name})
-
-
-            break
+        # delete document `data_info`
+        if data_info.find_one({'user_id': user_id, 'name': name}):
+            data_info.remove({'user_id': user_id, 'name': name})
 
     return redirect('apps.upload.views.index')
 
@@ -206,8 +180,6 @@ def status(request):
 
         with pymongo.Connection(port=settings.MONGO_PORT) as connection:
             db = connection['pergenie']
-            db.authenticate(settings.MONGO_USER, settings.MONGO_PASSWORD)
-
             data_info = db['data_info']
 
             uploaded_files = {}

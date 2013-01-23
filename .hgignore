@@ -20,4 +20,3 @@ static/vendor
 config
 pergenie/tmp
 *.orig
-*flymake.py
