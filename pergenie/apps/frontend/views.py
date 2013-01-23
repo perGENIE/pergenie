@@ -95,6 +95,7 @@ def register(request):
             password2 = form.cleaned_data['password2']
 
             # TODO: check if user_id is valid char. not ", ', \, ...
+            # TODO: 半角アルファベット、半角数字、@/./+/-/_ で30文字以下にしてください。
 
             if password1 != password2:
                 params['error'] = _('Passwords do not match.')
@@ -140,6 +141,8 @@ def register(request):
             """
             with pymongo.Connection(port=settings.MONGO_PORT) as connection:
                 db = connection['pergenie']
+                db.authenticate(settings.MONGO_USER, settings.MONGO_PASSWORD)
+
                 user_info = db['user_info']
 
                 # Generate unique activation_key

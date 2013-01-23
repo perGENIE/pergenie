@@ -42,6 +42,7 @@ def LD_block_clustering(risk_store, population_code):
 
     with pymongo.Connection(port=HAPMAP_PORT) as connection:
         db = connection['hapmap']
+#         db..authenticate(mongo_username, mongo_password)
         ld_data = db['ld_data']
         ld_data_by_population_map = dict(zip(POPULATION_CODE, [ld_data[code] for code in POPULATION_CODE]))
 

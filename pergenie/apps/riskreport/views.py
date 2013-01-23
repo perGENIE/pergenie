@@ -48,6 +48,8 @@ def upsert_riskreport(tmp_info, mongo_port=settings.MONGO_PORT):
 
     # upsert data_info['riskreport'] = today
     with pymongo.Connection(port=settings.MONGO_PORT) as connection:
+        connection['pergenie'].authenticate(settings.MONGO_USER, settings.MONGO_PASSWORD)
+
         data_info = connection['pergenie']['data_info']
         data_info.update({'user_id': tmp_info['user_id'], 'name': tmp_info['name'] }, {"$set": {'riskreport': today_date}}, upsert=True)
 
@@ -58,6 +60,8 @@ def get_risk_values_for_indexpage(tmp_infos):
 
     with pymongo.Connection(port=settings.MONGO_PORT) as connection:
         db = connection['pergenie']
+        db.authenticate(settings.MONGO_USER, settings.MONGO_PASSWORD)
+
         data_info = db['data_info']
 
         for i, tmp_info in enumerate(tmp_infos):
@@ -110,6 +114,8 @@ def index(request):
 
     with pymongo.Connection(port=settings.MONGO_PORT) as connection:
         db = connection['pergenie']
+        db.authenticate(settings.MONGO_USER, settings.MONGO_PASSWORD)
+
         data_info = db['data_info']
 
         while True:
@@ -189,6 +195,8 @@ def get_risk_infos_for_subpage(user_id, file_name, trait_name=None, study_name=N
 
     with pymongo.Connection(port=settings.MONGO_PORT) as connection:
         db = connection['pergenie']
+        db.authenticate(settings.MONGO_USER, settings.MONGO_PASSWORD)
+
         data_info = db['data_info']
 
         while True:

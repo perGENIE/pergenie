@@ -1,11 +1,11 @@
-# -*- coding: utf-8 -*- 
+# -*- coding: utf-8 -*-
 
 from django.contrib.auth.models import User
 from django.test import TestCase
 from django.test.client import Client
 from django.conf import settings
 
-from pprint import pprint 
+from pprint import pprint
 import pymongo
 
 
@@ -24,13 +24,14 @@ class SimpleTestCase(TestCase):
         # #
         # with pymongo.Connection(port=settings.MONGO_PORT) as connection:
         #     db = connection['pergenie']
+#         db.authenticate(settings.MONGO_USER, settings.MONGO_PASSWORD)
         #     catalog_info = db['catalog_info']
         #     data_info = db['data_info']
 
         #     # init test user
         #     test_user_data_info = data_info.find_one({'user_id': self.test_user_id})
         #     self.failUnlessEqual(bool(test_user_data_info == None), True)
-            
+
 
 
     def test_login_required(self):
@@ -73,7 +74,7 @@ class SimpleTestCase(TestCase):
         response = self.client.get('/dashboard/')
         response = self.client.get('/logout/')# , follow=True)
         self.failUnlessEqual(response.status_code, 302)
-        
+
         # TODO: check cookies & session data
 
 
@@ -82,7 +83,7 @@ class SimpleTestCase(TestCase):
 
 
     #         # print list(data_info.find())
-        
+
     #     #TODO: test, msg for 'no file uploaded' shows correctly.
     #     #TODO: test, latest catalog...
 

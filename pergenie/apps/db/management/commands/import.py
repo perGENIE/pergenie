@@ -65,7 +65,9 @@ class Command(BaseCommand):
                                           path_to_mim2gene=settings.PATH_TO_MIM2GENE,
                                           path_to_eng2ja=settings.PATH_TO_ENG2JA,
                                           catalog_summary_cache_dir=settings.CATALOG_SUMMARY_CACHE_DIR,
-                                          mongo_port=settings.MONGO_PORT)
+                                          mongo_port=settings.MONGO_PORT,
+                                          mongo_username=settings.MONGO_USER,
+                                          mongo_password=settings.MONGO_PASSWORD)
 
             # TODO: get latest information of gwascatalog (dbSNP version & refgenome version)
             # form .pdf -> x
@@ -78,7 +80,8 @@ class Command(BaseCommand):
 
             # update 'latest' catalog in db.catalog_info
             with pymongo.Connection(port=settings.MONGO_PORT) as connection:
-                log.info('MongoDB port: {}'.format(settings.MONGO_PORT))
+                connection['pergenie'].authenticate(settings.MONGO_USER,
+                                                    settings.MONGO_PASSWORD)
                 catalog_info = connection['pergenie']['catalog_info']
 
                 latest_document = catalog_info.find_one({'status': 'latest'})

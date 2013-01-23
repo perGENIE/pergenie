@@ -31,7 +31,7 @@ def _split_query(raw_query):
             yield '', ''
 
 
-def search_catalog_by_query(raw_query, query_type=None, mongo_port=27017):
+def search_catalog_by_query(raw_query, query_type, mongo_port, mongo_username, mongo_password):
     """
     Search catalog by query.
 
@@ -95,6 +95,7 @@ def search_catalog_by_query(raw_query, query_type=None, mongo_port=27017):
 
 
     with pymongo.Connection(port=mongo_port) as connection:
+        connection['pergenie'].authenticate(mongo_username, mongo_password)
         latest_document = connection['pergenie']['catalog_info'].find_one({'status': 'latest'})  # -> datetime.datetime(2012, 12, 12, 0, 0)
 
         if latest_document:

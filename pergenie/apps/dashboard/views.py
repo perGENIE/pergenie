@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*- 
+# -*- coding: utf-8 -*-
 
 from django.contrib.auth.decorators import login_required
 from django.views.generic.simple import direct_to_template
@@ -27,6 +27,8 @@ def index(request):
 
     with pymongo.Connection(port=settings.MONGO_PORT) as connection:
         db = connection['pergenie']
+        db.authenticate(settings.MONGO_USER, settings.MONGO_PASSWORD)
+
         catalog_info = db['catalog_info']
         data_info = db['data_info']
 

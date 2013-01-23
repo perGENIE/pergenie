@@ -19,7 +19,8 @@ class VariantParseError(Exception):
     def __str__(self):
         return repr(self.value)
 
-def import_variants(file_path, population, sex, file_format, user_id, mongo_port=27017):
+def import_variants(file_path, population, sex, file_format, user_id,
+                    mongo_port, mongo_username, mongo_password):
     """doc"""
 
     # remove dots from file_name
@@ -29,9 +30,11 @@ def import_variants(file_path, population, sex, file_format, user_id, mongo_port
 
     with pymongo.Connection(port=mongo_port) as connection:
         db = connection['pergenie']
-        users_variants = db['variants'][user_id][file_name_cleaned]
-        data_info = db['data_info']
+        db.authenticate(mongo_username, mongo_password)
 
+        users_variants = db['variants'][user_id][file_name_cleaned]
+
+        data_info = db['data_info']
         data_info.update({'user_id': user_id, 'name': file_name_cleaned}, {"$set": {'file_name_cleaned': file_name_cleaned}}, upsert=True)
 
         # ensure this variants file is not imported

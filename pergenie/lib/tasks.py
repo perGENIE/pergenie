@@ -29,7 +29,10 @@ def qimport_variants(data_info):
                                                          data_info['population'],
                                                          data_info['sex'],
                                                          data_info['file_format'],
-                                                         data_info['user_id'])
+                                                         data_info['user_id'],
+                                                         settings.MONGO_PORT,
+                                                         settings.MONGO_USER,
+                                                         settings.MONGO_PASSWORD)
 
     if import_error_state:
         err = ', but import failed...' + import_error_state

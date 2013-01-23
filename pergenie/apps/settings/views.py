@@ -21,6 +21,8 @@ def user_settings(request):
 
     with pymongo.Connection() as connection:
         db = connection['pergenie']
+        db.authenticate(settings.MONGO_USER, settings.MONGO_PASSWORD)
+
         user_info = db['user_info']  #
 
         if request.method == 'POST':

@@ -36,6 +36,8 @@ def index(request):
         # if query:
         with pymongo.Connection(port=settings.MONGO_PORT) as connection:
             db = connection['pergenie']
+            db.authenticate(settings.MONGO_USER, settings.MONGO_PASSWORD)
+
             data_info = db['data_info']
 
             uploadeds = list(data_info.find({'user_id': user_id}))
@@ -127,6 +129,8 @@ def trait(request, trait):
     else:
         with pymongo.Connection(port=settings.MONGO_PORT) as connection:
             db = connection['pergenie']
+            db.authenticate(settings.MONGO_USER, settings.MONGO_PASSWORD)
+
             data_info = db['data_info']
 
             uploadeds = list(data_info.find({'user_id': user_id}))
@@ -182,6 +186,8 @@ def snps(request, rs):
 
     with pymongo.Connection(port=settings.MONGO_PORT) as connection:
         db = connection['pergenie']
+        db.authenticate(settings.MONGO_USER, settings.MONGO_PASSWORD)
+
         data_info = db['data_info']
         uploadeds = list(data_info.find({'user_id': user_id}))
         file_names = [uploaded['name'] for uploaded in uploadeds]
@@ -194,6 +200,8 @@ def snps(request, rs):
 
         # data from dbsnp
         dbsnp = connection['dbsnp']['B132']
+        dbsnp.authenticate(settings.MONGO_USER, settings.MONGO_PASSWORD)
+
         dbsnp_record = dbsnp.find_one({'rs': rs})
         log.debug('dbsnp_record {}'.format(dbsnp_record))
 

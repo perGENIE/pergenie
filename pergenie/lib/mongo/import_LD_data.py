@@ -93,9 +93,10 @@ def import_LD_data(path_to_LD_data_dir, mongo_port,
 
     with pymongo.Connection(port=mongo_port) as connection:
         db = connection['hapmap']
+#         db.authenticate(mongo_username, mongo_password)
         ld_data = db['ld_data']
         ld_data_by_population_map = dict(zip(POPULATION_CODE, [ld_data[code] for code in POPULATION_CODE]))
-        
+
         if drop_old_collections:
             for code in POPULATION_CODE:
                 if ld_data_by_population_map[code].find_one():
@@ -165,7 +166,7 @@ def import_LD_data(path_to_LD_data_dir, mongo_port,
                                 else:
                                     ld_data_by_population_map[population_code].insert(data)
                                     record_count += 1
-                 
+
                                 if (i+1)>1 and (i+1)%1000000 == 0:
                                     log.info('{0}% done. {1} records to be inserted'.format(round(float(i+1)/float(file_lines),3)*100, i+1))
 
@@ -174,11 +175,11 @@ def import_LD_data(path_to_LD_data_dir, mongo_port,
                             ld_data_by_population_map[population_code].insert(bulk_data)
                             record_count += len(bulk_data)
                             bulk_data = []
-                            
+
                         log.info('{0} of {1} records ({2}%) imported'.format(record_count, file_lines, round(float(record_count)/float(file_lines),3)*100))
 
             log.info('... importing done.')
-        
+
 
         if ensure_index:
             log.info('Start indexing ...')

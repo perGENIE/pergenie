@@ -17,7 +17,7 @@ _g_gene_id_map = {}      # { Entrez Gene ID => (Gene Symbol, OMIM Gene ID) }
 
 
 def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja,
-                   catalog_summary_cache_dir, mongo_port):
+                   catalog_summary_cache_dir, mongo_port, mongo_username, mongo_password):
     """doc
     """
 
@@ -46,6 +46,9 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja,
                 eng2ja[record['eng']] = _ja
 
     with pymongo.Connection(port=mongo_port) as connection:
+        connection['pergenie'].authenticate(mongo_username, mongo_password)
+        connection['dbsnp'].authenticate(mongo_username, mongo_password)
+
         catalog_date_raw = os.path.basename(path_to_gwascatalog).split('.')[1]
         # catalog_date = datetime.datetime.strptime(catalog_date_raw , '%Y_%m_%d')
 

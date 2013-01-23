@@ -41,6 +41,8 @@ def index(request):
 
     with pymongo.Connection(port=settings.MONGO_PORT) as connection:
         db = connection['pergenie']
+        db.authenticate(settings.MONGO_USER, settings.MONGO_PASSWORD)
+
         data_info = db['data_info']
 
         if request.method == 'POST':
@@ -156,6 +158,8 @@ def delete(request):
 
     with pymongo.Connection(port=settings.MONGO_PORT) as connection:
         db = connection['pergenie']
+        db.authenticate(settings.MONGO_USER, settings.MONGO_PASSWORD)
+
         data_info = db['data_info']
 
         while True:
@@ -175,14 +179,15 @@ def delete(request):
             db.drop_collection(target_collection)
             log.debug('dropped ccollection {}'.format(target_collection))
 
+            # delete `uploaded file`
+            target_file = os.path.join(settings.UPLOAD_DIR, user_id, data_info.find_one({'user_id': user_id, 'name': name})['raw_name'])
+            os.remove(target_file)  # rm <file>
+            # shutil.rmtree(target_dir)  # rm -r <dir>
+
             # delete `document` of user_info
             if data_info.find_one({'user_id': user_id, 'name': name}):
                 data_info.remove({'user_id': user_id, 'name': name})
 
-            # delete `uploaded file`
-            target_file = os.path.join(settings.UPLOAD_DIR, user_id, name)
-            os.remove(target_file)  # rm <file>
-            # shutil.rmtree(target_dir)  # rm -r <dir>
 
             break
 
@@ -201,6 +206,8 @@ def status(request):
 
         with pymongo.Connection(port=settings.MONGO_PORT) as connection:
             db = connection['pergenie']
+            db.authenticate(settings.MONGO_USER, settings.MONGO_PASSWORD)
+
             data_info = db['data_info']
 
             uploaded_files = {}
