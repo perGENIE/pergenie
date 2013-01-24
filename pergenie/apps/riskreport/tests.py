@@ -9,7 +9,7 @@ from django.utils.translation import ugettext as _
 from django.utils.translation import activate as translation_activate
 
 import mongo.import_variants as import_variants
-from lib.utils.date import now_date
+# from lib.utils.date import now_date
 
 import os
 import pymongo
@@ -60,11 +60,13 @@ class SimpleTest(TestCase):
             db = connection['pergenie']
             data_info = db['data_info']
 
+            today =
+
             # add data_info
             info = {'user_id': self.test_user_id,
                     'name': self.file_cleaned_name,
                     'raw_name': self.file_raw_name,
-                    'date': now_date,
+                    'date': today,
                     'population': 'unknown',
                     'sex': 'unknown',
                     'file_format': 'andme',
