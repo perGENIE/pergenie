@@ -295,9 +295,9 @@ Gamma glutamyl transpeptidase	Gamma glutamyl transpeptidase
 Gastric cancer	残胃癌
 Gaucher disease severity	Gaucher disease severity
 General cognitive ability	General cognitive ability
-Glaucoma	慢性開放隅角緑内障
-Glaucoma (exfoliation)	Glaucoma (exfoliation)
-Glaucoma (primary open-angle)	Glaucoma (primary open-angle)
+Glaucoma	緑内障
+Glaucoma (exfoliation)	緑内障(落屑性)
+Glaucoma (primary open-angle)	緑内障(primary open-angle)
 Glioblastoma	巨細胞膠芽腫
 Glioma	非クロム親和性傍神経節腫
 Glioma (high-grade)	Glioma (high-grade)
@@ -331,9 +331,9 @@ Hematology traits	Hematology traits
 Hemoglobin	酵素－ヘモグロビン解離曲線
 Hemoglobin levels	Hemoglobin levels
 Hemostatic factors and hematological phenotypes	Hemostatic factors and hematological phenotypes
-Hepatitis B	アヒルB型肝炎ウイルス
-Hepatitis B (viral clearance)	Hepatitis B (viral clearance)
-Hepatitis B vaccine response	Hepatitis B vaccine response
+Hepatitis B	B型肝炎
+Hepatitis B (viral clearance)	B型肝炎(ウイルスの排除)
+Hepatitis B vaccine response	B型肝炎 vaccine response
 Hepatitis C induced liver fibrosis	Hepatitis C induced liver fibrosis
 Hepatocellular carcinoma	肝細胞がん
 Hepcidin levels	Hepcidin levels
@@ -393,7 +393,7 @@ Iron levels	Iron levels
 Iron status biomarkers	Iron status biomarkers
 Kawasaki disease	Kawasaki病
 Keloid	ケロイド
-Kidney stones	Kidney stones
+Kidney stones	腎結石
 Knee osteoarthritis	変形性膝関節炎
 LDL cholesterol	LDLコレステロール
 Lapatinib-induced hepatotoxicity	Lapatinib-induced hepatotoxicity
@@ -429,7 +429,7 @@ Major mood disorders	Major mood disorders
 Malaria	Plasmodium falciparumマラリア
 Male fertility	女性用妊娠促進薬
 Male infertility	男性不妊
-Male-pattern baldness	Male-pattern baldness
+Male-pattern baldness	男性型禿頭症
 Mammographic density	Mammographic density
 Mathematical ability	Mathematical ability
 Matrix metalloproteinase levels	Matrix metalloproteinase levels
@@ -466,7 +466,7 @@ Myasthenia gravis 	Myasthenia gravis
 Myeloproliferative neoplasms	Myeloproliferative neoplasms
 Myocardial infarction	貫壁性心筋梗塞
 Myocardial infarction (early onset)	Myocardial infarction (early onset)
-Myopia (pathological)	Myopia (pathological)
+Myopia (pathological)	近視(病的な)
 N-glycan levels	N-glycan levels
 Naphthyl-keratin adduct levels 	Naphthyl-keratin adduct levels
 Narcolepsy	睡眠発作
@@ -479,8 +479,8 @@ Nephropathy (idiopathic membranous)	Nephropathy (idiopathic membranous)
 Nephrotic syndrome (acquired)	Nephrotic syndrome (acquired)
 Neural processing (facial expression)	Neural processing (facial expression)
 Neuranatomic and neurocognitive phenotypes	Neuranatomic and neurocognitive phenotypes
-Neuroblastoma	嗅神経芽細胞腫
-Neuroblastoma (high-risk)	Neuroblastoma (high-risk)
+Neuroblastoma	神経芽細胞腫
+Neuroblastoma (high-risk)	神経芽細胞腫 (high-risk)
 Neuromyelitis optica	視神経脊髄炎
 Neuroticism	神経質
 Neutrophil count	好中球数
@@ -493,7 +493,7 @@ Non-alcoholic fatty liver disease histology (AST)	Non-alcoholic fatty liver dise
 Non-alcoholic fatty liver disease histology (lobular)	Non-alcoholic fatty liver disease histology (lobular)
 Non-alcoholic fatty liver disease histology (other)	Non-alcoholic fatty liver disease histology (other)
 Non-obstructive azoospermia	Non-obstructive azoospermia
-Non-small cell lung cancer	Non-small cell lung cancer
+Non-small cell lung cancer	非小細胞性肺がん
 Nonalcoholic fatty liver disease	非アルコール性脂肪性肝疾患
 Normalized brain volume	Normalized brain volume
 Obesity	肥満症
@@ -512,7 +512,7 @@ Oral cancers (chewing tobacco related)	Oral cancers (chewing tobacco related)
 Orofacial clefts	Orofacial clefts
 Osteoarthritis	CM関節変形性関節症
 Osteonecrosis of the jaw	ビスホスホネート誘発顎骨壊死
-Osteoporosis	オステオポローシス
+Osteoporosis	骨粗鬆症(オステオポローシス)
 Osteoporosis-related phenotypes	Osteoporosis-related phenotypes
 Other erythrocyte phenotypes	Other erythrocyte phenotypes
 Otosclerosis	耳硬化症
@@ -627,7 +627,7 @@ Response to platinum-based chemotherapy in small cell and non-small cell lung ca
 Response to platinum-based chemotherapy in small-cell lung cancer	Response to platinum-based chemotherapy in small-cell lung cancer
 Response to statin therapy	Response to statin therapy
 Response to statin therapy (LDL-C)	Response to statin therapy (LDL-C)
-Response to tamoxifen in breast cancer	Response to tamoxifen in breast cancer
+Response to tamoxifen in breast cancer	乳がんにおけるタモキシフェン反応性
 Response to taxane treatment (docetaxel)	Response to taxane treatment (docetaxel)
 Response to taxane treatment (placlitaxel)	Response to taxane treatment (placlitaxel)
 Response to tocilizumab in rheumatoid arthritis	Response to tocilizumab in rheumatoid arthritis
@@ -698,10 +698,10 @@ Testicular germ cell cancer	精巣胚細胞性癌
 Testicular germ cell tumor	Testicular germ cell tumor
 Testosterone levels	Testosterone levels
 Thoracic aortic aneurysms and dissections	Thoracic aortic aneurysms and dissections
-Thyroid cancer	転移性甲状腺癌
-Thyroid function	甲状腺機能検査
+Thyroid cancer	甲状腺がん
+Thyroid function	甲状腺機能
 Thyroid stimulating hormone	甲状腺刺激ホルモン
-Thyroid volume	Thyroid volume
+Thyroid volume	甲状腺体積
 Thyrotoxic hypokalemic periodic paralysis	Thyrotoxic hypokalemic periodic paralysis
 Tonometry	眼圧測定(法)
 Total ventricular volume	Total ventricular volume
@@ -711,14 +711,14 @@ Triglycerides	Triglycerides
 Triglycerides-Blood Pressure (TG-BP)	Triglycerides-Blood Pressure (TG-BP)
 Tuberculosis	副腎結核
 Two-hour glucose challenge	Two-hour glucose challenge
-Type 1 diabetes	1型糖尿病合併妊娠
+Type 1 diabetes	1型糖尿病
 Type 1 diabetes autoantibodies	Type 1 diabetes autoantibodies
 Type 1 diabetes nephropathy	Type 1 diabetes nephropathy
-Type 2 diabetes	II型糖尿病
-Type 2 diabetes and 6 quantitative traits	Type 2 diabetes and 6 quantitative traits
-Type 2 diabetes and gout	Type 2 diabetes and gout
+Type 2 diabetes	2型糖尿病
+Type 2 diabetes and 6 quantitative traits	2型糖尿病 and 6 quantitative traits
+Type 2 diabetes and gout	2型糖尿病 and gout
 Type 2 diabetes and other traits	Type 2 diabetes and other traits
-Type 2 diabetes nephropathy	Type 2 diabetes nephropathy
+Type 2 diabetes nephropathy	2型糖尿病性腎症
 Ulcerative colitis	潰瘍性大腸炎
 Upper aerodigestive tract cancers	Upper aerodigestive tract cancers
 Urate levels	Urate levels
