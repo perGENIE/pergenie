@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*- 
+# -*- coding: utf-8 -*-
 
 from django.test import TestCase
 from django.contrib.auth.models import User
@@ -21,7 +21,7 @@ class SimpleTest(TestCase):
 
         # TODO: mongo
 
- 
+
         # TDOO: >>> csrf_client = Client(enforce_csrf_checks=True)
 
 
@@ -48,28 +48,6 @@ class SimpleTest(TestCase):
             response = self.client.get(page)
             self.failUnlessEqual(response.status_code, 200)
 
-        # self.client.logout()
-        # for page in ['/upload/delete']:
-        #     # without login
-        #     response = self.client.get(page)
-        #     self.failUnlessEqual(response.status_code, 302)
-
-        #     # user does not exist
-        #     self.client.login(username=self.dummy_user_id, password='anonymousLogin')
-        #     response = self.client.get(page)
-        #     self.failUnlessEqual(response.status_code, 302)
-
-        #     # incorrect password
-        #     self.client.login(username=self.test_user_id, password='incorrectPassword')
-        #     response = self.client.get(page)
-        #     self.failUnlessEqual(response.status_code, 302)
-
-        #     # success
-        #     self.client.login(username=self.test_user_id, password=self.test_user_password)
-        #     response = self.client.get(page)
-        #     self.failUnlessEqual(response.status_code, 200)
-
-    #         # '{"status": "ok", "error_message": null, "uploaded_files": {}}'
 
     # def test_upload(self):
     #     response = self.client.get('/upload/')
@@ -87,8 +65,6 @@ class SimpleTest(TestCase):
     #         # いまのままだと，本番用のdbをみにいってる...
 
     #         # TODO: qimport動いてないっぽい?
-            
-            
 
     #     #
     #     self.failUnlessEqual(response.status_code, 200)

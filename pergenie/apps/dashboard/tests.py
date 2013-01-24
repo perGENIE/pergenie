@@ -1,11 +1,11 @@
-# -*- coding: utf-8 -*- 
+# -*- coding: utf-8 -*-
 
 from django.contrib.auth.models import User
 from django.test import TestCase
 from django.test.client import Client
 from django.conf import settings
 
-from pprint import pprint 
+from pprint import pprint
 import pymongo
 
 
@@ -30,7 +30,6 @@ class SimpleTestCase(TestCase):
         #     # init test user
         #     test_user_data_info = data_info.find_one({'user_id': self.test_user_id})
         #     self.failUnlessEqual(bool(test_user_data_info == None), True)
-            
 
 
     def test_login_required(self):
@@ -61,10 +60,10 @@ class SimpleTestCase(TestCase):
         response = self.client.get('/dashboard/')
 
         # test, user_id showed correctly
-        menu_bar_user_id = 'Logged in as <a href="/settings/">{}</a>'.format(self.dummy_user_id)
+        menu_bar_user_id = 'Logged in as <a href="/user_settings/">{}</a>'.format(self.dummy_user_id)
         self.failUnlessEqual(bool(menu_bar_user_id in response.content), False)
 
-        menu_bar_user_id = 'Logged in as <a href="/settings/">{}</a>'.format(self.test_user_id)
+        menu_bar_user_id = 'Logged in as <a href="/user_settings/">{}</a>'.format(self.test_user_id)
         self.failUnlessEqual(bool(menu_bar_user_id in response.content), True)
 
 
@@ -73,7 +72,7 @@ class SimpleTestCase(TestCase):
         response = self.client.get('/dashboard/')
         response = self.client.get('/logout/')# , follow=True)
         self.failUnlessEqual(response.status_code, 302)
-        
+
         # TODO: check cookies & session data
 
 
@@ -82,7 +81,7 @@ class SimpleTestCase(TestCase):
 
 
     #         # print list(data_info.find())
-        
+
     #     #TODO: test, msg for 'no file uploaded' shows correctly.
     #     #TODO: test, latest catalog...
 
