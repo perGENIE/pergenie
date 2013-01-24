@@ -8,9 +8,7 @@ from pprint import pprint
 import shutil
 import glob
 
-dirname = os.path.dirname
-BASE_DIR = dirname(dirname(dirname(os.path.abspath(__file__))))
-UPLOAD_DIR = os.path.join(BASE_DIR, 'tmp')
+UPLOAD_DIR = '/tmp/pergenie/upload'
 
 
 def _main():

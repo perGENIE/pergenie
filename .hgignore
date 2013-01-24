@@ -21,3 +21,4 @@ config
 pergenie/tmp
 *.orig
 *.p
+*_flymake.py

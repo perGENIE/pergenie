@@ -146,16 +146,12 @@ def delete(request):
     with pymongo.Connection(port=settings.MONGO_PORT) as connection:
         db = connection['pergenie']
         data_info = db['data_info']
-        # variant = db['variant']
-
-        log.info('data_info.find(): {})'.format(list(data_info.find())))
-        log.info('user_id: {0} name: {1}'.format(user_id, name))
 
         # delete collection `variants.user_id.filename`
-        users_variants = 'variants.{0}.{1}'.format(user_id, name)
-        db.drop_collection(users_variants)
-        log.debug('dropped ccollection {}'.format(users_variants))
-
+        target_collection = 'variants.{0}.{1}'.format(user_id, name)
+        log.debug('target is in db {}'.format(target_collection in db.collection_names()))
+        db.drop_collection(target_collection)
+        log.debug('target is in db {}'.format(target_collection in db.collection_names()))
         # delete `file`
         filepath = os.path.join(settings.UPLOAD_DIR, user_id, data_info.find_one({'user_id': user_id, 'name': name})['raw_name'])
         if os.path.exists(filepath):
