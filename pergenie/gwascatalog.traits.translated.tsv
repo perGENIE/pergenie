@@ -71,7 +71,7 @@ Asthma treatment response	喘息 treatment response
 Atopic dermatitis	アトピー性皮膚炎
 Atopy	アトピー
 Atrial fibrillation	心房細動
-Atrial fibrillation/atrial flutter	心房細動, 心房粗動
+Atrial fibrillation or atrial flutter	心房細動と心房粗動#
 Atrioventricular conduction	房室伝導
 Attention deficit hyperactivity disorder	注意欠陥多動性障害(ADHD)
 Attention deficit hyperactivity disorder (time to onset)	注意欠陥多動性障害(ADHD) (発症年齢)
@@ -206,10 +206,10 @@ Dental caries	う蝕活動性試験
 Depression (age of onset)	Depression (age of onset)
 Depression (quantitative trait)	Depression (quantitative trait)
 Depression and alcohol dependence	Depression and alcohol dependence
-Diabetes (gestational)	Diabetes (gestational)
+Diabetes (gestational)	糖尿病(妊娠性)#
 Diabetes (incident)	Diabetes (incident)
 Diabetes related insulin traits	Diabetes related insulin traits
-Diabetic retinopathy 	Diabetic retinopathy
+Diabetic retinopathy 	糖尿病性網膜症#
 Dialysis-related mortality	Dialysis-related mortality
 Diastolic blood pressure	最低血圧
 Digit length ratio	Digit length ratio
@@ -220,9 +220,9 @@ Drug-induced liver injury 	Drug-induced liver injury
 Drug-induced liver injury (amoxicillin-clavulanate)	Drug-induced liver injury (amoxicillin-clavulanate)
 Drug-induced liver injury (flucloxacillin)	Drug-induced liver injury (flucloxacillin)
 Duodenal ulcer 	穿孔性十二指腸潰瘍
-Dupuytren's disease	Dupuytren's disease
+Dupuytren's disease	デュプイトラン病#
 E-selectin levels	E-selectin levels
-Eating disorders	Eating disorders
+Eating disorders	摂食障害#
 Echocardiographic traits	Echocardiographic traits
 Economic and political preferences	Economic and political preferences
 Economic and political preferences (environmentalism)	Economic and political preferences (environmentalism)
@@ -235,7 +235,7 @@ Electrocardiographic conduction measures	Electrocardiographic conduction measure
 Electrocardiographic traits	Electrocardiographic traits
 Electroencephalogram traits	Electroencephalogram traits
 Electroencephalographic traits in alcoholism	Electroencephalographic traits in alcoholism
-Emphysema-related traits	Emphysema-related traits
+Emphysema-related traits	肺気腫に関連した形質#
 End-stage renal disease	糖尿病末期腎不全
 End-stage renal disease (non-diabetic)	End-stage renal disease (non-diabetic)
 Endometrial cancer	子宮体がん
@@ -244,18 +244,18 @@ Endothelial function traits	Endothelial function traits
 Entorhinal cortical thickness	Entorhinal cortical thickness
 Environmental confusion in the home	Environmental confusion in the home
 Eosinophil counts	Eosinophil counts
-Eosinophilic esophagitis (pediatric)	Eosinophilic esophagitis (pediatric)
-Epilepsy	運動性部分てんかん
-Epilepsy (generalized)	Epilepsy (generalized)
-Epirubicin-induced leukopenia 	Epirubicin-induced leukopenia
+Eosinophilic esophagitis (pediatric)	好酸球性食道炎(周期的)#
+Epilepsy	てんかん#
+Epilepsy (generalized)	てんかん(全般性)#
+Epirubicin-induced leukopenia 	エピルビシンにより誘発される白血球減少#
 Episodic memory	エピソード記憶
 Erectile dysfunction	勃起改善薬
 Erectile dysfunction and prostate cancer treatment	Erectile dysfunction and prostate cancer treatment
 Erythrocyte sedimentation rate	血沈
-Esophageal cancer	進行食道癌
-Esophageal cancer  (alcohol interaction)	Esophageal cancer  (alcohol interaction)
-Esophageal cancer (squamous cell)	Esophageal cancer (squamous cell)
-Esophageal cancer and gastric cancer	Esophageal cancer and gastric cancer
+Esophageal cancer	食道がん#
+Esophageal cancer  (alcohol interaction)	食道がん(アルコール相互作用)#
+Esophageal cancer (squamous cell)	食道がん(扁平上皮細胞)#
+Esophageal cancer and gastric cancer	食道がんと胃がん#
 Essential tremor	本態性振戦症
 Estradiol levels	Estradiol levels
 Event-related brain oscillations	Event-related brain oscillations
@@ -279,15 +279,15 @@ Fibrinogen	フィブリノ(ー)ゲン分解(産)物
 Fluorouracil treatment response in colorectal cancer	Fluorouracil treatment response in colorectal cancer
 Folate pathway vitamin levels	Folate pathway vitamin levels
 Follicular lymphoma	巨大濾胞性リンパ腫
-Formal thought disorder in schizophrenia	Formal thought disorder in schizophrenia
+Formal thought disorder in schizophrenia	統合失調症における思考障害#
 Fracture-related traits	Fracture-related traits
-Freckles	Freckles
+Freckles	そばかす#
 Freckling	Freckling
 Frontotemporal lobar degeneration	前頭側頭葉変性症
-Fuchs's corneal dystrophy	Fuchs's corneal dystrophy
+Fuchs's corneal dystrophy	フックス角膜変性症#
 Functional MRI	機能的磁気共鳴画像法
 Gallbladder cancer	転移性胆嚢癌
-Gallstones	Gallstones
+Gallstones	胆石#
 Gambling	賭博
 Gamma gluatamyl transferase levels	Gamma gluatamyl transferase levels
 Gamma gluatamyl transferase levels (interaction with age)	Gamma gluatamyl transferase levels (interaction with age)
@@ -295,12 +295,12 @@ Gamma glutamyl transpeptidase	Gamma glutamyl transpeptidase
 Gastric cancer	残胃癌
 Gaucher disease severity	Gaucher disease severity
 General cognitive ability	General cognitive ability
-Glaucoma	緑内障
-Glaucoma (exfoliation)	緑内障(落屑性)
-Glaucoma (primary open-angle)	緑内障(primary open-angle)
+Glaucoma	緑内障#
+Glaucoma (exfoliation)	緑内障(落屑性)#
+Glaucoma (primary open-angle)	緑内障(原発性, 開放偶角)#
 Glioblastoma	巨細胞膠芽腫
-Glioma	非クロム親和性傍神経節腫
-Glioma (high-grade)	Glioma (high-grade)
+Glioma	グリオーマ#
+Glioma (high-grade)	グリオーマ(high-grade)#
 Glomerulosclerosis	分節状糸球体硬化症
 Glycated hemoglobin levels	Glycated hemoglobin levels
 Glycemic control in type 1 diabetes (HbA1c)	Glycemic control in type 1 diabetes (HbA1c)
@@ -331,8 +331,8 @@ Hematology traits	Hematology traits
 Hemoglobin	酵素－ヘモグロビン解離曲線
 Hemoglobin levels	Hemoglobin levels
 Hemostatic factors and hematological phenotypes	Hemostatic factors and hematological phenotypes
-Hepatitis B	B型肝炎
-Hepatitis B (viral clearance)	B型肝炎(ウイルスの排除)
+Hepatitis B	B型肝炎#
+Hepatitis B (viral clearance)	B型肝炎(ウイルスの排除)#
 Hepatitis B vaccine response	B型肝炎 vaccine response
 Hepatitis C induced liver fibrosis	Hepatitis C induced liver fibrosis
 Hepatocellular carcinoma	肝細胞がん
@@ -373,8 +373,8 @@ Immunoglobulin A 	IgA腎症
 Inattentive symptoms	Inattentive symptoms
 Infantile hypertrophic pyloric stenosis	乳児肥厚性幽門狭窄症
 Inflammatory biomarkers	Inflammatory biomarkers
-Inflammatory bowel disease	慢性炎症性腸疾患
-Inflammatory bowel disease (early onset)	Inflammatory bowel disease (early onset)
+Inflammatory bowel disease	炎症性腸疾患#
+Inflammatory bowel disease (early onset)	炎症性腸疾患(早期発症)#
 Influenza (severity)	Influenza (severity)
 Information processing speed	Information processing speed
 Insomnia (caffeine-induced)	Insomnia (caffeine-induced)
@@ -393,7 +393,7 @@ Iron levels	Iron levels
 Iron status biomarkers	Iron status biomarkers
 Kawasaki disease	Kawasaki病
 Keloid	ケロイド
-Kidney stones	腎結石
+Kidney stones	腎結石#
 Knee osteoarthritis	変形性膝関節炎
 LDL cholesterol	LDLコレステロール
 Lapatinib-induced hepatotoxicity	Lapatinib-induced hepatotoxicity
@@ -423,13 +423,13 @@ Lymphocyte counts	Lymphocyte counts
 MRI atrophy measures	MRI atrophy measures
 Magnesium levels	Magnesium levels
 Major CVD	Major CVD
-Major depressive disorder	大うつ病性障害
-Major depressive disorder (broad)	Major depressive disorder (broad)
+Major depressive disorder	大うつ病#
+Major depressive disorder (broad)	大うつ病(広汎性)#
 Major mood disorders	Major mood disorders
-Malaria	Plasmodium falciparumマラリア
+Malaria	マラリア#
 Male fertility	女性用妊娠促進薬
 Male infertility	男性不妊
-Male-pattern baldness	男性型禿頭症
+Male-pattern baldness	男性型禿頭症#
 Mammographic density	Mammographic density
 Mathematical ability	Mathematical ability
 Matrix metalloproteinase levels	Matrix metalloproteinase levels
@@ -455,18 +455,18 @@ Migraine in bipolar disorder	Migraine in bipolar disorder
 Monocyte chemoattractant protein-1 	Monocyte chemoattractant protein-1
 Monocyte early outgrowth colony forming units	Monocyte early outgrowth colony forming units
 Morbidity-free survival	Morbidity-free survival
-Mortality among heart failure patients	Mortality among heart failure patients
+Mortality among heart failure patients	心不全の患者での死亡の増加#
 Moyamoya disease	成人もやもや病
 Multiple myeloma	多発性骨髄腫
 Multiple sclerosis	一次性進行型多発性硬化症
 Multiple sclerosis (age of onset)	Multiple sclerosis (age of onset)
 Multiple sclerosis (severity)	Multiple sclerosis (severity)
 Multiple sclerosis--Brain Glutamate Levels	Multiple sclerosis--Brain Glutamate Levels
-Myasthenia gravis 	Myasthenia gravis
+Myasthenia gravis 	重症筋無力症#
 Myeloproliferative neoplasms	Myeloproliferative neoplasms
-Myocardial infarction	貫壁性心筋梗塞
-Myocardial infarction (early onset)	Myocardial infarction (early onset)
-Myopia (pathological)	近視(病的な)
+Myocardial infarction	心筋梗塞#
+Myocardial infarction (early onset)	心筋梗塞(若年性)#
+Myopia (pathological)	近視(病的な)#
 N-glycan levels	N-glycan levels
 Naphthyl-keratin adduct levels 	Naphthyl-keratin adduct levels
 Narcolepsy	睡眠発作
@@ -476,10 +476,10 @@ Neonatal lupus	新生児エリテマトーデス
 Nephrolithiasis	多発性腎結石
 Nephropathy	高カルシウム血症性腎症
 Nephropathy (idiopathic membranous)	Nephropathy (idiopathic membranous)
-Nephrotic syndrome (acquired)	Nephrotic syndrome (acquired)
+Nephrotic syndrome (acquired)	ネフローゼ症候群(後天性)#
 Neural processing (facial expression)	Neural processing (facial expression)
 Neuranatomic and neurocognitive phenotypes	Neuranatomic and neurocognitive phenotypes
-Neuroblastoma	神経芽細胞腫
+Neuroblastoma	神経芽細胞腫#
 Neuroblastoma (high-risk)	神経芽細胞腫 (high-risk)
 Neuromyelitis optica	視神経脊髄炎
 Neuroticism	神経質
@@ -492,16 +492,16 @@ Non-albumin protein levels 	Non-albumin protein levels
 Non-alcoholic fatty liver disease histology (AST)	Non-alcoholic fatty liver disease histology (AST)
 Non-alcoholic fatty liver disease histology (lobular)	Non-alcoholic fatty liver disease histology (lobular)
 Non-alcoholic fatty liver disease histology (other)	Non-alcoholic fatty liver disease histology (other)
-Non-obstructive azoospermia	Non-obstructive azoospermia
-Non-small cell lung cancer	非小細胞性肺がん
+Non-obstructive azoospermia	非閉塞性無精子症#
+Non-small cell lung cancer	非小細胞性肺がん#
 Nonalcoholic fatty liver disease	非アルコール性脂肪性肝疾患
 Normalized brain volume	Normalized brain volume
-Obesity	肥満症
-Obesity (early onset extreme)	Obesity (early onset extreme)
-Obesity (extreme)	Obesity (extreme)
-Obesity and blood pressure	Obesity and blood pressure
-Obesity and osteoporosis	Obesity and osteoporosis
-Obesity-related traits	Obesity-related traits
+Obesity	肥満症#
+Obesity (early onset extreme)	肥満症(早期発症, 高度)#
+Obesity (extreme)	肥満症(極度の)#
+Obesity and blood pressure	肥満症と血圧#
+Obesity and osteoporosis	肥満症と骨粗鬆症#
+Obesity-related traits	肥満症関連形質#
 Obsessive-compulsive disorder	強迫症
 Odorant perception	Odorant perception
 Optic disc parameters	Optic disc parameters
@@ -509,7 +509,7 @@ Optic disc size (cup)	Optic disc size (cup)
 Optic disc size (disc)	Optic disc size (disc)
 Optic disc size (rim)	Optic disc size (rim)
 Oral cancers (chewing tobacco related)	Oral cancers (chewing tobacco related)
-Orofacial clefts	口腔顔面裂
+Orofacial clefts	口腔顔面裂#
 Osteoarthritis	CM関節変形性関節症
 Osteonecrosis of the jaw	ビスホスホネート誘発顎骨壊死
 Osteoporosis	骨粗鬆症(オステオポローシス)
@@ -525,16 +525,16 @@ Paget's disease	乳房パジェット病
 Pain	mカルパイン
 Pancreatic cancer	膵がん
 Panic disorder	広場恐怖を伴うパニック障害
-Parkinson's disease	特発性パーキンソン病
-Parkinson's disease (age of onset)	Parkinson's disease (age of onset)
-Parkinson's disease (familial)	Parkinson's disease (familial)
-Parkinson's disease (interaction with coffee consumption)	Parkinson's disease (interaction with coffee consumption)
-Parkinson's disease (motor and cognition)	Parkinson's disease (motor and cognition)
-Partial epilepsies	Partial epilepsies
+Parkinson's disease	パーキンソン病#
+Parkinson's disease (age of onset)	パーキンソン病(発症年齢)#
+Parkinson's disease (familial)	パーキンソン病(家族性)#
+Parkinson's disease (interaction with coffee consumption)	パーキンソン病(コーヒー消費量との相互作用)#
+Parkinson's disease (motor and cognition)	パーキンソン病(運動と認知)#
+Partial epilepsies	部分性てんかん#
 Pelvic organ prolapse	骨盤内臓器脱
 Pemphigus vulgaris	尋常性天疱瘡
 Pericardial fat	Pericardial fat
-Periodontal microbiota	Periodontal microbiota
+Periodontal microbiota	歯周細菌叢#
 Periodontitis	若年性歯周炎
 Peripartum cardiomyopathy	産褥性心筋症
 Peripheral artery disease	末梢動脈疾患
@@ -612,8 +612,8 @@ Response to citalopram treatment	Response to citalopram treatment
 Response to clopidogrel therapy	Response to clopidogrel therapy
 Response to diuretic therapy	Response to diuretic therapy
 Response to fenofibrate	Response to fenofibrate
-Response to gemcitabine in pancreatic cancer 	Response to gemcitabine in pancreatic cancer
-Response to hepatitis C treatment	Response to hepatitis C treatment
+Response to gemcitabine in pancreatic cancer 	膵がんにおけるゲムシタビンへ反応性#
+Response to hepatitis C treatment	C型肝炎への治療への反応#
 Response to iloperidone treatment (PANSS-T score)	Response to iloperidone treatment (PANSS-T score)
 Response to iloperidone treatment (QT prolongation)	Response to iloperidone treatment (QT prolongation)
 Response to interferon beta therapy	Response to interferon beta therapy
@@ -625,9 +625,9 @@ Response to platinum-based agents	Response to platinum-based agents
 Response to platinum-based chemotherapy in non-small-cell lung cancer	Response to platinum-based chemotherapy in non-small-cell lung cancer
 Response to platinum-based chemotherapy in small cell and non-small cell lung cancers	Response to platinum-based chemotherapy in small cell and non-small cell lung cancers
 Response to platinum-based chemotherapy in small-cell lung cancer	Response to platinum-based chemotherapy in small-cell lung cancer
-Response to statin therapy	Response to statin therapy
+Response to statin therapy	スタチン療法への反応性#
 Response to statin therapy (LDL-C)	Response to statin therapy (LDL-C)
-Response to tamoxifen in breast cancer	乳がんにおけるタモキシフェン反応性
+Response to tamoxifen in breast cancer	乳がんにおけるタモキシフェン反応性#
 Response to taxane treatment (docetaxel)	Response to taxane treatment (docetaxel)
 Response to taxane treatment (placlitaxel)	Response to taxane treatment (placlitaxel)
 Response to tocilizumab in rheumatoid arthritis	Response to tocilizumab in rheumatoid arthritis
@@ -670,7 +670,7 @@ Speech perception in dyslexia	Speech perception in dyslexia
 Sphingolipid levels	Sphingolipid levels
 Spine bone size	Spine bone size
 Stevens-Johnson syndrome	皮膚粘膜眼症候群
-Stevens-Johnson syndrome and toxic epidermal necrolysis (SJS-TEN)	Stevens-Johnson syndrome and toxic epidermal necrolysis (SJS-TEN)
+Stevens-Johnson syndrome and toxic epidermal necrolysis (SJS-TEN)	スティーブンスジョンソン症候群と中毒性表皮壊死症#
 Stroke	上昇行程
 Stroke (ischemic)	Stroke (ischemic)
 Stroke (pediatric)	Stroke (pediatric)
@@ -681,7 +681,7 @@ Subcutaneous adipose tissue	皮下脂肪
 Substance dependence	物質依存症
 Sudden cardiac arrest	心突然死
 Suicidal ideation	自殺念慮
-Suicide attempts in bipolar disorder	Suicide attempts in bipolar disorder
+Suicide attempts in bipolar disorder	双極性障害による自殺企図#
 Systemic lupus erythematosus	全身性紅斑性狼瘡
 Systemic sclerosis	全身性強皮症
 Systolic blood pressure	最高血圧
@@ -698,11 +698,11 @@ Testicular germ cell cancer	精巣胚細胞性癌
 Testicular germ cell tumor	Testicular germ cell tumor
 Testosterone levels	Testosterone levels
 Thoracic aortic aneurysms and dissections	Thoracic aortic aneurysms and dissections
-Thyroid cancer	甲状腺がん
+Thyroid cancer	甲状腺がん#
 Thyroid function	甲状腺機能
 Thyroid stimulating hormone	甲状腺刺激ホルモン
 Thyroid volume	甲状腺体積
-Thyrotoxic hypokalemic periodic paralysis	Thyrotoxic hypokalemic periodic paralysis
+Thyrotoxic hypokalemic periodic paralysis	甲状腺中毒性低カリウム性周期性麻痺#
 Tonometry	眼圧測定(法)
 Total ventricular volume	Total ventricular volume
 Tourette syndrome	Tourette症候群
@@ -718,10 +718,10 @@ Type 2 diabetes	2型糖尿病
 Type 2 diabetes and 6 quantitative traits	2型糖尿病 and 6 quantitative traits
 Type 2 diabetes and gout	2型糖尿病 and gout
 Type 2 diabetes and other traits	Type 2 diabetes and other traits
-Type 2 diabetes nephropathy	2型糖尿病性腎症
+Type 2 diabetes nephropathy	2型糖尿病性腎症#
 Ulcerative colitis	潰瘍性大腸炎
-Upper aerodigestive tract cancers	Upper aerodigestive tract cancers
-Urate levels	尿酸値
+Upper aerodigestive tract cancers	上部気道消化管腫瘍#
+Urate levels	尿酸値#
 Uric acid levels	Uric acid levels
 Urinary albumin excretion	尿中アルブミン排泄
 Urinary bladder cancer	膀胱がん
