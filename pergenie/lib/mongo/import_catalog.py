@@ -160,6 +160,10 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja,
                                     except KeyError:
                                         catalog_summary[field] = {value: 1}
 
+
+                        # TODO: call `add_record_reliability`
+                        # add_record_reliability(data)
+
                         catalog.insert(data)
 
             # TODO: indexing target
@@ -181,6 +185,31 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja,
     log.info('import catalog done')
 
     return
+
+
+# TODO:
+def add_record_reliability(data):
+    """Add record reliability.
+
+    To prioritize GWAS Catalog's records, like Meta-GWAS > GWAS,
+    calculate 'record_reliability' from 'study', 'initial_sample_size', ...
+    then add 'record_reliability' to `data`.
+
+    Arg:
+    data: a GWAS Catalog's record (dict), to be inserted to MongoDB.
+          data = {'study': '...',
+                  'initial_sample_size': '...', ...}
+
+    RetVal:
+    None
+    """
+
+    # rank by 'study' (the name of the study)
+    # * check if Meta-GWAS or not
+
+    # rank by 'initial_sample_size'
+    # *
+
 
 
 def identfy_OR_or_beta(OR_or_beta, CI_95):
