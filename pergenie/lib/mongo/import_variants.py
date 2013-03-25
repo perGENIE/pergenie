@@ -26,7 +26,7 @@ def import_variants(file_path, population, sex, file_format, user_id, mongo_port
     file_name = file_path.split('/')[-1]
     file_name_cleaned = file_name.replace('.', '').replace(' ', '')
     print >>sys.stderr, '[INFO] collection name: {}'.format(file_name_cleaned)
-    
+
     with pymongo.Connection(port=mongo_port) as connection:
         db = connection['pergenie']
         users_variants = db['variants'][user_id][file_name_cleaned]
@@ -112,7 +112,17 @@ def parse_lines(handle, file_format):
                                        ('genotype1', 'genotype1', _string),
                                        ('genotype2', 'genotype2', _string),
                                        ('genotype', 'genotype', _string)],
-                            'delimiter': '\t'}
+                            'delimiter': '\t',
+                  'vcf' : {'header_chr': '#',
+                           'header_starts': '#CHROM',
+                            'fields': [('chrom', '#CHROM', _chrom),
+                                       ('pos', 'POS', _integer),
+                                       ('rs', 'ID', _rs),
+                                       ('ref', 'REF', _string),
+                                       ('alt', 'ALT', _string),
+                                       ('genotype', 'genotype', _string)],
+                            'delimiter': '\t',
+                            }
                   }
     parse_map = parse_maps[file_format]
 
@@ -123,6 +133,14 @@ def parse_lines(handle, file_format):
                 raise ParseError, 'Uploaded file has no header lines. File format correct?'
 
             elif line.startswith(parse_map['header_starts']):
+                fieldnames = line
+
+                if file_format == 'vcf':
+                    # get name of 1st sample (=individual)
+                    vcf_first_sample_name = line.split(parse_map['vcf']['delimiter'])[9]  # ok?
+                    parse_map['vcf']['fields'].append(('alt_count',
+                                                       vcf_first_sample_name,
+                                                       _vcf_sample2allele_count))
                 break
 
             # TODO: infer ref_genome_version
@@ -131,10 +149,10 @@ def parse_lines(handle, file_format):
                     ref_genome_version = 'b36'
                 elif 'build 37' in line:
                     ref_genome_version = 'b37'
-            
+
 
     # Parse record lines by fieldnames
-    fieldnames = [x[1] for x in parse_map['fields']]
+    # fieldnames = [x[1] for x in parse_map['fields']]
     for record in csv.DictReader(handle, fieldnames=fieldnames, delimiter=parse_map['delimiter']):
         data = {}
         for dict_name, record_name, converter in parse_map['fields']:
@@ -143,11 +161,20 @@ def parse_lines(handle, file_format):
             except VariantParseError:
                 data[dict_name] = None
                 data['info'] = record.get(record_name, None)
-            
+
         if file_format == 'tmmb':
             data['genotype'] = data['genotype1'] + data['genotype2']
-            
+        elif file_format == 'vcf':
+            data['genotype'] = data['ref'] * (2 - data['alt_count']) + data['alt'] * data['alt_count']
+
         yield data
+
+
+def _vcf_sample2alt_count(text):
+    """Parse `sample` column in VCF, then retrun counts of ALT allele.
+    """
+
+
 
 
 def _rs(text):
