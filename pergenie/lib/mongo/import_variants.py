@@ -123,7 +123,7 @@ def parse_lines(handle, file_format):
                                        ('genotype', 'genotype', _string)],
                             'delimiter': '\t',
                             }
-                  }
+                  }}
     parse_map = parse_maps[file_format]
 
     # parse headers
