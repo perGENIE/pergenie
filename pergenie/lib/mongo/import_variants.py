@@ -58,6 +58,10 @@ def import_variants(file_path, population, sex, file_format, user_id, mongo_port
         data_info.update({'user_id': user_id, 'name': file_name_cleaned}, {"$set": info}, upsert=True)
 
         print >>sys.stderr,'[INFO] Start importing {0} as {1}...'.format(file_name, file_name_cleaned)
+
+        print '[INFO]', file_path
+        print '[INFO]', file_format
+
         prev_collections = db.collection_names()
 
         try:
