@@ -14,8 +14,15 @@ HOW TO USE
 
     *. Tests by django::
 
-        $ python manage.py test frontend
+        $ python manage.py test frontend dashboard tutorial upload  # ...
         $ python manage.py test
+
+
+* Import datas
+
+    #. Import GWAS Catalog::
+
+        $ python manage.py import --gwascatalog
 
 
 * Launch perGENIE
@@ -32,8 +39,8 @@ HOW TO USE
 
     #. Access localhost:8000 from browser, then you will see login page.
 
-        *. If you get errors, 
-        
+        *. If you get errors,
+
             *. "python module import error"
 
                 *. Installation via pip may have failed.
@@ -73,10 +80,10 @@ Getting Started with perGENIE on OS X
 * Initialize perGENIE
 
     #. Initialize database (require sqlite3)::
-    
+
         $ python manage.py syncdb
 
 
     #. Initialize celeryd log::
-    
+
         $ touch log/celeryd.log

@@ -52,36 +52,36 @@ class SimpleTest(TestCase):
                 data_info.remove({'user_id': self.test_user_id, 'name': self.file_cleaned_name})
 
 
-    def upload_data(self):
-        """Import test-data.
-        """
+#     def upload_data(self):
+#         """Import test-data.
+#         """
 
-        with pymongo.Connection(port=settings.MONGO_PORT) as connection:
-            db = connection['pergenie']
-            data_info = db['data_info']
+#         with pymongo.Connection(port=settings.MONGO_PORT) as connection:
+#             db = connection['pergenie']
+#             data_info = db['data_info']
 
-            today =
+#             today =
 
-            # add data_info
-            info = {'user_id': self.test_user_id,
-                    'name': self.file_cleaned_name,
-                    'raw_name': self.file_raw_name,
-                    'date': today,
-                    'population': 'unknown',
-                    'sex': 'unknown',
-                    'file_format': 'andme',
-                    'status': float(0.0)}
-            data_info.insert(info)
+#             # add data_info
+#             info = {'user_id': self.test_user_id,
+#                     'name': self.file_cleaned_name,
+#                     'raw_name': self.file_raw_name,
+#                     'date': today,
+#                     'population': 'unknown',
+#                     'sex': 'unknown',
+#                     'file_format': 'andme',
+#                     'status': float(0.0)}
+#             data_info.insert(info)
 
-            # add variants.user_id.file_cleaned_name
-            import_error_state = import_variants.import_variants(self.file_raw_path,
-                                                                 'unknown',
-                                                                 'unknown',
-                                                                 'andme',
-                                                                 self.test_user_id)
-            print import_error_state
+#             # add variants.user_id.file_cleaned_name
+#             import_error_state = import_variants.import_variants(self.file_raw_path,
+#                                                                  'unknown',
+#                                                                  'unknown',
+#                                                                  'andme',
+#                                                                  self.test_user_id)
+#             print import_error_state
 
-        # TODO: mongo
+#         # TODO: mongo
 
     # def test_login_required(self):
     #     pass
