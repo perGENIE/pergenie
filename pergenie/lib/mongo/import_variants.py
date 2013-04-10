@@ -59,8 +59,8 @@ def import_variants(file_path, population, sex, file_format, user_id, mongo_port
 
         print >>sys.stderr,'[INFO] Start importing {0} as {1}...'.format(file_name, file_name_cleaned)
 
-        print '[INFO]', file_path
-        print '[INFO]', file_format
+        print '[INFO] file_path:', file_path
+        print '[INFO] file_format:', file_format
 
         prev_collections = db.collection_names()
 
@@ -73,7 +73,9 @@ def import_variants(file_path, population, sex, file_format, user_id, mongo_port
                     if i>0 and i%10000 == 0:
                         upload_status = int( 100 * ( i*0.9 / file_lines ) + 1 )
                         data_info.update({'user_id': user_id, 'name': file_name_cleaned}, {"$set": {'status': upload_status}})
-                        print '[INFO] status: {}'.format(data_info.find({'user_id': user_id, 'name': file_name_cleaned})[0]['status'])
+
+                        tmp_status = data_info.find({'user_id': user_id, 'name': file_name_cleaned})[0]['status']
+                        print '[INFO] status: {0}, db.collection.count():{1}'.format(tmp_status, users_variants.count())
 
                 print >>sys.stderr,'[INFO] ensure_index ...'
                 users_variants.ensure_index('rs', unique=True)  # ok?
@@ -100,44 +102,44 @@ def parse_lines(handle, file_format):
     """
 
     ref_genome_version = None
-    parse_maps = {'andme' : {'header_chr': '#',
-                             'header_starts': '# rsid',
-                             'fields': [('rs', 'rsid', _rs),
-                                        ('chrom', 'chromosome', _chrom),
-                                        ('pos', 'position', _integer),
-                                        ('genotype', 'genotype', _string)],
-                             'delimiter': '\t'},
-                  'tmmb' : {'header_chr': '',
-                            'header_starts': '',
-                            'fields': [('chrom', 'chromosome', _chrom),
+    parse_maps = {'andme': {'header_chr': '#',
+                            'header_starts': '# rsid',
+                            'fields': [('rs', '# rsid', _rs),
+                                       ('chrom', 'chromosome', _chrom),
                                        ('pos', 'position', _integer),
-                                       ('rs', 'rsid', _rs),
-                                       ('ref', 'reference', _string),
-                                       ('genotype1', 'genotype1', _string),
-                                       ('genotype2', 'genotype2', _string),
                                        ('genotype', 'genotype', _string)],
-                            'delimiter': '\t',
-                  'vcf' : {'header_chr': '#',
-                           'header_starts': '#CHROM',
-                            'fields': [('chrom', '#CHROM', _chrom),
-                                       ('pos', 'POS', _integer),
-                                       ('rs', 'ID', _rs),
-                                       ('ref', 'REF', _string),
-                                       ('alt', 'ALT', _string),
-                                       ('genotype', 'genotype', _string)],
-                            'delimiter': '\t',
-                            }
-                  }}
+                            'delimiter': '\t'},
+                  'tmmb': {'header_chr': '',
+                           'header_starts': '',
+                           'fields': [('chrom', 'chromosome', _chrom),
+                                      ('pos', 'position', _integer),
+                                      ('rs', 'rsid', _rs),
+                                      ('ref', 'reference', _string),
+                                      ('genotype1', 'genotype1', _string),
+                                      ('genotype2', 'genotype2', _string),
+                                      ('genotype', 'genotype', _string)],
+                           'delimiter': '\t'},
+                  'vcf': {'header_chr': '#',
+                          'header_starts': '#CHROM',
+                          'fields': [('chrom', '#CHROM', _chrom),
+                                     ('pos', 'POS', _integer),
+                                     ('rs', 'ID', _rs),
+                                     ('ref', 'REF', _string),
+                                     ('alt', 'ALT', _string),
+                                     ('genotype', 'genotype', _string)],
+                          'delimiter': '\t'},
+                  }
     parse_map = parse_maps[file_format]
 
     # parse headers
     if parse_map['header_chr']:
         for line in handle:
+            line = line.rstrip()
             if not line.startswith(parse_map['header_chr']):
                 raise ParseError, 'Uploaded file has no header lines. File format correct?'
 
             elif line.startswith(parse_map['header_starts']):
-                fieldnames = line
+                fieldnames = line.split(parse_map['delimiter'])
 
                 if file_format == 'vcf':
                     # get name of 1st sample (=individual)

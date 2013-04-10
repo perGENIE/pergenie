@@ -67,12 +67,17 @@ def _main():
 
         elif args.show:
             variants = [collection_name for collection_name in db.collection_names() if collection_name.startswith('variants.')]
-            pprint(variants)
+            print 'variants:'
+#             pprint(variants)
+
+            pprint([(collection_name, db[collection_name].count()) for collection_name in variants])
 
             data_info_found = list(db['data_info'].find())
+            print 'data_info_found:'
             pprint(data_info_found)
 
             target_dir = glob.glob(os.path.join(UPLOAD_DIR, '*', '*'))
+            print 'target_dir:'
             pprint(target_dir)
 
 if __name__ == '__main__':
