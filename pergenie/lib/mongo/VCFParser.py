@@ -93,7 +93,12 @@ def _rsid(text):
     rs_raw = text.split(';')[0]  # case: rs100;rs123
 
     rs_regex = re.compile('rs(\d+)')
-    rsid = rs_regex.match(rs_raw).group(1)
+    rs_match = rs_regex.match(rs_raw)
+
+    if rs_match:
+        rsid = rs_match.group(1)
+    else:
+        return None
 
     try:
         return int(rsid)
@@ -115,6 +120,11 @@ def _GT2genotype(REF, ALT, GT):
     # | : genotype phased
 
     g1, g2 = re.split('/|\|', GT)
+
+    # 0 : reference allele (what is in the REF field)
+    # 1 : first allele listed in ALT
+    # 2 : second allele list in ALT
+    # and so on.
 
     bases = [REF] + ALT
 

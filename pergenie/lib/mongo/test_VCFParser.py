@@ -17,8 +17,8 @@ class SimpleTest(unittest.TestCase):
 
         record =  v.parse_lines().next()
 
-        self.assertEqual(record['CHROM'], '20')
-        self.assertEqual(record['POS'], 14370)
+        self.assertEqual(record['chrom'], '20')
+        self.assertEqual(record['pos'], 14370)
         self.assertEqual(record['ID'], 'rs6054257')
         self.assertEqual(record['rs'], 6054257)
         self.assertEqual(record['REF'], 'G')
