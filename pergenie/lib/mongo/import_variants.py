@@ -11,8 +11,6 @@ import datetime
 
 import pymongo
 
-# import colors
-
 class VariantParseError(Exception):
     def __init__(self, value):
         self.value = value
@@ -118,16 +116,7 @@ def parse_lines(handle, file_format):
                                       ('genotype1', 'genotype1', _string),
                                       ('genotype2', 'genotype2', _string),
                                       ('genotype', 'genotype', _string)],
-                           'delimiter': '\t'},
-                  'vcf': {'header_chr': '#',
-                          'header_starts': '#CHROM',
-                          'fields': [('chrom', '#CHROM', _chrom),
-                                     ('pos', 'POS', _integer),
-                                     ('rs', 'ID', _rs),
-                                     ('ref', 'REF', _string),
-                                     ('alt', 'ALT', _string),
-                                     ('genotype', 'genotype', _string)],
-                          'delimiter': '\t'},
+                           'delimiter': '\t'}
                   }
     parse_map = parse_maps[file_format]
 
@@ -140,13 +129,6 @@ def parse_lines(handle, file_format):
 
             elif line.startswith(parse_map['header_starts']):
                 fieldnames = line.split(parse_map['delimiter'])
-
-                if file_format == 'vcf':
-                    # get name of 1st sample (=individual)
-                    vcf_first_sample_name = line.split(parse_map['vcf']['delimiter'])[9]  # ok?
-                    parse_map['vcf']['fields'].append(('alt_count',
-                                                       vcf_first_sample_name,
-                                                       _vcf_sample2allele_count))
                 break
 
             # TODO: infer ref_genome_version
@@ -170,17 +152,8 @@ def parse_lines(handle, file_format):
 
         if file_format == 'tmmb':
             data['genotype'] = data['genotype1'] + data['genotype2']
-        elif file_format == 'vcf':
-            data['genotype'] = data['ref'] * (2 - data['alt_count']) + data['alt'] * data['alt_count']
 
         yield data
-
-
-def _vcf_sample2alt_count(text):
-    """Parse `sample` column in VCF, then retrun counts of ALT allele.
-    """
-
-
 
 
 def _rs(text):
