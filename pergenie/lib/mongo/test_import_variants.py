@@ -34,25 +34,8 @@ class SimpleTest(unittest.TestCase):
         self.db.drop_collection(variants)
         self.assertEqual(variants.count(), 0)
 
-    def test_import_vcf_format(self):
-        file_path = os.path.join('test', 'test.vcf40.vcf')
-        file_name_cleaned = file_path.split('/')[-1].replace('.', '').replace(' ', '')
+#     def test_import_vcf_format(self):
 
-        # import test data (vcf format)
-        import_variants.import_variants(file_path=self.file_path,
-                                        population='unknown',
-                                        sex='unknown',
-                                        file_format='andme',
-                                        user_id='test',
-                                        mongo_port=self.mongo_port)
-
-        # check if data was imported correctly
-        variants = self.db['variants']['test'][self.file_name_cleaned]
-        self.assertEqual(variants.count(), 2)
-
-        # drop imported collection
-        self.db.drop_collection(variants)
-        self.assertEqual(variants.count(), 0)
 
 
 #     @unittest.expectedFailure

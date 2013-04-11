@@ -41,8 +41,8 @@ class VCFParser(object):
                                      fieldnames=self.fieldnames,
                                      delimiter=self.delimiter):
 
-            data['CHROM'] = _string(record['CHROM'])
-            data['POS'] = _integer(record['POS'])
+            data['chrom'] = _string(record['CHROM'])
+            data['pos'] = _integer(record['POS'])
             data['ID'] = _string(record['ID'])
             data['rs'] = _rsid(record['ID'])
 
