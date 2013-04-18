@@ -30,7 +30,7 @@ def qimport_variants(data_info):
                                                          data_info['file_format'],
                                                          data_info['user_id'])
 
-    if import_error_state:
-        err = ', but import failed...' + import_error_state
+    # if import_error_state:
+    #     err = ', but import failed...' + import_error_state
 
     # os.remove(file_path)

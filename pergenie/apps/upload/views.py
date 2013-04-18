@@ -72,14 +72,20 @@ def index(request):
                     err = _('too large file size')
                     break
 
-                if not call_file.content_type == 'text/plain':
+                call_file_ext = os.path.splitext(call_file.name)[1].lower()[1:]
+
+                if call_file_ext not in ('csv', 'txt', 'vcf'):
+                    err = _('file extension not allowdn')
+                    break
+
+                log.debug('content_type: {}'.format(call_file.content_type))
+
+                if call_file.content_type == 'text/directory' and call_file_ext == 'vcf':
+                    pass
+                elif not call_file.content_type == 'text/plain':
                     err = _('file type not allowed')
 
                 # still need to validate that the file contains the content that the content-type header claims -- "trust but verify."
-
-                if os.path.splitext(call_file.name)[1].lower()[1:] not in ('csv', 'txt', 'vcf'):
-                    err = _('file extension not allowdn')
-                    break
 
                 if data_info.find({'user_id': user_id, 'raw_name': call_file.name}).count() > 0:
                     err = _('Same file name exists. If you want to overwrite it, please delete old one.')
@@ -155,9 +161,11 @@ def delete(request):
         log.debug('target is in db {}'.format(target_collection in db.collection_names()))
 
         # delete `file`
-        filepath = os.path.join(settings.UPLOAD_DIR, user_id, data_info.find_one({'user_id': user_id, 'name': name})['raw_name'])
-        if os.path.exists(filepath):
-            os.remove(filepath)
+        if data_info.find_one({'user_id': user_id, 'name': name}):
+            filepath = os.path.join(settings.UPLOAD_DIR, user_id, data_info.find_one({'user_id': user_id, 'name': name})['raw_name'])
+
+            if os.path.exists(filepath):
+                os.remove(filepath)
 
         # delete document `data_info`
         if data_info.find_one({'user_id': user_id, 'name': name}):

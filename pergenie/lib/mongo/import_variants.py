@@ -94,6 +94,8 @@ def import_variants(file_path, population, sex, file_format, user_id, mongo_port
 
             except (VCFParseError, andmeParseError), e:
                 print '[ERROR] ParseError:', e.error_code
+                # data_info.remove({'user_id': user_id})
+                data_info.update({'user_id': user_id, 'name': file_name_cleaned}, {"$set": {'status': -1}})
                 db.drop_collection(users_variants)
                 return e.error_code
 

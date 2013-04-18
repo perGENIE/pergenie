@@ -223,12 +223,18 @@
                     <span class="label label-success">{{ uploaded.file_format }}</span>
                   </td>
                   <td class="center">
-		            {% if uploaded.status >= 100 %}
-                    <p>100%</p>
+		            {% if uploaded.status == -1 %}
+                    <div class="">
+                      <p>Failed</p>
+		            </div>
+
+		            {% elif uploaded.status >= 100 %}
+                    <div class="">
+                      <p>100%</p>
+		            </div>
+
 <!--                     <div class="progress progress-success"> -->
 <!-- 		              <div class="bar" style="width: 100%;">100%</div> -->
-<!-- 		            </div> -->
-
 
 		            {% else %}
                     <div class="progress progress-striped progress-info active">
