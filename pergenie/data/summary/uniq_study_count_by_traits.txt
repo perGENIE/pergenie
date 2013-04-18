@@ -1,0 +1,710 @@
+10739
+uniq_count meta_analysis_count study
+1[0m [30m0[0m Airflow obstruction 
+1[0m [30m0[0m Non-alcoholic fatty liver disease histology (lobular)
+1[0m [30m0[0m Drug-induced liver injury 
+1[0m [30m0[0m Neuranatomic and neurocognitive phenotypes
+1[0m [30m0[0m Complement C3 and C4 levels
+1[0m [30m0[0m Partial epilepsies
+1[0m [30m0[0m Meningioma 
+1[0m [30m0[0m Red vs non-red hair color
+1[0m [30m0[0m Asperger disorder
+1[0m [30m0[0m Triglycerides-Blood Pressure (TG-BP)
+1[0m [30m0[0m Response to interferon beta therapy
+1[0m 1[0m Crohn's disease and celiac disease
+1[0m [30m0[0m Parkinson's disease (familial)
+1[0m [30m0[0m Creutzfeldt-Jakob disease (variant)
+1[0m [30m0[0m Soluble levels of adhesion molecules
+1[0m [30m0[0m Type 1 diabetes nephropathy
+1[0m [30m0[0m Economic and political preferences (feminism or equality)
+1[0m [30m0[0m Resistin levels 
+1[0m [30m0[0m Life threatening arrhythmia
+1[0m [30m0[0m Brain lesion load
+1[0m [30m0[0m Alcoholism (alcohol dependence factor score)
+1[0m [30m0[0m Blue vs. brown eyes
+1[0m [30m0[0m Alcoholism (12-month weekly alcohol consumption)
+1[0m [30m0[0m Tanning
+1[0m [30m0[0m Non-alcoholic fatty liver disease histology (AST)
+1[0m [30m0[0m Antipsychotic-induced QTc interval prolongation
+1[0m [30m0[0m Functional MRI
+1[0m [30m0[0m Idiopathic pulmonary fibrosis
+1[0m [30m0[0m Glioma (high-grade)
+1[0m [30m0[0m Plasminogen activator inhibitor type 1 levels (PAI-1)
+1[0m [30m0[0m Neuroblastoma (high-risk)
+1[0m [30m0[0m Parkinson's disease (motor and cognition)
+1[0m [30m0[0m Visceral adipose tissue adjusted for BMI
+1[0m [30m0[0m Eye color traits
+1[0m [30m0[0m Insomnia (caffeine-induced)
+1[0m [30m0[0m Response to antineoplastic agents
+1[0m [30m0[0m Moyamoya disease
+1[0m [30m0[0m LDL (oxidized)
+1[0m [30m0[0m Sagittal craniosynostosis
+1[0m [30m0[0m Cannabis dependence
+1[0m [30m0[0m Wrist bone mass
+1[0m [30m0[0m Bitter taste response
+1[0m [30m0[0m Amyotrophic lateral sclerosis (age of onset)
+1[0m [30m0[0m Femoral neck bone geometry
+1[0m [30m0[0m Mean corpuscular hemoglobin concentration
+1[0m [30m0[0m Immune reponse to smallpox (secreted TNF-alpha)
+1[0m [30m0[0m Haptoglobin levels
+1[0m [30m0[0m Multiple sclerosis--Brain Glutamate Levels
+1[0m [30m0[0m Cholesterol and Triglycerides
+1[0m [30m0[0m Aging (time to event)
+1[0m [30m0[0m Lung cancer-asbestos exposure interaction
+1[0m [30m0[0m Intelligence
+1[0m [30m0[0m Exercise treadmill test traits
+1[0m [30m0[0m Peripheral artery disease
+1[0m [30m0[0m Lipoprotein-associated phospholipase A2 activity change in response to statin therapy
+1[0m [30m0[0m Optic disc size (cup)
+1[0m [30m0[0m Thyroid stimulating hormone
+1[0m [30m0[0m Opioid sensitivity
+1[0m [30m0[0m Depression and alcohol dependence
+1[0m [30m0[0m Multiple myeloma
+1[0m [30m0[0m Stroke (pediatric)
+1[0m [30m0[0m Volumetric brain MRI
+1[0m [30m0[0m MRI atrophy measures
+1[0m 1[0m Serum total protein level
+1[0m [30m0[0m Age-related macular degeneration (wet)
+1[0m [30m0[0m Gastric cancer
+1[0m [30m0[0m Soluble E-selectin levels
+1[0m [30m0[0m Leishmaniasis (visceral)
+1[0m [30m0[0m Waist-hip ratio
+1[0m [30m0[0m White matter hyperintensity burden
+1[0m [30m0[0m Antipsychotic drug-induced weight gain
+1[0m [30m0[0m Electroencephalographic traits in alcoholism
+1[0m [30m0[0m Fasting insulin-related traits
+1[0m [30m0[0m Subcutaneous adipose tissue
+1[0m [30m0[0m Antineutrophil cytoplasmic antibody-associated vasculitis 
+1[0m [30m0[0m Handedness in dyslexia
+1[0m [30m0[0m Epilepsy (generalized)
+1[0m [30m0[0m Economic and political preferences (immigration or crime)
+1[0m [30m0[0m Aortic stiffness
+1[0m [30m0[0m Asthma (toluene diisocyanate-induced)
+1[0m [30m0[0m Prothrombin time
+1[0m [30m0[0m Epilepsy
+1[0m [30m0[0m Keloid
+1[0m [30m0[0m Periodontitis
+1[0m [30m0[0m Glomerulosclerosis
+1[0m [30m0[0m Drug-induced liver injury (amoxicillin-clavulanate)
+1[0m [30m0[0m Vaccine-related adverse events 
+1[0m [30m0[0m Menarche and menopause (age at onset)
+1[0m [30m0[0m Vaspin levels
+1[0m [30m0[0m Renal function-related traits (urea)
+1[0m [30m0[0m Major CVD
+1[0m [30m0[0m Coronary spasm
+1[0m 1[0m Caffeine consumption
+1[0m [30m0[0m Economic and political preferences
+1[0m [30m0[0m Cataracts in type 2 diabetes
+1[0m [30m0[0m Biochemical measures
+1[0m [30m0[0m Liver enzyme levels
+1[0m [30m0[0m Pericardial fat
+1[0m [30m0[0m Dehydroepiandrosterone sulphate levels
+1[0m [30m0[0m Comprehensive strength and appendicular lean mass
+1[0m [30m0[0m Echocardiographic traits
+1[0m [30m0[0m Bleomycin sensitivity
+1[0m [30m0[0m Hip bone size
+1[0m [30m0[0m Biomedical quantitative traits
+1[0m [30m0[0m Aspirin exacerbated respiratory disease in asthmatics
+1[0m [30m0[0m IgM levels
+1[0m [30m0[0m Metabolite levels (5-HIAA or  MHPG Ratio)
+1[0m [30m0[0m Response to cerivastatin
+1[0m [30m0[0m Caudate nucleus volume
+1[0m [30m0[0m Lipid metabolism phenotypes
+1[0m [30m0[0m Sexual dysfunction (SSRI or SNRI-related)
+1[0m [30m0[0m HIV-1 viral setpoint
+1[0m [30m0[0m Panic disorder
+1[0m [30m0[0m Temperament (bipolar disorder)
+1[0m [30m0[0m Liver enzyme levels (gamma-glutamyl transferase)
+1[0m [30m0[0m Angiotensin-converting enzyme activity
+1[0m [30m0[0m Immune reponse to smallpox (secreted IL-1beta)
+1[0m [30m0[0m Smoking cessation
+1[0m [30m0[0m Large B-cell lymphoma
+1[0m [30m0[0m Hepcidin levels
+1[0m [30m0[0m Electrocardiographic conduction measures
+1[0m [30m0[0m Economic and political preferences (fairness)
+1[0m [30m0[0m Response to tocilizumab in rheumatoid arthritis
+1[0m [30m0[0m HDL Cholesterol - Triglycerides (HDLC-TG)
+1[0m [30m0[0m Prostate cancer (gene x gene interaction)
+1[0m [30m0[0m Lung Cancer (DNA repair capacity)
+1[0m [30m0[0m Non-albumin protein levels 
+1[0m [30m0[0m Tardive dyskinesia 
+1[0m [30m0[0m Attention deficit hyperactivity disorder motor coordination
+1[0m [30m0[0m Obesity (early onset extreme)
+1[0m 1[0m Ankle-brachial index 
+1[0m [30m0[0m Permanent tooth development
+1[0m [30m0[0m Metabolite levels (HVA or 5-HIAA ratio)
+1[0m [30m0[0m Cholesterol
+1[0m [30m0[0m Drinking behavior
+1[0m [30m0[0m E-selectin levels
+1[0m [30m0[0m Response to clopidogrel therapy
+1[0m [30m0[0m Immune reponse to smallpox (secreted IFN-alpha)
+1[0m [30m0[0m Intracranial volume
+1[0m [30m0[0m Response to temozolomide
+1[0m [30m0[0m Alopecia areata
+1[0m [30m0[0m Wilms tumor
+1[0m [30m0[0m IgA nephropathy
+1[0m [30m0[0m Metabolite levels (HVA)
+1[0m [30m0[0m Magnesium levels
+1[0m [30m0[0m Hepatitis B vaccine response
+1[0m [30m0[0m Monocyte chemoattractant protein-1 
+1[0m [30m0[0m Breast cancer (male) 
+1[0m [30m0[0m HIV-associated dementia 
+1[0m [30m0[0m Anorexia nervosa
+1[0m [30m0[0m Retinol levels
+1[0m [30m0[0m Atrioventricular conduction
+1[0m [30m0[0m Fuchs's corneal dystrophy
+1[0m [30m0[0m Eating disorders
+1[0m [30m0[0m Urinary metabolites
+1[0m [30m0[0m Parkinson's disease (age of onset)
+1[0m [30m0[0m Retinal vascular caliber
+1[0m [30m0[0m Subclinical atherosclerosis traits (other)
+1[0m [30m0[0m Epirubicin-induced leukopenia 
+1[0m [30m0[0m T-tau
+1[0m [30m0[0m Response to Vitamin E supplementation
+1[0m [30m0[0m Treatment response for severe sepsis 
+1[0m [30m0[0m Obesity and blood pressure
+1[0m [30m0[0m Ileal carcinoids
+1[0m [30m0[0m Esophageal cancer and gastric cancer
+1[0m [30m0[0m Age-related macular degeneration (GA)
+1[0m [30m0[0m Gamma glutamyl transpeptidase
+1[0m [30m0[0m Thyroid function
+1[0m [30m0[0m Response to fenofibrate (adiponectin levels)
+1[0m [30m0[0m Monocyte early outgrowth colony forming units
+1[0m [30m0[0m Hyperactive-impulsive symptoms
+1[0m 1[0m Hematological parameters
+1[0m [30m0[0m Male infertility
+1[0m [30m0[0m Schizophrenia (treatment refractory) 
+1[0m [30m0[0m Myasthenia gravis 
+1[0m [30m0[0m Thoracic aortic aneurysms and dissections
+1[0m [30m0[0m Select biomarker traits
+1[0m 1[0m Cannbis use (initiation)
+1[0m [30m0[0m Attention deficit hyperactivity disorder symptoms (interaction)
+1[0m [30m0[0m Normalized brain volume
+1[0m [30m0[0m Vitamin E levels
+1[0m [30m0[0m Response to platinum-based agents
+1[0m [30m0[0m AIDS
+1[0m [30m0[0m Mortality among heart failure patients
+1[0m [30m0[0m Gamma gluatamyl transferase levels
+1[0m [30m0[0m Immunoglobulin A 
+1[0m [30m0[0m Upper aerodigestive tract cancers
+1[0m [30m0[0m Cholelithiasis-related traits in sickle cell anemia
+1[0m [30m0[0m Osteonecrosis of the jaw
+1[0m [30m0[0m Optic disc size (rim)
+1[0m [30m0[0m Lentiform nucleus volume 
+1[0m [30m0[0m Eosinophil counts
+1[0m 1[0m IgE grass sensitization
+1[0m [30m0[0m Renal function-related traits (eGRFcrea)
+1[0m [30m0[0m Testicular germ cell cancer
+1[0m [30m0[0m Aging traits
+1[0m [30m0[0m Recombination rate (females)
+1[0m [30m0[0m C-reactive protein and white blood cell count
+1[0m 1[0m Temperament
+1[0m [30m0[0m Metabolite levels (MHPG)
+1[0m [30m0[0m Beta-trace protein levels
+1[0m [30m0[0m Kidney stones
+1[0m [30m0[0m Multiple sclerosis (severity)
+1[0m [30m0[0m Alcoholism (heaviness of drinking)
+1[0m [30m0[0m Response to amphetamines
+1[0m [30m0[0m Lipid traits
+1[0m [30m0[0m Tourette syndrome
+1[0m [30m0[0m Pancreatitis
+1[0m [30m0[0m Testicular germ cell tumor
+1[0m [30m0[0m Breast cancer (survival)
+1[0m [30m0[0m Fetal hemoglobin levels
+1[0m [30m0[0m Gaucher disease severity
+1[0m [30m0[0m Soluble leptin receptor levels
+1[0m [30m0[0m Protein biomarker
+1[0m [30m0[0m Diabetes (gestational)
+1[0m [30m0[0m Erectile dysfunction and prostate cancer treatment
+1[0m [30m0[0m Coronary restenosis
+1[0m [30m0[0m Creatinine levels
+1[0m [30m0[0m Circulating cell-free DNA
+1[0m [30m0[0m Meningococcal disease
+1[0m [30m0[0m White matter integrity (interaction)
+1[0m [30m0[0m Ovarian reserve
+1[0m [30m0[0m Lean body mass and age at menarche (combined)
+1[0m [30m0[0m Hippocampal volume
+1[0m [30m0[0m Renal function-related traits (sCR)
+1[0m [30m0[0m Hepatocellular carcinoma (hepatitis B virus related)
+1[0m [30m0[0m Diabetes (incident)
+1[0m [30m0[0m Atrial fibrillation or atrial flutter
+1[0m [30m0[0m Apolipoprotein Levels
+1[0m [30m0[0m Response to taxane treatment (placlitaxel)
+1[0m [30m0[0m Progressive supranuclear palsy
+1[0m [30m0[0m Breast size
+1[0m [30m0[0m Optic disc size (disc)
+1[0m [30m0[0m Schizophrenia, bipolar disorder and depression (combined)
+1[0m [30m0[0m Response to antidepressant treatment
+1[0m [30m0[0m Carotenoid and tocopherol levels
+1[0m [30m0[0m Iris color
+1[0m [30m0[0m Entorhinal cortical thickness
+1[0m [30m0[0m Hepatitis B (viral clearance)
+1[0m 1[0m Major depressive disorder (broad)
+1[0m [30m0[0m Hair morphology
+1[0m [30m0[0m Body mass in chronic obstructive pulmonary disease
+1[0m [30m0[0m Response to tamoxifen in breast cancer
+1[0m [30m0[0m Freckling
+1[0m [30m0[0m Liver enzyme levels (alanine transaminase)
+1[0m [30m0[0m Protein C levels
+1[0m [30m0[0m Beta thalassemia or hemoglobin E disease
+1[0m [30m0[0m Ewing sarcoma
+1[0m [30m0[0m Cytomegalovirus antibody response
+1[0m [30m0[0m Freckles
+1[0m [30m0[0m Visceral fat
+1[0m [30m0[0m Insulin-related traits
+1[0m [30m0[0m Crohn's disease and sarcoidosis (combined)
+1[0m [30m0[0m Brain imaging in schizophrenia (interaction)
+1[0m [30m0[0m YKL-40 levels
+1[0m [30m0[0m Response to angiotensin II receptor blocker therapy
+1[0m [30m0[0m Pulmonary function decline
+1[0m [30m0[0m Hematocrit
+1[0m [30m0[0m Immune reponse to smallpox (secreted IL-10)
+1[0m [30m0[0m Lipid levels in hepatitis C treatment
+1[0m [30m0[0m D-dimer levels
+1[0m [30m0[0m Vitamin D insufficiency
+1[0m 1[0m Corneal astigmatism
+1[0m [30m0[0m Metabolite levels (HVA or MHPG ratio)
+1[0m [30m0[0m Metabolite levels (5-HIAA)
+1[0m [30m0[0m Hypertriglyceridemia
+1[0m [30m0[0m Serum tamsulosin hydrochloride concentration
+1[0m [30m0[0m Endometrial cancer
+1[0m [30m0[0m AB1-42
+1[0m [30m0[0m Endothelial function traits
+1[0m [30m0[0m Small-cell lung cancer
+1[0m [30m0[0m HIV-1 replication
+1[0m [30m0[0m Amyloid A Levels
+1[0m [30m0[0m Barrett's esophagus
+1[0m [30m0[0m Waist circumference and related phenotypes
+1[0m [30m0[0m Nephrotic syndrome (acquired)
+1[0m [30m0[0m Paraoxonase activity 
+1[0m [30m0[0m Inflammatory bowel disease (early onset)
+1[0m [30m0[0m Bipolar disorder (age of onset and psychomotor symptoms)
+1[0m [30m0[0m Response to statin therapy (LDL-C)
+1[0m [30m0[0m Type 1 diabetes autoantibodies
+1[0m [30m0[0m Natriuretic peptide levels
+1[0m [30m0[0m Matrix metalloproteinase levels
+1[0m [30m0[0m Cardiac hypertrophy
+1[0m [30m0[0m Emphysema-related traits
+1[0m [30m0[0m Atopy
+1[0m [30m0[0m Crohn's disease and psoriasis
+1[0m [30m0[0m Primary tooth development (number of teeth)
+1[0m [30m0[0m Skin pigmentation
+1[0m [30m0[0m Neonatal lupus
+1[0m [30m0[0m Anti-cyclic Citrullinated Peptide Antibody
+1[0m [30m0[0m Multiple cancers (lung cancer, gastric cancer, and squamous cell carcinoma)
+1[0m [30m0[0m Radiation response
+1[0m [30m0[0m Carotid intima media thickness
+1[0m 1[0m Brachial circumference
+1[0m [30m0[0m Chronic myeloid leukemia
+1[0m [30m0[0m Osteoporosis-related phenotypes
+1[0m [30m0[0m Morbidity-free survival
+1[0m [30m0[0m Hypertension risk in short sleep duration
+1[0m [30m0[0m Conduct disorder (case status)
+1[0m [30m0[0m Spine bone size
+1[0m [30m0[0m CD4:CD8 lymphocyte ratio
+1[0m [30m0[0m Breast cancer (prognosis)
+1[0m [30m0[0m Immune response to anthrax vaccine 
+1[0m [30m0[0m Insulin-like growth factors
+1[0m [30m0[0m Phosphorus levels
+1[0m [30m0[0m Chemerin levels
+1[0m [30m0[0m Eosinophilic esophagitis (pediatric)
+1[0m [30m0[0m Diabetes related insulin traits
+1[0m [30m0[0m Platelet function and related traits
+1[0m [30m0[0m Intraocular pressure
+1[0m [30m0[0m Phytosterol levels
+1[0m [30m0[0m Hepatitis C induced liver cirrhosis
+1[0m [30m0[0m Metabolite levels (HVA-5-HIAA Factor score)
+1[0m [30m0[0m Vascular endothelial growth factor levels
+1[0m [30m0[0m Duodenal ulcer 
+1[0m [30m0[0m Response to fenofibrate
+1[0m [30m0[0m Premature ovarian failure
+1[0m [30m0[0m Celiac disease and Rheumatoid arthritis
+1[0m [30m0[0m Folate pathway vitamin levels
+1[0m [30m0[0m Hoarding
+1[0m [30m0[0m Aging (time to death)
+1[0m [30m0[0m Response to irinotecan in non-small-cell lung cancer
+1[0m [30m0[0m Primary sclerosing cholangitis
+1[0m [30m0[0m Suicide attempts in bipolar disorder
+1[0m [30m0[0m Biliary atresia
+1[0m [30m0[0m Black vs. red hair color
+1[0m [30m0[0m vWF and FVIII levels
+1[0m [30m0[0m Response to TNF-alpha inhibitors in rheumatoid arthritis
+1[0m [30m0[0m Event-related brain oscillations
+1[0m [30m0[0m Common traits (Other)
+1[0m [30m0[0m Anthropometric traits
+1[0m [30m0[0m Response to angiotensin II receptor blocker therapy (opposite direction w or  diuretic therapy)
+1[0m [30m0[0m Facial morphology
+1[0m [30m0[0m Acenocoumarol maintenance dosage
+1[0m [30m0[0m Bipolar disorder (mood-incongruent)
+1[0m [30m0[0m Drug-induced liver injury (flucloxacillin)
+1[0m [30m0[0m Conduct disorder (interaction)
+1[0m [30m0[0m Skin sensitivity to sun
+1[0m [30m0[0m Dengue shock syndrome 
+1[0m [30m0[0m Ribavirin-induced anemia
+1[0m [30m0[0m Response to taxane treatment (docetaxel)
+1[0m 1[0m Pulmonary function (interaction)
+1[0m [30m0[0m Immune reponse to smallpox (secreted IL-2)
+1[0m [30m0[0m Self-rated health
+1[0m [30m0[0m Reasoning
+1[0m [30m0[0m Fasting glucose-related traits
+1[0m [30m0[0m Immune reponse to smallpox (secreted IL-12p40)
+1[0m [30m0[0m Progranulin levels
+1[0m [30m0[0m Obesity and osteoporosis
+1[0m [30m0[0m Substance dependence
+1[0m [30m0[0m Hearing impairment
+1[0m [30m0[0m Alzheimer's disease biomarkers
+1[0m [30m0[0m Body mass index (interaction)
+1[0m [30m0[0m Erectile dysfunction
+1[0m [30m0[0m Gambling
+1[0m [30m0[0m Hypospadias
+1[0m [30m0[0m Cystic fibrosis severity
+1[0m [30m0[0m Gallbladder cancer
+1[0m [30m0[0m Chronic kidney disease and serum creatinine levels
+1[0m [30m0[0m Anticoagulant levels
+1[0m [30m0[0m RR interval (heart rate)
+1[0m [30m0[0m Carotid atherosclerosis in HIV infection
+1[0m [30m0[0m Waist-to-hip circumference ratio (interaction)
+1[0m [30m0[0m Information processing speed
+1[0m [30m0[0m Waist Circumference - Triglycerides (WC-TG)
+1[0m [30m0[0m Two-hour glucose challenge
+1[0m [30m0[0m &beta;2-Glycoprotein I (&beta;2-GPI) plasma levels
+1[0m [30m0[0m Thyroid volume
+1[0m [30m0[0m Inattentive symptoms
+1[0m [30m0[0m Lumiracoxib-related liver injury
+1[0m [30m0[0m End-stage renal disease (non-diabetic)
+1[0m [30m0[0m End-stage renal disease
+1[0m [30m0[0m Suicidal ideation
+1[0m [30m0[0m Prion diseases
+1[0m [30m0[0m Total ventricular volume
+1[0m [30m0[0m C4b binding protein levels
+1[0m [30m0[0m Response to TNF antagonist treatment
+1[0m [30m0[0m Cortical structure
+1[0m [30m0[0m Insulin resistance or response
+1[0m [30m0[0m Fasting glucose-related traits (interaction with BMI)
+1[0m [30m0[0m P-tau181p
+1[0m [30m0[0m Liver enzyme levels (alkaline phosphatase)
+1[0m [30m0[0m Hip geometry
+1[0m 1[0m Formal thought disorder in schizophrenia
+1[0m [30m0[0m Cognitive test performance
+1[0m [30m0[0m Nephropathy (idiopathic membranous)
+1[0m [30m0[0m Sexual dysfunction (female)
+1[0m [30m0[0m Dialysis-related mortality
+1[0m [30m0[0m Sleep duration
+1[0m [30m0[0m Nephrolithiasis
+1[0m [30m0[0m Response to treatment for acute lymphoblastic leukemia
+1[0m [30m0[0m Attention deficit hyperactivity disorder and conduct disorder
+1[0m [30m0[0m Renal function-related traits (BUN)
+1[0m [30m0[0m Adverse response to lamotrigine and phenytoin
+1[0m [30m0[0m Gallstones
+1[0m [30m0[0m Recombination rate (males)
+1[0m [30m0[0m Lymphocyte counts
+1[0m [30m0[0m Myeloproliferative neoplasms
+1[0m [30m0[0m White blood cell types
+1[0m [30m0[0m Interleukin-18 levels
+1[0m [30m0[0m Interstitial lung disease 
+1[0m [30m0[0m Age-related macular degeneration (CNV)
+1[0m [30m0[0m Aging (facial)
+1[0m [30m0[0m Response to acetaminophen (hepatotoxicity)
+1[0m [30m0[0m Body mass index and cholesterol (psychopharmacological treatment)
+1[0m [30m0[0m Methotrexate clearance (acute lymphoblastic leukemia)
+1[0m [30m0[0m Exercise (leisure time)
+1[0m [30m0[0m Glaucoma (exfoliation)
+1[0m [30m0[0m Black vs. blond hair color
+1[0m [30m0[0m Esophageal cancer (squamous cell)
+1[0m [30m0[0m Response to iloperidone treatment (QT prolongation)
+1[0m [30m0[0m Otosclerosis
+1[0m [30m0[0m Tonometry
+1[0m [30m0[0m Head circumference (infant)
+1[0m [30m0[0m Vertical cup-disc ratio
+1[0m [30m0[0m Cystatin C
+1[0m [30m0[0m Visceral adipose tissue or subcutaneous adipose tissue ratio
+1[0m [30m0[0m Arterial stiffness
+1[0m [30m0[0m Myocardial infarction (early onset)
+1[0m [30m0[0m Obsessive-compulsive disorder
+1[0m [30m0[0m Cognitive function
+1[0m [30m0[0m Protein quantitative trait loci
+1[0m [30m0[0m Fasting insulin-related traits (interaction with BMI)
+1[0m [30m0[0m Working memory
+1[0m [30m0[0m Sclerosing cholangitis and ulcerative colitis (combined)
+1[0m [30m0[0m Butyrylcholinesterase levels
+1[0m [30m0[0m Proinsulin levels
+1[0m 1[0m Cardiac structure and function
+1[0m [30m0[0m Major mood disorders
+1[0m 1[0m Cardiac Troponin-T levels
+1[0m [30m0[0m Other erythrocyte phenotypes
+1[0m [30m0[0m Uterine fibroids
+1[0m [30m0[0m Ventricular conduction
+1[0m [30m0[0m Estradiol levels
+1[0m 1[0m Disc degeneration (lumbar)
+1[0m [30m0[0m Factor VII
+1[0m [30m0[0m Adverse response to carbamapezine
+1[0m [30m0[0m N-glycan levels
+1[0m [30m0[0m Type 2 diabetes and other traits
+1[0m [30m0[0m Hirschsprung's disease
+1[0m [30m0[0m HbA2 levels
+1[0m [30m0[0m Platelet aggregation
+1[0m [30m0[0m Iris characteristics
+1[0m [30m0[0m Dilated cardiomyopathy
+1[0m [30m0[0m 5-HTT brain serotonin transporter levels
+1[0m [30m0[0m Attention deficit hyperactivity disorder (time to onset)
+1[0m [30m0[0m Quantitative traits
+1[0m [30m0[0m Periodontal microbiota
+1[0m [30m0[0m HPV seropositivity
+1[0m [30m0[0m Renal sinus fat 
+1[0m [30m0[0m Speech perception in dyslexia
+1[0m [30m0[0m Hepatitis C induced liver fibrosis
+1[0m [30m0[0m Mean forced vital capacity from 2 exams
+1[0m [30m0[0m Bipolar disorder and major depressive disorder (combined)
+1[0m [30m0[0m Creutzfeldt-Jakob disease
+1[0m [30m0[0m Erythrocyte sedimentation rate
+1[0m [30m0[0m Alzheimer's disease (age of onset)
+1[0m [30m0[0m Economic and political preferences (time)
+1[0m [30m0[0m IFN-related cytopenia
+1[0m [30m0[0m Nevirapine-induced rash
+1[0m [30m0[0m IgA levels
+1[0m [30m0[0m Sleepiness
+1[0m [30m0[0m Metabolic syndrome (bivariate traits)
+1[0m [30m0[0m Age-related macular degeneration (CNV vs. GA)
+1[0m [30m0[0m Obesity-related traits
+1[0m 1[0m Serum albumin level
+1[0m [30m0[0m Brain imaging
+1[0m [30m0[0m Capecitabine sensitivity
+1[0m [30m0[0m Cleft lip
+1[0m 1[0m Allergic rhinitis
+1[0m [30m0[0m Chronic obstructive pulmonary disease-related biomarkers
+1[0m [30m0[0m Gout
+1[0m [30m0[0m Economic and political preferences (environmentalism)
+1[0m [30m0[0m Renal function and chronic kidney disease
+1[0m [30m0[0m Infantile hypertrophic pyloric stenosis
+1[0m [30m0[0m Androgen levels
+1[0m [30m0[0m Glioblastoma
+1[0m [30m0[0m Multiple sclerosis (age of onset)
+1[0m [30m0[0m Asthma (bronchodilator response)
+1[0m [30m0[0m Alcoholism (alcohol use disorder factor score)
+1[0m [30m0[0m End-stage coagulation
+1[0m [30m0[0m Esophageal cancer  (alcohol interaction)
+1[0m [30m0[0m Conduct disorder (symptom count)
+1[0m [30m0[0m Primary tooth development (time to first tooth eruption)
+[34m2[0m 1[0m Sex hormone-binding globulin levels
+[34m2[0m [30m0[0m Paget's disease
+[34m2[0m [30m0[0m White matter integrity
+[34m2[0m [30m0[0m Heart rate variability traits
+[34m2[0m [30m0[0m Nonalcoholic fatty liver disease
+[34m2[0m [30m0[0m Immune response to smallpox vaccine (IL-6)
+[34m2[0m [30m0[0m Mammographic density
+[34m2[0m [30m0[0m Mean corpuscular volume
+[34m2[0m [30m0[0m White blood cell count
+[34m2[0m [30m0[0m Homocysteine levels
+[34m2[0m 1[0m Calcium levels
+[34m2[0m [30m0[0m Myocardial infarction
+[34m2[0m [30m0[0m Body mass (lean)
+[34m2[0m [30m0[0m Mean corpuscular hemoglobin
+[34m2[0m [30m0[0m Urinary albumin excretion
+[34m2[0m [30m0[0m Adverse response to aromatase inhibitors
+[34m2[0m [30m0[0m Abdominal aortic aneurysm
+[34m2[0m [30m0[0m Non-alcoholic fatty liver disease histology (other)
+[34m2[0m [30m0[0m Coffee consumption
+[34m2[0m [30m0[0m Soluble ICAM-1
+[34m2[0m [30m0[0m Digit length ratio
+[34m2[0m [30m0[0m Testosterone levels
+[34m2[0m 1[0m Diabetic retinopathy 
+[34m2[0m [30m0[0m Stevens-Johnson syndrome and toxic epidermal necrolysis (SJS-TEN)
+[34m2[0m [30m0[0m Refractive error
+[34m2[0m 1[0m Psoriatic arthritis
+[34m2[0m [30m0[0m Asthma (childhood onset)
+[34m2[0m [30m0[0m Hemoglobin
+[34m2[0m [30m0[0m Hair color
+[34m2[0m [30m0[0m Hemostatic factors and hematological phenotypes
+[34m2[0m [30m0[0m Nephropathy
+[34m2[0m [30m0[0m Inflammatory biomarkers
+[34m2[0m [30m0[0m Response to metformin
+[34m2[0m [30m0[0m Left ventricular mass
+[34m2[0m [30m0[0m Red blood cell traits
+[34m2[0m [30m0[0m Malaria
+[34m2[0m [30m0[0m Dupuytren's disease
+[34m2[0m [30m0[0m Knee osteoarthritis
+[34m2[0m [30m0[0m Coagulation factor levels
+[34m2[0m [30m0[0m Cognitive decline
+[34m2[0m [30m0[0m Cutaneous nevi
+[34m2[0m [30m0[0m Menopause (age at onset)
+[34m2[0m [30m0[0m Type 2 diabetes nephropathy
+[34m2[0m [30m0[0m Cholesterol, total
+[34m2[0m [30m0[0m Scoliosis
+[34m2[0m [30m0[0m Graves' disease
+[34m2[0m [30m0[0m Aging
+[34m2[0m [30m0[0m Polycystic ovary syndrome
+[34m2[0m [30m0[0m Lp (a) levels
+[34m2[0m [30m0[0m Metabolic traits
+[34m2[0m [30m0[0m Urinary bladder cancer
+[34m2[0m [30m0[0m Non-obstructive azoospermia
+[34m2[0m [30m0[0m Brain structure
+[34m2[0m [30m0[0m Iron levels
+[34m2[0m [30m0[0m Esophageal cancer
+[34m2[0m [30m0[0m Vitamin B12 levels
+[34m2[0m 1[0m Aortic root size
+[34m2[0m [30m0[0m Thyrotoxic hypokalemic periodic paralysis
+[34m2[0m [30m0[0m Hippocampal atrophy
+[34m2[0m [30m0[0m F-cell distribution
+[34m2[0m [30m0[0m Hodgkin's lymphoma
+[34m2[0m [30m0[0m Activated partial thromboplastin time
+[34m2[0m [30m0[0m Vitamin D levels
+[34m2[0m [30m0[0m Tuberculosis
+[34m2[0m 1[0m Phospholipid levels (plasma)
+[34m2[0m [30m0[0m Eye color
+[34m2[0m 1[0m Pain
+[34m2[0m [30m0[0m Sudden cardiac arrest
+[34m2[0m [30m0[0m Response to platinum-based chemotherapy in non-small-cell lung cancer
+[34m2[0m 1[0m Heart failure
+[34m2[0m [30m0[0m Essential tremor
+[34m2[0m [30m0[0m Testicular cancer
+[34m2[0m [30m0[0m Response to antidepressants
+[34m2[0m [30m0[0m Neutrophil count
+[34m2[0m [30m0[0m Leprosy
+[34m2[0m [30m0[0m Cognitive performance
+[34m2[0m [30m0[0m Coronary artery calcification
+[34m2[0m [30m0[0m Corneal structure
+[34m2[0m [30m0[0m Alcohol and nictotine co-dependence
+[34m2[0m [30m0[0m Thyroid cancer
+[34m2[0m [30m0[0m Hypothyroidism
+[34m2[0m [30m0[0m Sphingolipid levels
+[34m2[0m [30m0[0m Blue vs. green eyes
+[34m2[0m [30m0[0m Response to citalopram treatment
+[34m2[0m [30m0[0m Basal cell carcinoma 
+[34m2[0m [30m0[0m Sarcoidosis
+[34m2[0m [30m0[0m HIV-1 susceptibility
+[34m2[0m [30m0[0m IgG levels
+[34m2[0m [30m0[0m Response to antipsychotic therapy (extrapyramidal side effects)
+[34m2[0m [30m0[0m Blond vs. brown hair color
+[34m2[0m [30m0[0m AIDS progression
+[34m2[0m [30m0[0m Depression (quantitative trait)
+[34m2[0m [30m0[0m Response to gemcitabine in pancreatic cancer 
+[34m2[0m [30m0[0m Cortical thickness
+[34m2[0m [30m0[0m Chronic kidney disease
+[34m2[0m 1[0m Cardiac repolarization
+[34m2[0m [30m0[0m Birth weight
+[34m2[0m [30m0[0m Resting heart rate
+[34m2[0m [30m0[0m Optic disc parameters
+[31m3[0m [30m0[0m Iron status biomarkers
+[31m3[0m [30m0[0m Waist circumference
+[31m3[0m [30m0[0m Electrocardiographic traits
+[31m3[0m [30m0[0m Diastolic blood pressure
+[31m3[0m [30m0[0m Systemic sclerosis
+[31m3[0m [30m0[0m Chronic Hepatitis C infection
+[31m3[0m [30m0[0m Follicular lymphoma
+[31m3[0m 1[0m Central corneal thickness
+[31m3[0m [30m0[0m PR interval
+[31m3[0m [30m0[0m Corneal curvature
+[31m3[0m [30m0[0m Nicotine dependence
+[31m3[0m [30m0[0m Dental caries
+[31m3[0m [30m0[0m Ovarian cancer
+[31m3[0m 1[0m Bone mineral density (hip)
+[31m3[0m 1[0m Bipolar disorder and schizophrenia
+[31m3[0m [30m0[0m Renal cell carcinoma
+[31m3[0m [30m0[0m Platelet counts
+[31m3[0m [30m0[0m Arthritis (juvenile idiopathic)
+[31m3[0m [30m0[0m Venous thromboembolism
+[31m3[0m [30m0[0m Glaucoma
+[31m3[0m 1[0m Adiposity
+[31m3[0m [30m0[0m Metabolic syndrome
+[31m3[0m 1[0m IgE levels 
+[31m3[0m 1[0m Lipoprotein-associated phospholipase A2 activity and mass
+[31m3[0m [30m0[0m Alcohol consumption
+[31m3[0m [30m0[0m Prostate-specific antigen levels
+[31m3[0m [30m0[0m Obesity (extreme)
+[31m3[0m [30m0[0m Cardiovascular disease risk factors
+[31m3[0m [30m0[0m Narcolepsy
+[31m3[0m [30m0[0m Hepatitis B
+[31m3[0m [30m0[0m Stroke
+[31m3[0m 1[0m Bone mineral density (spine)
+[31m3[0m [30m0[0m Nasopharyngeal carcinoma
+[31m3[0m [30m0[0m Osteoporosis
+[31m3[0m [30m0[0m Systolic blood pressure
+[31m3[0m [30m0[0m Fibrinogen
+[31m3[0m 1[0m Stroke (ischemic)
+[31m3[0m [30m0[0m Neuroblastoma
+[31m3[0m [30m0[0m HIV-1 control
+[31m3[0m [30m0[0m Weight
+[31m3[0m [30m0[0m Celiac disease
+[31m3[0m [30m0[0m Ankylosing spondylitis
+[31m3[0m [30m0[0m Warfarin maintenance dose
+[31m3[0m [30m0[0m Hematology traits
+[31m4[0m [30m0[0m Restless legs syndrome
+[31m4[0m [30m0[0m Male-pattern baldness
+[31m4[0m [30m0[0m Bladder cancer
+[31m4[0m [30m0[0m Intracranial aneurysm
+[31m4[0m [30m0[0m Non-small cell lung cancer
+[31m4[0m [30m0[0m Atopic dermatitis
+[31m4[0m [30m0[0m Lung adenocarcinoma
+[31m4[0m [30m0[0m Behcet's disease
+[31m4[0m [30m0[0m Hepatocellular carcinoma
+[31m4[0m 1[0m Endometriosis
+[31m4[0m [30m0[0m Neuroticism
+[31m4[0m [30m0[0m Migraine
+[31m4[0m [30m0[0m Response to statin therapy
+[31m4[0m [30m0[0m Inflammatory bowel disease
+[31m4[0m [30m0[0m Personality dimensions
+[31m4[0m 1[0m Menarche (age at onset)
+[31m4[0m [30m0[0m Uric acid levels
+[31m4[0m [30m0[0m Chronic obstructive pulmonary disease
+[31m4[0m 1[0m Glioma
+[31m4[0m [30m0[0m Chronic lymphocytic leukemia
+[31m4[0m [30m0[0m Acute lymphoblastic leukemia (childhood)
+[31m4[0m 1[0m Longevity
+[31m4[0m [30m0[0m Primary biliary cirrhosis
+[31m4[0m 1[0m Bilirubin levels
+[31m4[0m 1[0m Glycated hemoglobin levels
+[31m5[0m [30m0[0m Orofacial clefts
+[31m5[0m [30m0[0m Pancreatic cancer
+[31m5[0m [30m0[0m Pulmonary function
+[31m5[0m 1[0m Obesity
+[31m5[0m [30m0[0m Blood pressure
+[31m5[0m [30m0[0m Osteoarthritis
+[31m5[0m [34m2[0m Mean platelet volume
+[31m5[0m [30m0[0m Autism
+[31m5[0m [30m0[0m Response to antipsychotic treatment
+[31m5[0m [30m0[0m Glaucoma (primary open-angle)
+[31m5[0m [30m0[0m Atrial fibrillation
+[31m6[0m [30m0[0m Attention deficit hyperactivity disorder
+[31m6[0m [30m0[0m Melanoma
+[31m6[0m [30m0[0m Myopia (pathological)
+[31m6[0m [30m0[0m Response to hepatitis C treatment
+[31m6[0m [30m0[0m Kawasaki disease
+[31m6[0m 1[0m Telomere length
+[31m6[0m 1[0m Alcohol dependence
+[31m6[0m [30m0[0m Vitiligo
+[31m7[0m [30m0[0m Fasting plasma glucose
+[31m7[0m [30m0[0m Alzheimer's disease (late onset)
+[31m7[0m [30m0[0m Psoriasis
+[31m7[0m 1[0m QT interval
+[31m7[0m [30m0[0m Metabolite levels
+[31m7[0m [30m0[0m Hypertension
+[31m7[0m [30m0[0m Smoking behavior
+[31m7[0m [30m0[0m Age-related macular degeneration
+[31m8[0m [30m0[0m C-reactive protein
+[31m8[0m 1[0m Major depressive disorder
+[31m8[0m [30m0[0m Ulcerative colitis
+[31m8[0m [30m0[0m Urate levels
+[31m9[0m 1[0m Adiponectin levels
+[31m9[0m 1[0m Bone mineral density
+[31m10[0m [34m2[0m Type 1 diabetes
+[31m10[0m 1[0m Lung cancer
+[31m11[0m [30m0[0m HDL cholesterol
+[31m11[0m [30m0[0m Triglycerides
+[31m11[0m [30m0[0m Systemic lupus erythematosus
+[31m11[0m [30m0[0m Amyotrophic lateral sclerosis
+[31m12[0m [30m0[0m LDL cholesterol
+[31m13[0m 1[0m Parkinson's disease
+[31m13[0m [30m0[0m Colorectal cancer
+[31m14[0m 1[0m Rheumatoid arthritis
+[31m14[0m 1[0m Crohn's disease
+[31m14[0m 1[0m Body mass index
+[31m14[0m [30m0[0m Asthma
+[31m14[0m [30m0[0m Coronary heart disease
+[31m15[0m [34m2[0m Bipolar disorder
+[31m15[0m 1[0m Multiple sclerosis
+[31m17[0m [30m0[0m Alzheimer's disease
+[31m18[0m 1[0m Prostate cancer
+[31m19[0m [30m0[0m Height
+[31m19[0m [30m0[0m Schizophrenia
+[31m21[0m 1[0m Breast cancer
+[31m31[0m [34m2[0m Type 2 diabetes
