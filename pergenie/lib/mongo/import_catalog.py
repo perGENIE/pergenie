@@ -36,14 +36,15 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja,
 
     log.debug('Loading gwascatalog.traits.translated.tsv ...')
     eng2ja = {}
+    eng2category = {}
     with open(path_to_eng2ja, 'rb') as fin:
         for record in csv.DictReader(fin, delimiter='\t'):
             if record['eng'] == '#':  # ignore `#`
                 log.debug(record['eng'])
                 pass
             else:
-                _ja = unicode(record['ja'], 'utf-8')
-                eng2ja[record['eng']] = _ja
+                eng2ja[record['eng']] = unicode(record['ja'], 'utf-8') or record['eng']
+                eng2category[record['eng']] = record['category'] or 'NA'
 
     with pymongo.Connection(port=mongo_port) as connection:
         catalog_date_raw = os.path.basename(path_to_gwascatalog).split('.')[1]
