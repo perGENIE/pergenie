@@ -1,3 +1,5 @@
+ipython==0.13.1
+numpy==1.6.2
 Django==1.4.1
 Jinja2==2.6
 Werkzeug==0.8.3
@@ -5,14 +7,11 @@ amqplib==1.0.2
 anyjson==0.3.3
 billiard==2.7.3.12
 celery==3.0.9
-distribute==0.6.28
 django-celery==3.0.9
 django-jinja==0.3
 django-registration==0.8
-ipython==0.13.1
 kombu==2.4.6
 lockfile==0.9.1
-numpy==1.6.2
 pymongo==2.3
 python-daemon==1.6
 python-dateutil==1.5
