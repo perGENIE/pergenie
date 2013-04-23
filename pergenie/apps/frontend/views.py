@@ -33,7 +33,8 @@ class ReservedUserIDError(Exception):
 
 
 def index(request):
-    return redirect('apps.frontend.views.login')
+    return direct_to_template(request, 'index.html')
+    # return redirect('apps.frontend.views.register')
 
 
 @require_http_methods(['GET', 'POST'])

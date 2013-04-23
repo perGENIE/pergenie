@@ -26,13 +26,13 @@ urlpatterns = patterns('',
     url(r'^logout/$', 'apps.frontend.views.logout'),
     url(r'^register/$', 'apps.frontend.views.register'),
 
-    url(r'^accounts/', include('registration.backends.default.urls')), 
+    url(r'^accounts/', include('registration.backends.default.urls')),
     # registration.backends.default.urls or registration.urls
     # TODO: revise registration settings
 
     url(r'^dashboard/$', 'apps.dashboard.views.index'),
     url(r'^user_settings/$', 'apps.settings.views.user_settings'),
-                       
+
 
     url(r'^riskreport/$', 'apps.riskreport.views.index'),
     url(r'^riskreport/(?P<file_name>[^/]*)/(?P<trait>[^/]*)/$', 'apps.riskreport.views.trait'),
