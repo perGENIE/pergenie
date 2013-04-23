@@ -171,83 +171,83 @@ Cognitive test performance	認知機能テストのパフォーマンス	Trait_m
 Colorectal cancer	大腸がん	Disease	
 Common traits (Other)	Common traits (Other)	NA	
 Common variable immunodeficiency	分類不能型免疫不全	Disease	
-#			
 Complement C3 and C4 levels	血清補体C3とC4の濃度	Trait_med	
-Comprehensive strength and appendicular lean mass	Comprehensive strength and appendicular lean mass四肢筋肉量低下		
-Conduct disorder (case status)	Conduct disorder (case status)		
-Conduct disorder (interaction)	Conduct disorder (interaction)		
-Conduct disorder (symptom count)	Conduct disorder (symptom count)		
-Corneal astigmatism	角膜乱視		
-Corneal curvature	Corneal curvature		
-Corneal structure	Corneal structure		
-Coronary artery calcification	冠動脈石灰化		
-Coronary heart disease	アテローム(性)冠(状)動脈硬化性心疾患		
-Coronary restenosis	冠状動脈再狭窄		
-Coronary spasm	冠血管れん縮		
-Cortical structure	Cortical structure		
-Cortical thickness	Cortical thickness		
-Cortisol secretion	Cortisol secretion		
-Creatinine levels	Creatinine levels		
-Creutzfeldt-Jakob disease	異型クロイツフェルト・ヤコブ病		
-Creutzfeldt-Jakob disease (variant)	Creutzfeldt-Jakob disease (variant)		
-Crohn's disease	クローン病性若年性関節炎		
-Crohn's disease and celiac disease	Crohn's disease and celiac disease		
-Crohn's disease and psoriasis	Crohn's disease and psoriasis		
-Crohn's disease and sarcoidosis (combined)	Crohn's disease and sarcoidosis (combined)		
-Cutaneous nevi	Cutaneous nevi		
-Cystatin C	シスタチンC		
-Cystic fibrosis (meconium ileus) 	Cystic fibrosis (meconium ileus)		
-Cystic fibrosis severity	Cystic fibrosis severity		
-Cytomegalovirus antibody response	Cytomegalovirus antibody response		
-D-dimer levels	D-dimer levels		
-Dehydroepiandrosterone sulphate levels	Dehydroepiandrosterone sulphate levels		
-Dengue shock syndrome 	Dengue shock syndrome		
-Dental caries	う蝕活動性試験		
-Depression (age of onset)	Depression (age of onset)		
-Depression (quantitative trait)	Depression (quantitative trait)		
-Depression and alcohol dependence	Depression and alcohol dependence		
-Diabetes (gestational)	Diabetes (gestational)		
-Diabetes (incident)	Diabetes (incident)		
-Diabetes related insulin traits	Diabetes related insulin traits		
-Diabetic retinopathy 	Diabetic retinopathy		
-Dialysis-related mortality	Dialysis-related mortality		
-Diastolic blood pressure	最低血圧		
-Digit length ratio	Digit length ratio		
-Dilated cardiomyopathy	軽度拡張型心筋症		
-Disc degeneration (lumbar)	Disc degeneration (lumbar)		
-Drinking behavior	飲水行動		
-Drug-induced liver injury 	Drug-induced liver injury		
-Drug-induced liver injury (amoxicillin-clavulanate)	Drug-induced liver injury (amoxicillin-clavulanate)		
-Drug-induced liver injury (flucloxacillin)	Drug-induced liver injury (flucloxacillin)		
-Duodenal ulcer 	穿孔性十二指腸潰瘍		
-Dupuytren's disease	Dupuytren's disease		
-E-selectin levels	E-selectin levels		
-Eating disorders	Eating disorders		
-Echocardiographic traits	Echocardiographic traits		
-Economic and political preferences	Economic and political preferences		
-Economic and political preferences (environmentalism)	Economic and political preferences (environmentalism)		
-Economic and political preferences (fairness)	Economic and political preferences (fairness)		
-Economic and political preferences (feminism/equality)	Economic and political preferences (feminism/equality)		
-Economic and political preferences (immigration/crime)	Economic and political preferences (immigration/crime)		
-Economic and political preferences (time)	Economic and political preferences (time)		
-Educational attainment	Educational attainment		
-Electrocardiographic conduction measures	Electrocardiographic conduction measures		
-Electrocardiographic traits	Electrocardiographic traits		
-Electroencephalogram traits	Electroencephalogram traits		
-Electroencephalographic traits in alcoholism	Electroencephalographic traits in alcoholism		
-Emphysema-related traits	Emphysema-related traits		
-End-stage renal disease	糖尿病末期腎不全		
-End-stage renal disease (non-diabetic)	End-stage renal disease (non-diabetic)		
-Endometrial cancer	子宮体がん		
-Endometriosis	内性子宮内膜症		
-Endothelial function traits	Endothelial function traits		
-Entorhinal cortical thickness	Entorhinal cortical thickness		
-Environmental confusion in the home	Environmental confusion in the home		
-Eosinophil counts	Eosinophil counts		
-Eosinophilic esophagitis (pediatric)	Eosinophilic esophagitis (pediatric)		
-Epilepsy	運動性部分てんかん		
-Epilepsy (generalized)	Epilepsy (generalized)		
-Epirubicin-induced leukopenia 	Epirubicin-induced leukopenia		
+Comprehensive strength and appendicular lean mass	圧縮強度と四肢筋肉量低下?	Trait_med	
+Conduct disorder (case status)	行動障害 (case status)	Disease	
+Conduct disorder (interaction)	行動障害 (interaction)	Disease	
+Conduct disorder (symptom count)	行動障害 (symptom count)	Disease	
+Corneal astigmatism	角膜乱視	Disease	
+Corneal curvature	角膜曲率	Trait_med	
+Corneal structure	角膜構造	Trait_med	
+Coronary artery calcification	冠動脈石灰化	Disease	
+Coronary heart disease	冠(状)動脈(性心)疾患	Disease	
+Coronary restenosis	冠(状)動脈再狭窄	Disease	
+Coronary spasm	冠動脈れん縮	Disease	
+Cortical structure	皮質の構造	Trait_med	
+Cortical thickness	皮質厚	Trait_med	
+Cortisol secretion	コルチゾールの分泌	Trait_med	
+Creatinine levels	クレアチニン濃度	Trait_med	
+Creutzfeldt-Jakob disease	クロイツフェルト・ヤコブ病	Disease	
+Creutzfeldt-Jakob disease (variant)	クロイツフェルト・ヤコブ病 (variant)	Disease	
+Crohn's disease	クローン病	Disease	
+Crohn's disease and celiac disease	クローン病と小児脂肪便症(セリアック病)	Disease	
+Crohn's disease and psoriasis	クローン病と乾癬	Disease	
+Crohn's disease and sarcoidosis (combined)	クローン病とサルコイドーシス(類肉腫症) (combined)	Disease	
+Cutaneous nevi	皮膚性の母斑症	Disease	
+Cystatin C	シスタチンC	Trait_med	
+Cystic fibrosis (meconium ileus) 	嚢胞性繊維症 (胎便による腸閉塞(胎便性イレウス))	Disease	
+Cystic fibrosis severity	嚢胞性繊維症の重症度	Disease	
+Cytomegalovirus antibody response	サイトメガロウイルス抗体反応	Trait_med	
+D-dimer levels	Dダイマー濃度	Trait_med	
+Dehydroepiandrosterone sulphate levels	デヒドロエアピンドロステロン硫酸塩濃度	Trait_med	
+Dengue shock syndrome 	デング熱ショック症候群	Disease	
+Dental caries	う蝕(虫歯)	Disease	
+Depression (age of onset)	うつ病 (age of onset)	Disease	
+Depression (quantitative trait)	うつ病 (quantitative trait)	Disease	
+Depression and alcohol dependence	うつ病とアルコール依存	Disease	
+Diabetes (gestational)	糖尿病 (gestational)	Disease	
+Diabetes (incident)	糖尿病 (incident)	Disease	
+Diabetes related insulin traits	糖尿病関連のインシュリン形質	Trait_med	
+Diabetic retinopathy 	糖尿病性網膜症	Disease	
+Dialysis-related mortality	透析関連の死亡率	Trait_med	
+Diastolic blood pressure	拡張期血圧 (最低血圧)	Trait_easy	
+Digit length ratio	指の長さの比	Trait_easy	
+Dilated cardiomyopathy	拡張型心筋症	Disease	
+Disc degeneration (lumbar)	腰椎椎間板変性	Disease	
+Drinking behavior	飲水行動	Trait_med	
+Drug-induced liver injury 	薬物性肝障害	Disease	
+Drug-induced liver injury (amoxicillin-clavulanate)	薬物性肝障害 (amoxicillin-clavulanate)	Disease	
+Drug-induced liver injury (flucloxacillin)	薬物性肝障害 (flucloxacillin)	Disease	
+Duodenal ulcer 	十二指腸潰瘍	Disease	
+Dupuytren's disease	デュピュイトラン病	Disease	
+E-selectin levels	Eセレクチン濃度	Trait_med	
+Eating disorders	摂食障害	Disease	
+Echocardiographic traits	心エコーの特徴	Trait_med	
+Economic and political preferences	経済的・政治的な選択(好み)	Trait_easy	
+Economic and political preferences (environmentalism)	経済的・政治的な選択(好み) (environmentalism)	Trait_easy	
+Economic and political preferences (fairness)	経済的・政治的な選択(好み) (fairness)	Trait_easy	
+Economic and political preferences (feminism/equality)	経済的・政治的な選択(好み) (feminism/equality)	Trait_easy	
+Economic and political preferences (immigration/crime)	経済的・政治的な選択(好み) (immigration/crime)	Trait_easy	
+Economic and political preferences (time)	経済的・政治的な選択(好み) (time)	Trait_easy	
+Educational attainment	学歴	Trait_easy	
+Electrocardiographic conduction measures	心電図の伝導測定?	Trait_med	
+Electrocardiographic traits	心電図の特徴	Trait_med	
+Electroencephalogram traits	脳波図の特徴	Trait_med	
+Electroencephalographic traits in alcoholism	アルコール依存症における脳波図の特徴	Trait_med	
+Emphysema-related traits	肺気腫関連の形質	Trait_med	
+End-stage renal disease	末期腎不全	Disease	
+End-stage renal disease (non-diabetic)	末期腎不全 (non-diabetic)	Disease	
+Endometrial cancer	子宮内膜がん	Disease	
+Endometriosis	子宮内膜症	Disease	
+Endothelial function traits	内皮機能の形質	Trait_med	
+Entorhinal cortical thickness	嗅内皮質の厚み	Trait_med	
+Environmental confusion in the home	家における環境の乱雑さ?	Trait_easy	
+Eosinophil counts	好酸球の数	Trait_med	
+Eosinophilic esophagitis (pediatric)	好酸球性食道炎 (pediatric)	Disease	
+Epilepsy	てんかん	Disease	
+Epilepsy (generalized)	てんかん (generalized)	Disease	
+Epirubicin-induced leukopenia 	エピルビシン誘導の白血球減少症	Disease	
+#			
 Episodic memory	エピソード記憶		
 Erectile dysfunction	勃起改善薬		
 Erectile dysfunction and prostate cancer treatment	Erectile dysfunction and prostate cancer treatment		
