@@ -248,106 +248,107 @@ Epilepsy	てんかん	Disease
 Epilepsy (generalized)	てんかん (generalized)	Disease	
 Epirubicin-induced leukopenia 	エピルビシン誘導の白血球減少症	Disease	
 #			
-Episodic memory	エピソード記憶		
-Erectile dysfunction	勃起改善薬		
-Erectile dysfunction and prostate cancer treatment	Erectile dysfunction and prostate cancer treatment		
-Erythrocyte sedimentation rate	血沈		
-Esophageal cancer	進行食道癌		
-Esophageal cancer  (alcohol interaction)	Esophageal cancer  (alcohol interaction)		
-Esophageal cancer (squamous cell)	Esophageal cancer (squamous cell)		
-Esophageal cancer and gastric cancer	Esophageal cancer and gastric cancer		
-Essential tremor	本態性振戦症		
-Estradiol levels	Estradiol levels		
-Event-related brain oscillations	Event-related brain oscillations		
-Ewing sarcoma	ユーイング肉腫		
-Exercise (leisure time)	Exercise (leisure time)		
-Exercise treadmill test traits	Exercise treadmill test traits		
-Eye color	眼色		
-Eye color traits	Eye color traits		
-F-cell distribution	F-cell distribution		
-Facial morphology	Facial morphology		
-Factor VII	遺伝子組換え第VIII因子SQ		
-Factor XI	凝固第XI因子		
-Fasting glucose-related traits	Fasting glucose-related traits		
-Fasting glucose-related traits (interaction with BMI)	Fasting glucose-related traits (interaction with BMI)		
-Fasting insulin-related traits	Fasting insulin-related traits		
-Fasting insulin-related traits (interaction with BMI)	Fasting insulin-related traits (interaction with BMI)		
-Fasting plasma glucose	空腹時血糖値		
-Femoral neck bone geometry	Femoral neck bone geometry		
-Fetal hemoglobin levels	Fetal hemoglobin levels		
-Fibrinogen	フィブリノ(ー)ゲン分解(産)物		
-Fluorouracil treatment response in colorectal cancer	Fluorouracil treatment response in colorectal cancer		
-Folate pathway vitamin levels	Folate pathway vitamin levels		
-Follicular lymphoma	巨大濾胞性リンパ腫		
-Formal thought disorder in schizophrenia	Formal thought disorder in schizophrenia		
-Fracture-related traits	Fracture-related traits		
-Freckles	Freckles		
-Freckling	Freckling		
-Frontotemporal lobar degeneration	前頭側頭葉変性症		
-Fuchs's corneal dystrophy	Fuchs's corneal dystrophy		
-Functional MRI	機能的磁気共鳴画像法		
-Gallbladder cancer	転移性胆嚢癌		
-Gallstones	Gallstones		
-Gambling	賭博		
-Gamma gluatamyl transferase levels	Gamma gluatamyl transferase levels		
-Gamma gluatamyl transferase levels (interaction with age)	Gamma gluatamyl transferase levels (interaction with age)		
-Gamma glutamyl transpeptidase	Gamma glutamyl transpeptidase		
-Gastric cancer	残胃癌		
-Gaucher disease severity	Gaucher disease severity		
-General cognitive ability	General cognitive ability		
-Glaucoma	慢性開放隅角緑内障		
-Glaucoma (exfoliation)	Glaucoma (exfoliation)		
-Glaucoma (primary open-angle)	Glaucoma (primary open-angle)		
-Glioblastoma	巨細胞膠芽腫		
-Glioma	非クロム親和性傍神経節腫		
-Glioma (high-grade)	Glioma (high-grade)		
-Glomerulosclerosis	分節状糸球体硬化症		
-Glycated hemoglobin levels	Glycated hemoglobin levels		
-Glycemic control in type 1 diabetes (HbA1c)	Glycemic control in type 1 diabetes (HbA1c)		
-Gout	アイカルディ・ゴーシェ症候群		
-Graves' disease	Basedow病		
-HDL Cholesterol - Triglycerides (HDLC-TG)	HDL Cholesterol - Triglycerides (HDLC-TG)		
-HDL cholesterol	HDLコレステロール		
-HIV (mother-to-child transmission)	HIV (mother-to-child transmission)		
-HIV-1 control	HIV-1 control		
-HIV-1 progression	HIV-1 progression		
-HIV-1 replication	HIV-1 replication		
-HIV-1 susceptibility	HIV-1 susceptibility		
-HIV-1 viral setpoint	HIV-1 viral setpoint		
-HIV-associated dementia 	HIV-associated dementia		
-HPV seropositivity	HPV seropositivity		
-Hair color	毛髪色		
-Hair morphology	Hair morphology		
-Handedness in dyslexia	Handedness in dyslexia		
-Haptoglobin levels	Haptoglobin levels		
-Head circumference (infant)	Head circumference (infant)		
-Hearing impairment	後迷路性難聴		
-Heart failure	甲状腺中毒性心不全		
-Heart rate variability traits	Heart rate variability traits		
-Height	ステップ高		
-Hematocrit	血球容量		
-Hematological parameters	Hematological parameters		
-Hematology traits	Hematology traits		
-Hemoglobin	酵素－ヘモグロビン解離曲線		
-Hemoglobin levels	Hemoglobin levels		
-Hemostatic factors and hematological phenotypes	Hemostatic factors and hematological phenotypes		
-Hepatitis B	アヒルB型肝炎ウイルス		
-Hepatitis B (viral clearance)	Hepatitis B (viral clearance)		
-Hepatitis B vaccine response	Hepatitis B vaccine response		
-Hepatitis C induced liver fibrosis	Hepatitis C induced liver fibrosis		
-Hepatocellular carcinoma	肝細胞がん		
-Hepcidin levels	Hepcidin levels		
-Heroin addiction	ヘロイン嗜癖		
-Hip bone size	Hip bone size		
-Hip geometry	Hip geometry		
-Hippocampal atrophy	Hippocampal atrophy		
-Hippocampal volume	Hippocampal volume		
-Hirschsprung's disease	Hirschsprung病		
-Hoarding	強迫的溜め込み症		
-Hodgkin's lymphoma	Hodgkinリンパ腫		
-Homocysteine levels	Homocysteine levels		
-Hyperactive-impulsive symptoms	Hyperactive-impulsive symptoms		
-Hypertension	食塩感受性高血圧		
+Episodic memory	エピソード記憶	Trait_med	
+Erectile dysfunction	勃起不全	Disease	
+Erectile dysfunction and prostate cancer treatment	勃起不全と前立腺癌治療	Disease	
+Erythrocyte sedimentation rate	赤血球沈降速度	Trait_med	
+Esophageal cancer	食道がん	Disease	
+Esophageal cancer  (alcohol interaction)	食道がん  (alcohol interaction)	Disease	
+Esophageal cancer (squamous cell)	食道がん (squamous cell)	Disease	
+Esophageal cancer and gastric cancer	食道がんと胃がん	Disease	
+Essential tremor	特発性振戦	Disease	
+Estradiol levels	エストラジオール濃度	Trait_med	
+Event-related brain oscillations	事象関連脳波振動	Trait_med	
+Ewing sarcoma	ユーイング肉腫	Disease	
+Exercise (leisure time)	余暇における運動	Trait_easy	
+Exercise treadmill test traits	トレッドミル運動負荷試験における特性	Trait_med	
+Eye color	眼色	Trait_easy	
+Eye color traits	眼色形質	Trait_easy	
+F-cell distribution	F細胞の分布	Trait_med	
+Facial morphology	顔の形態	Trait_med	
+Factor VII	第Ⅶ因子(血清プロトロンビン転化促進因子)	Trait_med	
+Factor XI	第XI因子(血漿トロンボプラスチン前駆物質)	Trait_med	
+Fasting glucose-related traits	空腹時血糖関連形質	Trait_med	
+Fasting glucose-related traits (interaction with BMI)	空腹時血糖関連形質 (BMIとの相互作用)	Trait_med	
+Fasting insulin-related traits	空腹時インシュリン関連形質	Trait_med	
+Fasting insulin-related traits (interaction with BMI)	空腹時インシュリン関連形質 (BMIとの相互作用)	Trait_med	
+Fasting plasma glucose	空腹時血糖値	Trait_med	
+Femoral neck bone geometry	大腿骨頸部の骨形状	Trait_med	
+Fetal hemoglobin levels	胎児性ヘモグロビン濃度	Trait_med	
+Fibrinogen	フィブリノーゲン	Trait_med	
+Fluorouracil treatment response in colorectal cancer	大腸がんにおけるフルオロウラシル投与への応答	Trait_med	
+Folate pathway vitamin levels	葉酸パスウェイにおけるビタミン濃度?	Trait_med	
+Follicular lymphoma	濾胞性リンパ腫	Disease	
+Formal thought disorder in schizophrenia	精神分裂病における思考障害	Disease	
+Fracture-related traits	骨折関連形質	Trait_med	
+Freckles	そばかす	Trait_easy	
+Freckling	そばかす	Trait_easy	
+Frontotemporal lobar degeneration	前頭側頭葉変性症	Disease	
+Fuchs's corneal dystrophy	フックス角膜内皮変性症	Disease	
+Functional MRI	機能的MRI(磁気共鳴画像法)	Trait_med	
+Gallbladder cancer	胆嚢がん	Disease	
+Gallstones	胆石症	Disease	
+Gambling	賭博	Trait_easy	
+Gamma gluatamyl transferase levels	ガンマグルタミン酸転移酵素濃度	Trait_med	
+Gamma gluatamyl transferase levels (interaction with age)	ガンマグルタミン酸転移酵素濃度 (年齢との相互作用)	Trait_med	
+Gamma glutamyl transpeptidase	ガンマグルタミン酸転移酵素	Trait_med	
+Gastric cancer	胃がん	Disease	
+Gaucher disease severity	ゴーシェ病の重症度	Disease	
+General cognitive ability	一般的な認知能力	Trait_med	
+Glaucoma	緑内障	Disease	
+Glaucoma (exfoliation)	緑内障 (剥離)	Disease	
+Glaucoma (primary open-angle)	緑内障 (primary open-angle)	Disease	
+Glioblastoma	グリア芽腫 (神経膠芽細胞腫)	Disease	
+Glioma	グリオーマ (膠腫)	Disease	
+Glioma (high-grade)	グリオーマ (膠腫) (high-grade)	Disease	
+Glomerulosclerosis	糸球体硬化	Disease	
+Glycated hemoglobin levels	糖化ヘモグロビン濃度	Trait_med	
+Glycemic control in type 1 diabetes (HbA1c)	1型糖尿病における血糖コントロール (HbA1c)	Trait_med	
+Gout	痛風	Disease	
+Graves' disease	グレーブス病 (眼球突出性甲状腺腫) 	Disease	
+HDL Cholesterol - Triglycerides (HDLC-TG)	HDLコレステロール - トリグリセリド (HDLC-TG)	Trait_med	
+HDL cholesterol	HDLコレステロール	Trait_med	
+HIV (mother-to-child transmission)	HIV (母子感染)	Disease	
+HIV-1 control	HIV-1の制御	Trait_med	
+HIV-1 progression	HIV-1の進行	Trait_med	
+HIV-1 replication	HIV-1の複製	Trait_med	
+HIV-1 susceptibility	HIV-1の感受性	Trait_med	
+HIV-1 viral setpoint	HIV-1のセットポイント	Trait_med	
+HIV-associated dementia 	HIV関連性の痴呆	Disease	
+HPV seropositivity	HPV血清陽性	Trait_med	
+Hair color	毛髪色	Trait_easy	
+Hair morphology	毛髪の形態	Trait_easy	
+Handedness in dyslexia	失読症における利き手	Trait_med	
+Haptoglobin levels	ハプトグロビン濃度	Trait_med	
+Head circumference (infant)	頭囲 (乳児)	Trait_med	
+Hearing impairment	難聴	Disease	
+Heart failure	心不全	Disease	
+Heart rate variability traits	心拍数変動性形質	Trait_med	
+Height	身長	Trait_easy	
+Hematocrit	ヘマトクリット値 (血液中の赤血球の割合)	Trait_med	
+Hematological parameters	血液学的なパラメータ	Trait_med	
+Hematology traits	血液学形質	Trait_med	
+Hemoglobin	ヘモグロビン	Trait_med	
+Hemoglobin levels	ヘモグロビン濃度	Trait_med	
+Hemostatic factors and hematological phenotypes	止血因子と血液学的な表現型	Trait_med	
+Hepatitis B	B型肝炎	Disease	
+Hepatitis B (viral clearance)	B型肝炎 (ウイルス排除)	Disease	
+Hepatitis B vaccine response	B型肝炎のワクチン応答	Trait_med	
+Hepatitis C induced liver fibrosis	C型肝炎誘発性の肝線維症	Disease	
+Hepatocellular carcinoma	肝細胞がん	Disease	
+Hepcidin levels	ヘプシジン(肝臓由来の抗菌ペプチドホルモン)濃度	Trait_med	
+Heroin addiction	ヘロイン中毒	Disease	
+Hip bone size	寛骨(腰骨)の大きさ	Trait_med	
+Hip geometry	腰の形状	Trait_med	
+Hippocampal atrophy	海馬萎縮	Disease	
+Hippocampal volume	海馬の体積	Trait_med	
+Hirschsprung's disease	ヒルシュスプルング病	Disease	
+Hoarding	溜め込み症	Disease	
+Hodgkin's lymphoma	ホジキンリンパ腫	Disease	
+Homocysteine levels	ホモシステイン濃度	Trait_med	
+Hyperactive-impulsive symptoms	多動性・衝動性の症状	Disease	
+Hypertension	高血圧	Disease	
+#			
 Hypertension (young onset)	Hypertension (young onset)		
 Hypertension risk in short sleep duration	Hypertension risk in short sleep duration		
 Hypertriglyceridemia	家族性高トリグリセリド血症		
