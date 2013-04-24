@@ -13,6 +13,7 @@
   <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
   <link href="{% static 'css/bootstrap-responsive.css' %}" rel="stylesheet">
   <link href="{% static 'css/general.css' %}" rel="stylesheet">
+  <!-- <link href="{% static 'css/introjs.css' %}" rel="stylesheet"> -->
 
   <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,700,600" rel="stylesheet">
   <link href="http://fonts.googleapis.com/css?family=Open+Sans+Condensed:700,300" rel="stylesheet" type="text/css">
@@ -31,7 +32,7 @@
           <a href="{% url apps.frontend.views.index %}" class="brand">perGENIE</a>
           <ul class="nav">
             <!-- <li class="active"><a href="#"></a></li> -->
-            <li><a href="#">Try demo</a></li>
+            <li data-step="1" data-intro="Hello all! :) This project's called Intro.js."><a href="#">Try demo</a></li>
             <li><a href="{% url apps.frontend.views.register %}">Sign up</a></li>
             <li><a href="{% url apps.frontend.views.login %}">Login</a></li>
           </ul>
@@ -42,23 +43,22 @@
     <div class="row">
       <div class="feature span12">
         <h2 class="motto"><strong>perGENIE</strong> interprets your personal genome</h2>
-        <h3 class="subheader">with publicly available databases & your genetic testing data.</h3>
+        <h3>with publicly available databases & your genetic testing data.</h3>
         <img id="feature-screenshot" src="{% static 'images/pics/feature.png' %}" alt="screenshot">
       </div>
     </div>
 
-    <div class="row">
-      <div class="span12 graded center">
-        <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>
-      </div>
-    </div>
+    <!-- <div class="row"> -->
+    <!--   <div class="span12 graded center"> -->
+    <!--     <p>Tell them how amazing your App is. Log in for existing users.</p> -->
+    <!--   </div> -->
+    <!-- </div> -->
 
   <!-- <div class="container"> -->
     <div class="row">
       <div class="span12 center graded">
         <a href="#" class="signup">Try demo</a>
         <a href="{% url apps.frontend.views.register %}" class="signup">Sign up now</a>
-      </div>
     </div>
   <!-- </div> -->
   </div>
@@ -150,6 +150,11 @@
       </div>
     </div>
   </div>
+
+  <!-- <\!-- Intro.js test -\-> -->
+  <!-- <script type="text/javascript" src="{% static 'js/intro.js' %}"></script> -->
+  <!-- <script type="text/javascript">introJs().start()</script> -->
+
 </body>
 
 </html>
