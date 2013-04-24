@@ -28,13 +28,12 @@
     <nav class="navbar">
       <div class="navbar-inner">
         <div class="container">
-          <a href="/" class="brand">perGENIE</a>
+          <a href="{% url apps.frontend.views.index %}" class="brand">perGENIE</a>
           <ul class="nav">
-            <!-- <li class="active"><a href="#">Home</a></li> -->
-            <!-- <li><a href="#">About us</a></li> -->
+            <!-- <li class="active"><a href="#"></a></li> -->
             <li><a href="#">Try demo</a></li>
-            <li><a href="#">Sign up</a></li>
-            <li><a href="#">Login</a></li>
+            <li><a href="{% url apps.frontend.views.register %}">Sign up</a></li>
+            <li><a href="{% url apps.frontend.views.login %}">Login</a></li>
           </ul>
         </div>
       </div>
@@ -48,18 +47,17 @@
       </div>
     </div>
 
-    <!-- <div class="row"> -->
-    <!--   <div class="span12 graded center"> -->
-    <!--     <p>You'll be amazed by Producto. Never has performant node.js NoSQL CoffeeScript LLVM compiling been so easy.</p> -->
-    <!--   </div> -->
-    <!-- </div> -->
-
+    <div class="row">
+      <div class="span12 graded center">
+        <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>
+      </div>
+    </div>
 
   <!-- <div class="container"> -->
     <div class="row">
       <div class="span12 center graded">
         <a href="#" class="signup">Try demo</a>
-        <a href="#" class="signup">Sign up now</a>
+        <a href="{% url apps.frontend.views.register %}" class="signup">Sign up now</a>
       </div>
     </div>
   <!-- </div> -->
