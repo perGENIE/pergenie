@@ -7,19 +7,23 @@
 
 {% block main_container %}
   <body id="body">
+
+    <!-- <div class="span4"><a href="{% url apps.frontend.views.index %}"><img class="login_logo" src="{% static 'images/logo.png' %}"></a></div> -->
+
     <section id="main">
       <div class="container">
-
         <div class="row-fluid">
+
           <div class="span12">
             <div class="login-container center">
-              <div class="title">Sign in</div>
+              <div class="title"><a href="{% url apps.frontend.views.index %}"><img class="login_logo" src="{% static 'images/logo.png' %}"></a></div>
 
-              <form class="login-form">
+              <form class="login-form" action="." method="POST">
+                {% csrf_token %}
                 <ul class="fields-list">
                   <li>
                     <i class="icon-envelope-alt" style="float: left;"></i>
-                    <input autocomplete="off" id="email" name="email" placeholder="email" type="text">
+                    <input autocomplete="off" id="email" name="user_id" placeholder="email" type="text">
                   </li>
                   <li>
                     <i class="icon-key"></i>
@@ -28,7 +32,7 @@
                 </ul>
 
                 <div class="actions">
-                  <input class="btn btn-green btn-large login-btn" name="commit" type="submit" value="Sign In">
+                  <input class="btn btn-green btn-large login-btn" name="commit" type="submit" value="Login">
                 </div>
 
                 <!-- <div class="social-actions"> -->
@@ -40,6 +44,12 @@
                 <!--   </a> -->
                 <!-- </div> -->
               </form>
+
+	          {% if error %}
+	          <div class="alert alert-error">{{ error }}</div>
+	          {% endif %}
+              <a href="{% url apps.frontend.views.register %}">{% trans "Create an account." %}</a>
+
             </div>
           </div>
         </div>
