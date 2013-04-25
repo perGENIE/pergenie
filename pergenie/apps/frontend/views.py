@@ -63,7 +63,7 @@ def login(request):
 
 def logout(request):
     auth_logout(request)
-    return redirect('apps.frontend.views.index')
+    return redirect('apps.frontend.views.login')
 
 
 @require_http_methods(['GET', 'POST'])

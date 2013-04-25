@@ -163,7 +163,7 @@
                     </a>
                     <ul class="dropdown-menu secondary ">
                       <li class="">
-                        <a href="account_settings.html">
+                        <a href="{% url apps.settings.views.user_settings %}">
                           <i class="icon-cog"></i> Account settings
                         </a>
                       </li>
@@ -174,8 +174,8 @@
                       </li>
                       <li class="divider"></li>
                       <li class="">
-                        <a href="login.html">
-                          <i class="icon-off"></i> Sign out
+                        <a href="{% url apps.frontend.views.logout %}">
+                          <i class="icon-off"></i> Logout
                         </a>
                       </li>
                     </ul>
@@ -255,7 +255,7 @@
 
               <div class="footer">
                 <h5 class="transparent-text center">
-                  <div> &copy; </div>
+                  <div>&copy; 2012-2013 perGENIE Team</div>
                 </h5>
               </div>
             </div>
@@ -316,20 +316,6 @@
 <script type=text/javascript>
   var $SCRIPT_ROOT = "";
 </script>
-
-<!-- <script type=text/javascript> -->
-<!--   $(function() { -->
-<!--     $('a#calculate').click(function() { -->
-<!--       $.getJSON($SCRIPT_ROOT + '/_add_numbers', { -->
-<!--         a: $('input[name="a"]').val(), -->
-<!--         b: $('input[name="b"]').val() -->
-<!--       }, function(data) { -->
-<!--         $("#result").text(data.result); -->
-<!--       }); -->
-<!--       return false; -->
-<!--     }); -->
-<!--   }); -->
-<!-- </script> -->
 
 
 <!-- label "unknown" as warning -->
