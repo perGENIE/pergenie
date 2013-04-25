@@ -5,55 +5,61 @@
 {% block description %}account registration{% endblock %}
 
 {% block main_container %}
-<div class="container-fluid">
-  <div class="row-fluid">
-    <div class="span4">&nbsp;</div>
-    <div class="span4"><a href="{% url apps.frontend.views.index %}"><img class="login_logo" src="{% static 'images/logo.png' %}"></a></div>
-  </div>
+  <body id="body">
+    <section id="main">
+      <div class="container">
 
-  <div class="row-fluid">
-    <div class="span4">&nbsp;</div>
-    <div class="span4">
-      <div class="box grad_colour_dark_blue">
-        <h2 class="box_head round_top">Register</h2>
-        <div class="toggle_container">
-          <div class="block box_content round_bottom padding_20">
+        <div class="row-fluid">
+          <div class="span12">
+            <div class="login-container center">
+              <div class="title">Register</div>
 
-            <form action="{% url apps.frontend.views.register %}" method="POST" id="password-form">
-	      {% csrf_token %}
+              <form class="login-form">
+                <ul class="fields-list">
+                  <li>
+                    <i class="icon-envelope-alt" style="float: left;"></i>
+                    <input autocomplete="off" id="email" name="email" placeholder="email" type="text">
+                  </li>
+                  <li>
+                    <i class="icon-key"></i>
+                    <input autocomplete="off" id="password" name="password" placeholder="password" type="password">
+                  </li>
+                  <li>
+                    <i class="icon-key"></i>
+                    <input autocomplete="off" id="password-confirmation" name="password-confirmation" placeholder="confirm password" type="password">
+                  </li>
+                </ul>
 
-              <table>
-	        <tr>
-	          <td>Email (Username)</td>
-	          <td><input type="text" name="user_id" id="user-id"></td>
-	        </tr>
-	        <tr>
-	          <td>Password</td>
-	          <td><input type="password" name="password1" id="password1" style="float: left;"></td>
-	        </tr>
-	        <tr>
-	          <td>Re-type Password</td>
-	          <td><input type="password" name="password2" id="password2"></td>
-	        </tr>
-	        <tr>
-	          <td colspan="2">
-	            <input type="submit" value="Submit">
-	          </td>
-	        </tr>
-	      </table>
-            </form>
+                <div class="actions clearfix">
+                  <input class="btn btn-green btn-large login-btn" name="commit" type="submit" value="Register">
+                </div>
 
-	    {% if is_succeeded %}
-	    <div class="alert alert-">{% autoescape off %}{{ message }}{% endautoescape %}</div>
-	    {% endif %}
+                <!-- <div class="social-actions"> -->
+                <!--   <a href="#" class="btn btn-twitter btn-block"> -->
+                <!--     <i class="icon-twitter-sign"></i> Login with Twitter -->
+                <!--   </a> -->
+                <!--   <a href="#" class="btn btn-facebook btn-block"> -->
+                <!--     <i class="icon-facebook-sign"></i> Login with Facebook -->
+                <!--   </a> -->
+                <!-- </div> -->
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
 
-	    {% if has_error %}
-	    <div class="alert alert-error">{% autoescape off %}{{ message }}{% endautoescape %}</div>
-	    {% endif %}
+    </section>
+
+    <div class="container">
+      <div class="row-fluid">
+        <div class="span12">
+          <div class="footer">
+            <h5 class="transparent-text center">
+              <div>&copy; 2012-2013 perGENIE Team</div>
+            </h5>
           </div>
         </div>
       </div>
     </div>
-  </div>
-</div><!--/.fluid-container-->
-{% endblock %}
+  </body>
+  {% endblock %}
