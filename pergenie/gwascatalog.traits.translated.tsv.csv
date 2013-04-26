@@ -247,7 +247,6 @@ Eosinophilic esophagitis (pediatric)	好酸球性食道炎 (pediatric)	Disease
 Epilepsy	てんかん	Disease	
 Epilepsy (generalized)	てんかん (generalized)	Disease	
 Epirubicin-induced leukopenia 	エピルビシン誘導の白血球減少症	Disease	
-#			
 Episodic memory	エピソード記憶	Trait_med	
 Erectile dysfunction	勃起不全	Disease	
 Erectile dysfunction and prostate cancer treatment	勃起不全と前立腺癌治療	Disease	
@@ -349,156 +348,157 @@ Homocysteine levels	ホモシステイン濃度	Trait_med
 Hyperactive-impulsive symptoms	多動性・衝動性の症状	Disease	
 Hypertension	高血圧	Disease	
 #			
-Hypertension (young onset)	Hypertension (young onset)		
-Hypertension risk in short sleep duration	Hypertension risk in short sleep duration		
-Hypertriglyceridemia	家族性高トリグリセリド血症		
-Hypospadias	尿道下裂		
-Hypothyroidism	二次性甲状腺機能低下		
-IFN-related cytopenia	IFN-related cytopenia		
-Idiopathic pulmonary fibrosis	特発性肺線維症		
-IgA levels	IgA levels		
-IgA nephropathy	IgA腎症		
-IgE grass sensitization	IgE grass sensitization		
-IgE levels 	IgE levels		
-IgG levels	IgG levels		
-Ileal carcinoids	Ileal carcinoids		
-Immune reponse to smallpox (secreted IFN-alpha)	Immune reponse to smallpox (secreted IFN-alpha)		
-Immune reponse to smallpox (secreted IL-10)	Immune reponse to smallpox (secreted IL-10)		
-Immune reponse to smallpox (secreted IL-12p40)	Immune reponse to smallpox (secreted IL-12p40)		
-Immune reponse to smallpox (secreted IL-1beta)	Immune reponse to smallpox (secreted IL-1beta)		
-Immune reponse to smallpox (secreted IL-2)	Immune reponse to smallpox (secreted IL-2)		
-Immune reponse to smallpox (secreted TNF-alpha)	Immune reponse to smallpox (secreted TNF-alpha)		
-Immune response to anthrax vaccine 	Immune response to anthrax vaccine		
-Immune response to smallpox vaccine (IL-6)	Immune response to smallpox vaccine (IL-6)		
-Immunoglobulin A 	IgA腎症		
-Inattentive symptoms	Inattentive symptoms		
-Infantile hypertrophic pyloric stenosis	乳児肥厚性幽門狭窄症		
-Inflammatory biomarkers	Inflammatory biomarkers		
-Inflammatory bowel disease	慢性炎症性腸疾患		
-Inflammatory bowel disease (early onset)	Inflammatory bowel disease (early onset)		
-Influenza (severity)	Influenza (severity)		
-Information processing speed	Information processing speed		
-Insomnia (caffeine-induced)	Insomnia (caffeine-induced)		
-Insulin resistance/response	Insulin resistance/response		
-Insulin-like growth factors	Insulin-like growth factors		
-Insulin-related traits	Insulin-related traits		
-Intelligence	こころの知能		
-Interleukin-18 levels	Interleukin-18 levels		
-Interstitial lung disease 	Interstitial lung disease		
-Intracranial aneurysm	脳動脈瘤		
-Intracranial volume	Intracranial volume		
-Intraocular pressure	眼圧亢進		
-Iris characteristics	Iris characteristics		
-Iris color	Iris color		
-Iron levels	Iron levels		
-Iron status biomarkers	Iron status biomarkers		
-Kawasaki disease	Kawasaki病		
-Keloid	ケロイド		
-Kidney stones	Kidney stones		
-Knee osteoarthritis	変形性膝関節炎		
-LDL cholesterol	LDLコレステロール		
-Lapatinib-induced hepatotoxicity	Lapatinib-induced hepatotoxicity		
-Large B-cell lymphoma	びまん性大細胞リンパ腫		
-Lean body mass and age at menarche (combined)	Lean body mass and age at menarche (combined)		
-Left ventricular mass	左室重量係数		
-Lentiform nucleus volume 	Lentiform nucleus volume		
-Leprosy	境界型ハンセン病		
-Life threatening arrhythmia	Life threatening arrhythmia		
-Lipid levels in hepatitis C treatment	Lipid levels in hepatitis C treatment		
-Lipid metabolism phenotypes	Lipid metabolism phenotypes		
-Lipid traits	Lipid traits		
-Lipoprotein-associated phospholipase A2 activity and mass	Lipoprotein-associated phospholipase A2 activity and mass		
-Liver enzyme levels	Liver enzyme levels		
-Liver enzyme levels (alanine transaminase)	Liver enzyme levels (alanine transaminase)		
-Liver enzyme levels (alkaline phosphatase)	Liver enzyme levels (alkaline phosphatase)		
-Liver enzyme levels (gamma-glutamyl transferase)	Liver enzyme levels (gamma-glutamyl transferase)		
-Longevity	寿命延長		
-Lp (a) levels	Lp (a) levels		
-Lumiracoxib-related liver injury	Lumiracoxib-related liver injury		
-Lung adenocarcinoma	肺腺癌		
-Lung adenocarcinoma (clinical stage)	Lung adenocarcinoma (clinical stage)		
-Lung cancer	転移性肺非小細胞癌		
-Lung cancer-asbestos exposure interaction	Lung cancer-asbestos exposure interaction		
-Lupus	ループス血小板減少症		
-Lymphocyte counts	Lymphocyte counts		
-MRI atrophy measures	MRI atrophy measures		
-Magnesium levels	Magnesium levels		
-Major CVD	Major CVD		
-Major depressive disorder	大うつ病性障害		
-Major depressive disorder (broad)	Major depressive disorder (broad)		
-Major mood disorders	Major mood disorders		
-Malaria	Plasmodium falciparumマラリア		
-Male fertility	女性用妊娠促進薬		
-Male infertility	男性不妊		
-Male-pattern baldness	Male-pattern baldness		
-Mammographic density	Mammographic density		
-Mathematical ability	Mathematical ability		
-Matrix metalloproteinase levels	Matrix metalloproteinase levels		
-Mean corpuscular hemoglobin	平均赤血球血色素濃度		
-Mean corpuscular volume	平均赤血球容積		
-Mean forced vital capacity from 2 exams	Mean forced vital capacity from 2 exams		
-Mean platelet volume	Mean platelet volume		
-Melanoma	B16メラノーマ細胞		
-Memory (short-term)	Memory (short-term)		
-Memory performance	Memory performance		
-Menarche (age at onset)	Menarche (age at onset)		
-Menarche and menopause (age at onset)	Menarche and menopause (age at onset)		
-Meningioma 	Meningioma		
-Meningococcal disease	Meningococcal disease		
-Menopause (age at onset)	Menopause (age at onset)		
-Metabolic syndrome	代謝異常症候群		
-Metabolic syndrome (bivariate traits)	Metabolic syndrome (bivariate traits)		
-Metabolic traits	Metabolic traits		
-Metabolite levels	Metabolite levels		
-Methamphetamine dependence	Methamphetamine dependence		
-Migraine	片頭痛前兆		
-Migraine in bipolar disorder	Migraine in bipolar disorder		
-Monocyte chemoattractant protein-1 	Monocyte chemoattractant protein-1		
-Monocyte early outgrowth colony forming units	Monocyte early outgrowth colony forming units		
-Morbidity-free survival	Morbidity-free survival		
-Mortality among heart failure patients	Mortality among heart failure patients		
-Moyamoya disease	成人もやもや病		
-Multiple myeloma	多発性骨髄腫		
-Multiple sclerosis	一次性進行型多発性硬化症		
-Multiple sclerosis (age of onset)	Multiple sclerosis (age of onset)		
-Multiple sclerosis (severity)	Multiple sclerosis (severity)		
-Multiple sclerosis--Brain Glutamate Levels	Multiple sclerosis--Brain Glutamate Levels		
-Myasthenia gravis 	Myasthenia gravis		
-Myeloproliferative neoplasms	Myeloproliferative neoplasms		
-Myocardial infarction	貫壁性心筋梗塞		
-Myocardial infarction (early onset)	Myocardial infarction (early onset)		
-Myopia (pathological)	Myopia (pathological)		
-N-glycan levels	N-glycan levels		
-Naphthyl-keratin adduct levels 	Naphthyl-keratin adduct levels		
-Narcolepsy	睡眠発作		
-Nasopharyngeal carcinoma	鼻咽頭がん		
-Natriuretic peptide levels	Natriuretic peptide levels		
-Neonatal lupus	新生児エリテマトーデス		
-Nephrolithiasis	多発性腎結石		
-Nephropathy	高カルシウム血症性腎症		
-Nephropathy (idiopathic membranous)	Nephropathy (idiopathic membranous)		
-Nephrotic syndrome (acquired)	Nephrotic syndrome (acquired)		
-Neural processing (facial expression)	Neural processing (facial expression)		
-Neuranatomic and neurocognitive phenotypes	Neuranatomic and neurocognitive phenotypes		
-Neuroblastoma	嗅神経芽細胞腫		
-Neuroblastoma (high-risk)	Neuroblastoma (high-risk)		
-Neuromyelitis optica	視神経脊髄炎		
-Neuroticism	神経質		
-Neutrophil count	好中球数		
-Nevirapine-induced rash	Nevirapine-induced rash		
-Nevus count	Nevus count		
-Nicotine dependence	ニコチン依存症		
-Nodular sclerosis Hodgkin lymphoma	Nodular sclerosis Hodgkin lymphoma		
-Non-albumin protein levels 	Non-albumin protein levels		
-Non-alcoholic fatty liver disease histology (AST)	Non-alcoholic fatty liver disease histology (AST)		
-Non-alcoholic fatty liver disease histology (lobular)	Non-alcoholic fatty liver disease histology (lobular)		
-Non-alcoholic fatty liver disease histology (other)	Non-alcoholic fatty liver disease histology (other)		
-Non-obstructive azoospermia	Non-obstructive azoospermia		
-Non-small cell lung cancer	Non-small cell lung cancer		
-Nonalcoholic fatty liver disease	非アルコール性脂肪性肝疾患		
-Normalized brain volume	Normalized brain volume		
-Obesity	肥満症		
-Obesity (early onset extreme)	Obesity (early onset extreme)		
+Hypertension (young onset)	高血圧 (young onset)	Disease	
+Hypertension risk in short sleep duration	高血圧 (短時間睡眠の継続によるリスク)	Disease	
+Hypertriglyceridemia	高トリグリセリド血症	Disease	
+Hypospadias	尿道下裂	Disease	
+Hypothyroidism	甲状腺機能低下症	Disease	
+IFN-related cytopenia	IFN関連血球減少症	Disease	
+Idiopathic pulmonary fibrosis	特発性肺線維症	Disease	
+IgA levels	IgA(免疫グロブリンA)濃度	Trait_med	
+IgA nephropathy	IgA(免疫グロブリンA)腎症	Disease	
+IgE grass sensitization	IgE grass sensitization?	Trait_med	
+IgE levels 	IgE 濃度	Trait_med	
+IgG levels	IgG 濃度	Trait_med	
+Ileal carcinoids	回腸カルチノイド	Trait_med	
+Immune reponse to smallpox (secreted IFN-alpha)	天然痘(ほうそう)への免疫応答 (secreted IFN-alpha)	Trait_med	
+Immune reponse to smallpox (secreted IL-10)	天然痘(ほうそう)への免疫応答 (secreted IL-10)	Trait_med	
+Immune reponse to smallpox (secreted IL-12p40)	天然痘(ほうそう)への免疫応答 (secreted IL-12p40)	Trait_med	
+Immune reponse to smallpox (secreted IL-1beta)	天然痘(ほうそう)への免疫応答 (secreted IL-1beta)	Trait_med	
+Immune reponse to smallpox (secreted IL-2)	天然痘(ほうそう)への免疫応答 (secreted IL-2)	Trait_med	
+Immune reponse to smallpox (secreted TNF-alpha)	天然痘(ほうそう)への免疫応答 (secreted TNF-alpha)	Trait_med	
+Immune response to anthrax vaccine 	炭疽ワクチンへの免疫応答	Trait_med	
+Immune response to smallpox vaccine (IL-6)	天然痘(ほうそう)ワクチンへの免疫応答 (IL-6)	Trait_med	
+Immunoglobulin A 	IgA(免疫グロブリンA)腎症	Disease	
+Inattentive symptoms	注意欠陥障害	Disease	
+Infantile hypertrophic pyloric stenosis	乳児肥厚性幽門狭窄症	Disease	
+Inflammatory biomarkers	炎症のバイオマーカー	Trait_med	
+Inflammatory bowel disease	炎症性腸疾患	Disease	
+Inflammatory bowel disease (early onset)	炎症性腸疾患 (early onset)	Disease	
+Influenza (severity)	インフルエンザの重症度	Disease	
+Information processing speed	情報処理の速度	Trait_easy	
+Insomnia (caffeine-induced)	不眠症 (カフェイン誘導性の)	Disease	
+Insulin resistance/response	インシュリン抵抗・応答性	Trait_med	
+Insulin-like growth factors	インシュリン様成長因子	Trait_med	
+Insulin-related traits	インシュリン関連形質	Trait_med	
+Intelligence	知能	Trait_easy	
+Interleukin-18 levels	インターロイキン18濃度	Trait_med	
+Interstitial lung disease 	間質性肺疾患	Disease	
+Intracranial aneurysm	頭蓋内動脈瘤	Disease	
+Intracranial volume	頭蓋内体積	Trait_med	
+Intraocular pressure	眼内圧	Trait_med	
+Iris characteristics	虹彩の特徴	Trait_easy	
+Iris color	虹彩の色	Trait_easy	
+Iron levels	鉄濃度	Trait_med	
+Iron status biomarkers	鉄の状態のバイオマーカー	Trait_med	
+Kawasaki disease	川崎病	Disease	
+Keloid	ケロイド(蟹足腫)	Disease	
+Kidney stones	腎結石	Disease	
+Knee osteoarthritis	膝関節症	Disease	
+LDL cholesterol	LDLコレステロール	Trait_med	
+Lapatinib-induced hepatotoxicity	ラパチニブ誘導性の肝臓毒性	Trait_med	
+Large B-cell lymphoma	大細胞型B細胞性リンパ腫	Disease	
+Lean body mass and age at menarche (combined)	除脂肪体重と月経開始 (combined)	Trait_med	
+Left ventricular mass	左室体積	Trait_med	
+Lentiform nucleus volume 	レンズ核体積	Trait_med	
+Leprosy	らい(癩)病 (ハンセン病)	Disease	
+Life threatening arrhythmia	致命的な不整脈	Disease	
+Lipid levels in hepatitis C treatment	C型肝炎治療における脂質濃度	Trait_med	
+Lipid metabolism phenotypes	脂質代謝の表現型	Trait_med	
+Lipid traits	脂質の形質	Trait_med	
+Lipoprotein-associated phospholipase A2 activity and mass	リポタンパク質関連ホスホリパーゼA2の活性と量	Trait_med	
+Liver enzyme levels	肝臓酵素濃度	Trait_med	
+Liver enzyme levels (alanine transaminase)	肝臓酵素濃度 (alanine transaminase)	Trait_med	
+Liver enzyme levels (alkaline phosphatase)	肝臓酵素濃度 (alkaline phosphatase)	Trait_med	
+Liver enzyme levels (gamma-glutamyl transferase)	肝臓酵素濃度 (gamma-glutamyl transferase)	Trait_med	
+Longevity	寿命	Trait_easy	
+Lp (a) levels	リポタンパク質(a)濃度	Trait_med	
+Lumiracoxib-related liver injury	ルミラコキシブ関連の肝臓損傷	Disease	
+Lung adenocarcinoma	肺腺がん	Disease	
+Lung adenocarcinoma (clinical stage)	肺腺がん (clinical stage)	Disease	
+Lung cancer	肺がん	Disease	
+Lung cancer-asbestos exposure interaction	肺がんとアスベスト曝露の相互作用	Disease	
+Lupus	ループス(狼瘡)	Disease	
+Lymphocyte counts	リンパ球量	Trait_med	
+MRI atrophy measures	MRIによる萎縮測定	Trait_med	
+Magnesium levels	マグネシウム濃度	Trait_med	
+Major CVD	主要な心血管疾患	Disease	
+Major depressive disorder	大うつ病性障害	Disease	
+Major depressive disorder (broad)	大うつ病性障害 (broad)	Disease	
+Major mood disorders	主要な気分障害	Disease	
+Malaria	マラリア	Disease	
+Male fertility	雄性稔性(生殖能)	Disease	
+Male infertility	男性不妊症	Disease	
+Male-pattern baldness	男性型脱毛症	Disease	
+Mammographic density	乳房X線撮影の密度	Trait_med	
+Mathematical ability	数理能力	Trait_easy	
+Matrix metalloproteinase levels	マトリックスメタロプロテアーゼ濃度	Trait_med	
+Mean corpuscular hemoglobin	平均赤血球ヘモグロビン量	Trait_med	
+Mean corpuscular volume	平均赤血球容積	Trait_med	
+Mean forced vital capacity from 2 exams	平均努力肺活量 (2つの検査による)	Trait_med	
+Mean platelet volume	平均血小板容積	Trait_med	
+Melanoma	メラノーマ(悪性黒色腫)	Disease	
+Memory (short-term)	短期記憶	Trait_easy	
+Memory performance	記憶能力	Trait_easy	
+Menarche (age at onset)	月経開始期 (age at onset)	Trait_med	
+Menarche and menopause (age at onset)	月経開始期と閉経 (age at onset)	Trait_med	
+Meningioma 	髄膜腫 (脳膜腫)	Disease	
+Meningococcal disease	髄膜炎菌性疾患	Disease	
+Menopause (age at onset)	閉経 (age at onset)	Trait_med	
+Metabolic syndrome	メタボリックシンドローム	Disease	
+Metabolic syndrome (bivariate traits)	メタボリックシンドローム (二変量の形質)	Disease	
+Metabolic traits	代謝の形質	Trait_med	
+Metabolite levels	代謝物質濃度	Trait_med	
+Methamphetamine dependence	メタンフェタミン依存症	Disease	
+Migraine	偏頭痛	Disease	
+Migraine in bipolar disorder	双極性障害における偏頭痛	Disease	
+Monocyte chemoattractant protein-1 	単球走化性タンパク質-1	Trait_med	
+Monocyte early outgrowth colony forming units	単核細胞の早期増殖コロニーフォーミングユニット	Trait_med	
+Morbidity-free survival	罹患なしの生存	Trait_med	
+Mortality among heart failure patients	心不全患者における死亡率	Disease	
+Moyamoya disease	もやもや病(ウィリス動脈輪閉塞症)	Disease	
+Multiple myeloma	多発性骨髄腫	Disease	
+Multiple sclerosis	多発性硬化症	Disease	
+Multiple sclerosis (age of onset)	多発性硬化症 (age of onset)	Disease	
+Multiple sclerosis (severity)	多発性硬化症の重症度	Disease	
+Multiple sclerosis--Brain Glutamate Levels	多発性硬化症と脳グルタミン酸濃度	Trait_med	
+Myasthenia gravis 	重症筋無力症	Disease	
+Myeloproliferative neoplasms	骨髄増殖性腫瘍	Disease	
+Myocardial infarction	心筋梗塞	Disease	
+Myocardial infarction (early onset)	心筋梗塞 (early onset)	Disease	
+Myopia (pathological)	近視 (病理的な)	Disease	
+N-glycan levels	N-グリカン濃度	Trait_med	
+Naphthyl-keratin adduct levels 	ナフチル角質付加物濃度	Trait_med	
+Narcolepsy	睡眠発作(ナルコレプシー)	Disease	
+Nasopharyngeal carcinoma	鼻咽頭がん	Disease	
+Natriuretic peptide levels	ナトリウム利尿ペプチド濃度	Trait_med	
+Neonatal lupus	新生児ループス	Disease	
+Nephrolithiasis	腎石症	Disease	
+Nephropathy	腎障害	Disease	
+Nephropathy (idiopathic membranous)	特発性膜性腎症	Disease	
+Nephrotic syndrome (acquired)	後天性ネフローゼ症候群	Disease	
+Neural processing (facial expression)	神経処理 (顔面表情)	Trait_med	
+Neuranatomic and neurocognitive phenotypes	神経解剖学的・認知神経科学的な表現型	Trait_med	
+Neuroblastoma	神経芽細胞腫(ニューロブラストーマ)	Disease	
+Neuroblastoma (high-risk)	神経芽細胞腫(ニューロブラストーマ)の高いリスク	Disease	
+Neuromyelitis optica	視神経脊髄炎	Disease	
+Neuroticism	神経質(ニューロティシズム)	Disease	
+Neutrophil count	好中球数	Trait_med	
+Nevirapine-induced rash	ネビラピン誘発性の発疹	Disease	
+Nevus count	母斑数	Trait_med	
+Nicotine dependence	ニコチン依存症	Disease	
+Nodular sclerosis Hodgkin lymphoma	結節硬化型ホジキンリンパ腫	Disease	
+Non-albumin protein levels 	非アルブミンタンパク濃度	Trait_med	
+Non-alcoholic fatty liver disease histology (AST)	非アルコール性脂肪性肝疾患の組織学 (AST)	Disease	
+Non-alcoholic fatty liver disease histology (lobular)	非アルコール性脂肪性肝疾患の組織学 (lobular)	Disease	
+Non-alcoholic fatty liver disease histology (other)	非アルコール性脂肪性肝疾患の組織学 (other)	Disease	
+Non-obstructive azoospermia	非閉塞性無精子症	Disease	
+Non-small cell lung cancer	非小細胞肺がん	Disease	
+Nonalcoholic fatty liver disease	非アルコール性脂肪性肝疾患	Disease	
+Normalized brain volume	標準脳容積	Trait_med	
+Obesity	肥満症	Disease	
+Obesity (early onset extreme)	肥満症 (early onset extreme)		
+#			
 Obesity (extreme)	Obesity (extreme)		
 Obesity and blood pressure	Obesity and blood pressure		
 Obesity and osteoporosis	Obesity and osteoporosis		
