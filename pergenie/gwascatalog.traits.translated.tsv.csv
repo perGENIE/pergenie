@@ -497,121 +497,122 @@ Non-small cell lung cancer	非小細胞肺がん	Disease
 Nonalcoholic fatty liver disease	非アルコール性脂肪性肝疾患	Disease	
 Normalized brain volume	標準脳容積	Trait_med	
 Obesity	肥満症	Disease	
-Obesity (early onset extreme)	肥満症 (early onset extreme)		
+Obesity (early onset extreme)	肥満症 (early onset extreme)	Disease	
 #			
-Obesity (extreme)	Obesity (extreme)		
-Obesity and blood pressure	Obesity and blood pressure		
-Obesity and osteoporosis	Obesity and osteoporosis		
-Obesity-related traits	Obesity-related traits		
-Obsessive-compulsive disorder	強迫症		
-Odorant perception	Odorant perception		
-Optic disc parameters	Optic disc parameters		
-Optic disc size (cup)	Optic disc size (cup)		
-Optic disc size (disc)	Optic disc size (disc)		
-Optic disc size (rim)	Optic disc size (rim)		
-Oral cancers (chewing tobacco related)	Oral cancers (chewing tobacco related)		
-Orofacial clefts	Orofacial clefts		
-Osteoarthritis	CM関節変形性関節症		
-Osteonecrosis of the jaw	ビスホスホネート誘発顎骨壊死		
-Osteoporosis	オステオポローシス		
-Osteoporosis-related phenotypes	Osteoporosis-related phenotypes		
-Other erythrocyte phenotypes	Other erythrocyte phenotypes		
-Otosclerosis	耳硬化症		
-Ovarian cancer	卵巣上皮がん		
-Ovarian reserve	Ovarian reserve		
-P-tau181p	P-tau181p		
-PR interval	ＰＲ(ＰＱ)間隔		
-Paclitaxel-induced neuropathy	Paclitaxel-induced neuropathy		
-Paget's disease	乳房パジェット病		
-Pain	mカルパイン		
-Pancreatic cancer	膵がん		
-Panic disorder	広場恐怖を伴うパニック障害		
-Parkinson's disease	特発性パーキンソン病		
-Parkinson's disease (age of onset)	Parkinson's disease (age of onset)		
-Parkinson's disease (familial)	Parkinson's disease (familial)		
-Parkinson's disease (interaction with coffee consumption)	Parkinson's disease (interaction with coffee consumption)		
-Parkinson's disease (motor and cognition)	Parkinson's disease (motor and cognition)		
-Partial epilepsies	Partial epilepsies		
-Pelvic organ prolapse	骨盤内臓器脱		
-Pemphigus vulgaris	尋常性天疱瘡		
-Pericardial fat	Pericardial fat		
-Periodontal microbiota	Periodontal microbiota		
-Periodontitis	若年性歯周炎		
-Peripartum cardiomyopathy	産褥性心筋症		
-Peripheral artery disease	末梢動脈疾患		
-Permanent tooth development	Permanent tooth development		
-Personality dimensions	Personality dimensions		
-Personality disorders	Personality disorders		
-Phospholipid levels (plasma)	Phospholipid levels (plasma)		
-Phosphorus levels	Phosphorus levels		
-Phytosterol levels	Phytosterol levels		
-Plasminogen activator inhibitor type 1 levels (PAI-1)	Plasminogen activator inhibitor type 1 levels (PAI-1)		
-Platelet aggregation	血小板凝集抑制作用		
-Platelet counts	Platelet counts		
-Platelet function and related traits	Platelet function and related traits		
-Podoconiosis	Podoconiosis		
-Polycystic ovary syndrome	多嚢胞性卵巣症候群		
-Polyunsaturated fatty acid levels	Polyunsaturated fatty acid levels		
-Post- traumatic stress disorder	Post- traumatic stress disorder		
-Postoperative nausea and vomiting 	Postoperative nausea and vomiting		
-Postoperative ventricular dysfunction 	Postoperative ventricular dysfunction		
-Preeclampsia	妊娠高血圧腎症		
-Premature ovarian failure	早発閉経		
-Primary biliary cirrhosis	原発性胆汁性肝硬変		
-Primary sclerosing cholangitis	原発性硬化性胆管炎		
-Primary tooth development (number of teeth)	Primary tooth development (number of teeth)		
-Primary tooth development (time to first tooth eruption)	Primary tooth development (time to first tooth eruption)		
-Prion diseases	Prion diseases		
-Progranulin levels	Progranulin levels		
-Progressive supranuclear palsy	進行性核上麻痺		
-Proinsulin levels	Proinsulin levels		
-Prostate cancer	前立腺がん細胞株		
-Prostate cancer (gene x gene interaction)	Prostate cancer (gene x gene interaction)		
-Prostate cancer mortality	Prostate cancer mortality		
-Prostate-specific antigen levels	Prostate-specific antigen levels		
-Protein C levels	Protein C levels		
-Protein quantitative trait loci	Protein quantitative trait loci		
-Prothrombin time	プロトロンビン時間		
-Pseudoexfoliation syndrome	Pseudoexfoliation syndrome		
-Psoriasis	網状類乾癬		
-Psoriatic arthritis	乾癬性関節炎		
-Pulmonary function	肺機能検査		
-Pulmonary function decline	Pulmonary function decline		
-QT interval	補正QT時間		
-Quantitative traits	Quantitative traits		
-RR interval (heart rate)	RR interval (heart rate)		
-Radiation response	Radiation response		
-Reasoning	Reasoning		
-Recombination rate (females)	Recombination rate (females)		
-Recombination rate (males)	Recombination rate (males)		
-Red blood cell traits	Red blood cell traits		
-Red vs non-red hair color	Red vs non-red hair color		
-Red vs. non-red hair color	Red vs. non-red hair color		
+Obesity (extreme)	肥満症 (極度の)	Disease	
+Obesity and blood pressure	肥満症と血圧	Trait_med	
+Obesity and osteoporosis	肥満症と骨粗鬆症	Disease	
+Obesity-related traits	肥満関連形質	Trait_med	
+Obsessive-compulsive disorder	強迫性障害	Disease	
+Odorant perception	臭気物質知覚力	Trait_med	
+Optic disc parameters	視神経円板パラメータ	Trait_med	
+Optic disc size (cup)	視神経円板の大きさ (cup)	Trait_med	
+Optic disc size (disc)	視神経円板の大きさ (disc)	Trait_med	
+Optic disc size (rim)	視神経円板の大きさ (rim)	Trait_med	
+Oral cancers (chewing tobacco related)	口腔がん (噛みたばこ関連の)	Disease	
+Orofacial clefts	口唇裂・口蓋裂	Disease	
+Osteoarthritis	骨関節炎	Disease	
+Osteonecrosis of the jaw	顎骨壊死	Disease	
+Osteoporosis	骨粗鬆症	Disease	
+Osteoporosis-related phenotypes	骨粗鬆症関連形質	Trait_med	
+Other erythrocyte phenotypes	その他の赤血球表現型	Trait_med	
+Otosclerosis	耳硬化症	Disease	
+Ovarian cancer	卵巣がん	Disease	
+Ovarian reserve	卵巣予備能	Trait_med	
+P-tau181p	リン酸化タウ(P-tau181p)	Trait_med	
+PR interval	PR間隔	Trait_med	
+Paclitaxel-induced neuropathy	パクリタキセル誘導性の神経障害	Disease	
+Paget's disease	乳房ページェット病	Disease	
+Pain	疼痛(痛み)	Trait_med	
+Pancreatic cancer	膵臓がん	Disease	
+Panic disorder	パニック障害	Disease	
+Parkinson's disease	パーキンソン病	Disease	
+Parkinson's disease (age of onset)	パーキンソン病 (age of onset)	Disease	
+Parkinson's disease (familial)	パーキンソン病 (familial)	Disease	
+Parkinson's disease (interaction with coffee consumption)	パーキンソン病 (interaction with coffee consumption)	Disease	
+Parkinson's disease (motor and cognition)	パーキンソン病 (motor and cognition)	Disease	
+Partial epilepsies	部分的なてんかん	Disease	
+Pelvic organ prolapse	骨盤臓器脱	Disease	
+Pemphigus vulgaris	尋常性天疱瘡	Disease	
+Pericardial fat	心膜脂肪	Trait_med	
+Periodontal microbiota	歯周微生物叢	Trait_med	
+Periodontitis	歯周炎	Disease	
+Peripartum cardiomyopathy	周産期心筋症	Disease	
+Peripheral artery disease	末梢動脈疾患	Disease	
+Permanent tooth development	永久歯の発育	Trait_med	
+Personality dimensions	人格の次元	Trait_med	
+Personality disorders	パーソナリティ障害	Disease	
+Phospholipid levels (plasma)	リン脂質濃度 (血しょう)	Trait_med	
+Phosphorus levels	リン濃度	Trait_med	
+Phytosterol levels	フィトステロール(植物性ステロール)濃度	Trait_med	
+Plasminogen activator inhibitor type 1 levels (PAI-1)	1型プラスミノーゲン活性化因子インヒビター(PAI-1)濃度	Trait_med	
+Platelet aggregation	血小板凝固	Trait_med	
+Platelet counts	血小板数	Trait_med	
+Platelet function and related traits	血小板機能と関連形質	Trait_med	
+Podoconiosis	象皮病	Disease	
+Polycystic ovary syndrome	多嚢胞性卵巣症候群	Disease	
+Polyunsaturated fatty acid levels	多価不飽和脂肪酸濃度	Trait_med	
+Post- traumatic stress disorder	心的外傷後ストレス障害(PTSD)	Disease	
+Postoperative nausea and vomiting 	術後悪心嘔吐	Disease	
+Postoperative ventricular dysfunction 	術後心室機能不全	Disease	
+Preeclampsia	子癇前症(妊娠高血圧腎症)	Disease	
+Premature ovarian failure	早期卵巣機能不全(早発閉経)	Disease	
+Primary biliary cirrhosis	原発性胆汁性肝硬変	Disease	
+Primary sclerosing cholangitis	原発性硬化性胆管炎	Disease	
+Primary tooth development (number of teeth)	乳歯の発育 (歯の数)	Trait_med	
+Primary tooth development (time to first tooth eruption)	乳歯の発育 (初めの歯が現れる時期)	Trait_med	
+Prion diseases	プリオン病	Disease	
+Progranulin levels	プログラヌリン濃度	Trait_med	
+Progressive supranuclear palsy	進行性核上麻痺	Disease	
+Proinsulin levels	プロインシュリン濃度	Trait_med	
+Prostate cancer	前立腺がん	Disease	
+Prostate cancer (gene x gene interaction)	前立腺がん (遺伝子間相互作用)	Disease	
+Prostate cancer mortality	前立腺がん (死亡率)	Disease	
+Prostate-specific antigen levels	前立腺特異抗原濃度	Trait_med	
+Protein C levels	プロテインC濃度	Trait_med	
+Protein quantitative trait loci	タンパク質量的形質遺伝子座	Trait_med	
+Prothrombin time	プロトロンビン時間(血液の凝固因子に関する指標の1つ)	Trait_med	
+Pseudoexfoliation syndrome	水晶体落屑症候群	Disease	
+Psoriasis	乾癬	Disease	
+Psoriatic arthritis	乾癬性関節炎	Disease	
+Pulmonary function	肺機能	Trait_med	
+Pulmonary function decline	肺機能の低下	Trait_med	
+QT interval	QT間隔(心電図用語)	Trait_med	
+Quantitative traits	量的形質		
+RR interval (heart rate)	R-R間隔 (heart rate)		
+Radiation response	放射線反応		
+Reasoning	推論力		
+Recombination rate (females)	組換え率 (女性)		
+Recombination rate (males)	組換え率 (男性)		
+Red blood cell traits	赤血球の形質		
+Red vs non-red hair color	赤毛と非赤毛		
+Red vs. non-red hair color	赤毛と非赤毛		
 Refractive error	屈折異常		
-Renal cell carcinoma	乳頭状腎細胞がん		
-Renal function and chronic kidney disease	Renal function and chronic kidney disease		
-Renal function-related traits (BUN)	Renal function-related traits (BUN)		
-Renal function-related traits (eGRFcrea)	Renal function-related traits (eGRFcrea)		
-Renal function-related traits (sCR)	Renal function-related traits (sCR)		
-Renal function-related traits (urea)	Renal function-related traits (urea)		
-Renal sinus fat 	Renal sinus fat		
-Resistin levels 	Resistin levels		
-Response to TNF antagonist treatment	Response to TNF antagonist treatment		
-Response to TNF-alpha inhibitors in rheumatoid arthritis	Response to TNF-alpha inhibitors in rheumatoid arthritis		
-Response to Vitamin E supplementation	Response to Vitamin E supplementation		
-Response to acetaminophen (hepatotoxicity)	Response to acetaminophen (hepatotoxicity)		
-Response to amphetamines	Response to amphetamines		
-Response to angiotensin II receptor blocker therapy	Response to angiotensin II receptor blocker therapy		
-Response to angiotensin II receptor blocker therapy (opposite direction w/ diuretic therapy)	Response to angiotensin II receptor blocker therapy (opposite direction w/ diuretic therapy)		
-Response to antidepressant treatment	Response to antidepressant treatment		
-Response to antidepressants	Response to antidepressants		
-Response to antineoplastic agents	Response to antineoplastic agents		
-Response to antipsychotic therapy (extrapyramidal side effects)	Response to antipsychotic therapy (extrapyramidal side effects)		
-Response to antipsychotic treatment	Response to antipsychotic treatment		
-Response to cerivastatin	Response to cerivastatin		
-Response to citalopram treatment	Response to citalopram treatment		
-Response to clopidogrel therapy	Response to clopidogrel therapy		
-Response to diuretic therapy	Response to diuretic therapy		
+Renal cell carcinoma	腎細胞がん		
+Renal function and chronic kidney disease	胃機能と慢性腎臓病		
+Renal function-related traits (BUN)	胃機能関連形質 (BUN)		
+Renal function-related traits (eGRFcrea)	胃機能関連形質 (eGRFcrea)		
+Renal function-related traits (sCR)	胃機能関連形質 (sCR)		
+Renal function-related traits (urea)	胃機能関連形質 (urea)		
+Renal sinus fat 	腎洞脂肪		
+Resistin levels 	レジスチン濃度		
+Response to TNF antagonist treatment	TNF拮抗薬治療への応答		
+Response to TNF-alpha inhibitors in rheumatoid arthritis	関節リウマチにおけるTNF-alpha阻害剤への応答		
+Response to Vitamin E supplementation	ビタミンE補給への応答		
+Response to acetaminophen (hepatotoxicity)	アセトアミノフェン(肝毒性)への応答		
+Response to amphetamines	アンフェタミン(合成覚せい剤)への応答		
+Response to angiotensin II receptor blocker therapy	アンジオテンシンII受容体拮抗薬治療への応答		
+Response to angiotensin II receptor blocker therapy (opposite direction w/ diuretic therapy)	アンジオテンシンII受容体拮抗薬治療への応答 (opposite direction w/ diuretic therapy)		
+Response to antidepressant treatment	抗うつ薬治療への応答		
+Response to antidepressants	抗うつ薬への応答		
+Response to antineoplastic agents	抗腫瘍薬への応答		
+Response to antipsychotic therapy (extrapyramidal side effects)	統合失調症治療薬治療への応答 (錐体外路症状)		
+Response to antipsychotic treatment	統合失調症治療への応答		
+Response to cerivastatin	セリバスタチン(高脂血症治療薬)への応答		
+Response to citalopram treatment	シタロプラム(抗うつ薬)治療への応答		
+Response to clopidogrel therapy	クロピドグレル(血小板凝集抑制薬)治療への応答		
+Response to diuretic therapy	利尿剤治療への応答		
+#			
 Response to fenofibrate	Response to fenofibrate		
 Response to gemcitabine in pancreatic cancer 	Response to gemcitabine in pancreatic cancer		
 Response to hepatitis C treatment	Response to hepatitis C treatment		
