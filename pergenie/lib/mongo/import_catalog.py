@@ -7,6 +7,7 @@ import time
 import re
 # import sys
 import pymongo
+from pprint import pprint
 
 from utils.io import pickle_dump_obj
 from utils import clogging
@@ -45,6 +46,7 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja,
             else:
                 eng2ja[record['eng']] = unicode(record['ja'], 'utf-8') or record['eng']
                 eng2category[record['eng']] = record['category'] or 'NA'
+    pprint(eng2ja)
 
     with pymongo.Connection(port=mongo_port) as connection:
         catalog_date_raw = os.path.basename(path_to_gwascatalog).split('.')[1]

@@ -93,21 +93,22 @@ class Command(BaseCommand):
                     # no latest, so today_date is latest
                     latest_date = today_date
                     catalog_info.update({'status': 'latest'}, {'$set': {'date': latest_date}}, upsert=True)
-                    log.info('first time to  import catalog!')
-                    log.info('today_date: {}'.format(today_date))
+                    log.info('First time to import catalog!')
 
                 # check if today_date is newer than latest
                 if today_date > latest_date:
                     # update latest
-                    prev_date = latest_date
-                    catalog_info.update({'status': 'latest'}, {'$set': {'date': latest_date}}, upsert=True)
-                    catalog_info.update({'status': 'prev'}, {'$set': {'date': prev_date}}, upsert=True)
-                    log.info('updated latest in db.catalog_info')
-                    log.info('today_date: {}'.format(today_date))
+                    catalog_info.update({'status': 'latest'}, {'$set': {'date': today_date}}, upsert=True)
+                    catalog_info.update({'status': 'prev'}, {'$set': {'date': latest_date}}, upsert=True)
+                    log.info('Updated latest!')
 
                 else:
                     # do not update
+                    log.info('No need to update.')
                     pass
+
+                log.info('today_date: {}'.format(today_date))
+                log.info('latest: {}'.format(catalog_info.find_one({'status': 'latest'})))
 
         else:
             self.print_help("import", "help")

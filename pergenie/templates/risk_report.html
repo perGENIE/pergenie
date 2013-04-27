@@ -9,18 +9,19 @@
 <div id="main_container" class="span14">
   <section id="main">
 
-    <div class="row-fluid">
-      <div class="span12">
-        <h2>Relative Risk for all traits</h2>
-      </div>
-    </div>
-
     <div class="container">
-      <!-- Breadcrumb -->
+
+      <!-- <\!-- Breadcrumb -\-> -->
+      <!-- <div class="row-fluid"> -->
+      <!--   <ul class="breadcrumb"> -->
+      <!--     <li>Riks Report<span class="divider">/</span></li> -->
+      <!--   </ul> -->
+      <!-- </div> -->
+
       <div class="row-fluid">
-        <ul class="breadcrumb">
-          <li>Riks Report<span class="divider">/</span></li>
-        </ul>
+        <div class="span12">
+          <h2>Relative Risk for all traits</h2>
+        </div>
       </div>
 
       {% if risk_reports %}
@@ -82,44 +83,32 @@
         <div class="row-fluid">
           <div class="span12">
             <div class="padded">
-              <div class="content-box">
-                <div class="content-box-header">
-                  <icon class="icon-exclamation-sign"></icon> Library indexes
-                </div>
 
-                <div class="padded">
-                  <div class="row-fluid">
-                    <div class="span12">
+              <table cellpadding="0" cellspacing="0" border="0" class="display datatable" id="risk_reports_table">
+                <thead>
+                  <tr>
+                    <th>Trait</th>
+                    <th>Value</th>
+                  </tr>
+                </thead>
 
-                      <table cellpadding="0" cellspacing="0" border="0" class="display datatable" id="risk_reports_table">
-                        <thead>
-                          <tr>
-                            <th>Trait</th>
-                            <th>Value</th>
-                          </tr>
-                        </thead>
+                <tbody>
+                  {% if risk_reports %}
+                  {% for trait_name,value in risk_reports.items %}
 
-                        <tbody>
-                          {% if risk_reports %}
-                          {% for trait_name,value in risk_reports.items %}
-
-                          <tr>
-                            <td class="center"><a href="{% url apps.riskreport.views.trait file_name=tmp_infos.0.name trait=trait_name %}">{{ trait_name }}</a></td>
-                            <td class="center">{{ value }}</td>
-		                  </tr>
-		                  {% endfor %}
-		                  {% endif %}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-              </div>
+                  <tr>
+                    <td class="center"><a href="{% url apps.riskreport.views.trait file_name=tmp_infos.0.name trait=trait_name %}">{{ trait_name }}</a></td>
+                    <td class="center">{{ value }}</td>
+		          </tr>
+		          {% endfor %}
+		          {% endif %}
+                </tbody>
+              </table>
             </div>
-            {% endif %}
           </div>
         </div>
 
+        {% endif %}
       </div>
     </div>
 </div>
