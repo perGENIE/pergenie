@@ -50,9 +50,11 @@ urlpatterns = patterns('',
     url(r'^upload/delete', 'apps.upload.views.delete'),
     url(r'^upload/status', 'apps.upload.views.status'),
 
-    url(r'^tutorial/$', 'apps.tutorial.views.index'),
+
     url(r'^tutorial/personal$', 'apps.tutorial.views.personal'),
     url(r'^tutorial/institution$', 'apps.tutorial.views.institution'),
+
+    url(r'^faq/$', 'apps.faq.views.index'),
 )
 
 if 'rosetta' in settings.INSTALLED_APPS:

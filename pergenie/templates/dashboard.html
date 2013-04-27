@@ -57,10 +57,11 @@
                 <span class="button-text">Library</span>
               </button>
 
-              <button class="button square" href="#">
-                <i class="icon-question-sign icon-large"></i>
-                <span class="button-text">FAQ</span>
-              </button>
+              <a href="{% url apps.faq.views.index %}">
+                <button class="button square" href="#">
+                  <i class="icon-question-sign icon-large"></i>
+                  <span class="button-text">FAQ</span>
+              </button></a>
             </div>
             <!-- <div class="divider"></div> -->
           </div>
