@@ -5,7 +5,8 @@ from django.contrib.auth.models import User
 from django.test.client import Client
 from django.conf import settings
 
-import pymongo
+# import pymongo
+
 
 class SimpleTest(TestCase):
     def setUp(self):
@@ -18,15 +19,9 @@ class SimpleTest(TestCase):
         user = User.objects.create_user(self.test_user_id,
                                         '',
                                         self.test_user_password)
-
-        # TODO: mongo
-
-
         # TDOO: >>> csrf_client = Client(enforce_csrf_checks=True)
 
-
     def test_login_required(self):
-
         for page in ['/upload/', '/upload/status']:
             self.client.logout()
             # without login -> redirect to /login/?next=/upload/
@@ -48,6 +43,17 @@ class SimpleTest(TestCase):
             response = self.client.get(page)
             self.failUnlessEqual(response.status_code, 200)
 
+    def test_celery_job_add(self):
+        """Check if celery-job works
+        """
+        from lib.tasks import add
+        from time import sleep
+
+        r = add.delay(5, 5)
+        sleep(1)
+
+        self.failUnlessEqual(r.successful(), True)
+        self.failUnlessEqual(r.result, 10)
 
     # def test_upload(self):
     #     response = self.client.get('/upload/')

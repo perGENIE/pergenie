@@ -32,11 +32,11 @@
         <a href="#" class="destroy box_button_1" title="close">&nbsp;</a>
         <div class="toggle_container">
           <div class="block box_content round_bottom padding_20">
-            
+
 <!--             <form action="{% url apps.riskreport.views.index %}" method="post" enctype="multipart/form-data"> -->
 <!--               {% csrf_token %} -->
 <!-- 		      <fieldset> -->
-                
+
 <!--                     <select name="file_name" onchange="submit(this.form)"> -->
 <!--                       {% for info in infos%} -->
 <!--                       {% if info == tmp_info %} -->
@@ -49,7 +49,7 @@
 <!--               </fieldset> -->
 <!--             </form> -->
 
-            
+
             <div id="container" style="min-width: 200px; height: 400px; margin: 0 auto"></div>
 
             <table cellpadding="0" cellspacing="0" border="0" class="display datatable" id="risk_reports_table">
@@ -155,12 +155,12 @@ $(function () {
 
         });
     });
-    
+
 });
 </script>
 
-<script type="text/javascript" src="{% static 'js/highcharts/highcharts.js' %}"></script>
-<script type="text/javascript" src="{% static 'js/highcharts/modules/exporting.js' %}"></script>
+<script type="text/javascript" src="{% static 'javascripts/highcharts/highcharts.js' %}"></script>
+<script type="text/javascript" src="{% static 'javascripts/highcharts/modules/exporting.js' %}"></script>
 
 <script type="text/javascript">
 $(document).ready(function(){

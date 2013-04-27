@@ -16,6 +16,7 @@
     <link href="{% static 'stylesheets/application.css' %}" media="all" rel="stylesheet" type="text/css" />
     <script src="{% static 'javascripts/application.js' %}" type="text/javascript"></script>
 
+
     <meta name="viewport" content="width=device-width, maximum-scale=1, initial-scale=1, user-scalable=0">
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!-- there's an IE separated stylesheet with the following resets for IE -->
@@ -42,24 +43,6 @@
 
     <!-- <\!-- UI to Top -\-> -->
     <!-- <link rel="stylesheet" type="text/css" media="screen,projection" href="{% static 'css/ui.totop.css' %}"> -->
-
-    <!-- <\!-- Datatables -\-> -->
-    <!-- <link rel="stylesheet" href="{% static 'css/demo_table_jui.intenso.css' %}"> -->
-
-    <!-- <\!-- Admin Instenso main scripts -\-> -->
-    <!-- <link rel="stylesheet" href="{% static 'css/main.css' %}"> -->
-    <!-- <link rel="stylesheet" href="{% static 'css/side_nav.css' %}"> -->
-
-    <!-- <\!-- Favorites and Appple touch icons -\-> -->
-    <!-- <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}"> -->
-    <!-- <link rel="apple-touch-icon" href="{% static 'images/apple-touch-icon.png' %}"> -->
-    <!-- <link rel="apple-touch-icon" sizes="72x72" href="{% static 'images/apple-touch-icon-72x72.png' %}"> -->
-    <!-- <link rel="apple-touch-icon" sizes="114x114" href="{% static 'images/apple-touch-icon-114x114.png' %}"> -->
-
-    <!-- <\!-- windows8 -\-> -->
-    <!-- <meta name="application-name" content="perGENIE"> -->
-    <!-- <meta name="msapplication-TileColor" content="#000000"> -->
-    <!-- <meta name="msapplication-TileImage" content="{% static 'images/apple-touch-icon-114x114.png' %}"/> -->
 
   </head>
 
@@ -295,21 +278,11 @@
     <!-- <script type="text/javascript" language="javascript" src="{% static 'js/bootstrap-modal.js' %}"></script> -->
     <!-- <script type="text/javascript" language="javascript" src="{% static 'js/prettify.js' %}"></script> -->
 
-    <!-- <\!-- <\\!-- Datatables -\\-> -\-> -->
-    <!-- <script type="text/javascript" language="javascript" src="{% static 'js/jquery.datatables.js' %}"></script> -->
-
     <!-- <\!-- Flot Graphs -\-> -->
     <!-- <\!--[if lte IE 8]><script type="text/javascript" language="javascript" src="{% static 'js/excanvas.min.js' %}"></script><![endif]-\-> -->
     <!-- <\!-- <script type="text/javascript" language="javascript" src="{% static 'js/jquery.flot.min.js' %}"></script> -\-> -->
     <!-- <\!-- <script type="text/javascript" language="javascript" src="{% static 'js/jquery.flot.selection.js' %}"></script> -\-> -->
     <!-- <\!-- <script type="text/javascript" language="javascript" src="{% static 'js/jquery.flot.resize.js' %}"></script> -\-> -->
-
-    <!-- <script type="text/javascript" language="javascript" src="{% static 'js/intenso.js' %}"></script> -->
-    <!-- <\!-- <script type="text/javascript" language="javascript" src="{% static 'js/intenso.charts.js' %}"></script> -\-> -->
-    <!-- <\!-- <script type="text/javascript" language="javascript" src="{% static 'js/intenso.calendar.js' %}"></script> -\-> -->
-    <!-- <\!-- <div id="visits_per_day_placeholder" style="width:95%;height:300px;margin-top:20px;"></div> -\-> -->
-    <!-- <\!-- <div id="visits_per_day_overview" style="margin-left:5%;margin-top:20px;width:85%;height:50px"></div> -\-> -->
-
 
     <!-- Additional javascript files -->
     {% block js %}{% endblock %}
@@ -327,7 +300,12 @@
 </script>
 
 
+
+
 <link rel="stylesheet" href="{% static 'css/demo_table_jui.intenso.css' %}">
 <script type="text/javascript" language="javascript" src="{% static 'javascripts/jquery.datatables.js' %}"></script>
+
+
+
   </body>
 </html>
