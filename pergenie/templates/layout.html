@@ -82,38 +82,38 @@
               <div class="nav-collapse collapse">
                 <ul class="nav primary">
                   <li class="brand">
-                    <span class="title"> <i class="icon-cogs"></i> perGENIE </span>
+                    <span class="title"><a href="{% url apps.dashboard.views.index %}"><i class="icon-cogs"></i> perGENIE </a></span>
                   </li>
 
-                  <li class="">
-                    <a href="{% url apps.dashboard.views.index %}">
-                      <i class="icon-dashboard"></i> Dashboard
-                    </a>
-                  </li>
+                  <!-- <li class=""> -->
+                  <!--   <a href="{% url apps.dashboard.views.index %}"> -->
+                  <!--     <i class="icon-dashboard"></i> Dashboard -->
+                  <!--   </a> -->
+                  <!-- </li> -->
 
                   <!-- components -->
                   <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                      <i class="icon-list"></i> Components
+                      <i class="icon-wrench"></i> Components
                       <b class="caret"></b>
                     </a>
 
                     <ul class="dropdown-menu secondary">
                       <li class="">
                         <a href="{% url apps.riskreport.views.index %}">
-                          <i class="icon-tasks"></i> RiskReport
+                          <i class="icon-align-left"></i> RiskReport
                         </a>
                       </li>
 
                       <li class="">
                         <a href="#">
-                          <i class="icon-ok-sign"></i> Traits
+                          <i class="icon-user"></i> Traits
                         </a>
                       </li>
 
                       <li class="">
                         <a href="#">
-                          <i class="icon-gift"></i> Population
+                          <i class="icon-globe"></i> Population
                         </a>
                       </li>
 
@@ -121,7 +121,7 @@
 
                       <li class="">
                         <a href="{% url apps.upload.views.index %}">
-                          <i class="icon-table"></i> Upload
+                          <i class="icon-arrow-up"></i> Upload
                         </a>
                       </li>
 
@@ -129,7 +129,7 @@
 
                       <li class="">
                         <a href="{% url apps.library.views.index %}">
-                          <i class="icon-table"></i> Library
+                          <i class="icon-book"></i> Library
                         </a>
                         <!-- <li><a href="{% url apps.library.views.index %}">Index</a></li> -->
                         <!-- <li><a href="{% url apps.library.views.trait_index %}">- Traits</a></li> -->
@@ -138,7 +138,7 @@
 
                       <li class="">
                         <a href="{% url apps.tutorial.views.index %}">
-                          <i class="icon-bar-chart"></i> FAQ
+                          <i class="icon-question-sign"></i> FAQ
                         </a>
                       </li>
 
@@ -157,8 +157,10 @@
                 <ul class="nav pull-right primary">
                   <li class="dropdown profile">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                      <img class="menu-avatar" src="{% static 'images/profile-thumb.png' %}" />
+                      <i class="icon-unlock"></i>
+                      <!-- <img class="menu-avatar" src="{% static 'images/profile-thumb.png' %}" /> -->
                       John Smith
+
                       <b class="caret"></b>
                     </a>
                     <ul class="dropdown-menu secondary ">
