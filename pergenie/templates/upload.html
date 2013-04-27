@@ -25,7 +25,7 @@
 
               <div class="padded">
                 <div class="row-fluid">
-                  <div class="span12">
+                  <div class="span12" data-step="1" data-intro="Hello all! :) This project's called Intro.js.">
 
                     <form class="form-horizontal" action="{% url apps.upload.views.index %}" method="post" enctype="multipart/form-data">
                       {% csrf_token %}
@@ -34,13 +34,14 @@
                         <!--   <small>...</small> -->
                         <!-- </div> -->
 
-                        <div class="control-group">
+                        <div class="control-group" data-step="2" data-intro="Hello all! :) This project's called Intro.js.">
                           <label class="control-label"><a data-toggle="modal" href="#uploadModal">Genome File <i class="icon-info-sign"></i></a></label>
                           <div class="controls">
                             <input type="file" name="call">
                           </div>
                         </div>
 
+                        <div data-step="3" data-intro="Hello all! :) This project's called Intro.js.">
                         <div class="control-group">
                           <label class="control-label"><a data-toggle="modal" href="#uploadModal">Population <i class="icon-info-sign"></i></a></label>
                           <div class="controls">
@@ -76,12 +77,14 @@
                             </select>
                           </div>
                         </div>
-
+                        </div>
                         <span class="label label-warning">Notice</span> genome fileをアップロードする前に，<a href="#">利用規約</a>をご確認ください．
-
+                        <div  data-step="3" data-intro="Hello all! :) This project's called Intro.js.">
                         <div class="form-actions">
                           <input type="submit" class="btn btn-primary">
                           <input type="reset" value="reset" class="btn">
+
+                        </div>
                         </div>
 
                         {% if msg %}
@@ -264,6 +267,10 @@
 {% endblock %}
 
 {% block js %}
+<link href="{% static 'css/introjs.css' %}" rel="stylesheet">
+<script type="text/javascript" src="{% static 'javascripts/intro.js' %}"></script>
+<script type="text/javascript">introJs().start()</script>
+
 <script type="text/javascript">window.upload_status_url = "{% url apps.upload.views.status %}";</script>
 <script type="text/javascript" src="{% static 'js/upload.js' %}"></script>
 {% endblock %}

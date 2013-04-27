@@ -31,10 +31,11 @@
         <div class="row-fluid">
           <div class="span12">
             <div class="padded">
+              <a href="{% url apps.riskreport.views.index %}">
               <button class="button square" href="#">
                 <i class="icon-align-left icon-large"></i>
                 <span class="button-text">RiskReport</span>
-              </button>
+              </button></a>
 
               <button class="button square" href="#">
                 <i class="icon-user icon-large"></i>
@@ -46,15 +47,17 @@
                 <span class="button-text">Population</span>
               </button>
 
+              <a href="{% url apps.upload.views.index %}">
               <button class="button square" href="#" data-step="1" data-intro="Hello all! :) This project's called Intro.js.">
                 <i class="icon-arrow-up icon-large"></i>
                 <span class="button-text">Upload</span>
-              </button>
+              </button></a>
 
+              <a href="{% url apps.library.views.index %}">
               <button class="button square" href="#">
                 <i class="icon-book icon-large"></i>
                 <span class="button-text">Library</span>
-              </button>
+              </button></a>
 
               <a href="{% url apps.faq.views.index %}">
                 <button class="button square" href="#">
