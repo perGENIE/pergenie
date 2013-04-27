@@ -32,12 +32,15 @@ def index(request):
     msgs['dbsnp_version'] = settings.DBSNP_VERSION
     msgs['refgenome_version'] = settings.REFGENOME_VERSION
 
-    if request.method == 'POST':
-        # if query:
-        with pymongo.Connection(port=settings.MONGO_PORT) as connection:
-            db = connection['pergenie']
-            data_info = db['data_info']
+    with pymongo.Connection(port=settings.MONGO_PORT) as connection:
+        db = connection['pergenie']
+        data_info = db['data_info']
+        catalog_info = db['catalog_info']
 
+        msgs['latest_catalog_date'] = catalog_info.find_one({'status': 'latest'})['date']
+
+        if request.method == 'POST':
+            # if query:
             uploadeds = list(data_info.find({'user_id': user_id}))
             file_name = uploadeds[0]['name']
 
@@ -53,8 +56,8 @@ def index(request):
                                        'variants_map': variants_map})
 
     msgs['err'] = err
-    msgs['my_trait_list'] = MY_TRAIT_LIST
-    msgs['my_trait_list_ja'] = MY_TRAIT_LIST_JA
+    # msgs['my_trait_list'] = MY_TRAIT_LIST
+    # msgs['my_trait_list_ja'] = MY_TRAIT_LIST_JA
 
     return direct_to_template(request, 'library.html', msgs)
 
