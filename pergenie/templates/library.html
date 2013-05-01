@@ -16,15 +16,29 @@
 
       <div class="content-box">
         <div class="content-box-header">
+          <i class="icon-wrench"></i> Versions of reference files
+        </div>
+        <div class="row-fluid">
+          <div class="span12">
+            <div class="padded">
+
+              dbSNP Build {{ dbsnp_version }},
+              <br>
+              Human Genome Assembly {{ refgenome_version }}
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-box">
+        <div class="content-box-header">
           <icon class="icon-exclamation-sign"></icon> Library indexes
         </div>
 
-        <div class="padded">
+        <!-- <div class="padded"> -->
           <div class="row-fluid">
             <div class="span12">
-
-              <small>Indexes for library (database, source) which perGENIE uses for risk calculation. </small>
-
               <table class="table table-bordered">
                 <thead>
                   <tr>
@@ -59,24 +73,7 @@
               </table>
             </div>
           </div>
-        </div>
-      </div>
-
-      <div class="content-box">
-        <div class="content-box-header">
-          <i class="icon-wrench"></i> Versions of reference files
-        </div>
-        <div class="row-fluid">
-          <div class="span12">
-            <div class="padded">
-
-              dbSNP Build {{ dbsnp_version }},
-              <br>
-              Human Genome Assembly {{ refgenome_version }}
-
-            </div>
-          </div>
-        </div>
+        <!-- </div> -->
       </div>
 
     </div>
