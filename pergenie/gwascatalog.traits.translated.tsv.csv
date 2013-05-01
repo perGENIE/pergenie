@@ -488,9 +488,9 @@ Nevus count	母斑数	Trait_med
 Nicotine dependence	ニコチン依存症	Disease
 Nodular sclerosis Hodgkin lymphoma	結節硬化型ホジキンリンパ腫	Disease
 Non-albumin protein levels 	非アルブミンタンパク濃度	Trait_med
-Non-alcoholic fatty liver disease histology (AST)	非アルコール性脂肪性肝疾患の組織学 (AST)	Disease
-Non-alcoholic fatty liver disease histology (lobular)	非アルコール性脂肪性肝疾患の組織学 (lobular)	Disease
-Non-alcoholic fatty liver disease histology (other)	非アルコール性脂肪性肝疾患の組織学 (other)	Disease
+Non-alcoholic fatty liver disease histology (AST)	非アルコール性脂肪性肝疾患の組織学 (AST)	Trait_med
+Non-alcoholic fatty liver disease histology (lobular)	非アルコール性脂肪性肝疾患の組織学 (lobular)	Trait_med
+Non-alcoholic fatty liver disease histology (other)	非アルコール性脂肪性肝疾患の組織学 (other)	Trait_med
 Non-obstructive azoospermia	非閉塞性無精子症	Disease
 Non-small cell lung cancer	非小細胞肺がん	Disease
 Nonalcoholic fatty liver disease	非アルコール性脂肪性肝疾患	Disease
