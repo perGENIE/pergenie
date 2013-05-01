@@ -14,35 +14,33 @@
     <meta name="keywords" content="pergenie, pergene">
 
     <link href="{% static 'stylesheets/application.css' %}" media="all" rel="stylesheet" type="text/css" />
-    <script src="{% static 'javascripts/application.js' %}" type="text/javascript"></script>
-
 
     <meta name="viewport" content="width=device-width, maximum-scale=1, initial-scale=1, user-scalable=0">
+
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!-- there's an IE separated stylesheet with the following resets for IE -->
     <!--[if lt IE 9]>
         <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-        <script src="../javascripts/html5shiv.js" type="text/javascript"></script>
-        <script src="../javascripts/excanvas.js" type="text/javascript"></script>
-        <script src="../javascripts/ie_fix.js" type="text/javascript"></script>
+        <script src="../js/html5shiv.js" type="text/javascript"></script>
+        <script src="../js/excanvas.min.js" type="text/javascript"></script>
+        <script src="../js/ie_fix.js" type="text/javascript"></script>
         <link href="../stylesheets/ie_fix.css" media="screen" rel="stylesheet" type="text/css" />
 
-
-    <!-- <\!-- Bootstrap -\-> -->
+    <!-- Bootstrap -->
     <!-- <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet"> -->
     <!-- <link href="{% static 'css/bootstrap-responsive.css' %}" rel="stylesheet"> -->
 
-    <!-- <\!-- Bootstrap CSS fixes for IE6 -\-> -->
-    <!-- <\!--[if lt IE 7]><link rel="stylesheet" href="http://blueimp.github.com/cdn/css/bootstrap-ie6.min.css"><![endif]-\-> -->
+    <!-- Bootstrap CSS fixes for IE6 -->
+    <!--[if lt IE 7]><link rel="stylesheet" href="http://blueimp.github.com/cdn/css/bootstrap-ie6.min.css"><![endif]-->
 
-    <!-- <\!-- jQuery UI Bootstrap theme -\-> -->
+    <!-- jQuery UI Bootstrap theme -->
     <!-- <link type="text/css" href="{% static 'css/jquery-ui-1.8.16.custom.css' %}" rel="stylesheet"> -->
 
-    <!-- <\!-- Bootstrap google prettify -\-> -->
-    <!-- <link href="{% static 'css/prettify.css' %}" rel="stylesheet"> -->
+    <!-- Bootstrap google prettify -->
+    <link href="{% static 'css/prettify.css' %}" rel="stylesheet">
 
-    <!-- <\!-- UI to Top -\-> -->
-    <!-- <link rel="stylesheet" type="text/css" media="screen,projection" href="{% static 'css/ui.totop.css' %}"> -->
+    <!-- UI to Top -->
+    <link rel="stylesheet" type="text/css" media="screen,projection" href="{% static 'css/ui.totop.css' %}">
 
   </head>
 
@@ -152,11 +150,6 @@
                           <i class="icon-cog"></i> Account settings
                         </a>
                       </li>
-                      <!-- <li> -->
-                      <!--   <a href="#"> -->
-                      <!--     <i class="icon-lock"></i> Change password -->
-                      <!--   </a> -->
-                      </li>
                       <li class="divider"></li>
                       <li class="">
                         <a href="{% url apps.frontend.views.logout %}">
@@ -175,30 +168,8 @@
     </div>
 
 
+  <!-- <a data-toggle="modal" href="#aboutModal">&copy; perGENIE</a> -->
 
-  <!--   <\!-- Top navigation bar -\-> -->
-  <!--   <div class="navbar navbar-fixed-top"> -->
-  <!--     <div class="navbar-inner"> -->
-  <!--       <div class="container-fluid"> -->
-  <!--         <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"> -->
-  <!--           <span class="i-bar"></span> -->
-  <!--           <span class="i-bar"></span> -->
-  <!--           <span class="i-bar"></span> -->
-  <!--         </a> -->
-  <!--         <div class="nav-collapse"> -->
-  <!--           <ul class="nav"> -->
-  <!--             <li><a href="{% url apps.frontend.views.logout %}">Logout</a></li> -->
-  <!--             <li><a data-toggle="modal" href="#aboutModal">&copy; perGENIE</a></li> -->
-  <!--           </ul> -->
-  <!--           <p class="navbar-text pull-right"> -->
-  <!--             {% if user %}Logged in as <a href="{% url apps.settings.views.user_settings %}">{{user.username}}</a>{% else %}Not logged in{% endif %} -->
-  <!--           </p> -->
-  <!--         </div> -->
-  <!--       </div> -->
-  <!--     </div> -->
-  <!--   </div> -->
-
-  <!--   <\!-- about modal -\-> -->
   <!--   <div id="aboutModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="aboutModalLabel" aria-hidden="true"> -->
   <!--     <div class="modal-header"> -->
   <!--       <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button> -->
@@ -228,12 +199,12 @@
   <!--   </div> -->
 
 
-
         <!-- main container -->
         {% block main_container %}
         {% endblock %}
         <!-- main container end -->
 
+        <!-- footer -->
         <div class="container">
           <div class="row-fluid">
             <div class="span12">
@@ -248,64 +219,50 @@
         </div>
 
 
-    <!-- footer -->
-    <!-- </div><\!--/.fluid-container-\-> -->
+    <!-- jQuery (UI) -->
+    <script type="text/javascript" language="javascript" src="{% static 'js/jquery.min.js' %}"></script>
+    <script type="text/javascript" language="javascript" src="{% static 'js/jquery-ui.min.js' %}"></script>
 
-
-    <!-- <\!-- javascript -->
-    <!-- ================================================== -\-> -->
-    <!-- <\!-- Placed at the end of the document so the pages load faster -\-> -->
-    <!-- <\!-- jQuery (UI) -\-> -->
-    <!-- <script type="text/javascript" language="javascript" src="{% static 'js/jquery.min.js' %}"></script> -->
-    <!-- <script type="text/javascript" language="javascript" src="{% static 'js/jquery-ui.min.js' %}"></script> -->
-
-    <!-- <\!-- jQuery Cookie -\-> -->
+    <!-- jQuery Cookie -->
     <!-- <script type="text/javascript" language="javascript" src="{% static 'js/jquery.cookie.js' %}"></script> -->
 
-    <!-- <\!-- Sherpa side nav -\-> -->
-    <!-- <script type="text/javascript" language="javascript" src="{% static 'js/jquery.hoverIntent.minified.js' %}"></script> -->
+    <!-- UI to Top -->
+    <script type="text/javascript" language="javascript" src="{% static 'js/jquery.ui.totop.js' %}"></script>
 
-    <!-- <\!-- UI to Top -\-> -->
-    <!-- <script type="text/javascript" language="javascript" src="{% static 'js/jquery.ui.totop.js' %}"></script> -->
+    <!-- Bootstrap -->
+    <script type="text/javascript" language="javascript" src="{% static 'js/bootstrap/bootstrap-dropdown.js' %}"></script>
+    <script type="text/javascript" language="javascript" src="{% static 'js/bootstrap/bootstrap-tooltip.js' %}"></script>
+    <script type="text/javascript" language="javascript" src="{% static 'js/bootstrap/bootstrap-popover.js' %}"></script>
+    <script type="text/javascript" language="javascript" src="{% static 'js/bootstrap/bootstrap-alert.js' %}"></script>
+    <script type="text/javascript" language="javascript" src="{% static 'js/bootstrap/bootstrap-tab.js' %}"></script>
+    <script type="text/javascript" language="javascript" src="{% static 'js/bootstrap/bootstrap-typeahead.js' %}"></script>
+    <script type="text/javascript" language="javascript" src="{% static 'js/bootstrap/bootstrap-modal.js' %}"></script>
+    <script type="text/javascript" language="javascript" src="{% static 'js/prettify.js' %}"></script>
 
-    <!-- <\!-- Bootstrap Scripts -\-> -->
-    <!-- <script type="text/javascript" language="javascript" src="{% static 'js/bootstrap-dropdown.js' %}"></script> -->
-    <!-- <script type="text/javascript" language="javascript" src="{% static 'js/bootstrap-tooltip.js' %}"></script> -->
-    <!-- <script type="text/javascript" language="javascript" src="{% static 'js/bootstrap-popover.js' %}"></script> -->
-    <!-- <script type="text/javascript" language="javascript" src="{% static 'js/bootstrap-alert.js' %}"></script> -->
-    <!-- <script type="text/javascript" language="javascript" src="{% static 'js/bootstrap-tab.js' %}"></script> -->
-    <!-- <script type="text/javascript" language="javascript" src="{% static 'js/bootstrap-typeahead.js' %}"></script> -->
-    <!-- <script type="text/javascript" language="javascript" src="{% static 'js/bootstrap-modal.js' %}"></script> -->
-    <!-- <script type="text/javascript" language="javascript" src="{% static 'js/prettify.js' %}"></script> -->
+    <!-- Flot Graphs -->
+    <!--[if lte IE 8]><script type="text/javascript" language="javascript" src="{% static 'js/excanvas.min.js' %}"></script><![endif]-->
+    <!-- <script type="text/javascript" language="javascript" src="{% static 'js/jquery.flot.min.js' %}"></script> -->
+    <!-- <script type="text/javascript" language="javascript" src="{% static 'js/jquery.flot.selection.js' %}"></script> -->
+    <!-- <script type="text/javascript" language="javascript" src="{% static 'js/jquery.flot.resize.js' %}"></script> -->
 
-    <!-- <\!-- Flot Graphs -\-> -->
-    <!-- <\!--[if lte IE 8]><script type="text/javascript" language="javascript" src="{% static 'js/excanvas.min.js' %}"></script><![endif]-\-> -->
-    <!-- <\!-- <script type="text/javascript" language="javascript" src="{% static 'js/jquery.flot.min.js' %}"></script> -\-> -->
-    <!-- <\!-- <script type="text/javascript" language="javascript" src="{% static 'js/jquery.flot.selection.js' %}"></script> -\-> -->
-    <!-- <\!-- <script type="text/javascript" language="javascript" src="{% static 'js/jquery.flot.resize.js' %}"></script> -\-> -->
+    <!-- DataTable -->
+    <link rel="stylesheet" href="{% static 'css/demo_table_jui.intenso.css' %}">
+    <script type="text/javascript" language="javascript" src="{% static 'js/jquery.datatables.js' %}"></script>
 
-    <!-- Additional javascript files -->
+    <!-- Additional js -->
     {% block js %}{% endblock %}
 
-<script type=text/javascript>
-  var $SCRIPT_ROOT = "";
-</script>
 
+    <script type=text/javascript>
+      var $SCRIPT_ROOT = "";
+    </script>
 
-<!-- label "unknown" as warning -->
-<script type=text/javascript>
-  $(function() {
-    $("span:contains('unkown')").removeClass().addClass("label label-warning");;
-  });
-</script>
-
-
-
-
-<link rel="stylesheet" href="{% static 'css/demo_table_jui.intenso.css' %}">
-<script type="text/javascript" language="javascript" src="{% static 'javascripts/jquery.datatables.js' %}"></script>
-
-
+    <!-- label "unknown" as warning -->
+    <script type=text/javascript>
+      $(function() {
+      $("span:contains('unkown')").removeClass().addClass("label label-warning");;
+      });
+    </script>
 
   </body>
 </html>
