@@ -134,6 +134,7 @@ def trait(request, trait):
                 library_map, variants_maps[file_name] = search_variants.search_variants(user_id, file_name, query, 'trait')
 
             library_list = [library_map[found_id] for found_id in library_map]  ###
+            log.debug(library_list)
 
     log.error(err)
 

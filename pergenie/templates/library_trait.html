@@ -65,9 +65,11 @@
                         </td>
                         <td class="center">{{ library.trait }}</td>
                         <td class="center">
+                          <a href="{{ library.pubmed_link }}" target="_blank">
                           {% if library.study|length|get_digit:'-1' < 100 %}{{ library.study }}
                           {% else %}{{ library.study|slice:'100' }}...
                           {% endif %}
+                          </a>
                         </td>
                         <td class="center">{{ library.initial_sample_size }}</td>
                         <td class="center">{{ library.risk_allele }}</td>
