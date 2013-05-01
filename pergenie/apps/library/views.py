@@ -33,6 +33,7 @@ def index(request):
                                    dbsnp_version=settings.DBSNP_VERSION, refgenome_version=settings.REFGENOME_VERSION,
                                    latest_catalog_date=latest_catalog_date))
 
+
 @login_required
 def summary_index(request):
     err = ''

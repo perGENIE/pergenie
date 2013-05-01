@@ -120,6 +120,10 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja,
         catalog_summary = {}
         with open(path_to_gwascatalog, 'rb') as fin:
             for i,record in enumerate(csv.DictReader(fin, delimiter='\t')):# , quotechar="'"):
+
+                # some traits contains `spaces` at the end of it, e.g., "Airflow obstruction "...
+                record['Disease/Trait'] = record['Disease/Trait'].rstrip()
+
                 data = {}
                 for dict_name, record_name, converter in fields:
                     try:
