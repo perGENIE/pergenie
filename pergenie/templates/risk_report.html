@@ -70,8 +70,8 @@
                       </fieldset>
                     </form>
 
-                    <div id="container"></div>
-                    <!-- <div id="container" style="min-width: 200px; height: 2500px; margin: 0 auto"></div> -->
+                    <!-- <div id="container"></div> -->
+                    <div id="container" style="min-width: 200px; height: 2500px; margin: 0 auto"></div>
 
                   </div>
                 </div>
@@ -116,8 +116,8 @@
 
 {% block js %}
 
-<script type="text/javascript" src="{% static 'javascripts/highcharts/highcharts.js' %}"></script>
-<script type="text/javascript" src="{% static 'javascripts/highcharts/modules/exporting.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/highcharts/highcharts.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/highcharts/modules/exporting.js' %}"></script>
 
 
 <script type="text/javascript">
@@ -133,7 +133,11 @@ $(function () {
                 text: 'log(Risk relative to average population)'
             },
             xAxis: {
-                categories: [{% for trait in risk_traits %}"{% autoescape off %}{{ trait }}{% endautoescape %}",{% endfor %}],
+                categories: [{% for trait in risk_traits %}
+                             {% if trait|length|get_digit:'-1' < 20 %}"{% autoescape off %}{{ trait }}{% endautoescape %}"
+                             {% else%}"{% autoescape off %}{{ trait|slice:'20' }}...{% endautoescape %}"
+                             {% endif %},
+                             {% endfor %}],
                 title: {
                     text: null
                 }
