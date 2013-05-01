@@ -12,7 +12,6 @@ from apps.riskreport.forms import RiskReportForm
 import os
 import pymongo
 import numpy as np
-import datetime
 
 import mongo.search_variants as search_variants
 import mongo.risk_report as risk_report
@@ -94,11 +93,8 @@ def get_risk_values_for_indexpage(tmp_infos):
 @login_required
 def index(request):
     user_id = request.user.username
-    msg = ''
-    err = ''
-    risk_reports = None
-    risk_traits = None
-    risk_values = None
+    msg, err = '', ''
+    risk_reports, risk_traits, risk_values = None, None, None
 
     browser_language = get_language()
     log.debug('translation.get_language() {}'.format(browser_language))
@@ -165,8 +161,8 @@ def index(request):
             break
 
         return direct_to_template(request, 'risk_report.html',
-                                  {'msg': msg, 'err': err, 'infos': infos, 'tmp_infos': tmp_infos,
-                                   'risk_reports': risk_reports, 'risk_traits': risk_traits, 'risk_values': risk_values})
+                                  dict(user_id=user_id, msg=msg, err=err, infos=infos, tmp_infos=tmp_infos,
+                                       risk_reports=risk_reports, risk_traits=risk_traits, risk_values=risk_values))
 
 
 def get_risk_infos_for_subpage(user_id, file_name, trait_name=None, study_name=None):
@@ -240,12 +236,10 @@ def get_risk_infos_for_subpage(user_id, file_name, trait_name=None, study_name=N
 
             break
 
-        risk_infos = {'msg': msg, 'err': err, 'infos': infos, 'tmp_info': tmp_info,
-                      'RR_list': RR_list, 'RR_list_real': RR_list_real, 'study_list': study_list,
-                      'file_name': file_name, 'trait_name': trait_name, 'study_name': study_name,
-                      'snps_list': snps_list, 'tmp_risk_store': tmp_risk_store}
-
-        return risk_infos
+        return dict(msg=msg, err=err, infos=infos, tmp_info=tmp_info,
+                    RR_list=RR_list, RR_list_real=RR_list_real, study_list=study_list,
+                    file_name=file_name, trait_name=trait_name, study_name=study_name,
+                    snps_list=snps_list, tmp_risk_store=tmp_risk_store)
 
 
 @login_required
