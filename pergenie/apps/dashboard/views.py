@@ -31,9 +31,8 @@ def index(request):
         data_info = db['data_info']
 
         while True:
-            # latest catalog importing date
+            # get latest-catalog
             catalog_latest_importing_document = catalog_info.find_one({'status': 'latest'})
-            log.info(catalog_latest_importing_document)
 
             if catalog_latest_importing_document:
                 catalog_latest_importing_date = str(catalog_latest_importing_document['date'].date()).replace('-', '_')

@@ -40,15 +40,25 @@
                     <thead>
                       <tr>
                         <th>trait</th>
-                        <th>trait(Ja)</th>
+                        <th>category</th>
                       </tr>
                     </thead>
 
                     <tbody>
-                      {% for trait_name in my_trait_list %}
+                      {% for trait in traits %}
                       <tr>
-                        <td><a href="{% url apps.library.views.trait trait=trait_name %}">{{ trait_name }}</a></td>
-                        <td><a href="{% url apps.library.views.trait trait=trait_name %}">{{ my_trait_list_ja|listvalue:forloop.counter0 }}</a></td>
+
+                        <td>
+                          <a href="{% url apps.library.views.trait trait=trait_name %}">
+                            {% if trait|length|get_digit:'-1' < 40 %}{% autoescape off %}{{ trait }}{% endautoescape %}
+                              {% if is_ja %}({{ traits_ja|listvalue:forloop.counter0 }}){% endif %}
+                            {% else %}{% autoescape off %}{{ trait|slice:'40' }}...{% endautoescape %}
+                              {% if is_ja %}({{ traits_ja|listvalue:forloop.counter0|slice:'40' }}...){% endif %}
+                            {% endif %}
+                          </a>
+                        </td>
+
+                        <td>{{ traits_category|listvalue:forloop.counter0 }}</td>
                       </tr>
                       {% endfor %}
                     </tbody>

@@ -4,7 +4,7 @@ import os
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 from django.views.generic.simple import direct_to_template
-from django.utils.translation import get_language
+from django.utils import translation
 from django.utils.translation import ugettext as _
 from django.conf import settings
 
@@ -105,14 +105,35 @@ def summary(request, field_name):
 
 @login_required
 def trait_index(request):
-    err = ''
+    msg, err = '', ''
+    is_ja = bool(translation.get_language() == 'ja')
 
-    return direct_to_template(request,
-                              'library_trait_index.html',
-                              {'err': err,
-                               'my_trait_list': MY_TRAIT_LIST,
-                               'my_trait_list_ja': MY_TRAIT_LIST_JA,
-                               })
+    # TODO: move to `util` as a function: get_latest_catalog()
+    with pymongo.Connection(port=settings.MONGO_PORT) as connection:
+        latest_document = connection['pergenie']['catalog_info'].find_one({'status': 'latest'})  # -> {'date': datetime.datetime(2012, 12, 12, 0, 0),}
+
+        if latest_document:
+            latest_date = str(latest_document['date'].date()).replace('-', '_')  # -> '2012_12_12'
+            catalog = connection['pergenie']['catalog'][latest_date]
+        else:
+            err += 'latest does not exist in catalog_info!'
+
+        log.error(err)
+
+        # TODO: move to `util` as a function:
+        trait_info = connection['pergenie']['trait_info']
+
+        founds = trait_info.find({})
+        traits = set([found['eng'] for found in founds])
+        traits_ja = [trait_info.find_one({'eng': trait})['ja'] for trait in traits]
+        traits_category = [trait_info.find_one({'eng': trait})['category'] for trait in traits]
+
+        # print dict(msg='', err='', traits=traits, is_ja=is_ja,
+        #            traits_ja=traits_ja, traits_category=traits_category)
+
+    return direct_to_template(request, 'library_trait_index.html',
+                              dict(msg='', err='', traits=traits, is_ja=is_ja,
+                                   traits_ja=traits_ja, traits_category=traits_category))
 
 
 @login_required

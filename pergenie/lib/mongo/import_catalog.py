@@ -35,20 +35,35 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja,
             _g_gene_symbol_map[gene_symbol] = entrez_gene_id, omim_gene_id
             _g_gene_id_map[entrez_gene_id] = gene_symbol, omim_gene_id
 
-    log.debug('Loading gwascatalog.traits.translated.tsv ...')
-    eng2ja = {}
-    eng2category = {}
-    with open(path_to_eng2ja, 'rb') as fin:
-        for record in csv.DictReader(fin, delimiter='\t'):
-            if record['eng'] == '#':  # ignore `#`
-                log.debug(record['eng'])
-                pass
-            else:
-                eng2ja[record['eng']] = unicode(record['ja'], 'utf-8') or record['eng']
-                eng2category[record['eng']] = record['category'] or 'NA'
-    pprint(eng2ja)
-
     with pymongo.Connection(port=mongo_port) as connection:
+        # Create db for eng2ja, eng2category, ...
+        trait_info = connection['pergenie']['trait_info']
+
+        if trait_info.find_one():
+            connection['pergenie'].drop_collection(trait_info)
+        assert trait_info.count() == 0
+
+        # TODO: remove eng2ja, then use only db.trait_info
+        log.debug('Loading gwascatalog.traits.translated.tsv ...')
+        eng2ja = {}
+        eng2category = {}
+        with open(path_to_eng2ja, 'rb') as fin:
+            for record in csv.DictReader(fin, delimiter='\t'):
+                if record['eng'] == '#':  # ignore `#`
+                    log.debug(record['eng'])
+                    pass
+                else:
+                    eng2ja[record['eng']] = unicode(record['ja'], 'utf-8') or record['eng']
+                    eng2category[record['eng']] = record['category'] or 'NA'
+
+                    trait_info.insert(record, upsert=True)  # insert if not exist
+
+            trait_info.ensure_index('eng', unique=True)
+
+        # ==============
+        # Import catalog
+        # ==============
+
         catalog_date_raw = os.path.basename(path_to_gwascatalog).split('.')[1]
         # catalog_date = datetime.datetime.strptime(catalog_date_raw , '%Y_%m_%d')
 
@@ -108,8 +123,10 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja,
                   ('cnv', 'CNV', _string)]
 
         post_fields = [('risk_allele', 'Risk Allele'),
+                       ('OR', 'OR'),
                        ('eng2ja', 'Disease/Trait (in Japanese)'),
-                       ('OR', 'OR')]
+                       ('category', 'category'),
+                       ('is_drug_response', 'is_drug_response')]
 
         field_names = [field[0:2] for field in fields] + post_fields
 
@@ -127,8 +144,9 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja,
                     except KeyError:
                         pass
 
-                # eng2ja
+                # eng2ja, category
                 data['eng2ja'] = eng2ja.get(data['trait'])
+                data['category'] = eng2category.get(data['trait'])
 
                 if (not data['snps']) or (not data['strongest_snp_risk_allele']):
                     log.warn('absence of "snps" or "strongest_snp_risk_allele" {0} {1}. pubmed_id:{2}'.format(data['snps'], data['strongest_snp_risk_allele'], data['pubmed_id']))
