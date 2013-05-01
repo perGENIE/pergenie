@@ -22,45 +22,18 @@ MY_TRAIT_LIST = pickle_load_obj(os.path.join(settings.CATALOG_SUMMARY_CACHE_DIR,
 MY_TRAIT_LIST_JA = pickle_load_obj(os.path.join(settings.CATALOG_SUMMARY_CACHE_DIR, 'trait_list_ja.p'))
 
 
-@require_http_methods(['GET', 'POST'])
 @login_required
 def index(request):
-    user_id = request.user.username
-    err = ''
-    msgs = {}
-
-    msgs['dbsnp_version'] = settings.DBSNP_VERSION
-    msgs['refgenome_version'] = settings.REFGENOME_VERSION
+    msg, err = '', ''
 
     with pymongo.Connection(port=settings.MONGO_PORT) as connection:
-        db = connection['pergenie']
-        data_info = db['data_info']
-        catalog_info = db['catalog_info']
+        catalog_info = connection['pergenie']['catalog_info']
+        latest_catalog_date = catalog_info.find_one({'status': 'latest'})['date']
 
-        msgs['latest_catalog_date'] = catalog_info.find_one({'status': 'latest'})['date']
-
-        if request.method == 'POST':
-            # if query:
-            uploadeds = list(data_info.find({'user_id': user_id}))
-            file_name = uploadeds[0]['name']
-
-            query = '"{}"'.format(LibraryForm.query)
-            catalog_map, variants_map = search_variants.search_variants(user_id, file_name, query)
-            catalog_list = [catalog_map[found_id] for found_id in catalog_map]  # somehow catalog_map.found_id does not work in templete...
-
-            return direct_to_template(request,
-                                      'library_trait.html',
-                                      {'err': err,
-                                       'trait_name': query,
-                                       'catalog_list': catalog_list,
-                                       'variants_map': variants_map})
-
-    msgs['err'] = err
-    # msgs['my_trait_list'] = MY_TRAIT_LIST
-    # msgs['my_trait_list_ja'] = MY_TRAIT_LIST_JA
-
-    return direct_to_template(request, 'library.html', msgs)
-
+    return direct_to_template(request, 'library.html',
+                              dict(user_id=request.user.username, msg=msg, err=err,
+                                   dbsnp_version=settings.DBSNP_VERSION, refgenome_version=settings.REFGENOME_VERSION,
+                                   latest_catalog_date=latest_catalog_date))
 
 @login_required
 def summary_index(request):
@@ -132,21 +105,21 @@ def trait_index(request):
         #            traits_ja=traits_ja, traits_category=traits_category)
 
     return direct_to_template(request, 'library_trait_index.html',
-                              dict(msg='', err='', traits=traits, is_ja=is_ja,
-                                   traits_ja=traits_ja, traits_category=traits_category))
+                              dict(user_id=request.user.username, msg=msg, err=err,
+                                   traits=traits, is_ja=is_ja, traits_ja=traits_ja, traits_category=traits_category))
 
 
 @login_required
 def trait(request, trait):
     user_id = request.user.username
-    err = ''
+    msg, err = '', ''
 
     query = trait.replace('_', ' ')
     library_list = []
     variants_maps = {}
 
     if not trait.replace('_', ' ') in MY_TRAIT_LIST:
-        err = 'trait not found'
+        err += 'trait not found'
 
     else:
         with pymongo.Connection(port=settings.MONGO_PORT) as connection:
@@ -160,19 +133,14 @@ def trait(request, trait):
             for file_name in file_names:
                 library_map, variants_maps[file_name] = search_variants.search_variants(user_id, file_name, query, 'trait')
 
-            # pprint(library_map)
-            # print variants_maps
-
             library_list = [library_map[found_id] for found_id in library_map]  ###
 
     log.error(err)
 
-    return direct_to_template(request,
-                              'library_trait.html',
-                              {'err': err,
-                               'trait_name': query,
-                               'library_list': library_list,
-                               'variants_maps': variants_maps})
+    return direct_to_template(request, 'library_trait.html',
+                              dict(user_id=request.user.username, msg=msg, err=err,
+                                   trait_name=query, library_list=library_list,
+                                   variants_maps=variants_maps))
 
 
 # TODO: table view for snps

@@ -49,7 +49,7 @@
                       <tr>
 
                         <td>
-                          <a href="{% url apps.library.views.trait trait=trait_name %}">
+                          <a href="{% url apps.library.views.trait trait=trait %}">
                             {% if trait|length|get_digit:'-1' < 40 %}{% autoescape off %}{{ trait }}{% endautoescape %}
                               {% if is_ja %}({{ traits_ja|listvalue:forloop.counter0 }}){% endif %}
                             {% else %}{% autoescape off %}{{ trait|slice:'40' }}...{% endautoescape %}
