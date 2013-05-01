@@ -7,7 +7,6 @@ import time
 import re
 # import sys
 import pymongo
-from pprint import pprint
 
 from utils.io import pickle_dump_obj
 from utils import clogging
@@ -35,41 +34,19 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja,
             _g_gene_symbol_map[gene_symbol] = entrez_gene_id, omim_gene_id
             _g_gene_id_map[entrez_gene_id] = gene_symbol, omim_gene_id
 
+    log.debug('Loading gwascatalog.traits.translated.tsv ...')
+    eng2ja = {}
+    eng2category = {}
+    with open(path_to_eng2ja, 'rb') as fin:
+        for record in csv.DictReader(fin, delimiter='\t'):
+            if record['eng'] == '#':  # ignore `#`
+                log.debug(record['eng'])
+                pass
+            else:
+                eng2ja[record['eng']] = unicode(record['ja'], 'utf-8') or record['eng']
+                eng2category[record['eng']] = record['category'] or 'NA'
+
     with pymongo.Connection(port=mongo_port) as connection:
-        # Create db for eng2ja, eng2category, ...
-        trait_info = connection['pergenie']['trait_info']
-
-        if trait_info.find_one():
-            connection['pergenie'].drop_collection(trait_info)
-        assert trait_info.count() == 0
-
-        # TODO: remove eng2ja, then use only db.trait_info
-        log.debug('Loading {} ...'.format(path_to_eng2ja))
-        eng2ja = {}
-        eng2category = {}
-        with open(path_to_eng2ja, 'rb') as fin:
-            for record in csv.DictReader(fin, delimiter='\t'):
-                if not record['eng'] == '#':  # ignore `#`
-                    # TODO: remove eng2ja & eng2category
-                    eng2ja[record['eng']] = unicode(record['ja'], 'utf-8') or record['eng']
-                    eng2category[record['eng']] = record['category'] or 'NA'
-
-                    #
-                    ja = unicode(record['ja'], 'utf-8') or record['eng']
-                    category = record['category'] or 'NA'
-                    is_drug_response = record['is_drug_response'] or 'NA'
-                    clean_record = dict(eng=record['eng'], ja=ja,
-                                        category=category,
-                                        is_drug_response=is_drug_response)
-
-                    trait_info.insert(clean_record, upsert=True)  # insert if not exist
-
-            trait_info.ensure_index('eng', unique=True)
-
-        # ==============
-        # Import catalog
-        # ==============
-
         catalog_date_raw = os.path.basename(path_to_gwascatalog).split('.')[1]
         # catalog_date = datetime.datetime.strptime(catalog_date_raw , '%Y_%m_%d')
 
@@ -83,8 +60,10 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja,
         assert catalog.count() == 0
 
         if not dbsnp.find_one():
+            log.warn('========================================')
             log.warn('dbsnp.B132 does not exist in mongodb ...')
             log.warn('so strand-check will be skipped')
+            log.warn('========================================')
             dbsnp = None
 
         my_fields = [('my_added', 'Date Added to MyCatalog', _date),
@@ -129,10 +108,8 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja,
                   ('cnv', 'CNV', _string)]
 
         post_fields = [('risk_allele', 'Risk Allele'),
-                       ('OR', 'OR'),
                        ('eng2ja', 'Disease/Trait (in Japanese)'),
-                       ('category', 'category'),
-                       ('is_drug_response', 'is_drug_response')]
+                       ('OR', 'OR')]
 
         field_names = [field[0:2] for field in fields] + post_fields
 
@@ -150,17 +127,18 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja,
                     except KeyError:
                         pass
 
-                # eng2ja, category
                 data['eng2ja'] = eng2ja.get(data['trait'])
-                data['category'] = eng2category.get(data['trait'])
 
                 if (not data['snps']) or (not data['strongest_snp_risk_allele']):
                     log.warn('absence of "snps" or "strongest_snp_risk_allele" {0} {1}. pubmed_id:{2}'.format(data['snps'], data['strongest_snp_risk_allele'], data['pubmed_id']))
+                    data['snps'], data['strongest_snp_risk_allele'], data['risk_allele'] = 'na', 'na', 'na'
+                    catalog.insert(data)
                 else:
 
                     rs, data['risk_allele'] = _risk_allele(data['strongest_snp_risk_allele'], dbsnp)
                     if data['snps'] != rs:
                         log.warn('"snps" != "risk_allele": {0} != {1}'.format(data['snps'], rs))
+                        catalog.insert(data)
 
                     else:
                         # identfy OR or beta & TODO: convert beta to OR if can
@@ -482,9 +460,9 @@ def _string_without_slash(text):
         return None
     else:
         # avoid slash
-        if '/' in text:
-            log.warn('/ in {}'.format(text))
-        text = text.replace('/', ' or ')
+        # if '/' in text:
+        #     log.warn('/ in {}'.format(text))
+        text = text.replace('/', '&#47;')
 
         return text
 

@@ -22,6 +22,20 @@
       </ul>
     </div>
 
+    {% if msg %}
+    <div class="alert alert-info">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      <strong>Information:</strong> {{ msg }}
+    </div>
+    {% endif %}
+
+    {% if err %}
+    <div class="alert alert-error">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      <strong>Error!</strong> {{ err }}
+    </div>
+    {% endif %}
+
     {% if library_list %}
     <div class="row-fluid">
       <div class="span12">
@@ -47,9 +61,7 @@
                         <th>OR</th>
                         {% for filename in variants_maps %}
                         <th>
-                          {% if filename|length|get_digit:'-1' < 10 %}{{ filename }}
-                          {% else %}{{ filename|slice:'10' }}...
-                          {% endif %}
+                          {{ filename|limit:10 }}
                         </th>
                         {% endfor %}
                       </tr>
@@ -60,15 +72,13 @@
                       {% set rs = library.rs %}
                       <tr>
                         <td>
-                          <a href="{% url apps.library.views.snps rs=rs %}">
-                            {{ rs }}</a>
+                          {% ifnotequal rs 'na' %}<a href="{% url apps.library.views.snps rs=rs %}">{{ rs }}</a>
+                          {% else %}{{ rs }}{% endifnotequal %}
                         </td>
                         <td class="center">{{ library.trait }}</td>
                         <td class="center">
                           <a href="{{ library.pubmed_link }}" target="_blank">
-                          {% if library.study|length|get_digit:'-1' < 100 %}{{ library.study }}
-                          {% else %}{{ library.study|slice:'100' }}...
-                          {% endif %}
+                          {{ library.study|limit:100 }}
                           </a>
                         </td>
                         <td class="center">{{ library.initial_sample_size }}</td>

@@ -12,8 +12,8 @@ from pprint import pformat
 
 from utils.io import pickle_load_obj
 from utils.date import today_date
-from utils import clogging
-log = clogging.getColorLogger(__name__)
+from utils.clogging import getColorLogger
+log = getColorLogger(__name__)
 
 @login_required
 def index(request):
