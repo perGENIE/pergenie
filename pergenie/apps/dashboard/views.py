@@ -76,7 +76,8 @@ def index(request):
     msgs = {'msg': msg, 'err': err,
             'catalog_latest_importing_date': catalog_latest_importing_date,
             'catalog_latest_new_records_data': catalog_latest_new_records_data,
-            'risk_report_latest_date': risk_report_latest_date}
+            'risk_report_latest_date': risk_report_latest_date,
+            'user_id': user_id}
 
     log.info('msgs: {}'.format(pformat(msgs)))
     return direct_to_template(request, 'dashboard.html', msgs)
