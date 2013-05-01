@@ -13,18 +13,20 @@ import os
 import pymongo
 import numpy as np
 
+#
 import mongo.search_variants as search_variants
 import mongo.risk_report as risk_report
+
+#
+from lib.mongo.get_latest_catalog import get_latest_catalog
+from lib.mongo.get_traits_infos import get_traits_infos
 from utils.io import pickle_dump_obj, pickle_load_obj
 from utils.date import today_date, today_str
 from utils import clogging
 log = clogging.getColorLogger(__name__)
 
-MY_TRAIT_LIST = pickle_load_obj(os.path.join(settings.CATALOG_SUMMARY_CACHE_DIR, 'trait_list.p'))
-MY_TRAIT_LIST_JA = pickle_load_obj(os.path.join(settings.CATALOG_SUMMARY_CACHE_DIR, 'trait_list_ja.p'))
-MY_TRAIT_DICT_ENG2JA = dict(zip(MY_TRAIT_LIST, MY_TRAIT_LIST_JA))
-MY_TRAIT_DICT_JA2ENG = dict(zip(MY_TRAIT_LIST_JA, MY_TRAIT_LIST))
-
+TRAITS, TRAITS2JA, TRAITS2CATEGORY = get_traits_infos(as_dict=True)
+JA2TRAITS = dict([(v, k) for (k, v) in TRAITS2JA.items()])
 
 def upsert_riskreport(tmp_info, mongo_port=settings.MONGO_PORT):
     """Upsert risk report for <file_name> of <user>.
@@ -46,13 +48,12 @@ def upsert_riskreport(tmp_info, mongo_port=settings.MONGO_PORT):
         data_info.update({'user_id': tmp_info['user_id'], 'name': tmp_info['name'] }, {"$set": {'riskreport': today_date}}, upsert=True)
 
 
-def get_risk_values_for_indexpage(tmp_infos):
+def get_risk_values_for_indexpage(tmp_infos, category=[]):
     """Return risk values (for one or two files) for chart.
     """
 
     with pymongo.Connection(port=settings.MONGO_PORT) as connection:
-        db = connection['pergenie']
-        data_info = db['data_info']
+        data_info = connection['pergenie']['data_info']
 
         for i, tmp_info in enumerate(tmp_infos):
             # check if riskreport.<user>.<file_name> exist and latest in data_info
@@ -77,12 +78,17 @@ def get_risk_values_for_indexpage(tmp_infos):
             # create list for chart
             tmp_map = {}
             for trait,studies in risk_reports.items():
-                tmp_map[trait] = np.mean(studies.values())
+                if TRAITS2CATEGORY.get(trait) in category:
 
+                    # TODO: use `priority`
+                    tmp_map[trait] = np.mean(studies.values())
+
+            # values of first user
             if i == 0:
                 risk_traits = [k for k,v in sorted(tmp_map.items(), key=lambda(k,v):(v,k), reverse=True)]
                 risk_values = [[v for k,v in sorted(tmp_map.items(), key=lambda(k,v):(v,k), reverse=True)]]
 
+            # values of second user
             elif i >= 1:
                 risk_values.append([tmp_map.get(trait, 0) for trait in risk_traits])
 
@@ -95,13 +101,10 @@ def index(request):
     user_id = request.user.username
     msg, err = '', ''
     risk_reports, risk_traits, risk_values = None, None, None
-
     browser_language = get_language()
-    log.debug('translation.get_language() {}'.format(browser_language))
 
     with pymongo.Connection(port=settings.MONGO_PORT) as connection:
-        db = connection['pergenie']
-        data_info = db['data_info']
+        data_info = connection['pergenie']['data_info']
 
         while True:
             # determine file
@@ -152,12 +155,11 @@ def index(request):
                 tmp_infos.append(info)
 
             if not err:
-                risk_reports, risk_traits, risk_values = get_risk_values_for_indexpage(tmp_infos)
+                risk_reports, risk_traits, risk_values = get_risk_values_for_indexpage(tmp_infos, category=['Disease'])
 
+                # translate to Japanese
                 if browser_language == 'ja':
-                    risk_traits_ja = [MY_TRAIT_DICT_ENG2JA.get(trait, trait) for trait in risk_traits]
-                    risk_traits = risk_traits_ja
-
+                    risk_traits = [TRAITS2JA.get(trait) for trait in risk_traits]
             break
 
         return direct_to_template(request, 'risk_report.html',
@@ -169,21 +171,16 @@ def get_risk_infos_for_subpage(user_id, file_name, trait_name=None, study_name=N
     msg, err = '', ''
     infos, tmp_info, tmp_risk_store  = None, None, None
     RR_list, RR_list_real, study_list, snps_list = [], [], [], []
-
     browser_language = get_language()
-    log.debug('translation.get_language() {}'.format(browser_language))
 
     with pymongo.Connection(port=settings.MONGO_PORT) as connection:
-        db = connection['pergenie']
-        data_info = db['data_info']
+        data_info = connection['pergenie']['data_info']
 
         while True:
             # reverse translation (to English)
-            log.debug(trait_name)
-            trait_name_eng = MY_TRAIT_DICT_JA2ENG.get(trait_name, trait_name)
-            trait_name = trait_name_eng
-            log.debug(trait_name)
-            if not trait_name in MY_TRAIT_LIST:
+            trait_name = JA2TRAITS.get(trait_name, trait_name)
+
+            if not trait_name in TRAITS:
                 err = _('trait not found')
                 break
 
@@ -230,7 +227,7 @@ def get_risk_infos_for_subpage(user_id, file_name, trait_name=None, study_name=N
             # translation to Japanese
             if browser_language == 'ja':
                 log.debug('trans')
-                trait_name_ja = MY_TRAIT_DICT_ENG2JA.get(trait_name)
+                trait_name_ja = TRAITS2JA.get(trait_name)
                 trait_name = trait_name_ja
                 log.debug(trait_name)
 
