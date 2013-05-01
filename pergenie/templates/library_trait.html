@@ -43,10 +43,14 @@
                         <th>study</th>
                         <th>initial sample</th>
                         <th>risk allele</th>
-                        <th>risk allele frequency (in study)</th>
+                        <th>frequency</th>
                         <th>OR</th>
                         {% for filename in variants_maps %}
-                        <th>{{ filename }}</th>
+                        <th>
+                          {% if filename|length|get_digit:'-1' < 10 %}{{ filename }}
+                          {% else %}{{ filename|slice:'10' }}...
+                          {% endif %}
+                        </th>
                         {% endfor %}
                       </tr>
                     </thead>
@@ -60,7 +64,11 @@
                             {{ rs }}</a>
                         </td>
                         <td class="center">{{ library.trait }}</td>
-                        <td class="center">{{ library.study }}</td>
+                        <td class="center">
+                          {% if library.study|length|get_digit:'-1' < 100 %}{{ library.study }}
+                          {% else %}{{ library.study|slice:'100' }}...
+                          {% endif %}
+                        </td>
                         <td class="center">{{ library.initial_sample_size }}</td>
                         <td class="center">{{ library.risk_allele }}</td>
                         <td class="center">{{ library.risk_allele_frequency }}</td>
