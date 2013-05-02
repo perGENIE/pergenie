@@ -13,7 +13,7 @@
     <meta name="description" content="{% block description %}{% endblock %}">
     <meta name="keywords" content="pergenie, pergene">
 
-    <link href="{% static 'stylesheets/application.css' %}" media="all" rel="stylesheet" type="text/css" />
+    <link href="{% static 'css/application.css' %}" media="all" rel="stylesheet" type="text/css" />
 
     <meta name="viewport" content="width=device-width, maximum-scale=1, initial-scale=1, user-scalable=0">
 
@@ -27,8 +27,8 @@
         <link href="../stylesheets/ie_fix.css" media="screen" rel="stylesheet" type="text/css" />
 
     <!-- Bootstrap -->
-    <!-- <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet"> -->
-    <!-- <link href="{% static 'css/bootstrap-responsive.css' %}" rel="stylesheet"> -->
+    <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
+    <link href="{% static 'css/bootstrap-responsive.css' %}" rel="stylesheet">
 
     <!-- Bootstrap CSS fixes for IE6 -->
     <!--[if lt IE 7]><link rel="stylesheet" href="http://blueimp.github.com/cdn/css/bootstrap-ie6.min.css"><![endif]-->
@@ -229,6 +229,7 @@
 
     <!-- Bootstrap -->
     <script type="text/javascript" language="javascript" src="{% static 'js/bootstrap/bootstrap-dropdown.js' %}"></script>
+    <script type="text/javascript" language="javascript" src="{% static 'js/bootstrap/bootstrap-collapse.js' %}"></script>
     <script type="text/javascript" language="javascript" src="{% static 'js/bootstrap/bootstrap-tooltip.js' %}"></script>
     <script type="text/javascript" language="javascript" src="{% static 'js/bootstrap/bootstrap-popover.js' %}"></script>
     <script type="text/javascript" language="javascript" src="{% static 'js/bootstrap/bootstrap-alert.js' %}"></script>
@@ -236,6 +237,13 @@
     <script type="text/javascript" language="javascript" src="{% static 'js/bootstrap/bootstrap-typeahead.js' %}"></script>
     <script type="text/javascript" language="javascript" src="{% static 'js/bootstrap/bootstrap-modal.js' %}"></script>
     <script type="text/javascript" language="javascript" src="{% static 'js/prettify.js' %}"></script>
+
+    <script type="text/javascript" language="javascript" src="{% static 'js/bootstrap/bootstrap-affix.js' %}"></script>
+    <script type="text/javascript" language="javascript" src="{% static 'js/bootstrap/bootstrap-button.js' %}"></script>
+    <script type="text/javascript" language="javascript" src="{% static 'js/bootstrap/bootstrap-carousel.js' %}"></script>
+    <script type="text/javascript" language="javascript" src="{% static 'js/bootstrap/bootstrap-scrollspy.js' %}"></script>
+    <script type="text/javascript" language="javascript" src="{% static 'js/bootstrap/bootstrap-transition.js' %}"></script>
+
 
     <!-- Flot Graphs -->
     <!--[if lte IE 8]><script type="text/javascript" language="javascript" src="{% static 'js/excanvas.min.js' %}"></script><![endif]-->

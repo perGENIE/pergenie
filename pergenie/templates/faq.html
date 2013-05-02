@@ -4,84 +4,143 @@
 {% block description %}FAQ{% endblock %}
 
 {% block main_container %}
-<div id="main_container" class="span10">
-  <section id="main">
+<div class="main">
     <div class="container">
+      <div class="row">
+        <div class="span8">
+          <div class="widget stacked">
 
-      <div class="row-fluid">
-        <div class="span12">
-          <div class="content-box">
-            <div class="content-box-header">
-              <i class="icon-question-sign"></i> FAQ
-            </div>
-            <div class="row-fluid">
-              <div class="span12">
+            <div class="widget-header">
+              <i class="icon-pushpin"></i>
+              <h3>Frequently Asked Questions</h3>
+              </div> <!-- /widget-header -->
 
-                <div class="padded">
-                  <ol class="faq-list">
-                    <li>
-                      <h4 id="faq-question-1">How do we work?</h4>
-                      <p>Just fill out our briefing form. This will only take about 5 minutes. Based on that basic information, we will create a design sample in a way we feel best suits your company's focus and vision. You need not waste anymore time on meetings.</p>
-                    </li>
+            <div class="widget-content">
 
-                    <li>
-                      <h4 id="faq-question-2">Why should I use this service?</h4>
-                      <p>Technically oriented Internet companies often do not possess a feeling for design and usability while print-design oriented companies do not have the know-how regarding specific requirements and various technical possibilities. Fortunately, we have the advantages of both.</p>
-                    </li>
+              <h3>Search</h3>
 
-                    <li>
-                      <h4 id="faq-question-3">What do I do if I don't like the design?</h4>
-                      <p>Your current designer can continue working with our original files. You are free to use only parts of our design or not use it at all.</p>
-                    </li>
-                    <li>
-                      <h4 id="faq-question-4">How much does it cost?</h4>
-                      <p>We charge 900 USD per design sample. For 200 USD more you get a 3 day express service. Customer from Switzerland add 7.6% VAT.</p>
-                    </li>
-                    <li>
-                      <h4 id="faq-question-5">How do I pay?</h4>
-                      <p>After you have completed our briefing form you will receive an invoice by email. As soon as the money has been received, we will start working for you.</p>
-                    </li>
-                    <li>
-                      <h4 id="faq-question-6">How long does it take?</h4>
-                      <p>After your payment has arrived on our bank account, it takes about 14 days. If you choose our "Express service" it takes 3 days.</p>
-                    </li>
-                    <li>
-                      <h4 id="faq-question-7">Who does the design?</h4>
-                      <p>All designs are done by Oliver Schmid. An experienced designer who worked for two of the largest internet companies in Switzerland for seven years before starting the design studio Webgarten GmbH in Widen near Zurich.</p>
-                    </li>
-                    <li>
-                      <h4 id="faq-question-8">What do I get?</h4>
-                      <p>You get a design sample as a graphic document. It usually contains a front and second page. In addition, we will include the original workfiles. Naturally, you are free to use these any way you choose.</p>
-                    </li>
-                    <li>
-                      <h4 id="faq-question-9">How much time does it take you to do a design sample?</h4>
-                      <p>We will work until we have found the perfect design for you. This can take anywhere from 4 to 12 hours, but on average 8.</p>
-                    </li>
+              <br />
 
-                    <li>
-                      <h4 id="faq-question-10">Where do you get the content from?</h4>
-                      <p>We use the content you send us on our briefing form. When information is lacking we will use "dummy texts" such as "Lorem ipsum" and "dummy images".</p>
-                    </li>
-                    <li>
-                      <h4 id="faq-question-11">When do I need this service?</h4>
-                      <p>If you are unhappy with the current design of your website, if you are considering another vision for your website design, or would like to improve the "look and feel" of your site, if you are planning a new website and want to see a second design sample before you spend a lot of money on development, if you are a design company with no more ideas and want someone else to have a try.</p>
-                    </li>
-                    <li>
-                      <h4 id="faq-question-12">Will my design be shown on your references?</h4>
-                      <p>Yes. But if you choose our "Keep secret" service we will not add you to our reference list. In that case, you will be charged an additional fee of we charge 200 USD.</p>
-                    </li>
-                    <li>
-                      <h4 id="faq-question-13">What happen with the files and information I'm sending to you?</h4>
-                      <p>All files and information we receive will be treated confidentially and be deleted after use.</p>
-                    </li>
-                  </ol>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-</div>
+              <ol class="faq-list">
+
+                <li>
+                  <h4>How can I disable the browser's right-click options?</h4>
+                  <p>These scripts annoy visitors who lose ready access to their browsers' normal context-menu functions (e.g., "Open in new window" or "Bookmark link"). These scripts can also interfere with features like mouse gestures.
+Nothing (including these scripts) can prevent anyone from copying your source or images. The browser cannot display your document without the source and images, so your web server must send them to the browser. Even without the various "save" functions in today's browsers, someone can retrieve your source or images from the browser's cache, request them from the server with some other tool, or use a screen-capture tool to copy the images.
+                    These scripts do nothing when JavaScript is disabled or unavailable, when JavaScript access to right-click events is disabled, on systems without mice, or on systems with single-button mice.</p>
+
+                  </li>
+
+                <li>
+
+                  <h4>How do I hide my URL?</h4>
+                  <p>You can't. URLs are fundamental to navigation on the WWW. The URL is necessary for the browser to be able to retrieve your document. It is impossible to hide the URL of a resource from the browser.</p>
+
+                  </li>
+
+                <li>
+
+                  <h4>How do I detect what browser is being used?</h4>
+                  <p>Many browsers identify themselves when they request a document. A CGI script will have this information available in the HTTP_USER_AGENT environment variable, and it can use that to send out a version of the document which is optimized for that browser.</p>
+                  <p>Keep in mind not all browsers identify themselves correctly. For example, Microsoft Internet Explorer identifies itself as Netscape Navigator, and many other browsers identify themselves as Microsoft Internet Explorer.</p>
+                  <p>And of course, if a cache proxy keeps a version intended for one brower, someone with another browser may get that version, rather than the version intended for the other browser.</p>
+
+                  </li>
+
+                <li>
+                </ol>
+              </div> <!-- /widget-content -->
+          </div> <!-- /widget -->
+              </div> <!-- /span8 -->
+
+
+      </div> <!-- /row -->
+    </div> <!-- /container -->
+</div> <!-- /main -->
+
+
+<!--       <div class="row-fluid"> -->
+<!--         <div class="span12"> -->
+<!--           <div class="content-box"> -->
+<!--             <div class="content-box-header"> -->
+<!--               <i class="icon-question-sign"></i> FAQ -->
+<!--             </div> -->
+<!--             <div class="row-fluid"> -->
+<!--               <div class="span12"> -->
+
+<!--                 <div class="padded"> -->
+<!--                   <ol class="faq-list"> -->
+<!--                     <li> -->
+<!--                       <h4 id="faq-question-1">How do we work?</h4> -->
+<!--                       <p>Just fill out our briefing form. This will only take about 5 minutes. Based on that basic information, we will create a design sample in a way we feel best suits your company's focus and vision. You need not waste anymore time on meetings.</p> -->
+<!--                     </li> -->
+
+<!--                     <li> -->
+<!--                       <h4 id="faq-question-2">Why should I use this service?</h4> -->
+<!--                       <p>Technically oriented Internet companies often do not possess a feeling for design and usability while print-design oriented companies do not have the know-how regarding specific requirements and various technical possibilities. Fortunately, we have the advantages of both.</p> -->
+<!--                     </li> -->
+
+<!--                     <li> -->
+<!--                       <h4 id="faq-question-3">What do I do if I don't like the design?</h4> -->
+<!--                       <p>Your current designer can continue working with our original files. You are free to use only parts of our design or not use it at all.</p> -->
+<!--                     </li> -->
+<!--                     <li> -->
+<!--                       <h4 id="faq-question-4">How much does it cost?</h4> -->
+<!--                       <p>We charge 900 USD per design sample. For 200 USD more you get a 3 day express service. Customer from Switzerland add 7.6% VAT.</p> -->
+<!--                     </li> -->
+<!--                     <li> -->
+<!--                       <h4 id="faq-question-5">How do I pay?</h4> -->
+<!--                       <p>After you have completed our briefing form you will receive an invoice by email. As soon as the money has been received, we will start working for you.</p> -->
+<!--                     </li> -->
+<!--                     <li> -->
+<!--                       <h4 id="faq-question-6">How long does it take?</h4> -->
+<!--                       <p>After your payment has arrived on our bank account, it takes about 14 days. If you choose our "Express service" it takes 3 days.</p> -->
+<!--                     </li> -->
+<!--                     <li> -->
+<!--                       <h4 id="faq-question-7">Who does the design?</h4> -->
+<!--                       <p>All designs are done by Oliver Schmid. An experienced designer who worked for two of the largest internet companies in Switzerland for seven years before starting the design studio Webgarten GmbH in Widen near Zurich.</p> -->
+<!--                     </li> -->
+<!--                     <li> -->
+<!--                       <h4 id="faq-question-8">What do I get?</h4> -->
+<!--                       <p>You get a design sample as a graphic document. It usually contains a front and second page. In addition, we will include the original workfiles. Naturally, you are free to use these any way you choose.</p> -->
+<!--                     </li> -->
+<!--                     <li> -->
+<!--                       <h4 id="faq-question-9">How much time does it take you to do a design sample?</h4> -->
+<!--                       <p>We will work until we have found the perfect design for you. This can take anywhere from 4 to 12 hours, but on average 8.</p> -->
+<!--                     </li> -->
+
+<!--                     <li> -->
+<!--                       <h4 id="faq-question-10">Where do you get the content from?</h4> -->
+<!--                       <p>We use the content you send us on our briefing form. When information is lacking we will use "dummy texts" such as "Lorem ipsum" and "dummy images".</p> -->
+<!--                     </li> -->
+<!--                     <li> -->
+<!--                       <h4 id="faq-question-11">When do I need this service?</h4> -->
+<!--                       <p>If you are unhappy with the current design of your website, if you are considering another vision for your website design, or would like to improve the "look and feel" of your site, if you are planning a new website and want to see a second design sample before you spend a lot of money on development, if you are a design company with no more ideas and want someone else to have a try.</p> -->
+<!--                     </li> -->
+<!--                     <li> -->
+<!--                       <h4 id="faq-question-12">Will my design be shown on your references?</h4> -->
+<!--                       <p>Yes. But if you choose our "Keep secret" service we will not add you to our reference list. In that case, you will be charged an additional fee of we charge 200 USD.</p> -->
+<!--                     </li> -->
+<!--                     <li> -->
+<!--                       <h4 id="faq-question-13">What happen with the files and information I'm sending to you?</h4> -->
+<!--                       <p>All files and information we receive will be treated confidentially and be deleted after use.</p> -->
+<!--                     </li> -->
+<!--                   </ol> -->
+<!--                 </div> -->
+<!--               </div> -->
+<!--             </div> -->
+<!--           </div> -->
+<!--         </div> -->
+<!--       </div> -->
+<!--     </div> -->
+<!--   </section> -->
+<!-- </div> -->
+
 {% endblock %}
+
+    {% block js %}
+<!-- <script src="./js/plugins/faq/faq.js"></script> -->
+<!-- <script src="./js/Application.js"></script> -->
+
+    <script type="text/javascript" language="javascript" src="{% static 'js/faq.js' %}"></script>
+    {% endblock %}
