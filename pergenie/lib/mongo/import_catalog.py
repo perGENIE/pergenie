@@ -6,6 +6,7 @@ import datetime
 import time
 import re
 # import sys
+import json
 import pymongo
 
 from utils.io import pickle_dump_obj
@@ -16,12 +17,9 @@ _g_gene_symbol_map = {}  # { Gene Symbol => (Entrez Gene ID, OMIM Gene ID) }
 _g_gene_id_map = {}      # { Entrez Gene ID => (Gene Symbol, OMIM Gene ID) }
 
 
-def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja,
+def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja, path_to_disease2wiki,
                    catalog_summary_cache_dir, mongo_port):
-    """doc
-    """
 
-    log.debug('Loading mim2gene.txt ...')
     with open(path_to_mim2gene, 'rb') as fin:
         for record in csv.DictReader(fin, delimiter='\t'):
             gene_type = record['Type'].lower()
@@ -33,6 +31,9 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja,
 
             _g_gene_symbol_map[gene_symbol] = entrez_gene_id, omim_gene_id
             _g_gene_id_map[entrez_gene_id] = gene_symbol, omim_gene_id
+
+
+    disease2wiki = json.load(open(path_to_disease2wiki))
 
     with pymongo.Connection(port=mongo_port) as connection:
         # Create db for eng2ja, eng2category, ...
@@ -57,9 +58,12 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja,
                     ja = unicode(record['ja'], 'utf-8') or record['eng']
                     category = record['category'] or 'NA'
                     is_drug_response = record['is_drug_response'] or 'NA'
+                    wiki_url_en = disease2wiki.get(record['eng'], '')
+
                     clean_record = dict(eng=record['eng'], ja=ja,
                                         category=category,
-                                        is_drug_response=is_drug_response)
+                                        is_drug_response=is_drug_response,
+                                        wiki_url_en=wiki_url_en)
 
                     trait_info.insert(clean_record, upsert=True)  # insert if not exist
 

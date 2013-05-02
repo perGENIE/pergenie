@@ -25,7 +25,7 @@ from lib.mongo.get_traits_infos import get_traits_infos
 from utils import clogging
 log = clogging.getColorLogger(__name__)
 
-TRAITS, TRAITS2JA, TRAITS2CATEGORY = get_traits_infos(as_dict=True)
+TRAITS, TRAITS2JA, TRAITS2CATEGORY, TRAITS2WIKI_URL_EN = get_traits_infos(as_dict=True)
 JA2TRAITS = dict([(v, k) for (k, v) in TRAITS2JA.items()])
 
 

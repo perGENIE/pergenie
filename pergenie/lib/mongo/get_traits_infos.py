@@ -12,11 +12,12 @@ def get_traits_infos(as_dict=False):
         traits = set([found['eng'] for found in founds])
         traits_ja = [trait_info.find_one({'eng': trait})['ja'] for trait in traits]
         traits_category = [trait_info.find_one({'eng': trait})['category'] for trait in traits]
+        traits_wiki_url_en = [trait_info.find_one({'eng': trait})['wiki_url_en'] for trait in traits]
 
         # print dict(zip(traits, traits_category))
 
         if not as_dict:
-            return traits, traits_ja, traits_category
+            return traits, traits_ja, traits_category, traits_wiki_url_en
 
         elif as_dict:
-            return traits, dict(zip(traits, traits_ja)), dict(zip(traits, traits_category))
+            return traits, dict(zip(traits, traits_ja)), dict(zip(traits, traits_category)), dict(zip(traits, traits_wiki_url_en))

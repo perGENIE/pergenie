@@ -25,8 +25,9 @@ from utils.date import today_date, today_str
 from utils import clogging
 log = clogging.getColorLogger(__name__)
 
-TRAITS, TRAITS2JA, TRAITS2CATEGORY = get_traits_infos(as_dict=True)
+TRAITS, TRAITS2JA, TRAITS2CATEGORY, TRAITS2WIKI_URL_EN = get_traits_infos(as_dict=True)
 JA2TRAITS = dict([(v, k) for (k, v) in TRAITS2JA.items()])
+
 
 def upsert_riskreport(tmp_info, mongo_port=settings.MONGO_PORT):
     """Upsert risk report for <file_name> of <user>.
@@ -344,6 +345,12 @@ def trait(request, file_name, trait):
 
     user_id = request.user.username
     risk_infos = get_risk_infos_for_subpage(user_id, file_name, trait)
+
+    trait_eng = JA2TRAITS.get(trait, trait)
+    risk_infos.update(dict(trait_eng=trait_eng,
+                           wiki_url_en=TRAITS2WIKI_URL_EN.get(trait_eng)['wiki_url_en'],
+                           is_ja=bool(get_language() == 'ja'))
+                      )
 
     return direct_to_template(request, 'risk_report/trait.html', risk_infos)
 
