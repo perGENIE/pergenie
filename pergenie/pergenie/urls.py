@@ -35,6 +35,7 @@ urlpatterns = patterns('',
 
 
     url(r'^riskreport/$', 'apps.riskreport.views.index'),
+    url(r'^riskreport/show_all/$', 'apps.riskreport.views.show_all'),
     url(r'^riskreport/(?P<file_name>[^/]*)/(?P<trait>[^/]*)/$', 'apps.riskreport.views.trait'),
     url(r'^riskreport/(?P<file_name>[^/]*)/(?P<trait>[^/]*)/(?P<study_name>[^/]*)/$', 'apps.riskreport.views.study'),
 

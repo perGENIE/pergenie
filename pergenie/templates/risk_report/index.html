@@ -53,6 +53,7 @@
                 <div class="row-fluid">
                   <div class="span14">
                     <div id="container_highest_risks"></div>
+                    <a href="{% url apps.riskreport.views.show_all %}"><button class="btn btn-info"><i class="icon-resize-full icon-white" style="margin-top: 1px;"></i> View more</button></a>
                   </div>
                 </div>
               </div>
@@ -61,7 +62,7 @@
         </div>
         {% endif %}
 
-        {% if h_risk_reports %}
+        {% if l_risk_reports %}
         <div class="span6">
           <div class="padded">
             <div class="content-box">
@@ -81,6 +82,7 @@
         </div>
         {% endif %}
       </div>
+
 
     </div>
 </div>
