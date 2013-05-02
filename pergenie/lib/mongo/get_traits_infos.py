@@ -13,7 +13,7 @@ def get_traits_infos(as_dict=False):
         traits_ja = [trait_info.find_one({'eng': trait})['ja'] for trait in traits]
         traits_category = [trait_info.find_one({'eng': trait})['category'] for trait in traits]
 
-        print dict(zip(traits, traits_category))
+        # print dict(zip(traits, traits_category))
 
         if not as_dict:
             return traits, traits_ja, traits_category

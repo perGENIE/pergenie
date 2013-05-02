@@ -48,7 +48,7 @@ def upsert_riskreport(tmp_info, mongo_port=settings.MONGO_PORT):
         data_info.update({'user_id': tmp_info['user_id'], 'name': tmp_info['name'] }, {"$set": {'riskreport': today_date}}, upsert=True)
 
 
-def get_risk_values_for_indexpage(tmp_infos, category=[]):
+def get_risk_values_for_indexpage(tmp_infos, category=[], is_higher=False, is_lower=False, top=None, is_log=True):
     """Return risk values (for one or two files) for chart.
     """
 
@@ -85,8 +85,24 @@ def get_risk_values_for_indexpage(tmp_infos, category=[]):
 
             # values of first user
             if i == 0:
-                risk_traits = [k for k,v in sorted(tmp_map.items(), key=lambda(k,v):(v,k), reverse=True)]
-                risk_values = [[v for k,v in sorted(tmp_map.items(), key=lambda(k,v):(v,k), reverse=True)]]
+
+                # filter for is_higher & is_lower as is_ok
+                if is_higher:
+                    is_ok = lambda x: x >= 0.0
+                elif is_lower:
+                    is_ok = lambda x: x <= 0.0
+                else:
+                    is_ok = lambda x: True
+
+                # filter for is_log (default return value of risk_report() is in log)
+                if is_log:
+                    to_log = lambda x: x
+                elif not is_log:
+                    to_log = lambda x: 10**x
+
+                if not top: top = 2000  ###
+                risk_traits = [k for k,v in sorted(tmp_map.items(), key=lambda(k,v):(v,k), reverse=True) if is_ok(v)][:int(top)]
+                risk_values = [[round(to_log(v), 1) for k,v in sorted(tmp_map.items(), key=lambda(k,v):(v,k), reverse=True) if is_ok(v)][:int(top)]]
 
             # values of second user
             elif i >= 1:
@@ -98,6 +114,88 @@ def get_risk_values_for_indexpage(tmp_infos, category=[]):
 @require_http_methods(['GET', 'POST'])
 @login_required
 def index(request):
+    """
+    Summary view for risk report.
+    * Show top-10 highest & top-10 lowest risk values.
+    * Link to `show all`
+    """
+    user_id = request.user.username
+    msg, err = '', ''
+    risk_reports, risk_traits, risk_values = None, None, None
+    browser_language = get_language()
+
+    with pymongo.Connection(port=settings.MONGO_PORT) as connection:
+        data_info = connection['pergenie']['data_info']
+
+        while True:
+            # determine file
+            infos = list(data_info.find({'user_id': user_id}))
+            tmp_info = None
+            tmp_infos = []
+
+            if not infos:
+                err = _('no data uploaded')
+                break
+
+            if request.method == 'POST':
+                form = RiskReportForm(request.POST)
+                if not form.is_valid():
+                    err = _('Invalid request.')
+                    break
+
+                for i, file_name in enumerate([request.POST['file_name']]):
+                    for info in infos:
+                        if info['name'] == file_name:
+                            if not info['status'] == 100:
+                                err = _('%(file_name)s is in importing, please wait for seconds...') % {'file_name': file_name}
+
+                            tmp_info = info
+                            tmp_infos.append(tmp_info)
+                            break
+
+                    if not tmp_info:
+                        err = _('no such file %(file_name)s') % {'file_name': file_name}
+                        break
+
+            else:
+
+                # choose first file_name by default
+                info = infos[0]
+                file_name = info['name']
+                if not info['status'] == 100:
+                    err = _('%(file_name)s is in importing, please wait for seconds...') % {'file_name': file_name}
+                tmp_infos.append(info)
+
+            if not err:
+                # get top-10 highest & top-10 lowest
+                h_risk_reports, h_risk_traits, h_risk_values = get_risk_values_for_indexpage(tmp_infos, category=['Disease'], is_higher=True, top=10, is_log=False)
+                l_risk_reports, l_risk_traits, l_risk_values = get_risk_values_for_indexpage(tmp_infos, category=['Disease'], is_lower=True, top=10, is_log=False)
+
+                # translate to Japanese
+                if browser_language == 'ja':
+                    h_risk_traits = [TRAITS2JA.get(trait) for trait in h_risk_traits]
+                    l_risk_traits = [TRAITS2JA.get(trait) for trait in l_risk_traits]
+            break
+
+        return direct_to_template(request, 'risk_report/index.html',
+                                  dict(user_id=user_id, msg=msg, err=err, infos=infos, tmp_infos=tmp_infos,
+                                       h_risk_reports=h_risk_reports, h_risk_traits=h_risk_traits, h_risk_values=h_risk_values,
+                                       l_risk_reports=l_risk_reports, l_risk_traits=l_risk_traits, l_risk_values=l_risk_values))
+
+
+@require_http_methods(['GET', 'POST'])
+@login_required
+def show_all(request):
+    """
+    Show all risk values in a chart.
+    * It can compare two individual genomes.
+
+    TODO:
+    * Do not use log-scale. Replace to real-scale.
+    * Enable to click & link trait-name in charts. (currently bar in charts only)
+    * Show population in charts, e.g., `Japanese national flag`, etc.
+    """
+
     user_id = request.user.username
     msg, err = '', ''
     risk_reports, risk_traits, risk_values = None, None, None
@@ -162,7 +260,7 @@ def index(request):
                     risk_traits = [TRAITS2JA.get(trait) for trait in risk_traits]
             break
 
-        return direct_to_template(request, 'risk_report.html',
+        return direct_to_template(request, 'risk_report/show_all.html',
                                   dict(user_id=user_id, msg=msg, err=err, infos=infos, tmp_infos=tmp_infos,
                                        risk_reports=risk_reports, risk_traits=risk_traits, risk_values=risk_values))
 
@@ -247,7 +345,7 @@ def trait(request, file_name, trait):
     user_id = request.user.username
     risk_infos = get_risk_infos_for_subpage(user_id, file_name, trait)
 
-    return direct_to_template(request, 'risk_report_trait.html', risk_infos)
+    return direct_to_template(request, 'risk_report/trait.html', risk_infos)
 
 
 @login_required
@@ -258,4 +356,4 @@ def study(request, file_name, trait, study_name):
     user_id = request.user.username
     risk_infos = get_risk_infos_for_subpage(user_id, file_name, trait_name=trait, study_name=study_name)
 
-    return direct_to_template(request, 'risk_report_study.html', risk_infos)
+    return direct_to_template(request, 'risk_report/study.html', risk_infos)
