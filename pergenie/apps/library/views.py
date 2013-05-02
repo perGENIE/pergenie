@@ -19,6 +19,7 @@ from lib.utils.io import pickle_load_obj
 from lib.utils.clogging import getColorLogger
 log = getColorLogger(__name__)
 
+TRAITS, TRAITS_JA, TRAITS_CATEGORY, TRAITS_WIKI_URL_EN = get_traits_infos()
 
 @login_required
 def index(request):
@@ -79,12 +80,12 @@ def summary(request, field_name):
 def trait_index(request):
     msg, err = '', ''
     is_ja = bool(translation.get_language() == 'ja')
-    traits, traits_ja, traits_category, wiki_url_en = get_traits_infos()
 
     return direct_to_template(request, 'library/trait_index.html',
                               dict(user_id=request.user.username, msg=msg, err=err,
-                                   is_ja=is_ja, traits=traits, traits_ja=traits_ja, traits_category=traits_category,
-                                   wiki_url_en=wiki_url_en))
+                                   is_ja=is_ja,
+                                   traits=TRAITS, traits_ja=TRAITS_JA, traits_category=TRAITS_CATEGORY,
+                                   wiki_url_en=TRAITS_WIKI_URL_EN))
 
 
 @login_required
@@ -95,8 +96,7 @@ def trait(request, trait):
     library_list = []
     variants_maps = {}
 
-    traits, traits_ja, traits_category = get_traits_infos()
-    if not trait in traits:
+    if not trait in TRAITS:
         err += 'trait not found'
 
     else:
