@@ -38,6 +38,8 @@ urlpatterns = patterns('',
     url(r'^riskreport/(?P<file_name>[^/]*)/(?P<trait>[^/]*)/$', 'apps.riskreport.views.trait'),
     url(r'^riskreport/(?P<file_name>[^/]*)/(?P<trait>[^/]*)/(?P<study_name>[^/]*)/$', 'apps.riskreport.views.study'),
 
+    url(r'^traits/$', 'apps.traits.views.index'),
+
     url(r'^library/$', 'apps.library.views.index'),
     url(r'^library/trait/$', 'apps.library.views.trait_index'),
     url(r'^library/trait/(?P<trait>.*?)/$', 'apps.library.views.trait'),
