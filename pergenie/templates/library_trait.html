@@ -59,6 +59,7 @@
                         <th>risk allele</th>
                         <th>frequency</th>
                         <th>OR</th>
+                        <th>95&#37;CI(text)</th>
                         {% for filename in variants_maps %}
                         <th>
                           {{ filename|limit:10 }}
@@ -85,6 +86,7 @@
                         <td class="center">{{ library.risk_allele }}</td>
                         <td class="center">{{ library.risk_allele_frequency }}</td>
                         <td class="center">{{ library.OR_or_beta }}</td>
+                        <td class="center">{{ library.CI_95 }}</td>
                         {% for filename in variants_maps %}
                         <td class="center">{{variants_maps|keyvalue:filename|keyvalue:rs }}</td>
                         {% endfor %}
