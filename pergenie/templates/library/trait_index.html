@@ -38,6 +38,7 @@
                       <tr>
                         <th>trait</th>
                         <th>category</th>
+                        <th></th>
                       </tr>
                     </thead>
 
@@ -53,6 +54,7 @@
                         </td>
 
                         <td>{{ traits_category|listvalue:forloop.counter0 }}</td>
+                        <td>{% if wiki_url_en|listvalue:forloop.counter0 %}<span class="badge badge-yellow"><a href="{{ wiki_url_en|listvalue:forloop.counter0 }}" target="_blank">Wikipedia</a></span>{% endif %}</td>
                       </tr>
                       {% endfor %}
                     </tbody>

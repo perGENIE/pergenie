@@ -348,7 +348,7 @@ def trait(request, file_name, trait):
 
     trait_eng = JA2TRAITS.get(trait, trait)
     risk_infos.update(dict(trait_eng=trait_eng,
-                           wiki_url_en=TRAITS2WIKI_URL_EN.get(trait_eng)['wiki_url_en'],
+                           wiki_url_en=TRAITS2WIKI_URL_EN.get(trait_eng),
                            is_ja=bool(get_language() == 'ja'))
                       )
 

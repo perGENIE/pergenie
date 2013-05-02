@@ -28,7 +28,7 @@ def index(request):
         catalog_info = connection['pergenie']['catalog_info']
         latest_catalog_date = catalog_info.find_one({'status': 'latest'})['date']
 
-    return direct_to_template(request, 'library.html',
+    return direct_to_template(request, 'index.html',
                               dict(user_id=request.user.username, msg=msg, err=err,
                                    dbsnp_version=settings.DBSNP_VERSION, refgenome_version=settings.REFGENOME_VERSION,
                                    latest_catalog_date=latest_catalog_date))
@@ -52,7 +52,7 @@ def summary_index(request):
 
     log.debug('catalog_uniqs_counts', catalog_uniqs_counts)
 
-    return direct_to_template(request, 'library_summary_index.html',
+    return direct_to_template(request, 'library/summary_index.html',
                               {'err': err,
                                'catalog_uniqs_counts': catalog_uniqs_counts})
 
@@ -79,11 +79,12 @@ def summary(request, field_name):
 def trait_index(request):
     msg, err = '', ''
     is_ja = bool(translation.get_language() == 'ja')
-    traits, traits_ja, traits_category = get_traits_infos()
+    traits, traits_ja, traits_category, wiki_url_en = get_traits_infos()
 
-    return direct_to_template(request, 'library_trait_index.html',
+    return direct_to_template(request, 'library/trait_index.html',
                               dict(user_id=request.user.username, msg=msg, err=err,
-                                   is_ja=is_ja, traits=traits, traits_ja=traits_ja, traits_category=traits_category))
+                                   is_ja=is_ja, traits=traits, traits_ja=traits_ja, traits_category=traits_category,
+                                   wiki_url_en=wiki_url_en))
 
 
 @login_required
@@ -121,7 +122,7 @@ def trait(request, trait):
 
     log.error(err)
 
-    return direct_to_template(request, 'library_trait.html',
+    return direct_to_template(request, 'library/trait.html',
                               dict(user_id=request.user.username, msg=msg, err=err,
                                    trait_name=trait, library_list=library_list,
                                    variants_maps=variants_maps))
@@ -136,7 +137,7 @@ def snps_index(request):
     uniq_snps_list = list(catalog_summary['snps'])
 
     return direct_to_template(request,
-                              'library_snps_index.html',
+                              'library/snps_index.html',
                               {'err': err,
                                'uniq_snps_list': uniq_snps_list
                                })
@@ -196,7 +197,7 @@ def snps(request, rs):
         catalog_record = None
 
     return direct_to_template(request,
-                              'library_snps.html',
+                              'library/snps.html',
                               {'err': err,
                                'rs': rs,
                                'dbsnp_record': dbsnp_record,
