@@ -19,7 +19,7 @@ log = getColorLogger(__name__)
 def index(request):
     user_id = request.user.username
     msg, err, warns = '', '', []
-    do_intro = False
+    do_intro, do_intro_risk_report = False, False
     intros = list()
 
     # log.debug('request.LANGUAGE_CODE {}'.format(request.LANGUAGE_CODE))
@@ -69,9 +69,12 @@ def index(request):
             if not infos:
                 do_intro = True
                 # Translators: This message appears on the home page only
-                intros[0] = _('First, upload your genome file!')
-                intros[1] = _('Next, ....')
-                break
+                intros.append(_('First, upload your genome file!'))
+                intros.append(_('Next, ....'))
+            else:
+                # TODO: check if {status == 100}
+                do_intro_risk_report = True
+                intros.append('Browse your Risk Report!')
 
             break
 
@@ -79,7 +82,8 @@ def index(request):
             'catalog_latest_importing_date': catalog_latest_importing_date,
             'catalog_latest_new_records_data': catalog_latest_new_records_data,
             'risk_report_latest_date': risk_report_latest_date,
-            'do_intro': do_intro, 'intros': intros}
+            'do_intro': do_intro, 'do_intro_risk_report': do_intro_risk_report,
+            'intros': intros}
 
     log.info('msgs: {}'.format(pformat(msgs)))
     return direct_to_template(request, 'dashboard.html', msgs)

@@ -33,7 +33,7 @@
             <div class="padded">
 
               <a href="{% url apps.riskreport.views.index %}">
-              <button class="button square" href="#">
+              <button class="button square" href="#"{% if do_intro_risk_report %} data-step="1" data-intro="{{ intros.0 }}" {% endif %}>
                 <i class="icon-align-left icon-large"></i>
                 <span class="button-text">RiskReport</span>
               </button></a>
