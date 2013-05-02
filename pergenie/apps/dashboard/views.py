@@ -18,8 +18,9 @@ log = getColorLogger(__name__)
 @login_required
 def index(request):
     user_id = request.user.username
-    msg = ''
-    err = ''
+    msg, err, warns = '', '', []
+    do_intro = False
+    intros = list()
 
     # log.debug('request.LANGUAGE_CODE {}'.format(request.LANGUAGE_CODE))
     log.debug('translation.get_language() {}'.format(translation.get_language()))
@@ -54,29 +55,31 @@ def index(request):
                 if risk_report_latest_date[user_data['name']]:
                     # if riskreport is outdated, show diff of records (& link to riskreport)
                     if today_date > user_data['riskreport']:
-                        err += '\n {} outdated'.format(user_data['name'])
-                        err += '\n last risk report: {}'.format(user_data['riskreport'])
+                        warns.append('Risk-Report for "{}" outdated!'.format(user_data['name']))
+                        # warn += '\n last risk report: {}'.format(user_data['riskreport'])
 
                     for added_date in sorted(catalog_summary.get('added').items()):
                         # print added_date[0],  catalog_latest_importing_document['date']
                         if added_date[0] > catalog_latest_importing_document['date']:
-                            err += '\n {1} new records {0}'.format(added_date[0], added_date[1])
+                            msg += '\n {1} new records {0}'.format(added_date[0], added_date[1])
 
             # determine file
             infos = list(data_info.find( {'user_id': user_id} ))
 
             if not infos:
+                do_intro = True
                 # Translators: This message appears on the home page only
-                msg = _('First, upload your genome file!')
+                intros[0] = _('First, upload your genome file!')
+                intros[1] = _('Next, ....')
                 break
 
             break
 
-    msgs = {'msg': msg, 'err': err,
+    msgs = {'msg': msg, 'err': err, 'warns': warns, 'user_id': user_id,
             'catalog_latest_importing_date': catalog_latest_importing_date,
             'catalog_latest_new_records_data': catalog_latest_new_records_data,
             'risk_report_latest_date': risk_report_latest_date,
-            'user_id': user_id}
+            'do_intro': do_intro, 'intros': intros}
 
     log.info('msgs: {}'.format(pformat(msgs)))
     return direct_to_template(request, 'dashboard.html', msgs)

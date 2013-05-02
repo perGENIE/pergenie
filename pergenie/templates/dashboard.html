@@ -49,7 +49,8 @@
               </button>
 
               <a href="{% url apps.upload.views.index %}">
-              <button class="button square" href="#" data-step="1" data-intro="Hello all! :) This project's called Intro.js.">
+
+              <button class="button square" href="#"{% if do_intro %} data-step="1" data-intro="{{ intros.0 }}" {% endif %}>
                 <i class="icon-arrow-up icon-large"></i>
                 <span class="button-text">Upload</span>
               </button></a>
@@ -90,6 +91,15 @@
                     </div>
                     {% endif %}
 
+                    {% if warns %}
+                    {% for warn in warns %}
+                    <div class="alert alert-warning">
+                      <button type="button" class="close" data-dismiss="alert">&times;</button>
+                      <strong>Warning!</strong> {{ warn }}
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+
                     {% if err %}
                     <div class="alert alert-error">
                       <button type="button" class="close" data-dismiss="alert">&times;</button>
@@ -97,26 +107,27 @@
                     </div>
                     {% endif %}
 
-                    {% if catalog_latest_importing_date %}
-                    <div class="alert alert-info">
-                      <button type="button" class="close" data-dismiss="alert">&times;</button>
-                      <strong>Information:</strong> latest catalog import: {{ catalog_latest_importing_date }}
-                    </div>
-                    {% endif %}
 
-                    {% if catalog_latest_new_records_data %}
-                    <div class="alert alert-info">
-                      <button type="button" class="close" data-dismiss="alert">&times;</button>
-                      <strong>Information:</strong> latest new catalog records: {{ catalog_latest_new_records_data }}
-                    </div>
-                    {% endif %}
+                    <!-- {% if catalog_latest_importing_date %} -->
+                    <!-- <div class="alert alert-info"> -->
+                    <!--   <button type="button" class="close" data-dismiss="alert">&times;</button> -->
+                    <!--   <strong>Information:</strong> latest catalog import: {{ catalog_latest_importing_date }} -->
+                    <!-- </div> -->
+                    <!-- {% endif %} -->
 
-                    {% if risk_report_latest_date %}
-                    <div class="alert alert-info">
-                      <button type="button" class="close" data-dismiss="alert">&times;</button>
-                      <strong>Information:</strong> latest riskreport: {{ risk_report_latest_date }}
-                    </div>
-                    {% endif %}
+                    <!-- {% if catalog_latest_new_records_data %} -->
+                    <!-- <div class="alert alert-info"> -->
+                    <!--   <button type="button" class="close" data-dismiss="alert">&times;</button> -->
+                    <!--   <strong>Information:</strong> latest new catalog records: {{ catalog_latest_new_records_data }} -->
+                    <!-- </div> -->
+                    <!-- {% endif %} -->
+
+                    <!-- {% if risk_report_latest_date %} -->
+                    <!-- <div class="alert alert-info"> -->
+                    <!--   <button type="button" class="close" data-dismiss="alert">&times;</button> -->
+                    <!--   <strong>Information:</strong> latest riskreport: {{ risk_report_latest_date }} -->
+                    <!-- </div> -->
+                    <!-- {% endif %} -->
 
                   </div>
                 </div>
@@ -130,42 +141,7 @@
         <div class="span6">
           <div class="content-box">
             <div class="content-box-header">
-              <icon class="icon-upload"></icon> Circle Stats
-            </div>
-            <div class="padded center">
-              <div class="percent-stat">
-                <span class="percent red"> %</span>
-                <input type="text" value="21" data-min="0" data-max="100" class="circle-stat red">
-                <span class="indicator">Visits</span>
-              </div>
-              <div class="percent-stat">
-                <span class="percent orange"> %</span>
-                <input type="text" value="38" data-min="0" data-max="100" class="circle-stat orange">
-                <span class="indicator">New visitors</span>
-              </div>
-
-              <div class="percent-stat">
-                <span class="percent yellow"> %</span>
-                <input type="text" value="12" data-min="0" data-max="100" class="circle-stat yellow">
-                <span class="indicator">Returning</span>
-              </div>
-              <div class="percent-stat">
-                <span class="percent blue"> %</span>
-                <input type="text" value="65" data-min="0" data-max="100" class="circle-stat blue">
-                <span class="indicator">Unique visits</span>
-              </div>
-
-              <div class="percent-stat">
-                <span class="percent green"> %</span>
-                <input type="text" value="54" data-min="0" data-max="100" class="circle-stat green">
-                <span class="indicator">Page views</span>
-              </div>
-              <div class="percent-stat">
-                <span class="percent red"> %</span>
-                <input type="text" value="83" data-min="0" data-max="100" class="circle-stat red">
-                <span class="indicator">Bounce rate</span>
-              </div>
-
+              <icon class="icon-upload"></icon> ..
             </div>
           </div>
         </div>
