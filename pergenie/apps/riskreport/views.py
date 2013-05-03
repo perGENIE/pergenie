@@ -441,8 +441,8 @@ def get_risk_infos_for_subpage(user_id, file_name, trait_name=None, study_name=N
                 study_list = [k for k,v in sorted(tmp_study_value_map.items(), key=lambda(k,v):(v,k), reverse=True)]
 
                 # list for chart
-                RR_list = [v for k,v in sorted(tmp_study_value_map.items(), key=lambda(k,v):(v,k), reverse=True)]
-                RR_list_real = [round(10**v, 3) for k,v in sorted(tmp_study_value_map.items(), key=lambda(k,v):(v,k), reverse=True)]
+                RR_list = [v[1] for k,v in sorted(tmp_study_value_map.items(), key=lambda(k,v):(v,k), reverse=True)]
+                RR_list_real = [round(10**v[1], 3) for k,v in sorted(tmp_study_value_map.items(), key=lambda(k,v):(v,k), reverse=True)]
 
             else:
                 pass
@@ -469,11 +469,10 @@ def trait(request, file_name, trait):
 
     user_id = request.user.username
     risk_infos = get_risk_infos_for_subpage(user_id, file_name, trait)
-
-    log.debug(risk_infos)
-
     trait_eng = JA2TRAITS.get(trait, trait)
-    risk_infos.update(dict(trait_eng=trait_eng,
+    risk_infos.update(dict(file_name=file_name,
+                           user_id=user_id,
+                           trait_eng=trait_eng,
                            wiki_url_en=TRAITS2WIKI_URL_EN.get(trait_eng),
                            is_ja=bool(get_language() == 'ja')))
 
@@ -484,8 +483,14 @@ def trait(request, file_name, trait):
 def study(request, file_name, trait, study_name):
     """Show RR by rss, for each study.
     """
-
     user_id = request.user.username
     risk_infos = get_risk_infos_for_subpage(user_id, file_name, trait_name=trait, study_name=study_name)
+    trait_eng = JA2TRAITS.get(trait, trait)
+    risk_infos.update(dict(file_name=file_name,
+                           user_id=user_id,
+                           trait_eng=trait_eng,
+                           wiki_url_en=TRAITS2WIKI_URL_EN.get(trait_eng),
+                           is_ja=bool(get_language() == 'ja')))
+
 
     return direct_to_template(request, 'risk_report/study.html', risk_infos)
