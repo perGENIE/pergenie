@@ -18,18 +18,20 @@
       <!--   </ul> -->
       <!-- </div> -->
 
-      <div class="row-fluid">
-        <div class="span12">
-          <h2 class="transparent-text">Disease Risk Report</h2>
-        </div>
-      </div>
+      <!-- <div class="row-fluid"> -->
+      <!--   <div class="span12"> -->
+      <!--     <h2 class="transparent-text">Disease Risk Report</h2> -->
+      <!--   </div> -->
+      <!-- </div> -->
 
       <div class="row-fluid">
         <div class="span12">
           <div class="content-box transparent">
-
             <div class="padded">
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+              <h2>Disease Risk Report</h2>
+              <div class="padded">
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+              </div>
             </div>
           </div>
         </div>
@@ -38,24 +40,42 @@
       <div class="row-fluid">
         <div class="span12">
           <div class="content-box green">
-
             <div class="padded">
-              Selected genome file:
-              <form action="{% url apps.riskreport.views.index %}" method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-		        <fieldset>
-                  <select name="file_name" onchange="submit(this.form)">
-                    {% for info in infos %}
-                    {% if info == tmp_infos.0 %}
-                    <option value="{{ info.name }}" selected>{{ info.name }}</option>
-                    {% else%}
-                    <option value="{{ info.name }}">{{ info.name }}</option>
-                    {% endif %}
-                    {% endfor%}
-                  </select>
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>Selected genome file:</th>
+                    <th><i class="icon-globe"></i>Population</th>
+                    <th><i class="icon-user"></i>Sex</th>
+                    <th><i class="icon-file"></i>File Format</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="center">
+                      <form action="{% url apps.riskreport.views.index %}" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+		                <fieldset>
+                          <select name="file_name" onchange="submit(this.form)">
+                            {% for info in infos %}
+                            {% if info == tmp_infos.0 %}
+                            <option value="{{ info.name }}" selected>{{ info.name }}</option>
+                            {% else%}
+                            <option value="{{ info.name }}">{{ info.name }}</option>
+                            {% endif %}
+                            {% endfor %}
+                          </select>
 
-                </fieldset>
-              </form>
+                        </fieldset>
+                      </form>
+                    </td>
+                    <td class="center"><span class="label label-success">{{ tmp_infos.0.population }}</span></td>
+                    <td class="center"><span class="label label-success">{{ tmp_infos.0.sex }}</span></td>
+                    <td class="center"><span class="label label-success">{{ tmp_infos.0.file_format }}</span></td>
+                  </tr>
+                </tbody>
+              </table>
+
             </div>
           </div>
         </div>
