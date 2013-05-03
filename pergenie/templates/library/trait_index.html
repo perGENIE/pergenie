@@ -26,42 +26,35 @@
 
     <div class="row-fluid">
       <div class="span12">
-        <div class="padded">
-          <div class="content-box">
+        <div class="content-box">
+          <div class="padded">
 
-            <div class="padded">
-              <div class="row-fluid">
-                <div class="span12">
+            <table cellpadding="0" cellspacing="0" border="0" class="display datatable" id="library_table">
+              <thead>
+                <tr>
+                  <th>trait</th>
+                  <th>category</th>
+                  <th></th>
+                </tr>
+              </thead>
 
-                  <table cellpadding="0" cellspacing="0" border="0" class="display datatable" id="library_table">
-                    <thead>
-                      <tr>
-                        <th>trait</th>
-                        <th>category</th>
-                        <th></th>
-                      </tr>
-                    </thead>
+              <tbody>
+                {% for trait in traits %}
+                <tr>
 
-                    <tbody>
-                      {% for trait in traits %}
-                      <tr>
+                  <td>
+                    <a href="{% url apps.library.views.trait trait=trait %}">
+                      {% autoescape off %}{{ trait|limit:40 }}{% endautoescape %}
+                      {% if is_ja %}({{ traits_ja|listvalue:forloop.counter0|limit:20 }}){% endif %}
+                    </a>
+                  </td>
 
-                        <td>
-                          <a href="{% url apps.library.views.trait trait=trait %}">
-                            {% autoescape off %}{{ trait|limit:40 }}{% endautoescape %}
-                            {% if is_ja %}({{ traits_ja|listvalue:forloop.counter0|limit:20 }}){% endif %}
-                          </a>
-                        </td>
-
-                        <td>{{ traits_category|listvalue:forloop.counter0 }}</td>
-                        <td>{% if wiki_url_en|listvalue:forloop.counter0 %}<span class="badge badge-yellow"><a href="{{ wiki_url_en|listvalue:forloop.counter0 }}" target="_blank">Wikipedia</a></span>{% endif %}</td>
-                      </tr>
-                      {% endfor %}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
+                  <td>{{ traits_category|listvalue:forloop.counter0 }}</td>
+                  <td>{% if wiki_url_en|listvalue:forloop.counter0 %}<span class="badge badge-yellow"><a href="{{ wiki_url_en|listvalue:forloop.counter0 }}" target="_blank">Wikipedia</a></span>{% endif %}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>

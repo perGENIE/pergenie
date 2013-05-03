@@ -69,50 +69,51 @@
 
       <div class="row-fluid">
         <div class="span12">
-          <!-- <div class="content-box"> -->
+          <div class="content-box">
+            <div class="padded">
 
-            <table cellpadding="0" cellspacing="0" border="0" class="display datatable" id="risk_reports_table">
-              <thead>
-                <tr>
-                  <th>RR (Risk relative to average population) [log10]</th>
-                  <th>RR [real]</th>
-                  <th>SNPs</th>
-                  <th>Genotype</th>
-                  <th>Risk allele</th>
-                  <th>Risk allele frequency</th>
-                  <th>OR</th>
-                </tr>
-              </thead>
+              <table cellpadding="0" cellspacing="0" border="0" class="display datatable" id="risk_reports_table">
+                <thead>
+                  <tr>
+                    <th>RR (Risk relative to average population) [log10]</th>
+                    <th>RR [real]</th>
+                    <th>SNPs</th>
+                    <th>Genotype</th>
+                    <th>Risk allele</th>
+                    <th>Risk allele frequency</th>
+                    <th>OR</th>
+                  </tr>
+                </thead>
 
-              <tbody>
-                {% for snp, store in tmp_risk_store.items %}
-                <tr>
-                  <td class="center">{{ store.RR }}</td>
-                  <td class="center">{{ store.RR_real }}</td>
-                  <td class="center">rs{{ snp }}</td>
-                  <td class="center">{% if store.variant_map.0 in store.catalog_map.risk_allele %}
-                    <span>{{ store.variant_map.0 }}</span>
-                    {% else %}
-                    <span style="color : #c5c5c5">{{ store.variant_map.0 }}</span>
-                    {% endif %}
-                    {% if store.variant_map.1 in store.catalog_map.risk_allele %}
-                    <span>{{ store.variant_map.1 }}</span>
-                    {% else %}
-                    <span style="color : #c5c5c5">{{ store.variant_map.1 }}</span>
-                    {% endif %}
-                  </td>
-                  <td class="center">{{ store.catalog_map.risk_allele }}</td>
-                  <td class="center">{{ store.catalog_map.risk_allele_frequency }}</td>
-                  <td class="center">{{ store.catalog_map.OR }}</td>
-		        </tr>
-		        {% endfor %}
-              </tbody>
-            </table>
+                <tbody>
+                  {% for snp, store in tmp_risk_store.items %}
+                  <tr>
+                    <td class="center">{{ store.RR }}</td>
+                    <td class="center">{{ store.RR_real }}</td>
+                    <td class="center">rs{{ snp }}</td>
+                    <td class="center">{% if store.variant_map.0 in store.catalog_map.risk_allele %}
+                      <span>{{ store.variant_map.0 }}</span>
+                      {% else %}
+                      <span style="color : #c5c5c5">{{ store.variant_map.0 }}</span>
+                      {% endif %}
+                      {% if store.variant_map.1 in store.catalog_map.risk_allele %}
+                      <span>{{ store.variant_map.1 }}</span>
+                      {% else %}
+                      <span style="color : #c5c5c5">{{ store.variant_map.1 }}</span>
+                      {% endif %}
+                    </td>
+                    <td class="center">{{ store.catalog_map.risk_allele }}</td>
+                    <td class="center">{{ store.catalog_map.risk_allele_frequency }}</td>
+                    <td class="center">{{ store.catalog_map.OR }}</td>
+		          </tr>
+		          {% endfor %}
+                </tbody>
+              </table>
 
-          <!-- </div> -->
+            </div>
+          </div>
         </div>
       </div>
-    </div>
 
   </section>
 </div>
@@ -186,8 +187,14 @@ $(document).ready(function(){
   $('#risk_reports_table').dataTable({
     "bJQueryUI": true,
     "sPaginationType": "full_numbers",
-    "iDisplayLength": 25,
-    "aLengthMenu": [ 25, 50, -1 ]
+    "iDisplayLength": 30,
+    "oLanguage": {
+            "sZeroRecords": "Nothing found - sorry",
+            "sInfo": "Showing _START_ to _END_ of _TOTAL_ records",
+            "sInfoEmpty": "Showing 0 to 0 of 0 records",
+            "sInfoFiltered": "(filtered from _MAX_ total records)"
+    },
+    "sDom": '<"top"if>t<"bottom"p><"clear">'
   });
 });
 </script>
