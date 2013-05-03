@@ -5,16 +5,17 @@ import argparse
 import pymongo
 
 # import colors
-import search_catalog
+from search_catalog import search_catalog_by_query
+from get_latest_catalog import get_latest_catalog
+
 
 def search_variants(user_id, file_name, query, query_type=None, mongo_port=27017):
     with pymongo.Connection(port=mongo_port) as connection:
-        db = connection['pergenie']
-        catalog = db['catalog']
-        variants = db['variants'][user_id][file_name]
-        print variants
+        catalog = get_latest_catalog(port=mongo_port)
 
-        catalog_records = search_catalog.search_catalog_by_query(query, query_type=query_type).sort('trait', 1)
+        variants = connection['pergenie']['variants'][user_id][file_name]
+
+        catalog_records = search_catalog_by_query(query, query_type=query_type).sort('trait', 1)
 
         tmp_catalog_map = {}
         found_id = 0
@@ -37,8 +38,6 @@ def search_variants(user_id, file_name, query, query_type=None, mongo_port=27017
 
                                               'date':'{0}-{1}'.format(record['date'].year,
                                                                       record['date'].month),
-
-                                              'p_value':record['p_value_mlog'],
 
                                               'dbsnp_link':'http://www.ncbi.nlm.nih.gov/projects/SNP/snp_ref.cgi?rs='+str(record['snps']),
                                               'pubmed_link':'http://www.ncbi.nlm.nih.gov/pubmed/'+str(record['pubmed_id'])

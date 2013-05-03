@@ -29,7 +29,7 @@ def index(request):
         catalog_info = connection['pergenie']['catalog_info']
         latest_catalog_date = catalog_info.find_one({'status': 'latest'})['date']
 
-    return direct_to_template(request, 'index.html',
+    return direct_to_template(request, 'library/index.html',
                               dict(user_id=request.user.username, msg=msg, err=err,
                                    dbsnp_version=settings.DBSNP_VERSION, refgenome_version=settings.REFGENOME_VERSION,
                                    latest_catalog_date=latest_catalog_date))
@@ -70,7 +70,7 @@ def summary(request, field_name):
         err = 'not found'
         uniqs_counts = {}
 
-    return direct_to_template(request, 'library_summary.html',
+    return direct_to_template(request, 'library/summary.html',
                               {'err': err,
                                'uniqs_counts': uniqs_counts,
                                'field_name': field_name})
@@ -104,7 +104,7 @@ def trait(request, trait):
         with pymongo.Connection(port=settings.MONGO_PORT) as connection:
 
             # for debug
-            catalog = get_latest_catalog()
+            catalog = get_latest_catalog(port=settings.MONGO_PORT)
             founds = catalog.find({'trait': trait})
             log.debug('catalog.find: {}'.format(list(founds)))
 

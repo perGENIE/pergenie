@@ -125,7 +125,7 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja, path_t
                   ('context', 'Context', _string),
                   ('intergenc', 'Intergenic', _integer),
                   ('risk_allele_frequency', 'Risk Allele Frequency', _float),
-                  ('p_value', 'p-Value', _float),
+                  ('p_value', 'p-Value', _p_value),
                   ('p_value_mlog', 'Pvalue_mlog', _float),
                   ('p_value_text', 'p-Value (text)', _string),
                   ('OR_or_beta', 'OR or beta', _OR_or_beta),
@@ -451,6 +451,13 @@ def _risk_allele(text, dbsnp):
                             risk_allele += '?'
 
         return int(rs), risk_allele
+
+
+def _p_value(text):
+    if not text or text in ('NR', 'NS'):
+        return None
+    else:
+        return text
 
 
 def _integer(text):

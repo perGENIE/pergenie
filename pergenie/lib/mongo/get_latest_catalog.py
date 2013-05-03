@@ -4,8 +4,8 @@ import pymongo
 from django.conf import settings
 
 
-def get_latest_catalog():
-    with pymongo.Connection(port=settings.MONGO_PORT) as connection:
+def get_latest_catalog(port):
+    with pymongo.Connection(port=port) as connection:
         latest_document = connection['pergenie']['catalog_info'].find_one({'status': 'latest'})  # -> {'date': datetime.datetime(2012, 12, 12, 0, 0),}
 
         if latest_document:

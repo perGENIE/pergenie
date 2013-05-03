@@ -57,7 +57,6 @@
                 </fieldset>
               </form>
             </div>
-
           </div>
         </div>
       </div>
@@ -93,6 +92,12 @@
                 <div class="row-fluid">
                   <div class="span12">
                     ..
+
+            {% for star in stars %}
+            <i class="icon-star"></i>
+            {% endfor %}
+            <span class="label label-green">Meta</span>
+
                     <!-- <div id="container_lowest_risks"></div> -->
                   </div>
                 </div>
@@ -199,7 +204,7 @@ $(function () {
                     data: [{% for risk_value in h_risk_values.0 %}
                              {y: {{ risk_value }},
                               color: {% if risk_value < 0 %}'#2ca6f1'{% elif risk_value == 0 %}'#8a8a8a'{% else %}'#f12ca6'{% endif %},
-                              url:"{% url apps.riskreport.views.trait trait=h_risk_traits|listvalue:forloop.counter0 file_name=tmp_infos.0.name %}"},
+                              url:"{% url apps.riskreport.views.study trait=h_risk_traits|listvalue:forloop.counter0 file_name=tmp_infos.0.name study_name=h_risk_studies|listvalue:forloop.counter0 %}"},
                            {% endfor %}],
                     },
             ]

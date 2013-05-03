@@ -101,6 +101,7 @@ def search_catalog_by_query(raw_query, query_type=None, mongo_port=27017):
             latest_date = str(latest_document['date'].date()).replace('-', '_')  # -> '2012_12_12'
             catalog = connection['pergenie']['catalog'][latest_date]
             print '[DEBUG] ', catalog
+            print '[DEBUG] ', catalog.find_one({})
         else:
             # TODO: error handling
             print '[ERROR] latest does not exist in catalog_info!'

@@ -117,6 +117,7 @@
               <tr>
                 <th>RR [log10]</th>
                 <th>RR [real]</th>
+                <th>Reliability</th>
                 <th>Study</th>
               </tr>
             </thead>
@@ -126,6 +127,7 @@
               <tr>
                 <td class="center">{{ RR_list|listvalue:forloop.counter0 }}</td>
                 <td class="center">{{ RR_list_real|listvalue:forloop.counter0 }}</td>
+                <td class="center">..</td>
                 <td><a href="{% url apps.riskreport.views.study file_name=file_name trait=trait_name study_name=study %}">{{ study }}</a></td>
 
 		      </tr>
