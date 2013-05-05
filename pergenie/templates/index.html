@@ -28,13 +28,13 @@
     <nav class="navbar">
       <div class="navbar-inner">
         <div class="container">
-          <!-- <a href="{% url apps.frontend.views.index %}" class="brand"></a> -->
+          <!-- <a href="#" class="brand"></a> -->
           <a href="https://twitter.com/share" class="twitter-share-button" data-text="perGENIE - interprets your personal genome with publicly available databases & your genetic testing data. https://twitter.com/per_GENIE" >Tweet</a>
           <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
 
           <ul class="nav">
             <!-- <li class="active"><a href="#"></a></li> -->
-            <li data-step="1" data-intro="Hello all! :) This project's called Intro.js."><a href="#">Try demo</a></li>
+            <li><a href="#">Try demo</a></li>
             <li><a href="{% url apps.frontend.views.register %}">Sign up</a></li>
             <li><a href="{% url apps.frontend.views.login %}">Login</a></li>
           </ul>
@@ -50,107 +50,115 @@
       </div>
     </div>
 
-    <!-- <div class="row"> -->
-    <!--   <div class="span12 graded center"> -->
-    <!--     <p>Tell them how amazing your App is. Log in for existing users.</p> -->
-    <!--   </div> -->
-    <!-- </div> -->
-  <!-- <div class="container"> -->
-    <div class="row">
-      <div class="span12 center graded">
-        <a href="#" class="signup">Try demo</a>
-        <a href="{% url apps.frontend.views.register %}" class="signup">Sign up now</a>
+    <div class="container">
+      <div class="row">
+        <div class="span12 center graded">
+          <a href="#" class="signup">Try demo</a>
+          <a href="{% url apps.frontend.views.register %}" class="signup">Sign up for free</a>
+        </div>
       </div>
-  <!-- </div> -->
     </div>
 
   <div class="container">
-    <h2><strong>Features</strong> .</h2>
-    <h3 class="subheader">We ...</h3>
+    <h2>Features.</h2>
+    <!-- <h3 class="subheader"></h3> -->
     <div class="row">
       <div class="span12 box drop-shadow">
+
         <div class="row">
           <article class="span6 offset1">
-            <h3>HTML5 goodness, open fonts.</h3>
-            <p>Kickstarter user engagement A/B testing shrink a market venture capital pitch deck. Social bookmarking group buying crowded market
-              pivot onboarding freemium prototype ping pong.
-              Early stage disruptive ecosystem community outreach dynamic location based strategic investor.
+            <h3>Disease risk calculation</h3>
+            <p>Based on the results of genotype-phenotype association studies, i.e., GWAS (Genome Wide Association Studies), perGENIE calculates your genetic risks for diseases.
             </p>
+            <p>As a database of GWAS, we use <a href="http://www.genome.gov/gwastudies/" target="_blank">NHGRI GWAS Catalog</a>.</p>
           </article>
           <div class="span4">
             <img src="{% static 'images/pics/placeholder_200.png' %}" alt="placeholder" />
           </div>
         </div>
+
         <div class="row">
           <div class="span4 offset1">
             <img src="{% static 'images/pics/placeholder_200.png' %}" alt="placeholder" />
           </div>
           <article class="span6">
-            <h3>Fully responsive design.</h3>
-            <p>Accelerator photo sharing business school drop out ramen hustle crush it revenue traction platforms.
-              Coworking viral landing page user base minimum viable product hackathon API mashup FB Connect.</p>
+            <h3>Comparison of two genomes</h3>
+            <p>
+              </p>
           </article>
         </div>
+
         <div class="row">
           <article class="span6 offset1">
-            <h3>Use this as a base.</h3>
-            <p>Tablet publishing HTML5 mobile first really simple syndication meetups white board walls.
-              User experience iterate algorithm gamification semantic web value add market research stealth.
-              Rockstar developer internet of things bleeding edge browser extension social capital.
-            </p>
+            <h3>Working with 23andMe & VCF</h3>
+            <p>Suppoted input file formats are:</p>
+            <ul>
+              <li>SNP array data from <a href="https://www.23andme.com/" target="_blank">23andMe</a>, a common direct-to-consumer genetic testing service.</li>
+              <li><a href="http://www.1000genomes.org/wiki/Analysis/Variant%20Call%20Format/vcf-variant-call-format-version-41" target="_blank">VCF (Variant Call Format)</a>, a tipical data format for DNA sequencing data from NGS.</li>
+            </ul>
           </article>
           <div class="span4">
             <img src="{% static 'images/pics/placeholder_200.png' %}" alt="placeholder" />
           </div>
         </div>
+
+        <div class="row">
+          <article class="span6 offset1">
+            <h3>Up-to-date reference databases</h3>
+            <p>Reference databases are updated nightly everyday, to follow the rappidly increasing genotype-phenotype association studies, so that perGENIE can provide up-to-date disease risk calculation.
+            </p>
+          </article>
+        </div>
+
+        <div class="row">
+          <article class="span6 offset1">
+            <h3>Friendly to Japanese</h3>
+            <p>perGENIE speaks English and Japanse!
+            </p>
+          </article>
+        </div>
+
+        <div class="row">
+          <article class="span6 offset3">
+            <h3 class="subheader">More features are under developping...</h3>
+          </article>
+        </div>
+
       </div>
     </div>
   </div>
 
   <!-- <div class="container"> -->
+  <!--   <h2>Final pitch.</h2> -->
   <!--   <div class="row"> -->
-  <!--     <div class="span12 center graded"> -->
-  <!--       <a href="#" class="signup">Sign up now</a> -->
-  <!--       <a href="#" class="signup">Try demo</a> -->
+  <!--     <div class="span12 box"> -->
+  <!--       <article class="span10 offset1"> -->
+  <!--         <p>.</p> -->
+  <!--       </article> -->
   <!--     </div> -->
   <!--   </div> -->
   <!-- </div> -->
 
-  <!-- <div class="container"> -->
-  <!--     <h2>Final pitch.</h2> -->
-  <!--     <div class="row"> -->
-  <!--         <div class="span12 box"> -->
-  <!--             <article class="span10 offset1"> -->
-  <!--             <p>Sandboxing UDID content management system ruby on rails continuous deployment big data infographic. -->
-  <!--             Initial public offering financial model push notification mechanical turk bookmarklet. -->
-  <!--             Term sheet convertible note colluding bootstrapping. -->
-  <!--             Cloud computing subscription model out of the box proactive solution.  </p> -->
-  <!--             <p>And if you're not satisfied, you can cancel for free at any time within your 30-day trial.</p> -->
-  <!--             </article> -->
-  <!--         </div> -->
-  <!--     </div> -->
-  <!-- </div> -->
-
   <div class="container">
-    <!-- <h3 class="subheader">Stay in touch.</h3> -->
+    <h3 class="subheader">Stay in touch.</h3>
     <div class="row">
         <div class="span12">
           <h4>About us</h4>
-          <p>.</p>
-          <p></p>
+          <p>perGENIE is being developed and maintained by Kensuke NUMAKURA (<a href="https://twitter.com/knmkr" target="_blank">@knmkr</a>) and perGENIE Team (<a href="https://twitter.com/per_GENIE" target="_blank">@per_GENIE</a>).</p>
         </div>
-
-    </div>
-    <div class="row footer">
-      <div class="span12">
-        <ul class="links">
-          <li><a href="https://twitter.com/per_GENIE" target="_blank"><img src="{% static 'images/icons/twitter.png' %}" alt="twitter" /></a></li>
-          <li><a href="#">Terms</a></li>
-          <li><a href="#">License</a></li>
-        </ul>
-      </div>
     </div>
   </div>
+
+  <!-- <div class="row footer"> -->
+  <!--   <div class="span12"> -->
+  <!--     <ul class="links"> -->
+  <!--       <\!-- <li><a href="https://twitter.com/per_GENIE" target="_blank"><img src="{% static 'images/icons/twitter.png' %}" alt="twitter" /></a></li> -\-> -->
+  <!--       <\!-- <li>&copy; 2012-2013 perGENIE Team.</li> -\-> -->
+  <!--       <\!-- <li><a href="#">Terms</a></li> -\-> -->
+  <!--       <\!-- <li><a href="#">License</a></li> -\-> -->
+  <!--     </ul> -->
+  <!--   </div> -->
+  <!-- </div> -->
 
 </body>
 
