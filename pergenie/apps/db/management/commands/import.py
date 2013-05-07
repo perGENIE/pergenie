@@ -4,11 +4,13 @@ from django.core.management.base import BaseCommand
 from django.conf import settings
 
 from optparse import make_option
-# import sys
+import sys
 import os
-# import datetime
+import re
+import datetime
 import pymongo
 from termcolor import colored
+import glob
 
 from utils.date import today_date, today_str
 from utils import clogging
@@ -49,7 +51,33 @@ class Command(BaseCommand):
                 log.info('Getting latest gwascatalog form official web site...')
                 log.info('Getting from {} ...'.format(settings.GWASCATALOG_URL))
 
-                get_url_content(url=settings.GWASCATALOG_URL, dst=latest_catalog)
+                try:
+                    get_url_content(url=settings.GWASCATALOG_URL, dst=latest_catalog)
+                except IOError:
+                    log.error('Could not get latest gwascatalog.')
+                    log.error('Proceed importing gwascatalog with local gwascatalog? (may not latest)')
+                    yn = raw_input('y/n > ')
+
+                    if yn == 'y':
+                        # get latest in local
+                        re_datetime = re.compile('gwascatalog\.(\d+)_(\d+)_(\d+)\.txt')
+                        latest_date = datetime.date(2000, 01, 01)
+                        for c in glob.glob(os.path.join(settings.BASE_DIR, 'data', 'gwascatalog.*.txt')):
+                            tmp_date = re_datetime.findall(c)
+                            if tmp_date:
+                                tmp_date = datetime.date(int(tmp_date[0][0]), int(tmp_date[0][1]), int(tmp_date[0][2]))
+                                if tmp_date > latest_date:
+                                    latest_date = tmp_date
+
+                        latest_catalog = os.path.join('data', 'gwascatalog.' + str(latest_date).replace('-', '_') + '.txt')
+
+                        log.warn('=======================================================')
+                        log.warn('Use local latest gwascatalog: {}'.format(latest_catalog))
+                        log.warn('=======================================================')
+
+                    else:
+                        log.info('Importing gwascatalog stopped.')
+                        sys.exit()
 
             latest_catalog_cleaned = latest_catalog.replace('.txt', '.cleaned.txt')
 
