@@ -11,12 +11,13 @@ from django.utils.translation import ugettext as _
 from django.conf import settings
 from apps.upload.forms import UploadForm
 
-import datetime
 import os
+import datetime
+
 import pymongo
 import magic
+from lib.common import clean_file_name
 from lib.tasks import qimport_variants
-# from lib.utils.date import now_date
 from utils import clogging
 log = clogging.getColorLogger(__name__)
 
@@ -25,10 +26,7 @@ log = clogging.getColorLogger(__name__)
 @login_required
 def index(request):
     user_id = request.user.username
-    msg = ''
-    err = ''
-
-    log.debug('translation.get_language() {}'.format(get_language()))
+    msg, err = '', ''
 
     with pymongo.Connection(port=settings.MONGO_PORT) as connection:
         db = connection['pergenie']
@@ -47,7 +45,7 @@ def index(request):
                 sex = form.cleaned_data['sex']
                 file_format = form.cleaned_data['file_format']
 
-                """Security: validate that forms are filled with valid value"""
+                # Validate: Forms are filled with valid value
 
                 # TODO: ok?
                 if not call_file:
@@ -66,7 +64,7 @@ def index(request):
                     err = _('Select file format.')
                     break
 
-                """Security: validate that uploaded file is valid"""
+                # Validate: Uploaded file is valid
 
                 if call_file.size > settings.UPLOAD_GENOMEFILE_SIZE_LIMIT:
                     err = _('too large file size')
@@ -85,7 +83,7 @@ def index(request):
                 elif not call_file.content_type == 'text/plain':
                     err = _('file type not allowed')
 
-                # still need to validate that the file contains the content that the content-type header claims -- "trust but verify."
+                # Still need to validate that the file contains the content that the content-type header claims -- "trust but verify."
 
                 if data_info.find({'user_id': user_id, 'raw_name': call_file.name}).count() > 0:
                     err = _('Same file name exists. If you want to overwrite it, please delete old one.')
@@ -94,13 +92,13 @@ def index(request):
                 if not os.path.exists(os.path.join(settings.UPLOAD_DIR, user_id)):
                     os.makedirs(os.path.join(settings.UPLOAD_DIR, user_id))
 
-                # convert UploadedFile object to a file
+                # Convert UploadedFile object to a file
                 uploaded_file_path = os.path.join(settings.UPLOAD_DIR, user_id, call_file.name)
                 with open(uploaded_file_path, 'wb') as fout:
                     for chunk in call_file.chunks():
                         fout.write(chunk)
 
-                # filetype identification using libmagic via python-magic
+                # Filetype identification using libmagic via python-magic
                 m = magic.Magic(mime_encoding=True)
                 magic_filetype = m.from_file(uploaded_file_path)
                 if not magic_filetype in ('us-ascii'):
@@ -114,24 +112,25 @@ def index(request):
                     break
 
                 msg = _('%(file_name)s uploaded.') % {'file_name': call_file.name}
-                log.debug('uploaded_file_path: {}'.format(uploaded_file_path))
-                # msg = 'Successfully uploaded: {}'.format(call_file.name)
 
-                # TODO: check if clery is alive
+                # TODO: check if celery is alive
 
-                today = str(datetime.datetime.today()).replace('-', '/')
-                file_name_cleaned = call_file.name.replace('.', '').replace(' ', '')
+                # ------------------------------------
+                # Variants file passed our validation!
+                # So, import it into MongoDB.
+                # ------------------------------------
 
                 info = {'user_id': user_id,
-                        'name': file_name_cleaned,
+                        'name': clean_file_name(call_file.name),
                         'raw_name': call_file.name,
-                        'date': today,
+                        'date': datetime.datetime.today(),
                         'population': population,
                         'sex': sex,
                         'file_format': file_format,
                         'status': float(0.0)}
                 data_info.insert(info)
 
+                # Throw as a background job
                 qimport_variants.delay(info)
                 msg += _(', and now importing...')
 
@@ -140,9 +139,10 @@ def index(request):
         uploadeds = list(data_info.find({'user_id': user_id}))
 
     if err:
-        log.error('UPLOAD err: {}')
+        log.error('err: {}'.format(err))
+
     return direct_to_template(request, 'upload.html',
-                              {'msg': msg, 'err': err, 'uploadeds': uploadeds})
+                              dict(msg=msg, err=err, uploadeds=uploadeds))
 
 
 @login_required

@@ -8,14 +8,14 @@ from VCFParser import VCFParser, VCFParseError
 
 class SimpleTest(unittest.TestCase):
     def setUp(self):
-        pass
+        self.basedir = os.path.dirname(os.path.abspath(__file__))
 
     def test_success(self):
-        v = VCFParser(open(os.path.join('test', 'test.vcf41.vcf'), 'r'))
+        v = VCFParser(open(os.path.join(self.basedir, 'test', 'test.vcf41.vcf'), 'r'))
 
         self.assertEqual(v.sample_names, ['NA00001', 'NA00002', 'NA00003'])
 
-        record =  v.parse_lines().next()
+        record = v.parse_lines().next()
 
         self.assertEqual(record['chrom'], '20')
         self.assertEqual(record['pos'], 14370)
@@ -45,7 +45,7 @@ class SimpleTest(unittest.TestCase):
         """case: without `#CHROM ...` line"""
 
         with self.assertRaises(VCFParseError) as cm:
-            v = VCFParser(open(os.path.join('test', 'test.vcf41.invalid-header.vcf'), 'r'))
+            v = VCFParser(open(os.path.join(self.basedir, 'test', 'test.vcf41.invalid-header.vcf'), 'r'))
 
         self.assertEqual(cm.exception.error_code, 'Header-lines seem invalid. `#CHROM ...` does not exists.')
 
@@ -53,7 +53,7 @@ class SimpleTest(unittest.TestCase):
         """case: without whole header-lines"""
 
         with self.assertRaises(VCFParseError) as cm:
-            v = VCFParser(open(os.path.join('test', 'test.vcf41.invalid-header.2.vcf'), 'r'))
+            v = VCFParser(open(os.path.join(self.basedir, 'test', 'test.vcf41.invalid-header.2.vcf'), 'r'))
 
         self.assertEqual(cm.exception.error_code, 'Header-lines seem invalid. `#CHROM ...` does not exists.')
 
@@ -61,7 +61,7 @@ class SimpleTest(unittest.TestCase):
         """case: delimiter is not [tab]"""
 
         with self.assertRaises(VCFParseError) as cm:
-            v = VCFParser(open(os.path.join('test', 'test.vcf41.invalid-header.3.vcf'), 'r'))
+            v = VCFParser(open(os.path.join(self.basedir, 'test', 'test.vcf41.invalid-header.3.vcf'), 'r'))
 
         self.assertEqual(cm.exception.error_code, 'Header-lines seem invalid. Probably delimiter is not tab.')
 

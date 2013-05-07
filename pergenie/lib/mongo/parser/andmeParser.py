@@ -15,7 +15,6 @@ class andmeParser(object):
     def __init__(self, fin):
         self.handle = fin
         self.delimiter = '\t'
-
         self.ref_genome_version = None
 
         # Parse header-lines
@@ -44,7 +43,6 @@ class andmeParser(object):
         if not self.ref_genome_version:
             raise andmeParseError, 'Could not determine reference-genome version from header-lines.'
 
-
     def parse_lines(self):
         data = {}
         for record in csv.DictReader(self.handle,
@@ -53,7 +51,6 @@ class andmeParser(object):
 
             data['id'] = _string(record['rsid'])
             data['rs'] = _rsid(record['rsid'])
-
             data['chrom'] = _string(record['chromosome'])
             data['pos'] = _integer(record['position'])
             data['genotype'] = _string(record['genotype'])
@@ -64,11 +61,17 @@ class andmeParser(object):
 def _integer(text):
     return int(text)
 
+
 def _string(text):
     return text
 
+
 def _rsid(text):
     """
+    >>> _rsid('.')
+
+    >>> _rsid('100')
+
     >>> _rsid('rs100')
     100
     """
@@ -77,14 +80,18 @@ def _rsid(text):
     rs_raw = text.split(';')[0]  # case: rs100;rs123
 
     rs_regex = re.compile('rs(\d+)')
-    rsid = rs_regex.match(rs_raw).group(1)
+    found = rs_regex.match(rs_raw)
+    if found:
+        rsid = found.group(1)
 
-    try:
-        return int(rsid)
-    except ValueError:
-        return None
+        try:
+            return int(rsid)
+        except ValueError:
+            pass
+
+    return None
 
 
-if __name__=='__main__':
+if __name__ == '__main__':
     import doctest
     doctest.testmod()
