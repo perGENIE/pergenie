@@ -94,7 +94,6 @@ class Command(BaseCommand):
                 log.info('Cleaning latest gwascatalog...')
                 clean_catalog.clean_catalog(latest_catalog, latest_catalog_cleaned)
 
-            # TODO: import latest gwascatalog as db.catalog.<today>
             import_catalog.import_catalog(path_to_gwascatalog=latest_catalog_cleaned,
                                           path_to_mim2gene=settings.PATH_TO_MIM2GENE,
                                           path_to_eng2ja=settings.PATH_TO_ENG2JA,
@@ -113,38 +112,33 @@ class Command(BaseCommand):
 
             # update 'latest' catalog in db.catalog_info
             with pymongo.Connection(port=settings.MONGO_PORT) as connection:
-                log.info('MongoDB port: {}'.format(settings.MONGO_PORT))
                 catalog_info = connection['pergenie']['catalog_info']
 
                 latest_document = catalog_info.find_one({'status': 'latest'})
-
                 log.info('latest_document: {}'.format(latest_document))
-                # log.info('today_date: {}'.format(today_date))
 
+                #
                 latest_date = date2datetime(latest_date)
 
                 if latest_document:
                     db_latest_date = latest_document['date']
 
                 else:
-                    # no latest, so today_date is latest
+                    # no latest in catalog_info
                     db_latest_date = latest_date
                     catalog_info.update({'status': 'latest'}, {'$set': {'date': db_latest_date}}, upsert=True)
                     log.info('First time to import catalog!')
 
-                # check if today_date is newer than latest
+                # check if is newer than latest in catalog_info
                 if latest_date > db_latest_date:
                     # update latest
                     catalog_info.update({'status': 'latest'}, {'$set': {'date': latest_date}}, upsert=True)
                     catalog_info.update({'status': 'prev'}, {'$set': {'date': db_latest_date}}, upsert=True)
-                    log.info('Updated latest!')
+                    log.info('Updated latest in catalog_info.')
 
                 else:
-                    # do not update
-                    log.info('No need to update.')
-                    pass
+                    log.info('No need to update catalog_info.')
 
-                # log.info('today_date: {}'.format(today_date))
                 log.info('latest: {}'.format(catalog_info.find_one({'status': 'latest'})))
 
         else:

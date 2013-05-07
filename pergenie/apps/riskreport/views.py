@@ -434,15 +434,22 @@ def get_risk_infos_for_subpage(user_id, file_name, trait_name=None, study_name=N
 
                 snps_list = [k for k,v in sorted(tmp_risk_store.items(), key=lambda x:x[1]['RR'])]
                 RR_list = [v['RR'] for k,v in sorted(tmp_risk_store.items(), key=lambda x:x[1]['RR'])]
+                reliability_list = [risk_reports.get(trait_name).get(study_name)[0]]
+
 
             elif not study_name and trait_name:
+                # Studies for a trait
                 tmp_risk_store = risk_store.get(trait_name)
                 tmp_study_value_map = risk_reports.get(trait_name)
+                print '###'
+                print risk_reports
+                print
                 study_list = [k for k,v in sorted(tmp_study_value_map.items(), key=lambda(k,v):(v,k), reverse=True)]
 
                 # list for chart
                 RR_list = [v[1] for k,v in sorted(tmp_study_value_map.items(), key=lambda(k,v):(v,k), reverse=True)]
                 RR_list_real = [round(10**v[1], 3) for k,v in sorted(tmp_study_value_map.items(), key=lambda(k,v):(v,k), reverse=True)]
+                reliability_list = [v[0] for k,v in sorted(tmp_study_value_map.items(), key=lambda(k,v):(v,k), reverse=True)]
 
             else:
                 pass
@@ -457,7 +464,8 @@ def get_risk_infos_for_subpage(user_id, file_name, trait_name=None, study_name=N
             break
 
         return dict(msg=msg, err=err, infos=infos, tmp_info=tmp_info,
-                    RR_list=RR_list, RR_list_real=RR_list_real, study_list=study_list,
+                    RR_list=RR_list, RR_list_real=RR_list_real,
+                    study_list=study_list, reliability_list=reliability_list,
                     file_name=file_name, trait_name=trait_name, study_name=study_name,
                     snps_list=snps_list, tmp_risk_store=tmp_risk_store)
 
@@ -491,6 +499,5 @@ def study(request, file_name, trait, study_name):
                            trait_eng=trait_eng,
                            wiki_url_en=TRAITS2WIKI_URL_EN.get(trait_eng),
                            is_ja=bool(get_language() == 'ja')))
-
 
     return direct_to_template(request, 'risk_report/study.html', risk_infos)

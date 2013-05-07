@@ -36,8 +36,8 @@ def search_variants(user_id, file_name, query, query_type=None, mongo_port=27017
                                               'chr':record['chr_id'],
                                               'freq':record['risk_allele_frequency'],
 
-                                              'date':'{0}-{1}'.format(record['date'].year,
-                                                                      record['date'].month),
+                                              'added':record['added'].date(),
+                                              'date':record['date'].date(),
 
                                               'dbsnp_link':'http://www.ncbi.nlm.nih.gov/projects/SNP/snp_ref.cgi?rs='+str(record['snps']),
                                               'pubmed_link':'http://www.ncbi.nlm.nih.gov/pubmed/'+str(record['pubmed_id'])

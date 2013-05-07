@@ -25,72 +25,114 @@
 
       <div class="row-fluid">
         <div class="span12">
-          <div class="content-box">
+          <div class="content-box transparent">
             <div class="padded">
-              <h3>{{ trait_name }}{% if is_ja %} ({{ trait_eng }}){% endif %}</h3>
-              {% if wiki_url_en %}<span class="badge badge-yellow"><a href="{{ wiki_url_en }}" target="_blank">Wikipedia</a></span>{% endif %}
+              <h4>{{ trait_name }}{% if is_ja %} ({{ trait_eng }}){% endif %}
+                {% if wiki_url_en %}<span class="badge badge-yellow"><a href="{{ wiki_url_en }}" target="_blank">Wikipedia</a></span>{% endif %}
+              </h4>
             </div>
           </div>
         </div>
       </div>
 
       <div class="row-fluid">
-        <div class="span4">
+        <div class="span2">
           <div class="content-box">
 
             <div class="content-box-header">
               <i class="icon-bar-chart"></i> Effects of SNPs
             </div>
 
-            <!-- <div id="container" style="max-width: 400px; height: 300px; margin: 0 auto"></div> -->
+            <!-- <div id="container" style="max-width: 100px; height: 300px; margin: auto"></div> -->
             <div id="container"> <!-- style="max-width: 400px; height: 300px; margin: 0 auto"></div> -->
             </div>
           </div>
         </div>
 
-        <div class="span8">
+        <div class="span10">
           <div class="content-box">
             <div class="content-box-header">
-              <i class="icon-book"></i> Reference study
+              <i class="icon-book"></i> Information about reference study
             </div>
 
-            <div class="row-fluid">
-              <div class="span12">
-                <h4>"{{ study_name }}"</h4>
-              </div>
-            </div>
+            <table class="table table-hover">
+              <tbody>
+                {% for store in tmp_risk_store.values %}
+                {% ifequal forloop.counter0 0 %}
+                <tr>
+                  <td>Study name</td>
+                  <td>{{ study_name }} <span class="badge badge-yellow"><a href="{{ store.catalog_map.pubmed_link }}" target="_blank">Pubmed</a></span></td>
+                </tr>
+                <tr>
+                  <td>Journal</td>
+                  <td>{{ store.catalog_map.jornal }}</td>
+                </tr>
+                <tr>
+                  <td>First author</td>
+                  <td>{{ store.catalog_map.first_author }}</td>
+                </tr>
+                <tr>
+                  <td>Date</td>
+                  <td>{{ store.catalog_map.date }}</td>
+                </tr>
+                <tr>
+                  <td>Initial sample size</td>
+                  <td>{{ store.catalog_map.initial_sample_size }}</td>
+                </tr>
+                <tr>
+                  <td>p-value</td>
+                  <td>{{ store.catalog_map.p_value }}</td>
+                </tr>
+                <tr>
+                  <td><a href="#">Reliability rank <i class="icon-question-sign"></i></a></td>
+                  <td>
+                    {% for r in reliability_list.0 %}
+                    {% ifequal r "m" %}<span class="label label-green">Meta</span>
+                    {% else %}{% ifequal r "*" %}<i class="icon-star"></i>{% endifequal %}{% endifequal %}
+                    {% endfor %}
+
+                  </td>
+                </tr>
+              </tbody>
+              {% endifequal %}
+              {% endfor %}
+            </table>
 
             <a href="{% url apps.riskreport.views.trait trait=trait_name file_name=file_name %}"><button class="btn btn-green"><i class="icon-book icon-white" style="margin-top: 1px;"></i> Other studies</button></a>
           </div>
         </div>
-
-
       </div>
 
       <div class="row-fluid">
         <div class="span12">
           <div class="content-box">
-            <div class="padded">
+
+            <div class="content-box-header">
+              <i class="icon-bar-chart"></i> Information about SNPs
+            </div>
 
               <table cellpadding="0" cellspacing="0" border="0" class="display datatable" id="risk_reports_table">
                 <thead>
                   <tr>
-                    <th>RR (Risk relative to average population) [log10]</th>
-                    <th>RR [real]</th>
                     <th>SNPs</th>
+                    <th>Chrom.</th>
+                    <th>Pos.</th>
+                    <th>Context</th>
                     <th>Genotype</th>
                     <th>Risk allele</th>
                     <th>Risk allele frequency</th>
-                    <th>OR</th>
+                    <th>OR in GWAS</th>
+                    <th>Risk of yours</th>
                   </tr>
                 </thead>
 
                 <tbody>
                   {% for snp, store in tmp_risk_store.items %}
                   <tr>
-                    <td class="center">{{ store.RR }}</td>
-                    <td class="center">{{ store.RR_real }}</td>
                     <td class="center">rs{{ snp }}</td>
+                    <td class="center">{{ store.catalog_map.chr_id }}</td>
+                    <td class="center">{{ store.catalog_map.chr_pos }}</td>
+                    <td class="center">{{ store.catalog_map.context }}</td>
                     <td class="center">{% if store.variant_map.0 in store.catalog_map.risk_allele %}
                       <span>{{ store.variant_map.0 }}</span>
                       {% else %}
@@ -105,6 +147,7 @@
                     <td class="center">{{ store.catalog_map.risk_allele }}</td>
                     <td class="center">{{ store.catalog_map.risk_allele_frequency }}</td>
                     <td class="center">{{ store.catalog_map.OR }}</td>
+                    <td class="center">{{ store.RR_real }}</td>
 		          </tr>
 		          {% endfor %}
                 </tbody>
@@ -194,7 +237,7 @@ $(document).ready(function(){
             "sInfoEmpty": "Showing 0 to 0 of 0 records",
             "sInfoFiltered": "(filtered from _MAX_ total records)"
     },
-    "sDom": '<"top"if>t<"bottom"p><"clear">'
+    "sDom": '<"top">t<"bottom"p><"clear">'
   });
 });
 </script>

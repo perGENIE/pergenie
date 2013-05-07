@@ -127,7 +127,12 @@
               <tr>
                 <td class="center">{{ RR_list|listvalue:forloop.counter0 }}</td>
                 <td class="center">{{ RR_list_real|listvalue:forloop.counter0 }}</td>
-                <td class="center">..</td>
+                <td class="center">
+                  {% for r in reliability_list|listvalue:forloop.counter0 %}
+                  {% ifequal r "m" %}<span class="label label-green">Meta</span>
+                  {% else %}{% ifequal r "*" %}<i class="icon-star"></i>{% endifequal %}{% endifequal %}
+                  {% endfor %}
+                </td>
                 <td><a href="{% url apps.riskreport.views.study file_name=file_name trait=trait_name study_name=study %}">{{ study }}</a></td>
 
 		      </tr>
