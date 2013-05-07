@@ -30,7 +30,7 @@ def index(request):
         latest_catalog_date = catalog_info.find_one({'status': 'latest'})['date']
 
     return direct_to_template(request, 'library/index.html',
-                              dict(user_id=request.user.username, msg=msg, err=err,
+                              dict(msg=msg, err=err,
                                    dbsnp_version=settings.DBSNP_VERSION, refgenome_version=settings.REFGENOME_VERSION,
                                    latest_catalog_date=latest_catalog_date))
 
@@ -82,7 +82,7 @@ def trait_index(request):
     is_ja = bool(translation.get_language() == 'ja')
 
     return direct_to_template(request, 'library/trait_index.html',
-                              dict(user_id=request.user.username, msg=msg, err=err,
+                              dict(msg=msg, err=err,
                                    is_ja=is_ja,
                                    traits=TRAITS, traits_ja=TRAITS_JA, traits_category=TRAITS_CATEGORY,
                                    wiki_url_en=TRAITS_WIKI_URL_EN))
@@ -123,7 +123,7 @@ def trait(request, trait):
     log.error(err)
 
     return direct_to_template(request, 'library/trait.html',
-                              dict(user_id=request.user.username, msg=msg, err=err,
+                              dict(msg=msg, err=err,
                                    trait_name=trait, library_list=library_list,
                                    variants_maps=variants_maps))
 

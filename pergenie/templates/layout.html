@@ -137,7 +137,7 @@
                   <li class="dropdown profile">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                       <i class="icon-unlock"></i>
-                      {{ user_id }}
+                      {% if user %}{{ user.username }}{% endif %}
                       <b class="caret"></b>
                     </a>
                     <ul class="dropdown-menu secondary ">

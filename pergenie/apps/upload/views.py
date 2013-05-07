@@ -141,7 +141,7 @@ def index(request):
     if err:
         log.error('err: {}'.format(err))
 
-    return direct_to_template(request, 'upload.html',
+    return direct_to_template(request, 'upload/index.html',
                               dict(msg=msg, err=err, uploadeds=uploadeds))
 
 

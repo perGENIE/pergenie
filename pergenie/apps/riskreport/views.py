@@ -9,6 +9,7 @@ from django.conf import settings
 
 from apps.riskreport.forms import RiskReportForm
 
+import sys
 import os
 import numpy as np
 import re
@@ -247,8 +248,11 @@ def index(request):
     """
     user_id = request.user.username
     msg, err = '', ''
-    risk_reports, risk_traits, risk_values = None, None, None
     browser_language = get_language()
+
+    risk_reports, risk_traits, risk_values = None, None, None
+    h_risk_reports, h_risk_traits, h_risk_values, h_risk_ranks, h_risk_studies = None, None, None, None, None
+    l_risk_reports, l_risk_traits, l_risk_values, l_risk_ranks, l_risk_studies = None, None, None, None, None
 
     with pymongo.Connection(port=settings.MONGO_PORT) as connection:
         data_info = connection['pergenie']['data_info']
@@ -284,7 +288,6 @@ def index(request):
                         break
 
             else:
-
                 # choose first file_name by default
                 info = infos[0]
                 file_name = info['name']
@@ -301,10 +304,11 @@ def index(request):
                 if browser_language == 'ja':
                     h_risk_traits = [TRAITS2JA.get(trait) for trait in h_risk_traits]
                     l_risk_traits = [TRAITS2JA.get(trait) for trait in l_risk_traits]
+
             break
 
         return direct_to_template(request, 'risk_report/index.html',
-                                  dict(user_id=user_id, msg=msg, err=err, infos=infos, tmp_infos=tmp_infos,
+                                  dict(msg=msg, err=err, infos=infos, tmp_infos=tmp_infos,
                                        h_risk_reports=h_risk_reports, h_risk_traits=h_risk_traits, h_risk_values=h_risk_values,
                                        h_risk_ranks=h_risk_ranks, h_risk_studies=h_risk_studies,
                                        l_risk_reports=l_risk_reports, l_risk_traits=l_risk_traits, l_risk_values=l_risk_values,
@@ -390,7 +394,7 @@ def show_all(request):
             break
 
         return direct_to_template(request, 'risk_report/show_all.html',
-                                  dict(user_id=user_id, msg=msg, err=err, infos=infos, tmp_infos=tmp_infos,
+                                  dict(msg=msg, err=err, infos=infos, tmp_infos=tmp_infos,
                                        risk_reports=risk_reports, risk_traits=risk_traits, risk_values=risk_values, risk_studies=risk_studies))
 
 
@@ -479,7 +483,6 @@ def trait(request, file_name, trait):
     risk_infos = get_risk_infos_for_subpage(user_id, file_name, trait)
     trait_eng = JA2TRAITS.get(trait, trait)
     risk_infos.update(dict(file_name=file_name,
-                           user_id=user_id,
                            trait_eng=trait_eng,
                            wiki_url_en=TRAITS2WIKI_URL_EN.get(trait_eng),
                            is_ja=bool(get_language() == 'ja')))
@@ -495,7 +498,6 @@ def study(request, file_name, trait, study_name):
     risk_infos = get_risk_infos_for_subpage(user_id, file_name, trait_name=trait, study_name=study_name)
     trait_eng = JA2TRAITS.get(trait, trait)
     risk_infos.update(dict(file_name=file_name,
-                           user_id=user_id,
                            trait_eng=trait_eng,
                            wiki_url_en=TRAITS2WIKI_URL_EN.get(trait_eng),
                            is_ja=bool(get_language() == 'ja')))

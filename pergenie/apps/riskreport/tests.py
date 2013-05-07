@@ -11,6 +11,7 @@ from django.utils.translation import activate as translation_activate
 import mongo.import_variants as import_variants
 # from lib.utils.date import now_date
 
+import sys
 import os
 import pymongo
 
@@ -26,6 +27,9 @@ class SimpleTest(TestCase):
         user = User.objects.create_user(self.test_user_id,
                                         '',
                                         self.test_user_password)
+        self.test_user_dir = os.path.join(settings.RISKREPORT_CACHE_DIR, self.test_user_id)
+        if not os.path.exists(self.test_user_dir):
+            os.mkdir(self.test_user_dir)
 
         translation_activate('en')
 
@@ -45,11 +49,11 @@ class SimpleTest(TestCase):
             # delete collection `variants.user_id.filename`
             db.drop_collection('variants.{0}.{1}'.format(self.test_user_id, self.file_cleaned_name))
 
-            # because it is a test, no need to delete `file`
+            # because it is just a test, no need to delete `file`
 
-            # delete document `data_info`
-            if data_info.find_one({'user_id': self.test_user_id, 'name': self.file_cleaned_name}):
-                data_info.remove({'user_id': self.test_user_id, 'name': self.file_cleaned_name})
+            # delete document in `data_info`
+            if data_info.find_one({'user_id': self.test_user_id}):
+                data_info.remove({'user_id': self.test_user_id})
 
 
 #     def upload_data(self):
@@ -93,6 +97,7 @@ class SimpleTest(TestCase):
         self.client.login(username=self.test_user_id, password=self.test_user_password)
 
         self.delete_data()
+
         response = self.client.get('/riskreport/')
         self.failUnlessEqual(response.context['err'], 'no data uploaded')
 
