@@ -2,6 +2,8 @@
 
 import os
 import urllib
+import socket
+socket.setdefaulttimeout(30)
 try:
     import cPickle as pickle
 except ImportError:
