@@ -81,58 +81,29 @@
                 <icon class="icon-exclamation-sign"></icon> Notifications
               </div>
 
-              <div class="padded">
-                <div class="row-fluid">
-                  <div class="span12">
-
-                    {% if msg %}
-                    <div class="alert alert-info">
-                      <button type="button" class="close" data-dismiss="alert">&times;</button>
-                      <strong>Information:</strong> {{ msg }}
-                    </div>
-                    {% endif %}
-
-                    {% if warns %}
-                    {% for warn in warns %}
-                    <div class="alert alert-warning">
-                      <button type="button" class="close" data-dismiss="alert">&times;</button>
-                      <strong>Warning!</strong> {{ warn }}
-                    </div>
-                    {% endfor %}
-                    {% endif %}
-
-                    {% if err %}
-                    <div class="alert alert-error">
-                      <button type="button" class="close" data-dismiss="alert">&times;</button>
-                      <strong>Error!</strong> {{ err }}
-                    </div>
-                    {% endif %}
-
-
-                    <!-- {% if catalog_latest_importing_date %} -->
-                    <!-- <div class="alert alert-info"> -->
-                    <!--   <button type="button" class="close" data-dismiss="alert">&times;</button> -->
-                    <!--   <strong>Information:</strong> latest catalog import: {{ catalog_latest_importing_date }} -->
-                    <!-- </div> -->
-                    <!-- {% endif %} -->
-
-                    <!-- {% if catalog_latest_new_records_data %} -->
-                    <!-- <div class="alert alert-info"> -->
-                    <!--   <button type="button" class="close" data-dismiss="alert">&times;</button> -->
-                    <!--   <strong>Information:</strong> latest new catalog records: {{ catalog_latest_new_records_data }} -->
-                    <!-- </div> -->
-                    <!-- {% endif %} -->
-
-                    <!-- {% if risk_report_latest_date %} -->
-                    <!-- <div class="alert alert-info"> -->
-                    <!--   <button type="button" class="close" data-dismiss="alert">&times;</button> -->
-                    <!--   <strong>Information:</strong> latest riskreport: {{ risk_report_latest_date }} -->
-                    <!-- </div> -->
-                    <!-- {% endif %} -->
-
-                  </div>
-                </div>
+              {% if msg %}
+              <div class="alert alert-info">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <strong>Information:</strong> {{ msg }}
               </div>
+              {% endif %}
+
+              {% if warns %}
+              {% for warn in warns %}
+              <div class="alert alert-warning">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <strong>Warning!</strong> {{ warn }}
+              </div>
+              {% endfor %}
+              {% endif %}
+
+              {% if err %}
+              <div class="alert alert-error">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <strong>Error!</strong> {{ err }}
+              </div>
+              {% endif %}
+
             </div>
           </div>
         </div>

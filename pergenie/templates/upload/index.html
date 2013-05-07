@@ -155,6 +155,8 @@
       </div>
     </div>
 
+    <!-- uploadeds -->
+    {% if uploadeds %}
     <div class="row-fluid">
       <div class="span12">
         <div class="padded">
@@ -167,105 +169,108 @@
               <div class="row-fluid">
                 <div class="span12">
 
-                    <table class="table table-striped table-condensed">
-                      <thead>
-                        <tr>
-                          <th>File Name</th>
-                          <th>Date</th>
-                          <th>Population</th>
-                          <th>Sex</th>
-                          <th>Format</th>
-                          <th>Status</th>
-                          <th></th>
-                        </tr>
-                      </thead>
+                  <table class="table table-striped table-condensed">
+                    <thead>
+                      <tr>
+                        <th>File Name</th>
+                        <th>Date</th>
+                        <th>Population</th>
+                        <th>Sex</th>
+                        <th>Format</th>
+                        <th>Status</th>
+                        <th></th>
+                      </tr>
+                    </thead>
 
-                      <tbody>
-                        {% if uploadeds %}
-                        {% for uploaded in uploadeds %}
+                    <tbody>
+                      {% if uploadeds %}
+                      {% for uploaded in uploadeds %}
 
-                        <tr class="uploaded_file">
-                          <td class="dataname">{{ uploaded.name }}</td>
-                          <td class="center">{{ uploaded.date }}</td>
-                          <td class="center">
-                            <span class="label label-success">{{ uploaded.population }}</span>
-                          </td>
-                          <td class="center">
-                            <span class="label label-success">{{ uploaded.sex }}</span>
-                          </td>
-                          <td class="center">
-                            <span class="label label-success">{{ uploaded.file_format }}</span>
-                          </td>
-                          <td class="center">
-		                    {% if uploaded.status == -1 %}
-                            <div class="">
-                              <p>Failed</p>
-		                    </div>
+                      <tr class="uploaded_file">
+                        <td class="dataname">{{ uploaded.name }}</td>
+                        <td class="center">{{ uploaded.date }}</td>
+                        <td class="center">
+                          <span class="label label-success">{{ uploaded.population }}</span>
+                        </td>
+                        <td class="center">
+                          <span class="label label-success">{{ uploaded.sex }}</span>
+                        </td>
+                        <td class="center">
+                          <span class="label label-success">{{ uploaded.file_format }}</span>
+                        </td>
+                        <td class="center">
+		                  {% if uploaded.status == -1 %}
+                          <div class="">
+                            <p>Failed</p>
+		                  </div>
 
-		                    {% elif uploaded.status >= 100 %}
-                            <div class="">
-                              <p>100%</p>
-		                    </div>
+		                  {% elif uploaded.status >= 100 %}
+                          <div class="">
+                            <p>100%</p>
+		                  </div>
 
-                            <!--                     <div class="progress progress-success"> -->
-                            <!-- 		              <div class="bar" style="width: 100%;">100%</div> -->
+                          <!--                     <div class="progress progress-success"> -->
+                          <!-- 		              <div class="bar" style="width: 100%;">100%</div> -->
 
-		                    {% else %}
-                            <div class="progress progress-striped progress-info active">
-		                      <div class="bar" style="width: {{ uploaded.status }}%;"></div>
+		                  {% else %}
+                          <div class="progress progress-striped progress-info active">
+		                    <div class="bar" style="width: {{ uploaded.status }}%;"></div>
+                          </div>
+		                  {% endif %}
+                        </td>
+                        <td class="center">
+                          <!-- <a class="btn btn-success" href="#"> -->
+                          <!--   <i class="icon-zoom-in icon-white"></i> -->
+                          <!--   View -->
+                          <!-- </a> -->
+                          <!-- <a class="btn btn-info" href="#"> -->
+                          <!--   <i class="icon-edit icon-white"></i> -->
+                          <!--   Edit -->
+                          <!-- </a> -->
+                          <div id="deleteModal{{ forloop.counter0 }}" class="modal hide fade in delete" style="display: none;">
+                            <div class="modal-header"></div>
+                            <div class="modal-body"><p>Really delete "{{ uploaded.name }}"?</p></div>
+                            <div class="modal-footer">
+			                  <form action="{% url apps.upload.views.delete %}" method="POST" enctype="multipart/form-data">
+                                {% csrf_token %}
+			                    <input type="hidden" name="name" value="{{ uploaded.name }}">
+
+			                    <button class="btn" data-dismiss="modal">No.</button>
+			                    <button class="btn btn-primary" href="#" type="submit">Yes, delete this data.</button>
+			                  </form>
                             </div>
-		                    {% endif %}
-                          </td>
-                          <td class="center">
-                            <!-- <a class="btn btn-success" href="#"> -->
-                            <!--   <i class="icon-zoom-in icon-white"></i> -->
-                            <!--   View -->
-                            <!-- </a> -->
-                            <!-- <a class="btn btn-info" href="#"> -->
-                            <!--   <i class="icon-edit icon-white"></i> -->
-                            <!--   Edit -->
-                            <!-- </a> -->
-                            <div id="deleteModal{{ forloop.counter0 }}" class="modal hide fade in delete" style="display: none;">
-                              <div class="modal-header"></div>
-                              <div class="modal-body"><p>Really delete "{{ uploaded.name }}"?</p></div>
-                              <div class="modal-footer">
-			                    <form action="{% url apps.upload.views.delete %}" method="POST" enctype="multipart/form-data">
-                                  {% csrf_token %}
-			                      <input type="hidden" name="name" value="{{ uploaded.name }}">
-
-			                      <button class="btn" data-dismiss="modal">No.</button>
-			                      <button class="btn btn-primary" href="#" type="submit">Yes, delete this data.</button>
-			                    </form>
-                              </div>
-                            </div>
-                            {% if uploaded.status %}
+                          </div>
+                          {% if uploaded.status %}
+                          <a data-toggle="modal" href="#deleteModal{{ forloop.counter0 }}" class="btn btn-danger">
+                            <i class="icon-trash icon-white"></i>Delete
+                            {% else %}
+                            <!--                     <a href="#" class="btn btn-danger disabled"> -->
                             <a data-toggle="modal" href="#deleteModal{{ forloop.counter0 }}" class="btn btn-danger">
                               <i class="icon-trash icon-white"></i>Delete
-                              {% else %}
-                              <!--                     <a href="#" class="btn btn-danger disabled"> -->
-                              <a data-toggle="modal" href="#deleteModal{{ forloop.counter0 }}" class="btn btn-danger">
-                                <i class="icon-trash icon-white"></i>Delete
-                                {% endif%}
-		                  </td>
-		                </tr>
-		                {% endfor %}
-		                {% endif %}
-                      </tbody>
-                    </table>
+                              {% endif%}
+		                </td>
+		              </tr>
+		              {% endfor %}
+		              {% endif %}
+                    </tbody>
+                  </table>
 
-	                <form id="uploaded-file-deleter" style="display: none;"
-		                  action="{% url apps.upload.views.delete %}" method="POST" enctype="multipart/form-data">
-                      {% csrf_token %}
-	                  <input type="hidden" name="name" value="">
-	                </form>
+	              <form id="uploaded-file-deleter" style="display: none;"
+		                action="{% url apps.upload.views.delete %}" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+	                <input type="hidden" name="name" value="">
+	              </form>
 
-                  </div>
                 </div>
               </div>
             </div>
           </div>
+        </div>
       </div>
     </div>
+    {% endif %}
+
+  </section>
 </div>
 {% endblock %}
 
