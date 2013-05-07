@@ -35,7 +35,7 @@
                         <!-- </div> -->
 
                         <div class="control-group" data-step="2" data-intro="Hello all! :) This project's called Intro.js.">
-                          <label class="control-label"><a data-toggle="modal" href="#uploadModal">Genome File <i class="icon-info-sign"></i></a></label>
+                          <label class="control-label"><a data-toggle="modal" href="#uploadModal">Genome File <i class="icon-question-sign"></i></a></label>
                           <div class="controls">
                             <input type="file" name="call">
                           </div>
@@ -43,7 +43,7 @@
 
                         <div data-step="3" data-intro="Hello all! :) This project's called Intro.js.">
                         <div class="control-group">
-                          <label class="control-label"><a data-toggle="modal" href="#uploadModal">Population <i class="icon-info-sign"></i></a></label>
+                          <label class="control-label"><a data-toggle="modal" href="#uploadModal">Population <i class="icon-question-sign"></i></a></label>
                           <div class="controls">
                             <select name="population">
                               <option value="unknown">Unknown</option>
@@ -55,7 +55,7 @@
                         </div>
 
                         <div class="control-group">
-                          <label class="control-label"><a data-toggle="modal" href="#uploadModal">Sex <i class="icon-info-sign"></i></a></label>
+                          <label class="control-label"><a data-toggle="modal" href="#uploadModal">Sex <i class="icon-question-sign"></i></a></label>
                           <div class="controls">
                             <select name="sex">
                               <option value="unknown">Unknown</option>
@@ -66,7 +66,7 @@
                         </div>
 
                         <div class="control-group">
-                          <label class="control-label"><a data-toggle="modal" href="#uploadModal">File Format <i class="icon-info-sign"></i></a></label>
+                          <label class="control-label"><a data-toggle="modal" href="#uploadModal">File Format <i class="icon-question-sign"></i></a></label>
                           <div class="controls">
                             <select name="file_format">
                               <option value="andme">23andMe</option>
@@ -272,7 +272,7 @@
 {% block js %}
 <link href="{% static 'css/introjs.css' %}" rel="stylesheet">
 <script type="text/javascript" src="{% static 'js/intro.js' %}"></script>
-<!-- <script type="text/javascript">introJs().start()</script> -->
+{% if do_intro %}<script type="text/javascript">introJs().start()</script>{% endif %}
 
 <script type="text/javascript">window.upload_status_url = "{% url apps.upload.views.status %}";</script>
 <script type="text/javascript" src="{% static 'js/upload.js' %}"></script>

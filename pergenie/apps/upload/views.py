@@ -27,6 +27,7 @@ log = clogging.getColorLogger(__name__)
 def index(request):
     user_id = request.user.username
     msg, err = '', ''
+    do_intro = False
 
     with pymongo.Connection(port=settings.MONGO_PORT) as connection:
         db = connection['pergenie']
@@ -138,11 +139,15 @@ def index(request):
 
         uploadeds = list(data_info.find({'user_id': user_id}))
 
+        if not uploadeds:
+            do_intro = True
+
     if err:
         log.error('err: {}'.format(err))
 
     return direct_to_template(request, 'upload/index.html',
-                              dict(msg=msg, err=err, uploadeds=uploadeds))
+                              dict(msg=msg, err=err, uploadeds=uploadeds,
+                                   do_intro=do_intro))
 
 
 @login_required
