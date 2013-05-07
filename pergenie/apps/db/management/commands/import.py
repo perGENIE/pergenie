@@ -21,6 +21,10 @@ import mongo.clean_catalog as clean_catalog
 import mongo.import_catalog as import_catalog
 
 
+def date2datetime(d):
+    return datetime.datetime.combine(d, datetime.time())
+
+
 class Command(BaseCommand):
     option_list = BaseCommand.option_list + (
         make_option(
@@ -43,6 +47,7 @@ class Command(BaseCommand):
 
             # check if gwascatalog.<today>.txt is exists
             latest_catalog = os.path.join('data', 'gwascatalog.' + today_str + '.txt')
+            latest_date = today_date
 
             if os.path.exists(latest_catalog):
                 log.info('Latest gwascatalog exists.')
@@ -61,15 +66,16 @@ class Command(BaseCommand):
                     if yn == 'y':
                         # get latest in local
                         re_datetime = re.compile('gwascatalog\.(\d+)_(\d+)_(\d+)\.txt')
-                        latest_date = datetime.date(2000, 01, 01)
+                        local_latest_date = datetime.date(2000, 01, 01)
                         for c in glob.glob(os.path.join(settings.BASE_DIR, 'data', 'gwascatalog.*.txt')):
                             tmp_date = re_datetime.findall(c)
                             if tmp_date:
                                 tmp_date = datetime.date(int(tmp_date[0][0]), int(tmp_date[0][1]), int(tmp_date[0][2]))
-                                if tmp_date > latest_date:
-                                    latest_date = tmp_date
+                                if tmp_date > local_latest_date:
+                                    local_latest_date = tmp_date
 
-                        latest_catalog = os.path.join('data', 'gwascatalog.' + str(latest_date).replace('-', '_') + '.txt')
+                        latest_catalog = os.path.join('data', 'gwascatalog.' + str(local_latest_date).replace('-', '_') + '.txt')
+                        latest_date = local_latest_date
 
                         log.warn('=======================================================')
                         log.warn('Use local latest gwascatalog: {}'.format(latest_catalog))
@@ -113,22 +119,24 @@ class Command(BaseCommand):
                 latest_document = catalog_info.find_one({'status': 'latest'})
 
                 log.info('latest_document: {}'.format(latest_document))
-                log.info('today_date: {}'.format(today_date))
+                # log.info('today_date: {}'.format(today_date))
+
+                latest_date = date2datetime(latest_date)
 
                 if latest_document:
-                    latest_date = latest_document['date']
+                    db_latest_date = latest_document['date']
 
                 else:
                     # no latest, so today_date is latest
-                    latest_date = today_date
-                    catalog_info.update({'status': 'latest'}, {'$set': {'date': latest_date}}, upsert=True)
+                    db_latest_date = latest_date
+                    catalog_info.update({'status': 'latest'}, {'$set': {'date': db_latest_date}}, upsert=True)
                     log.info('First time to import catalog!')
 
                 # check if today_date is newer than latest
-                if today_date > latest_date:
+                if latest_date > db_latest_date:
                     # update latest
-                    catalog_info.update({'status': 'latest'}, {'$set': {'date': today_date}}, upsert=True)
-                    catalog_info.update({'status': 'prev'}, {'$set': {'date': latest_date}}, upsert=True)
+                    catalog_info.update({'status': 'latest'}, {'$set': {'date': latest_date}}, upsert=True)
+                    catalog_info.update({'status': 'prev'}, {'$set': {'date': db_latest_date}}, upsert=True)
                     log.info('Updated latest!')
 
                 else:
@@ -136,7 +144,7 @@ class Command(BaseCommand):
                     log.info('No need to update.')
                     pass
 
-                log.info('today_date: {}'.format(today_date))
+                # log.info('today_date: {}'.format(today_date))
                 log.info('latest: {}'.format(catalog_info.find_one({'status': 'latest'})))
 
         else:
