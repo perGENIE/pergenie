@@ -124,9 +124,12 @@
 
           <ul class="unstyled">
             <li><h4>Genome File</h4></li>
-            <li>アップロードするgenome fileを選んで下さい．</li>
-            <li>以下の拡張子のファイルがサポートされています．</li>
-            <li><code>.txt</code> <code>.csv</code> <code>.vcf</code></li>
+            <li>Choose genome file to upload.</li>
+            <li>Suppoted input file formats are:</li>
+            <ul>
+            <li><a href="{% static 'example_data/23andme.txt' %}"><code>23andMe format (SNP array data)</code></a></li>
+            <li><a href="{% static 'example_data/vcf.v4.1.vcf' %}"><code>VCF (Variant Call Format)</code></a></li>
+            </ul>
             <hr>
             <li><h4>Population</h4></li>
             <ul>
