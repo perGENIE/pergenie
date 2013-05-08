@@ -22,3 +22,6 @@ done
 # tests for ./lib
 cd lib
 nosetests -v --with-doctest
+if [ $? -eq 1 ]; then
+    $notifier -message "pergenie-test-runner.sh: Test Failed: nosetests"
+fi

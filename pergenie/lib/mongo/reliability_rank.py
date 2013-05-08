@@ -2,6 +2,7 @@
 
 import re
 
+
 def calc_reliability_rank(record):
     """
     >>> record = {'study': 'a', 'p_value': '1e-10'}
@@ -39,12 +40,15 @@ def calc_reliability_rank(record):
     if re.search('meta.?analysis', record['study'], re.IGNORECASE):
         r_rank += 'm'
 
-    # p-value based reliability rank:
-    #
-    #      4   5   6   7   8   9
-    # |    |   |   |   |   |   | *
-    # | NA |   |   | * | * | * | *
-    # |    | * | * | * | * | * | *
+    """
+    * p-value based reliability rank:
+
+    |   4   5   6   7   8   9   |
+    |   |   |   |   |   |   | * |
+    |   |   |   | * | * | * | * |
+    |   | * | * | * | * | * | * |
+
+    """
 
     if record['p_value']:
         res = re.findall('(\d+)e-(\d+)', record['p_value'], re.IGNORECASE)
@@ -74,7 +78,7 @@ def get_highest_priority_study(studies):
     """
     >>> data = {'a': ['**', 1.0], 'b': ['*', 1.0]}
     >>> get_highest_priority_study(data)
-    {'study': 'a', 'value': 1.0', rank': '**'}
+    {'study': 'a', 'value': 1.0, 'rank': '**'}
 
     >>> data = {'a': ['m**', 1.0], 'b': ['*', 1.0]}
     >>> get_highest_priority_study(data)
