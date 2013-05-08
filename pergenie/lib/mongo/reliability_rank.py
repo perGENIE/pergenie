@@ -76,35 +76,40 @@ def calc_reliability_rank(record):
 
 def get_highest_priority_study(studies):
     """
-    >>> data = {'a': ['**', 1.0], 'b': ['*', 1.0]}
+    >>> data = [{'study': 'a', 'rank': '**', 'RR': 1.0}, \
+                {'study': 'b', 'rank': '*', 'RR': 1.0}]
     >>> get_highest_priority_study(data)
-    {'study': 'a', 'value': 1.0, 'rank': '**'}
+    {'study': 'a', 'RR': 1.0, 'rank': '**'}
 
-    >>> data = {'a': ['m**', 1.0], 'b': ['*', 1.0]}
+    >>> data = [{'study': 'a', 'rank': 'm**', 'RR': 1.0}, \
+                {'study': 'b', 'rank': '*', 'RR': 1.0}]
     >>> get_highest_priority_study(data)
-    {'study': 'a', 'value': 1.0, 'rank': 'm**'}
+    {'study': 'a', 'RR': 1.0, 'rank': 'm**'}
 
-    >>> data = {'a': ['m**', 1.0], 'b': ['m*', 1.0]}
+    >>> data = [{'study': 'a', 'rank': 'm**', 'RR': 1.0}, \
+                {'study': 'b', 'rank': 'm*', 'RR': 1.0}]
     >>> get_highest_priority_study(data)
-    {'study': 'a', 'value': 1.0, 'rank': 'm**'}
+    {'study': 'a', 'RR': 1.0, 'rank': 'm**'}
 
-    >>> data = {'a': ['**', 1.0], 'b': ['m*', 1.0]}
+    >>> data = [{'study': 'a', 'rank': '**', 'RR': 1.0}, \
+                {'study': 'b', 'rank': 'm*', 'RR': 1.0}]
     >>> get_highest_priority_study(data)
-    {'study': 'b', 'value': 1.0, 'rank': 'm*'}
+    {'study': 'b', 'RR': 1.0, 'rank': 'm*'}
 
     """
 
-    highest = dict(study='', rank='', value=0.0)
+    highest = None
 
-    for study,[rank,value] in studies.items():
-        record = dict(study=study, rank=rank, value=value)
+    for record in studies:
+        if not highest:
+            highest = record
 
-        if rank.count('*') > highest['rank'].count('*'):
-            if ('m' in highest['rank']) and (not 'm' in rank):
+        elif record['rank'].count('*') > highest['rank'].count('*'):
+            if ('m' in highest['rank']) and (not 'm' in record['rank']):
                 pass
             else:
                 highest = record
-        elif (not 'm' in highest['rank']) and ('m' in rank):
+        elif (not 'm' in highest['rank']) and ('m' in record['rank']):
             highest = record
 
     return highest

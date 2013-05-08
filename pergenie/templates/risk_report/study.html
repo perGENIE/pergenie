@@ -11,14 +11,15 @@
 
     <div class="container">
 
+      {{ file_name }}
+
       <!-- Breadcrumb -->
       <div class="row-fluid">
         <div class="span12">
           <ul class="breadcrumb">
             <li><a href="{% url apps.riskreport.views.index %}">Risk report</a><span class="divider">/</span></li>
-            <li class="active">{{ file_name }}<span class="divider">/</span></li>
-            <li class="active">{{ trait_name }}<span class="divider">/</span></li>
-            <li class="active">{{ study_name }}</li>
+            <li class="active">{{ trait }}<span class="divider">/</span></li>
+            <li class="active">{{ study }}</li>
           </ul>
         </div>
       </div>
@@ -27,7 +28,7 @@
         <div class="span12">
           <div class="content-box transparent">
             <div class="padded">
-              <h4>{{ trait_name }}{% if is_ja %} ({{ trait_eng }}){% endif %}
+              <h4>{{ trait }}{% if is_ja %} ({{ trait_eng }}){% endif %}
                 {% if wiki_url_en %}<span class="badge badge-yellow"><a href="{{ wiki_url_en }}" target="_blank">Wikipedia</a></span>{% endif %}
               </h4>
             </div>
@@ -57,36 +58,34 @@
 
             <table class="table table-hover">
               <tbody>
-                {% for store in tmp_risk_store.values %}
-                {% ifequal forloop.counter0 0 %}
                 <tr>
                   <td>Study name</td>
-                  <td>{{ study_name }} <span class="badge badge-yellow"><a href="{{ store.catalog_map.pubmed_link }}" target="_blank">Pubmed</a></span></td>
+                  <td>{{ study }} <span class="badge badge-yellow"><a href="{{ catalog_infos.0.pubmed_link }}" target="_blank">Pubmed</a></span></td>
                 </tr>
                 <tr>
                   <td>Journal</td>
-                  <td>{{ store.catalog_map.jornal }}</td>
+                  <td>{{ catalog_infos.0.jornal }}</td>
                 </tr>
                 <tr>
                   <td>First author</td>
-                  <td>{{ store.catalog_map.first_author }}</td>
+                  <td>{{ catalog_infos.0.first_author }}</td>
                 </tr>
                 <tr>
                   <td>Date</td>
-                  <td>{{ store.catalog_map.date }}</td>
+                  <td>{{ catalog_infos.0.date }}</td>
                 </tr>
                 <tr>
                   <td>Initial sample size</td>
-                  <td>{{ store.catalog_map.initial_sample_size }}</td>
+                  <td>{{ catalog_infos.0.initial_sample_size }}</td>
                 </tr>
                 <tr>
                   <td>p-value</td>
-                  <td>{{ store.catalog_map.p_value }}</td>
+                  <td>{{ catalog_infos.0.p_value }}</td>
                 </tr>
                 <tr>
                   <td><a href="#">Reliability rank <i class="icon-question-sign"></i></a></td>
                   <td>
-                    {% for r in reliability_list.0 %}
+                    {% for r in rank %}
                     {% ifequal r "m" %}<span class="label label-green">Meta</span>
                     {% else %}{% ifequal r "*" %}<i class="icon-star"></i>{% endifequal %}{% endifequal %}
                     {% endfor %}
@@ -94,8 +93,6 @@
                   </td>
                 </tr>
               </tbody>
-              {% endifequal %}
-              {% endfor %}
             </table>
 
             <a href="{% url apps.riskreport.views.trait trait=trait_name file_name=file_name %}"><button class="btn btn-green"><i class="icon-book icon-white" style="margin-top: 1px;"></i> Other studies</button></a>
@@ -110,6 +107,8 @@
             <div class="content-box-header">
               <i class="icon-bar-chart"></i> Information about SNPs
             </div>
+
+
 
               <table cellpadding="0" cellspacing="0" border="0" class="display datatable" id="risk_reports_table">
                 <thead>
@@ -127,27 +126,29 @@
                 </thead>
 
                 <tbody>
-                  {% for snp, store in tmp_risk_store.items %}
+                  {% for catalog_info in catalog_infos %}
                   <tr>
-                    <td class="center">rs{{ snp }}</td>
-                    <td class="center">{{ store.catalog_map.chr_id }}</td>
-                    <td class="center">{{ store.catalog_map.chr_pos }}</td>
-                    <td class="center">{{ store.catalog_map.context }}</td>
-                    <td class="center">{% if store.variant_map.0 in store.catalog_map.risk_allele %}
-                      <span>{{ store.variant_map.0 }}</span>
+                    <td class="center">rs{{ catalog_info.snps }}</td>
+                    <td class="center">{{ catalog_info.chr_id }}</td>
+                    <td class="center">{{ catalog_info.chr_pos }}</td>
+                    <td class="center">{{ catalog_info.context }}</td>
+                    <td class="center">
+                      {{ genotype_list }}
+                      {% if genotype_list in risk_allele %}
+                      <span>{{ genotype_list.0 }}</span>
                       {% else %}
-                      <span style="color : #c5c5c5">{{ store.variant_map.0 }}</span>
+                      <span style="color : #c5c5c5">{{ genotype_list.0 }}</span>
                       {% endif %}
-                      {% if store.variant_map.1 in store.catalog_map.risk_allele %}
-                      <span>{{ store.variant_map.1 }}</span>
+                      {% if genotype_list.1 in risk_allele %}
+                      <span>{{ genotype_list.1 }}</span>
                       {% else %}
-                      <span style="color : #c5c5c5">{{ store.variant_map.1 }}</span>
+                      <span style="color : #c5c5c5">{{ genotype.1 }}</span>
                       {% endif %}
                     </td>
-                    <td class="center">{{ store.catalog_map.risk_allele }}</td>
-                    <td class="center">{{ store.catalog_map.risk_allele_frequency }}</td>
-                    <td class="center">{{ store.catalog_map.OR }}</td>
-                    <td class="center">{{ store.RR_real }}</td>
+                    <td class="center">{{ catalog_info.risk_allele }}</td>
+                    <td class="center">{{ catalog_info.risk_allele_frequency }}</td>
+                    <td class="center">{{ catalog_info.OR }}</td>
+                    <td class="center">{{ RR_list }}</td>
 		          </tr>
 		          {% endfor %}
                 </tbody>

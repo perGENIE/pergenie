@@ -30,10 +30,6 @@ def index(request):
     msg, err = '', ''
     browser_language = get_language()
 
-    risk_reports, risk_traits, risk_values = None, None, None
-    h_risk_reports, h_risk_traits, h_risk_values, h_risk_ranks, h_risk_studies = None, None, None, None, None
-    l_risk_reports, l_risk_traits, l_risk_values, l_risk_ranks, l_risk_studies = None, None, None, None, None
-
     while True:
         # determine file
         infos = get_user_infos(user_id)
@@ -74,23 +70,63 @@ def index(request):
 
         if not err:
             # get top-10 highest & top-10 lowest
-            h_risk_reports, h_risk_traits, h_risk_values, h_risk_ranks, h_risk_studies = get_risk_values_for_indexpage(tmp_infos, category=['Disease'], is_higher=True, top=10, is_log=False)
-            l_risk_reports, l_risk_traits, l_risk_values, l_risk_ranks, l_risk_studies = get_risk_values_for_indexpage(tmp_infos, category=['Disease'], is_lower=True, top=10, is_log=False)
+            h_risk_traits, h_risk_values, h_risk_ranks, h_risk_studies = get_risk_values_for_indexpage(tmp_infos[0], category=['Disease'], is_higher=True, top=10, is_log=False)
 
             # translate to Japanese
             if browser_language == 'ja':
                 h_risk_traits = [TRAITS2JA.get(trait) for trait in h_risk_traits]
-                l_risk_traits = [TRAITS2JA.get(trait) for trait in l_risk_traits]
 
         break
 
     return direct_to_template(request, 'risk_report/index.html',
                               dict(msg=msg, err=err, infos=infos, tmp_infos=tmp_infos,
-                                   h_risk_reports=h_risk_reports, h_risk_traits=h_risk_traits, h_risk_values=h_risk_values,
-                                   h_risk_ranks=h_risk_ranks, h_risk_studies=h_risk_studies,
-                                   l_risk_reports=l_risk_reports, l_risk_traits=l_risk_traits, l_risk_values=l_risk_values,
-                                   l_risk_ranks=l_risk_ranks, l_risk_studies=l_risk_studies
+                                   h_risk_traits=h_risk_traits, h_risk_values=h_risk_values,
+                                   h_risk_ranks=h_risk_ranks, h_risk_studies=h_risk_studies
                                    ))
+
+
+@login_required
+def study(request, file_name, trait, study):
+    user_id = request.user.username
+    msg, err = '', ''
+
+    while True:
+        if not JA2TRAITS.get(trait, trait) in TRAITS:
+            err = _('trait not found')
+            break
+
+        info = get_user_file_info(user_id, file_name)
+
+        if not info:
+            err = _('no such file %(file_name)s') % {'file_name': file_name}
+            break
+
+        trait = JA2TRAITS.get(trait, trait)
+        risk_infos = get_risk_infos_for_subpage(info, trait=trait, study=study)
+        risk_infos.update(dict(msg=msg, err=err, file_name=file_name,
+                               wiki_url_en=TRAITS2WIKI_URL_EN.get(trait),
+                               is_ja=bool(get_language() == 'ja')))
+        break
+
+    return direct_to_template(request, 'risk_report/study.html', risk_infos)
+
+
+@login_required
+def trait(request, file_name, trait):
+    """Show risk value by studies, for each trait.
+    """
+
+    user_id = request.user.username
+    trait = JA2TRAITS.get(trait, trait)
+    risk_infos = get_risk_infos_for_subpage(user_id, file_name, trait)
+
+    risk_infos.update(dict(msg=msg, err=err, file_name=file_name,
+                           wiki_url_en=TRAITS2WIKI_URL_EN.get(trait),
+                           is_ja=bool(get_language() == 'ja')))
+
+    return direct_to_template(request, 'risk_report/trait.html', risk_infos)
+
+
 
 
 @require_http_methods(['GET', 'POST'])
@@ -170,34 +206,3 @@ def show_all(request):
     return direct_to_template(request, 'risk_report/show_all.html',
                               dict(msg=msg, err=err, infos=infos, tmp_infos=tmp_infos,
                                    risk_reports=risk_reports, risk_traits=risk_traits, risk_values=risk_values, risk_studies=risk_studies))
-
-
-@login_required
-def trait(request, file_name, trait):
-    """Show risk value by studies, for each trait.
-    """
-
-    user_id = request.user.username
-    risk_infos = get_risk_infos_for_subpage(user_id, file_name, trait)
-    trait_eng = JA2TRAITS.get(trait, trait)
-    risk_infos.update(dict(file_name=file_name,
-                           trait_eng=trait_eng,
-                           wiki_url_en=TRAITS2WIKI_URL_EN.get(trait_eng),
-                           is_ja=bool(get_language() == 'ja')))
-
-    return direct_to_template(request, 'risk_report/trait.html', risk_infos)
-
-
-@login_required
-def study(request, file_name, trait, study_name):
-    """Show RR by rss, for each study.
-    """
-    user_id = request.user.username
-    risk_infos = get_risk_infos_for_subpage(user_id, file_name, trait_name=trait, study_name=study_name)
-    trait_eng = JA2TRAITS.get(trait, trait)
-    risk_infos.update(dict(file_name=file_name,
-                           trait_eng=trait_eng,
-                           wiki_url_en=TRAITS2WIKI_URL_EN.get(trait_eng),
-                           is_ja=bool(get_language() == 'ja')))
-
-    return direct_to_template(request, 'risk_report/study.html', risk_infos)
