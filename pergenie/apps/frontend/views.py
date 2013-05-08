@@ -50,6 +50,11 @@ def login(request):
 
             if user:
                 auth_login(request, user)
+
+                log.info('===========')
+                log.info(user)
+                log.info('===========')
+
                 return redirect('apps.dashboard.views.index')
 
             else:
@@ -64,6 +69,19 @@ def login(request):
 def logout(request):
     auth_logout(request)
     return redirect('apps.frontend.views.login')
+
+
+def login_with_23andme(request):
+    # TODO: if not redirected from 23andme, return 403
+
+    # user = authenticate(username=form.cleaned_data['user_id'],
+    #                     password=form.cleaned_data['password'])
+
+    # Get username (emai-address) via 23andme-API
+    user = ''
+    auth_login(request, user)
+    return redirect('apps.dashboard.views.index')
+
 
 
 @require_http_methods(['GET', 'POST'])

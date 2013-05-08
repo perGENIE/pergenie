@@ -61,6 +61,10 @@
                         <th>frequency</th>
                         <th>OR</th>
                         <th>95&#37;CI(text)</th>
+                        <th>Gene</th>
+                        <th>Chrom.</th>
+                        <!-- <th>Pos.</th> -->
+                        <th>Context</th>
                         {% for filename in variants_maps %}
                         <th>
                           {{ filename|limit:10 }}
@@ -89,6 +93,22 @@
                         <td class="center">{{ library.risk_allele_frequency }}</td>
                         <td class="center">{{ library.OR_or_beta }}</td>
                         <td class="center">{{ library.CI_95 }}</td>
+                        <td class="center">
+                          {% set genes = library.snp_genes %}
+
+                          {% if genes %}
+                          {% for g in genes %}
+                          {% if g.entrez_gene_id %}<a href="http://www.ncbi.nlm.nih.gov/gene/?term={{ g.entrez_gene_id }}" target="_blank" >{% endif %}
+                            <!-- {{ g.gene_symbol }} -->
+                            entrez_gene_id: {{ g.entrez_gene_id }}
+                            {% if g.entrez_gene_id %}</a>{% endif %}
+                          {% endfor %}
+                          {% endif %}
+
+                        </td>
+                        <td class="center">{{ library.chr_id }}</td>
+                        <!-- <td class="center">{{ library.chr_pos }}</td> -->
+                        <td class="center">{{ library.context }}</td>
                         {% for filename in variants_maps %}
                         <td class="center">{{variants_maps|keyvalue:filename|keyvalue:rs }}</td>
                         {% endfor %}

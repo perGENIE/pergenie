@@ -40,6 +40,8 @@ pergenie/tmp
 
 #
 data/gwascatalog*
+data/uniprot_idmapping/
+data/23andme-api/
 static/vendor
 _static/
 wood-admin/

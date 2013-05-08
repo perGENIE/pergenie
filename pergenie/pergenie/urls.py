@@ -23,6 +23,7 @@ urlpatterns = patterns('',
 
     url(r'^$', 'apps.frontend.views.index'),
     url(r'^login/$', 'apps.frontend.views.login'),
+    url(r'^login_with_23andme/$', 'apps.frontend.views.login_with_23andme'),
     url(r'^logout/$', 'apps.frontend.views.logout'),
     url(r'^register/$', 'apps.frontend.views.register'),
 

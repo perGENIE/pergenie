@@ -32,6 +32,9 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja, path_t
             _g_gene_symbol_map[gene_symbol] = entrez_gene_id, omim_gene_id
             _g_gene_id_map[entrez_gene_id] = gene_symbol, omim_gene_id
 
+            # _g_gene_id_map =
+            # {'7015': ('TERT', '187270'), ...}
+    # TODO: Add database for `entrez_gene_id to gene_symbol`
 
     disease2wiki = json.load(open(path_to_disease2wiki))
 
@@ -567,13 +570,12 @@ def _genes_from_ids(text):
         result = []
 
         for entrez_gene_id in map(int, text.split(';')):
-            if entrez_gene_id in _g_gene_id_map:
+            if str(entrez_gene_id) in _g_gene_id_map:
                 gene_symbol, omim_gene_id = _g_gene_id_map[entrez_gene_id]
                 result.append(_gene(gene_symbol, entrez_gene_id, omim_gene_id))
 
             else:
-#                 msg = '[WARNING] Failed to find gene from mim2gene, EntrezGeneID: {}'
-#                 print >>sys.stderr, msg.format(entrez_gene_id)
+                log.warn('Failed to get gene_id2gene_symbol EntrezGeneID: {}'.format(entrez_gene_id))
 
                 result.append(_gene(None, entrez_gene_id, None))
 
