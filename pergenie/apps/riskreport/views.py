@@ -30,6 +30,8 @@ def index(request):
     msg, err = '', ''
     browser_language = get_language()
 
+    h_risk_traits, h_risk_values, h_risk_ranks, h_risk_studies = None, None, None, None
+
     while True:
         # determine file
         infos = get_user_infos(user_id)

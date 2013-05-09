@@ -38,7 +38,7 @@ class SimpleTest(TestCase):
         self.file_cleaned_name = self.file_raw_name.replace('.', '').replace(' ', '')
 
 
-    def delete_data(self):
+    def _delete_data(self):
         """Delete existing test-data.
         """
 
@@ -96,7 +96,7 @@ class SimpleTest(TestCase):
     def test_data_no_data_uploaded(self):
         self.client.login(username=self.test_user_id, password=self.test_user_password)
 
-        self.delete_data()
+        self._delete_data()
 
         response = self.client.get('/riskreport/')
         self.failUnlessEqual(response.context['err'], 'no data uploaded')
