@@ -10,8 +10,12 @@ def extract_region(region_file, records):
     * This function may require large memory...
 
     Example:
-    # 1:14363-14829
-    >>> region_path = "/Users/numa/Dropbox/py/pergenie_staging/pergenie/data/exome_region_file/TruSeq-Exome-Targeted-Regions-BED-file.1.interval_list"
+    >>> from tempfile import NamedTemporaryFile
+    >>> f = NamedTemporaryFile()
+    >>> f.write("1:14363-14829")
+    >>> f.seek(0)
+    >>> region_path = f.name
+
     >>> records = [{'chr_pos':14362}, \
                    {'chr_pos':14363}, \
                    {'chr_pos':14364}, \
