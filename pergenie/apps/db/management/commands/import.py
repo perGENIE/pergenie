@@ -98,7 +98,7 @@ class Command(BaseCommand):
                                           path_to_mim2gene=settings.PATH_TO_MIM2GENE,
                                           path_to_eng2ja=settings.PATH_TO_ENG2JA,
                                           path_to_disease2wiki=settings.PATH_TO_DISEASE2WIKI,
-                                          path_to_truseq_interval_list=settings.PATH_TO_TRUSEQ_INTERVAL_LIST,
+                                          path_to_interval_list_dir=settings.PATH_TO_INTERVAL_LIST_DIR,
                                           catalog_summary_cache_dir=settings.CATALOG_SUMMARY_CACHE_DIR,
                                           mongo_port=settings.MONGO_PORT)
 

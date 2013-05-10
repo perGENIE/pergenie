@@ -17,7 +17,7 @@ _g_gene_symbol_map = {}  # { Gene Symbol => (Entrez Gene ID, OMIM Gene ID) }
 _g_gene_id_map = {}      # { Entrez Gene ID => (Gene Symbol, OMIM Gene ID) }
 
 
-def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja, path_to_disease2wiki, path_to_truseq_interval_list,
+def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja, path_to_disease2wiki, path_to_interval_list_dir,
                    catalog_summary_cache_dir, mongo_port):
 
     with open(path_to_mim2gene, 'rb') as fin:
@@ -164,6 +164,7 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja, path_t
                 data['pubmed_link'] = 'http://www.ncbi.nlm.nih.gov/pubmed/' + str(data['pubmed_id'])
                 data['dbsnp_link'] = 'http://www.ncbi.nlm.nih.gov/projects/SNP/snp_ref.cgi?rs=' + str(data['snps'])
                 data['is_in_truseq'] = False
+                data['is_in_andme'] = False
 
                 if (not data['snps']) or (not data['strongest_snp_risk_allele']):
                     log.warn('absence of "snps" or "strongest_snp_risk_allele" {0} {1}. pubmed_id:{2}'.format(data['snps'], data['strongest_snp_risk_allele'], data['pubmed_id']))
@@ -212,20 +213,29 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja, path_t
 
     log.info('# of documents in catalog (after): {}'.format(catalog.count()))
 
-    # Add `is_in_truseq` flag
+    # Add `is_in_truseq`, `is_in_andme` flags
     for chrom in [i + 1 for i in range(24)]:
-        log.info('Addding flag `is_in_truseq`... chrom: {}'.format(chrom))
-        region_file = os.path.join(path_to_truseq_interval_list,
+        log.info('Addding flags... chrom: {}'.format(chrom))
+        records = list(catalog.find({'chr_id': chrom}).sort('chr_pos', pymongo.ASCENDING))
+        log.info('records:{}'.format(len(records)))
+
+        # `is_in_truseq`
+        region_file = os.path.join(path_to_interval_list_dir,
                                    'TruSeq-Exome-Targeted-Regions-BED-file.{}.interval_list'.format({23:'X', 24:'Y'}.get(chrom, chrom)))
-
         with open(region_file, 'r') as fin:
-            records = list(catalog.find({'chr_id': chrom}).sort('chr_pos', pymongo.ASCENDING))
-            log.info('records:{}'.format(len(records)))
             extracted = extract_region(region_file, records)
-            log.info('extracted:{}'.format(extracted))
-
+            log.info('`is_in_truseq` extracted:{}'.format(len(extracted)))
             for record in extracted:
                 catalog.update(record, {"$set": {'is_in_truseq': True}})
+
+        # `is_in_andme`
+        region_file = os.path.join(path_to_interval_list_dir,
+                                   'andme_region.{}.interval_list'.format({23:'X', 24:'Y', 25:'MT'}.get(chrom, chrom)))
+        with open(region_file, 'r') as fin:
+            extracted = extract_region(region_file, records)
+            log.info('`is_in_andme` extracted:{}'.format(len(extracted)))
+            for record in extracted:
+                catalog.update(record, {"$set": {'is_in_andme': True}})
 
     log.info('catalog.find_one(): {}'.format(catalog.find_one()))
 
