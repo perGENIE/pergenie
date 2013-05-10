@@ -37,10 +37,12 @@ def get_user_file_info(user_id, file_name):
 def _import_riskreport(tmp_info):
     c = MongoClient(port=settings.MONGO_PORT)
 
-    # TODO:
     # Calculate risk
     population = 'population:{}'.format('+'.join(settings.POPULATION_MAP[tmp_info['population']]))
-    catalog_map, variants_map = search_variants.search_variants(tmp_info['user_id'], tmp_info['name'], population)
+    catalog_map, variants_map = search_variants.search_variants(user_id=tmp_info['user_id'],
+                                                                file_name=tmp_info['name'],
+                                                                file_format=tmp_info['file_format'],
+                                                                query=population)
     risk_store, risk_reports = risk_report.risk_calculation(catalog_map, variants_map, settings.POPULATION_CODE_MAP[tmp_info['population']],
                                                             tmp_info['sex'], tmp_info['user_id'], tmp_info['name'], False, True)
 
@@ -140,6 +142,10 @@ def get_risk_infos_for_subpage(info, trait=None, study=None):
 
         if get_language() == 'ja':
             trait = TRAITS2JA.get(trait, trait)
+
+        print '==='
+        print list(catalog.find({'study': study}))
+        print '==='
 
         return dict(trait=trait, study=study, RR=record['RR'], rank=record['rank'],
                     catalog_infos=list(catalog.find({'study': study})),

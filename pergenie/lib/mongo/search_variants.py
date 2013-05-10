@@ -4,16 +4,19 @@
 import argparse
 import pymongo
 
-# import colors
 from search_catalog import search_catalog_by_query
 from get_latest_catalog import get_latest_catalog
 
 
-def search_variants(user_id, file_name, query, query_type=None, mongo_port=27017):
-    with pymongo.Connection(port=mongo_port) as connection:
-        catalog = get_latest_catalog(port=mongo_port)
+def search_variants(user_id, file_name, file_format, query, query_type=None, mongo_port=27017):
+    """
 
-        variants = connection['pergenie']['variants'][user_id][file_name]
+    * This function is independent from Django.
+    """
+
+    with pymongo.MongoClient(port=mongo_port) as c:
+        variants = c['pergenie']['variants'][user_id][file_name]
+        catalog = get_latest_catalog(port=mongo_port)
 
         catalog_records = search_catalog_by_query(query, query_type=query_type).sort('trait', 1)
 
@@ -37,10 +40,7 @@ def search_variants(user_id, file_name, query, query_type=None, mongo_port=27017
                                               'freq':record['risk_allele_frequency'],
 
                                               'added':record['added'].date(),
-                                              'date':record['date'].date(),
-
-                                              'dbsnp_link':'http://www.ncbi.nlm.nih.gov/projects/SNP/snp_ref.cgi?rs='+str(record['snps']),
-                                              'pubmed_link':'http://www.ncbi.nlm.nih.gov/pubmed/'+str(record['pubmed_id'])
+                                              'date':record['date'].date()
                                               })
 
         variants_records = variants.find({'rs': {'$in': list(snps_all)}})
@@ -53,14 +53,24 @@ def search_variants(user_id, file_name, query, query_type=None, mongo_port=27017
             tmp_variants_map[record['rs']] = record['genotype']
 
         # in catalog, but not in variants
-        # null_variant = {'genotype':'na'}
         null_variant = 'na'
         for found_id, catalog in tmp_catalog_map.items():
             rs = catalog['rs']
             if not rs in tmp_variants_map:
-                tmp_variants_map[rs] = null_variant
 
+                # `ref` or `na`
+                if file_format == 'andme':
+                    tmp_variants_map[rs] = null_variant
+                elif file_format == 'vcf_whole_genome':
+                    # ref = tmp_catalog_map[rs]['ref']  # TODO: get ref allele
+                    tmp_variants_map[rs] = 'ref'
+                elif file_format == 'vcf_exome_truseq':
+                    if tmp_catalog_map[rs]['is_in_truseq']:
+                        tmp_variants_map[rs] = 'ref'
+                    else:
+                        tmp_variants_map[rs] = null_variant
 
+    # print for debug
     for found_id, catalog in tmp_catalog_map.items():
         rs = catalog['rs']
         variant = tmp_variants_map[rs]

@@ -116,6 +116,7 @@
                     <th>SNPs</th>
                     <th>Chrom.</th>
                     <th>Pos.</th>
+                    <th>in TrueSeq</th>
                     <th>Context</th>
                     <th>Genotype</th>
                     <th>Risk allele</th>
@@ -131,6 +132,7 @@
                     <td class="center">rs{{ catalog_info.snps }}</td>
                     <td class="center">{{ catalog_info.chr_id }}</td>
                     <td class="center">{{ catalog_info.chr_pos }}</td>
+                    <td class="center">{{ catalog_info.is_in_truseq }}</td>
                     <td class="center">{{ catalog_info.context }}</td>
                     <td class="center">
                       {{ genotype_list }}

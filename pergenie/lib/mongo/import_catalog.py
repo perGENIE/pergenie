@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
-import os
+import sys, os
+import re
 import csv
 import datetime
 import time
-import re
-# import sys
 import json
 import pymongo
+from extract_region import extract_region
 
 from utils.io import pickle_dump_obj
 from utils import clogging
@@ -17,7 +17,7 @@ _g_gene_symbol_map = {}  # { Gene Symbol => (Entrez Gene ID, OMIM Gene ID) }
 _g_gene_id_map = {}      # { Entrez Gene ID => (Gene Symbol, OMIM Gene ID) }
 
 
-def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja, path_to_disease2wiki,
+def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja, path_to_disease2wiki, path_to_truseq_interval_list,
                    catalog_summary_cache_dir, mongo_port):
 
     with open(path_to_mim2gene, 'rb') as fin:
@@ -162,6 +162,8 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja, path_t
 
                 data['eng2ja'] = eng2ja.get(data['trait'])
                 data['pubmed_link'] = 'http://www.ncbi.nlm.nih.gov/pubmed/' + str(data['pubmed_id'])
+                data['dbsnp_link'] = 'http://www.ncbi.nlm.nih.gov/projects/SNP/snp_ref.cgi?rs=' + str(data['snps'])
+                data['is_in_truseq'] = False
 
                 if (not data['snps']) or (not data['strongest_snp_risk_allele']):
                     log.warn('absence of "snps" or "strongest_snp_risk_allele" {0} {1}. pubmed_id:{2}'.format(data['snps'], data['strongest_snp_risk_allele'], data['pubmed_id']))
@@ -210,6 +212,23 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja, path_t
 
     log.info('# of documents in catalog (after): {}'.format(catalog.count()))
 
+    # Add `is_in_truseq` flag
+    for chrom in [i + 1 for i in range(24)]:
+        log.info('Addding flag `is_in_truseq`... chrom: {}'.format(chrom))
+        region_file = os.path.join(path_to_truseq_interval_list,
+                                   'TruSeq-Exome-Targeted-Regions-BED-file.{}.interval_list'.format({23:'X', 24:'Y'}.get(chrom, chrom)))
+
+        with open(region_file, 'r') as fin:
+            records = list(catalog.find({'chr_id': chrom}).sort('chr_pos', pymongo.ASCENDING))
+            log.info('records:{}'.format(len(records)))
+            extracted = extract_region(region_file, records)
+            log.info('extracted:{}'.format(extracted))
+
+            for record in extracted:
+                catalog.update(record, {"$set": {'is_in_truseq': True}})
+
+    log.info('catalog.find_one(): {}'.format(catalog.find_one()))
+
     # dump as pickle (always overwrite)
     pickle_dump_obj(catalog_summary, os.path.join(catalog_summary_cache_dir, 'catalog_summary.p'))
     pickle_dump_obj(field_names, os.path.join(catalog_summary_cache_dir, 'field_names.p'))
@@ -226,28 +245,21 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja, path_t
     return
 
 
-# TODO:
-def add_record_reliability(data):
-    """Add record reliability.
+# def add_record_reliability(data):
+#     """Add record reliability.
 
-    To prioritize GWAS Catalog's records, like Meta-GWAS > GWAS,
-    calculate 'record_reliability' from 'study', 'initial_sample_size', ...
-    then add 'record_reliability' to `data`.
+#     To prioritize GWAS Catalog's records, like Meta-GWAS > GWAS,
+#     calculate 'record_reliability' from 'study', 'initial_sample_size', ...
+#     then add 'record_reliability' to `data`.
 
-    Arg:
-    data: a GWAS Catalog's record (dict), to be inserted to MongoDB.
-          data = {'study': '...',
-                  'initial_sample_size': '...', ...}
+#     Arg:
+#     data: a GWAS Catalog's record (dict), to be inserted to MongoDB.
+#           data = {'study': '...',
+#                   'initial_sample_size': '...', ...}
 
-    RetVal:
-    None
-    """
-
-    # rank by 'study' (the name of the study)
-    # * check if Meta-GWAS or not
-
-    # rank by 'initial_sample_size'
-    # *
+#     RetVal:
+#     None
+#     """
 
 
 

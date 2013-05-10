@@ -8,6 +8,8 @@ import pymongo
 
 OR_SYMBOL = '+'
 
+from get_latest_catalog import get_latest_catalog
+
 def _split_query(raw_query):
     """
     Classify raw_query into rs, trait, ...etc.
@@ -43,7 +45,6 @@ def search_catalog_by_query(raw_query, query_type=None, mongo_port=27017):
     TODO:
     unify to use <query_type>:<query>+<query>+...
     """
-
 
     # parse & build query
     sub_queries = []
@@ -93,25 +94,13 @@ def search_catalog_by_query(raw_query, query_type=None, mongo_port=27017):
             if or_queries:
                 sub_queries.append({'$or': or_queries})
 
+    # query search
+    catalog = get_latest_catalog(port=mongo_port)
+    query = {'$and': sub_queries}
+    print query
+    catalog_records = catalog.find(query)  # .sort('snps', 1)
 
-    with pymongo.Connection(port=mongo_port) as connection:
-        latest_document = connection['pergenie']['catalog_info'].find_one({'status': 'latest'})  # -> datetime.datetime(2012, 12, 12, 0, 0)
-
-        if latest_document:
-            latest_date = str(latest_document['date'].date()).replace('-', '_')  # -> '2012_12_12'
-            catalog = connection['pergenie']['catalog'][latest_date]
-            print '[DEBUG] ', catalog
-            print '[DEBUG] ', catalog.find_one({})
-        else:
-            # TODO: error handling
-            print '[ERROR] latest does not exist in catalog_info!'
-            return None
-
-        query = {'$and': sub_queries}
-        print query
-        catalog_records = catalog.find(query)# .sort('snps', 1)
-
-        return catalog_records
+    return catalog_records
 
 
 def _main():
