@@ -83,7 +83,7 @@ def index(request):
             'catalog_latest_new_records_data': catalog_latest_new_records_data,
             'risk_report_latest_date': risk_report_latest_date,
             'do_intro': do_intro, 'do_intro_risk_report': do_intro_risk_report,
-            'intros': intros}
+            'intros': intros, 'infos': infos}
 
     log.info('msgs: {}'.format(pformat(msgs)))
     return direct_to_template(request, 'dashboard.html', msgs)

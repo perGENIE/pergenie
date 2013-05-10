@@ -113,10 +113,36 @@
         <div class="span6">
           <div class="content-box">
             <div class="content-box-header">
-              <icon class="icon-upload"></icon> ..
+              <icon class="icon-upload"></icon> Genome statics
             </div>
+
+            <table class="table table-bordered">
+              <tbody>
+                <tr>
+                  <td class="center">
+                    <p>What percentage does your genome file cover GWAS Cataog?</p>
+                  </td>
+                  <td class="center">
+                    <div class="donut donut-big">
+                      <div class="donut-arrow" data-percentage="{{ infos.0.catalog_cover_rate }}"></div>
+                    </div>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td class="center">
+                    <p>Import status:</p>
+                  </td>
+                  <td class="center">
+                    <div class="donut donut-big">
+                      <div class="donut-arrow" data-percentage="{{ infos.0.status }}"></div>
+                    </div>
+                  </td>
+                </tr>
+                </table>
           </div>
         </div>
+
 
         <div class="span6">
           <div class="content-box">
@@ -185,4 +211,7 @@
 <link href="{% static 'css/introjs.css' %}" rel="stylesheet">
 <script type="text/javascript" src="{% static 'js/intro.js' %}"></script>
 <script type="text/javascript">introJs().start()</script>
+
+<link href="{% static 'css/donuts.css' %}" rel="stylesheet">
+<script src="{% static 'js/donuts.js' %}"></script>
 {% endblock %}

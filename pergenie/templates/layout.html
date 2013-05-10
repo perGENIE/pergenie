@@ -22,7 +22,7 @@
         <script src="../js/html5shiv.js" type="text/javascript"></script>
         <script src="../js/excanvas.min.js" type="text/javascript"></script>
         <script src="../js/ie_fix.js" type="text/javascript"></script>
-        <link href="../stylesheets/ie_fix.css" media="screen" rel="stylesheet" type="text/css" />
+        <link href="../stylesheets/ie_fix.css" media="screen" rel="stylesheet" type="text/css" /> -->
 
     <!-- Bootstrap -->
     <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
@@ -124,11 +124,11 @@
                     </ul>
                   </li>
 
-                  <!-- <li id="docs-trigger"> -->
-                  <!--   <button style="padding-left: 10px; margin-top: 14px" class="btn btn-inverse btn-mini" type="button" onclick="showDocs()"> -->
-                  <!--     <span id="dtrigger">Show Docs</span> -->
-                  <!--   </button> -->
-                  <!-- </li> -->
+                  <li id="docs-trigger">
+                    <button style="padding-left: 10px; margin-top: 14px" class="btn btn-inverse btn-mini" type="button" onclick="introJs().start()">
+                      <span id="dtrigger">Show navigation</span>
+                    </button>
+                  </li>
 
                 </ul>
 
@@ -242,31 +242,12 @@
     <script type="text/javascript" language="javascript" src="{% static 'js/bootstrap/bootstrap-scrollspy.js' %}"></script>
     <script type="text/javascript" language="javascript" src="{% static 'js/bootstrap/bootstrap-transition.js' %}"></script>
 
-
-    <!-- Flot Graphs -->
-    <!--[if lte IE 8]><script type="text/javascript" language="javascript" src="{% static 'js/excanvas.min.js' %}"></script><![endif]-->
-    <!-- <script type="text/javascript" language="javascript" src="{% static 'js/jquery.flot.min.js' %}"></script> -->
-    <!-- <script type="text/javascript" language="javascript" src="{% static 'js/jquery.flot.selection.js' %}"></script> -->
-    <!-- <script type="text/javascript" language="javascript" src="{% static 'js/jquery.flot.resize.js' %}"></script> -->
-
     <!-- DataTable -->
     <link rel="stylesheet" href="{% static 'css/demo_table_jui.intenso.css' %}">
     <script type="text/javascript" language="javascript" src="{% static 'js/jquery.datatables.js' %}"></script>
 
     <!-- Additional js -->
     {% block js %}{% endblock %}
-
-
-    <script type=text/javascript>
-      var $SCRIPT_ROOT = "";
-    </script>
-
-    <!-- label "unknown" as warning -->
-    <script type=text/javascript>
-      $(function() {
-      $("span:contains('unkown')").removeClass().addClass("label label-warning");;
-      });
-    </script>
 
   </body>
 </html>

@@ -19,6 +19,7 @@ _g_gene_id_map = {}      # { Entrez Gene ID => (Gene Symbol, OMIM Gene ID) }
 
 def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja, path_to_disease2wiki, path_to_interval_list_dir,
                    catalog_summary_cache_dir, mongo_port):
+    c = pymongo.MongoClient(port=mongo_port)
 
     with open(path_to_mim2gene, 'rb') as fin:
         for record in csv.DictReader(fin, delimiter='\t'):
@@ -38,193 +39,195 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja, path_t
 
     disease2wiki = json.load(open(path_to_disease2wiki))
 
-    with pymongo.Connection(port=mongo_port) as connection:
-        # Create db for eng2ja, eng2category, ...
-        trait_info = connection['pergenie']['trait_info']
+    # Create db for eng2ja, eng2category, ...
+    trait_info = c['pergenie']['trait_info']
 
-        if trait_info.find_one():
-            connection['pergenie'].drop_collection(trait_info)
-        assert trait_info.count() == 0
+    if trait_info.find_one():
+        c['pergenie'].drop_collection(trait_info)
+    assert trait_info.count() == 0
 
-        # TODO: remove eng2ja, then use only db.trait_info
-        log.debug('Loading {} ...'.format(path_to_eng2ja))
-        eng2ja = {}
-        eng2category = {}
-        with open(path_to_eng2ja, 'rb') as fin:
-            for record in csv.DictReader(fin, delimiter='\t'):
-                if not record['eng'] == '#':  # ignore `#`
-                    # TODO: remove eng2ja & eng2category
-                    eng2ja[record['eng']] = unicode(record['ja'], 'utf-8') or record['eng']
-                    eng2category[record['eng']] = record['category'] or 'NA'
+    # TODO: remove eng2ja, then use only db.trait_info
+    log.debug('Loading {} ...'.format(path_to_eng2ja))
+    eng2ja = {}
+    eng2category = {}
+    with open(path_to_eng2ja, 'rb') as fin:
+        for record in csv.DictReader(fin, delimiter='\t'):
+            if not record['eng'] == '#':  # ignore `#`
+                # TODO: remove eng2ja & eng2category
+                eng2ja[record['eng']] = unicode(record['ja'], 'utf-8') or record['eng']
+                eng2category[record['eng']] = record['category'] or 'NA'
 
-                    #
-                    ja = unicode(record['ja'], 'utf-8') or record['eng']
-                    category = record['category'] or 'NA'
-                    is_drug_response = record['is_drug_response'] or 'NA'
-                    wiki_url_en = disease2wiki.get(record['eng'], '')
+                #
+                ja = unicode(record['ja'], 'utf-8') or record['eng']
+                category = record['category'] or 'NA'
+                is_drug_response = record['is_drug_response'] or 'NA'
+                wiki_url_en = disease2wiki.get(record['eng'], '')
 
-                    clean_record = dict(eng=record['eng'], ja=ja,
-                                        category=category,
-                                        is_drug_response=is_drug_response,
-                                        wiki_url_en=wiki_url_en)
+                clean_record = dict(eng=record['eng'], ja=ja,
+                                    category=category,
+                                    is_drug_response=is_drug_response,
+                                    wiki_url_en=wiki_url_en)
 
-                    trait_info.insert(clean_record, upsert=True)  # insert if not exist
+                trait_info.insert(clean_record, upsert=True)  # insert if not exist
 
-            trait_info.ensure_index('eng', unique=True)
+        trait_info.ensure_index('eng', unique=True)
 
-        # ==============
-        # Import catalog
-        # ==============
+    # ==============
+    # Import catalog
+    # ==============
 
-        catalog_date_raw = os.path.basename(path_to_gwascatalog).split('.')[1]
-        # catalog_date = datetime.datetime.strptime(catalog_date_raw , '%Y_%m_%d')
+    catalog_date_raw = os.path.basename(path_to_gwascatalog).split('.')[1]
+    # catalog_date = datetime.datetime.strptime(catalog_date_raw , '%Y_%m_%d')
 
-        catalog = connection['pergenie']['catalog'][catalog_date_raw]
-        dbsnp = connection['dbsnp']['B132']
+    catalog = c['pergenie']['catalog'][catalog_date_raw]
+    dbsnp = c['dbsnp']['B132']
 
-        # ensure db.catalog does not exist
-        if catalog.find_one():
-            connection['pergenie'].drop_collection(catalog)
-            log.info('dropped old collection')
-        assert catalog.count() == 0
+    # ensure db.catalog does not exist
+    if catalog.find_one():
+        c['pergenie'].drop_collection(catalog)
+        log.info('dropped old collection')
+    assert catalog.count() == 0
 
-        if not dbsnp.find_one():
-            log.warn('========================================')
-            log.warn('dbsnp.B132 does not exist in mongodb ...')
-            log.warn('so strand-check will be skipped')
-            log.warn('========================================')
-            dbsnp = None
+    if not dbsnp.find_one():
+        log.warn('========================================')
+        log.warn('dbsnp.B132 does not exist in mongodb ...')
+        log.warn('so strand-check will be skipped')
+        log.warn('========================================')
+        dbsnp = None
 
-        my_fields = [('my_added', 'Date Added to MyCatalog', _date),
-                     ('who_added', 'Who Added', _string),
-                     ('activated', 'Activated', _integer),
-                     ('population', 'Population', _string),
-                     ('DTC', 'DTC genetic testing companies', _string),
-                     ('clinical', 'Clinical Channel', _string)]
+    my_fields = [('my_added', 'Date Added to MyCatalog', _date),
+                 ('who_added', 'Who Added', _string),
+                 ('activated', 'Activated', _integer),
+                 ('population', 'Population', _string),
+                 ('DTC', 'DTC genetic testing companies', _string),
+                 ('clinical', 'Clinical Channel', _string)]
 
-        fields = [('added', 'Date Added to Catalog', _date),
-                  ('pubmed_id', 'PUBMEDID', _integer),
-                  ('first_author', 'First Author', _string),
-                  ('date', 'Date', _date),
-                  ('jornal', 'Journal', _string),
-                  ('study', 'Study', _string_without_slash),
-                  ('trait', 'Disease/Trait', _string_without_slash),
-                  ('initial_sample_size', 'Initial Sample Size', _string),
-                  ('replication_sample_size', 'Replication Sample Size', _string),
-                  ('region', 'Region', _string),
-                  ('chr_id', 'Chr_id', _integer),
-                  ('chr_pos', 'Chr_pos', _integer),
-                  ('reported_genes', 'Reported Gene(s)', _genes_from_symbols),
-                  ('mapped_genes', 'Mapped_gene', _genes_from_symbols),
-                  ('upstream_gene', 'Upstream_gene_id', _gene_from_id),
-                  ('downstream_gene', 'Downstream_gene_id', _gene_from_id),
-                  ('snp_genes', 'Snp_gene_ids', _genes_from_ids),
-                  ('upstream_gene_distance', 'Upstream_gene_distance', _float),
-                  ('downstream_gene_distance', 'Downstream_gene_distance', _float),
-                  ('strongest_snp_risk_allele', 'Strongest SNP-Risk Allele', _string),
-                  ('snps', 'SNPs', _rss),
-                  ('merged', 'Merged', _integer),
-                  ('snp_id_current', 'Snp_id_current', _integer),
-                  ('context', 'Context', _string),
-                  ('intergenc', 'Intergenic', _integer),
-                  ('risk_allele_frequency', 'Risk Allele Frequency', _float),
-                  ('p_value', 'p-Value', _p_value),
-                  ('p_value_mlog', 'Pvalue_mlog', _float),
-                  ('p_value_text', 'p-Value (text)', _string),
-                  ('OR_or_beta', 'OR or beta', _OR_or_beta),
-                  ('CI_95', '95% CI (text)', _CI_text),
-                  ('platform', 'Platform [SNPs passing QC]', _string),
-                  ('cnv', 'CNV', _string)]
+    fields = [('added', 'Date Added to Catalog', _date),
+              ('pubmed_id', 'PUBMEDID', _integer),
+              ('first_author', 'First Author', _string),
+              ('date', 'Date', _date),
+              ('jornal', 'Journal', _string),
+              ('study', 'Study', _string_without_slash),
+              ('trait', 'Disease/Trait', _string_without_slash),
+              ('initial_sample_size', 'Initial Sample Size', _string),
+              ('replication_sample_size', 'Replication Sample Size', _string),
+              ('region', 'Region', _string),
+              ('chr_id', 'Chr_id', _integer),
+              ('chr_pos', 'Chr_pos', _integer),
+              ('reported_genes', 'Reported Gene(s)', _genes_from_symbols),
+              ('mapped_genes', 'Mapped_gene', _genes_from_symbols),
+              ('upstream_gene', 'Upstream_gene_id', _gene_from_id),
+              ('downstream_gene', 'Downstream_gene_id', _gene_from_id),
+              ('snp_genes', 'Snp_gene_ids', _genes_from_ids),
+              ('upstream_gene_distance', 'Upstream_gene_distance', _float),
+              ('downstream_gene_distance', 'Downstream_gene_distance', _float),
+              ('strongest_snp_risk_allele', 'Strongest SNP-Risk Allele', _string),
+              ('snps', 'SNPs', _rss),
+              ('merged', 'Merged', _integer),
+              ('snp_id_current', 'Snp_id_current', _integer),
+              ('context', 'Context', _string),
+              ('intergenc', 'Intergenic', _integer),
+              ('risk_allele_frequency', 'Risk Allele Frequency', _float),
+              ('p_value', 'p-Value', _p_value),
+              ('p_value_mlog', 'Pvalue_mlog', _float),
+              ('p_value_text', 'p-Value (text)', _string),
+              ('OR_or_beta', 'OR or beta', _OR_or_beta),
+              ('CI_95', '95% CI (text)', _CI_text),
+              ('platform', 'Platform [SNPs passing QC]', _string),
+              ('cnv', 'CNV', _string)]
 
-        post_fields = [('risk_allele', 'Risk Allele'),
-                       ('eng2ja', 'Disease/Trait (in Japanese)'),
-                       ('OR', 'OR')]
+    post_fields = [('risk_allele', 'Risk Allele'),
+                   ('eng2ja', 'Disease/Trait (in Japanese)'),
+                   ('OR', 'OR')]
 
-        field_names = [field[0:2] for field in fields] + post_fields
+    field_names = [field[0:2] for field in fields] + post_fields
 
-        fields = my_fields + fields
-        log.info('# of fields: {}'.format(len(fields)))
+    fields = my_fields + fields
+    log.info('# of fields: {}'.format(len(fields)))
 
-        log.debug('Importing gwascatalog.txt...')
-        catalog_summary = {}
-        with open(path_to_gwascatalog, 'rb') as fin:
-            for i,record in enumerate(csv.DictReader(fin, delimiter='\t')):# , quotechar="'"):
+    log.debug('Importing gwascatalog.txt...')
+    catalog_summary = {}
+    with open(path_to_gwascatalog, 'rb') as fin:
+        for i,record in enumerate(csv.DictReader(fin, delimiter='\t')):# , quotechar="'"):
 
-                # some traits contains `spaces` at the end of it, e.g., "Airflow obstruction "...
-                record['Disease/Trait'] = record['Disease/Trait'].rstrip()
+            # some traits contains `spaces` at the end of it, e.g., "Airflow obstruction "...
+            record['Disease/Trait'] = record['Disease/Trait'].rstrip()
 
-                data = {}
-                for dict_name, record_name, converter in fields:
-                    try:
-                        data[dict_name] = converter(record[record_name])
-                    except KeyError:
-                        pass
+            data = {}
+            for dict_name, record_name, converter in fields:
+                try:
+                    data[dict_name] = converter(record[record_name])
+                except KeyError:
+                    pass
 
-                data['eng2ja'] = eng2ja.get(data['trait'])
-                data['pubmed_link'] = 'http://www.ncbi.nlm.nih.gov/pubmed/' + str(data['pubmed_id'])
-                data['dbsnp_link'] = 'http://www.ncbi.nlm.nih.gov/projects/SNP/snp_ref.cgi?rs=' + str(data['snps'])
-                data['is_in_truseq'] = False
-                data['is_in_andme'] = False
+            data['eng2ja'] = eng2ja.get(data['trait'])
+            data['pubmed_link'] = 'http://www.ncbi.nlm.nih.gov/pubmed/' + str(data['pubmed_id'])
+            data['dbsnp_link'] = 'http://www.ncbi.nlm.nih.gov/projects/SNP/snp_ref.cgi?rs=' + str(data['snps'])
+            data['is_in_truseq'] = False
+            data['is_in_andme'] = False
 
-                if (not data['snps']) or (not data['strongest_snp_risk_allele']):
-                    log.warn('absence of "snps" or "strongest_snp_risk_allele" {0} {1}. pubmed_id:{2}'.format(data['snps'], data['strongest_snp_risk_allele'], data['pubmed_id']))
-                    data['snps'], data['strongest_snp_risk_allele'], data['risk_allele'] = 'na', 'na', 'na'
+            if (not data['snps']) or (not data['strongest_snp_risk_allele']):
+                log.warn('absence of "snps" or "strongest_snp_risk_allele" {0} {1}. pubmed_id:{2}'.format(data['snps'], data['strongest_snp_risk_allele'], data['pubmed_id']))
+                data['snps'], data['strongest_snp_risk_allele'], data['risk_allele'] = 'na', 'na', 'na'
+                catalog.insert(data)
+            else:
+
+                rs, data['risk_allele'] = _risk_allele(data['strongest_snp_risk_allele'], dbsnp)
+                if data['snps'] != rs:
+                    log.warn('"snps" != "risk_allele": {0} != {1}'.format(data['snps'], rs))
                     catalog.insert(data)
+
                 else:
+                    # identfy OR or beta & TODO: convert beta to OR if can
+                    data['OR'] = identfy_OR_or_beta(data['OR_or_beta'], data['CI_95'])
 
-                    rs, data['risk_allele'] = _risk_allele(data['strongest_snp_risk_allele'], dbsnp)
-                    if data['snps'] != rs:
-                        log.warn('"snps" != "risk_allele": {0} != {1}'.format(data['snps'], rs))
-                        catalog.insert(data)
-
+                    # for DEGUG
+                    if type(data['OR']) == float:
+                        data['OR_or_beta'] = data['OR']
+                        # print data['OR_or_beta'], data['OR'], 'rs{}'.format(data['snps'])
                     else:
-                        # identfy OR or beta & TODO: convert beta to OR if can
-                        data['OR'] = identfy_OR_or_beta(data['OR_or_beta'], data['CI_95'])
+                        data['OR_or_beta'] = None
 
-                        # for DEGUG
-                        if type(data['OR']) == float:
-                            data['OR_or_beta'] = data['OR']
-                            # print data['OR_or_beta'], data['OR'], 'rs{}'.format(data['snps'])
+                    # TODO: support gene records
+                    for field,value in data.items():
+                        if '_gene' in field or field == 'CI_95':
+                            pass
                         else:
-                            data['OR_or_beta'] = None
+                            try:
+                                catalog_summary[field][value] += 1
+                            except KeyError:
 
-                        # TODO: support gene records
-                        for field,value in data.items():
-                            if '_gene' in field or field == 'CI_95':
-                                pass
-                            else:
                                 try:
-                                    catalog_summary[field][value] += 1
+                                    catalog_summary[field].update({value: 1})
                                 except KeyError:
-
-                                    try:
-                                        catalog_summary[field].update({value: 1})
-                                    except KeyError:
-                                        catalog_summary[field] = {value: 1}
+                                    catalog_summary[field] = {value: 1}
 
 
-                        # TODO: call `add_record_reliability`
-                        # add_record_reliability(data)
+                    # TODO: call `add_record_reliability`
+                    # add_record_reliability(data)
 
-                        catalog.insert(data)
+                    catalog.insert(data)
 
-            # TODO: indexing target
-            # catalog.create_index([('snps', pymongo.ASCENDING)])
+        # TODO: indexing target
+        # catalog.create_index([('snps', pymongo.ASCENDING)])
 
     log.info('# of documents in catalog (after): {}'.format(catalog.count()))
 
     # Add `is_in_truseq`, `is_in_andme` flags
+    n_records, n_truseq, n_andme = 0, 0, 0
     for chrom in [i + 1 for i in range(24)]:
         log.info('Addding flags... chrom: {}'.format(chrom))
         records = list(catalog.find({'chr_id': chrom}).sort('chr_pos', pymongo.ASCENDING))
-        log.info('records:{}'.format(len(records)))
+        n_records += len(records)
+        log.info('records:{}'.format(n_records))
 
         # `is_in_truseq`
         region_file = os.path.join(path_to_interval_list_dir,
                                    'TruSeq-Exome-Targeted-Regions-BED-file.{}.interval_list'.format({23:'X', 24:'Y'}.get(chrom, chrom)))
         with open(region_file, 'r') as fin:
             extracted = extract_region(region_file, records)
-            log.info('`is_in_truseq` extracted:{}'.format(len(extracted)))
+            n_truseq += len(extracted)
+            log.info('`is_in_truseq` extracted:{}'.format(n_truseq))
             for record in extracted:
                 catalog.update(record, {"$set": {'is_in_truseq': True}})
 
@@ -233,9 +236,21 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja, path_t
                                    'andme_region.{}.interval_list'.format({23:'X', 24:'Y', 25:'MT'}.get(chrom, chrom)))
         with open(region_file, 'r') as fin:
             extracted = extract_region(region_file, records)
-            log.info('`is_in_andme` extracted:{}'.format(len(extracted)))
+            n_andme += len(extracted)
+            log.info('`is_in_andme` extracted:{}'.format(n_andme))
             for record in extracted:
                 catalog.update(record, {"$set": {'is_in_andme': True}})
+
+    stats = {'catalog_cover_rate': {'vcf_whole_genome': 100,
+                                    'vcf_exome_truseq': int(round(100 * n_truseq / n_records)),
+                                    'andme': int(round(100 * n_andme / n_records))}}
+    log.info(stats)
+
+    catalog_stats = c['pergenie']['catalog_stats']
+    if catalog_stats.find_one():
+        c['pergenie'].drop_collection(catalog_stats)
+
+    catalog_stats.insert(stats)
 
     log.info('catalog.find_one(): {}'.format(catalog.find_one()))
 
