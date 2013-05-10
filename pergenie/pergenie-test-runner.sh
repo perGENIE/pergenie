@@ -1,11 +1,12 @@
 #!/bin/sh
 notifier=/opt/local/bin/terminal-notifier
+nosetests=/opt/local/Library/Frameworks/Python.framework/Versions/2.7/bin/nosetests
 
 # python virtualenv
 . /Users/numa/.virtualenvs/perGENIE/bin/activate
 
 # main
-cd /Users/numa/Dropbox/py/pergenie_staging/pergenie
+cd /Users/numa/Dropbox/py/pergenie_staging/pergenie/
 python manage.py celeryd_detach
 
 # tests for ./app
@@ -20,8 +21,8 @@ do
 done
 
 # tests for ./lib
-cd lib
-nosetests -v --with-doctest
+cd lib/
+$nosetests -v --with-doctest
 if [ $? -eq 1 ]; then
     $notifier -message "pergenie-test-runner.sh: Test Failed: nosetests"
 fi
