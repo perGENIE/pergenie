@@ -32,7 +32,7 @@ def index(request):
     with pymongo.Connection(port=settings.MONGO_PORT) as connection:
         db = connection['pergenie']
         data_info = db['data_info']
-        catalog_stats = db['catalog_stats']
+        catalog_cover_rate = db['catalog_cover_rate']
 
         if request.method == 'POST':
             while True:
@@ -129,7 +129,7 @@ def index(request):
                         'population': population,
                         'sex': sex,
                         'file_format': file_format,
-                        'catalog_cover_rate': catalog_stats.find_one()['catalog_cover_rate'][file_format],
+                        'catalog_cover_rate': catalog_cover_rate.find_one()['catalog_cover_rate'][file_format],
                         'status': float(0.0)}
 
                 data_info.insert(info)

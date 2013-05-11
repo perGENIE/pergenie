@@ -81,6 +81,7 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja, path_t
 
     catalog = c['pergenie']['catalog'][catalog_date_raw]
     catalog_stats = c['pergenie']['catalog_stats']
+    catalog_cover_rate = c['pergenie']['catalog_cover_rate']
     counter = Counter()
 
     # ensure old collections does not exist
@@ -88,6 +89,8 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja, path_t
     assert catalog.count() == 0
     if catalog_stats.find_one(): c['pergenie'].drop_collection(catalog_stats)
     assert catalog_stats.count() == 0
+    if catalog_cover_rate.find_one(): c['pergenie'].drop_collection(catalog_cover_rate)
+    assert catalog_cover_rate.count() == 0
 
     dbsnp = c['dbsnp']['B132']
 
@@ -247,7 +250,7 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja, path_t
                                     'andme': int(round(100 * n_andme / n_records))},
     }
     log.info(stats)
-    catalog_stats.insert(stats)
+    catalog_cover_rate.insert(stats)
 
     log.info('catalog.find_one(): {}'.format(catalog.find_one()))
     log.info('import catalog done')

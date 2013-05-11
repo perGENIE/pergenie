@@ -1,4 +1,5 @@
 {% extends "layout.html" %}
+{% load extras %}
 {% load staticfiles %}
 {% block title %}Dashboard{% endblock %}
 {% block description %}perGENIE dashboard{% endblock %}
@@ -31,12 +32,13 @@
         <div class="row-fluid">
           <div class="span12">
             <div class="padded">
-
               <a href="{% url apps.riskreport.views.index %}">
               <button class="button square" href="#"{% if do_intro_risk_report %} data-step="1" data-intro="{{ intros.0 }}" {% endif %}>
                 <i class="icon-align-left icon-large"></i>
                 <span class="button-text">RiskReport</span>
-              </button></a>
+                {% if n_new_records > 0 %}<span class="badge badge-yellow">{{ n_new_records }}</span>{% endif %}
+              </button>
+              </a>
 
               <a href="{% url apps.traits.views.index %}">
               <button class="button square" href="#">
@@ -116,30 +118,87 @@
               <icon class="icon-upload"></icon> Genome statics
             </div>
 
-            <table class="table table-bordered">
-              <tbody>
-                <tr>
-                  <td class="center">
-                    <p>What percentage does your genome file cover GWAS Cataog?</p>
-                  </td>
-                  <td class="center">
-                    <div class="donut donut-big">
-                      <div class="donut-arrow" data-percentage="{{ infos.0.catalog_cover_rate }}"></div>
-                    </div>
-                  </td>
-                </tr>
+            <div class="tabbable">
+              <ul class="nav nav-tabs">
+                {% if infos %}
+                {% for info in infos %}
+                <li{% ifequal forloop.counter0|add:1 1 %} class="active"{% endifequal %}><a href="#tab{{ forloop.counter0|add:1 }}" data-toggle="tab">File {{ forloop.counter0|add:1 }}</a></li>
+                {% endfor %}
+                {% else %}
+                <li class="active"><a href="#tab1" data-toggle="tab">File 1</a></li>
+                {% endif %}
+              </ul>
 
-                <tr>
-                  <td class="center">
-                    <p>Import status:</p>
-                  </td>
-                  <td class="center">
-                    <div class="donut donut-big">
-                      <div class="donut-arrow" data-percentage="{{ infos.0.status }}"></div>
+              <div class="tab-content">
+
+                {% if infos %}
+                {% for info in infos %}
+                <div class="tab-pane{% ifequal forloop.counter0|add:1 1 %} active{% endifequal %}" id="tab{{ forloop.counter0|add:1 }}">
+                  <div class="row-fluid">
+                    <div class="span12 padded">
+                      <p><b>File name</b>: {{ info.name|limit:30 }}</p>
+                      <table class="table table-bordered">
+                        <tbody>
+                            <td class="center">
+                              <p>What percentage does your genome file cover GWAS Cataog?</p>
+                            </td>
+                            <td class="center">
+                              <div class="donut donut-big">
+                                <div class="donut-arrow" data-percentage="{{ info.catalog_cover_rate }}"></div>
+                              </div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td class="center">
+                              <p>Import status:</p>
+                            </td>
+                            <td class="center">
+                              <div class="donut donut-big">
+                                <div class="donut-arrow" data-percentage="{{ info.status }}"></div>
+                              </div>
+                            </td>
+                          </tr>
+                      </table>
                     </div>
-                  </td>
-                </tr>
-                </table>
+                  </div>
+                </div>
+              {% endfor %}
+              </div>
+
+              {% else %}
+                <div class="tab-pane active" id="tab1">
+                  <div class="row-fluid">
+                    <div class="span12 padded">
+                      <p><b>File name</b>:</p>
+                      <table class="table table-bordered">
+                        <tbody>
+                            <td class="center">
+                              <p>What percentage does your genome file cover GWAS Cataog?</p>
+                            </td>
+                            <td class="center">
+                              <div class="donut donut-big">
+                                <div class="donut-arrow" data-percentage="0"></div>
+                              </div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td class="center">
+                              <p>Import status:</p>
+                            </td>
+                            <td class="center">
+                              <div class="donut donut-big">
+                                <div class="donut-arrow" data-percentage="0"></div>
+                              </div>
+                            </td>
+                          </tr>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {% endif %}
+
+            </div>
           </div>
         </div>
 
