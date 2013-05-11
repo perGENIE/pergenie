@@ -245,10 +245,19 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja, path_t
             for record in extracted:
                 catalog.update(record, {"$set": {'is_in_andme': True}})
 
-    stats = {'catalog_cover_rate': {'vcf_whole_genome': 100,
-                                    'vcf_exome_truseq': int(round(100 * n_truseq / n_records)),
-                                    'andme': int(round(100 * n_andme / n_records))},
-    }
+    len_genome = 2861327131  # number of bases (exclude `N`)
+    len_truseq = 62085286
+    len_andme = 1022124
+    stats = [{'stats': 'catalog_cover_rate',
+              'values': {'vcf_whole_genome': 100,
+                         'vcf_exome_truseq': int(round(100 * n_truseq / n_records)),
+                         'andme': int(round(100 * n_andme / n_records))}},
+             {'stats': 'genome_cover_rate',
+              'values': {'vcf_whole_genome': 100,
+                         'vcf_exome_truseq': int(round(100 * len_truseq / len_genome)),
+                         'andme': int(round(100 * len_andme / len_genome))}}
+             ]
+
     log.info(stats)
     catalog_cover_rate.insert(stats)
 

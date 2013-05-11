@@ -39,8 +39,7 @@ def extract_region(region_file, records):
     else:
         region = pickle.load(open(region_file + '.p'))
 
-    # for r in records:
-    #     print >>sys.stderr, r['chr_pos'], bool(r['chr_pos'] in region)
+    # print >>sys.stderr, 'len_region:', len(region)
 
     return [r for r in records if r['chr_pos'] in region]
 

@@ -41,6 +41,7 @@ pergenie/tmp
 #
 data/gwascatalog*
 data/large_dbs/
+data/summary/
 static/vendor
 _static/
 wood-admin/

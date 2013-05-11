@@ -28,10 +28,10 @@ def index(request):
 
         # check if latest riskreports are outdated
         for info in infos:
-            risk_report_latest_date = info.get('riskreport').date()
+            risk_report_latest_date = info.get('riskreport')
 
             if risk_report_latest_date:
-                if risk_report_latest_date < catalog_latest_new_records_data:
+                if risk_report_latest_date.date() < catalog_latest_new_records_data:
                     warns.append('risk report outdated: {}'.format(info['name']))
                     n_out_dated_riskreports += 1
 
@@ -47,6 +47,8 @@ def index(request):
             intros.append('Browse your Risk Report!')
 
         break
+
+    log.debug(infos)
 
     msgs = dict(msg=msg, err=err, warns=warns, user_id=user_id,
                 catalog_latest_new_records_data=catalog_latest_new_records_data,

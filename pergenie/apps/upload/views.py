@@ -129,7 +129,8 @@ def index(request):
                         'population': population,
                         'sex': sex,
                         'file_format': file_format,
-                        'catalog_cover_rate': catalog_cover_rate.find_one()['catalog_cover_rate'][file_format],
+                        'catalog_cover_rate': catalog_cover_rate.find_one({'stats': 'catalog_cover_rate'})['values'][file_format],
+                        'genome_cover_rate': catalog_cover_rate.find_one({'stats': 'genome_cover_rate'})['values'][file_format],
                         'status': float(0.0)}
 
                 data_info.insert(info)
@@ -145,8 +146,8 @@ def index(request):
         if not uploadeds:
             do_intro = True
 
-    if err:
-        log.error('err: {}'.format(err))
+    # if err:
+    #     log.error('err: {}'.format(err))
 
     return direct_to_template(request, 'upload/index.html',
                               dict(msg=msg, err=err, uploadeds=uploadeds,

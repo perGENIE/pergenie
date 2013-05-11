@@ -122,6 +122,17 @@
                       <p><b>File name</b>: {{ info.raw_name|limit:30 }}</p>
                       <table class="table table-bordered">
                         <tbody>
+                          <tr>
+                            <td class="center">
+                              <p>Import status:</p>
+                            </td>
+                            <td class="center">
+                              <div class="donut donut-big">
+                                <div class="donut-arrow" data-percentage="{{ info.status }}"></div>
+                              </div>
+                            </td>
+                          </tr>
+                          <tr>
                             <td class="center">
                               <p>What percentage does your genome file cover GWAS Cataog?</p>
                             </td>
@@ -133,11 +144,11 @@
                           </tr>
                           <tr>
                             <td class="center">
-                              <p>Import status:</p>
+                              <p>What percentage does your genome file cover whole genome?</p>
                             </td>
                             <td class="center">
                               <div class="donut donut-big">
-                                <div class="donut-arrow" data-percentage="{{ info.status }}"></div>
+                                <div class="donut-arrow" data-percentage="{{ info.genome_cover_rate }}"></div>
                               </div>
                             </td>
                           </tr>
@@ -155,15 +166,6 @@
                       <p><b>File name</b>:</p>
                       <table class="table table-bordered">
                         <tbody>
-                            <td class="center">
-                              <p>What percentage does your genome file cover GWAS Cataog?</p>
-                            </td>
-                            <td class="center">
-                              <div class="donut donut-big">
-                                <div class="donut-arrow" data-percentage="0"></div>
-                              </div>
-                            </td>
-                          </tr>
                           <tr>
                             <td class="center">
                               <p>Import status:</p>
