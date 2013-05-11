@@ -12,16 +12,13 @@ from django.utils.translation import ugettext as _
 from django.conf import settings
 from django.db import IntegrityError
 
-import urllib2
-
 from smtplib import SMTPRecipientsRefused
 
 from apps.frontend.forms import LoginForm, RegisterForm
+from demo import *
 
 from utils import clogging
 log = clogging.getColorLogger(__name__)
-
-# import pymongo
 
 
 class ReservedUserIDError(Exception):
@@ -38,6 +35,18 @@ def index(request):
     # return redirect('apps.frontend.views.register')
 
 
+def trydemo(request):
+    """Login as DEMO USER (demo@pergenie.org)"""
+
+    if not User.objects.filter(username=settings.DEMO_USER_ID):
+        create_demo_user()
+
+    user = authenticate(username=settings.DEMO_USER_ID,
+                        password=settings.DEMO_USER_ID)
+    auth_login(request, user)
+    return redirect('apps.dashboard.views.index')
+
+
 @require_http_methods(['GET', 'POST'])
 def login(request):
     params = {'erorr': ''}
@@ -46,17 +55,17 @@ def login(request):
         form = LoginForm(request.POST)
 
         if form.is_valid():
-            user = authenticate(username=form.cleaned_data['user_id'],
-                                password=form.cleaned_data['password'])
+            user_id = form.cleaned_data['user_id']
+            password = form.cleaned_data['password']
 
-            if user:
-                auth_login(request, user)
+            if not user_id in settings.RESERVED_USER_ID:
+                user = authenticate(username=user_id, password=password)
 
-                log.info('===========')
-                log.info(user)
-                log.info('===========')
+                if user:
+                    auth_login(request, user)
+                    log.info(user)
 
-                return redirect('apps.dashboard.views.index')
+                    return redirect('apps.dashboard.views.index')
 
             else:
                 params['error'] = _('invalid mail address or password')
@@ -70,21 +79,6 @@ def login(request):
 def logout(request):
     auth_logout(request)
     return redirect('apps.frontend.views.login')
-
-
-def login_with_23andme(request):
-    # TODO: if not redirected from 23andme, return 403
-
-    # authenticate(username=user_id)
-
-    # Get username (emai-address) via 23andme-API
-    request = urllib2.Request("http://www.google.com", headers={"Accept" : "text/html"})
-    contents = urllib2.urlopen(request).read()
-
-    # user = ''
-    auth_login(request, user)
-    return redirect('apps.dashboard.views.index')
-
 
 
 @require_http_methods(['GET', 'POST'])

@@ -51,7 +51,7 @@ def index(request):
 
     # log.debug(infos)
 
-    msgs = dict(msg=msg, err=err, warns=warns, user_id=user_id,
+    msgs = dict(msg=msg, err=err, warns=warns, user_id=user_id, demo_user_id=settings.DEMO_USER_ID,
                 catalog_latest_new_records_data=catalog_latest_new_records_data,
                 n_out_dated_riskreports=n_out_dated_riskreports,
                 recent_catalog_records=recent_catalog_records,

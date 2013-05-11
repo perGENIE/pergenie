@@ -47,7 +47,7 @@ _8
 
           <ul class="nav">
             <!-- <li class="active"><a href="#"></a></li> -->
-            <li><a href="#">Try demo</a></li>
+            <li><a href="{% url apps.frontend.views.trydemo %}">Try demo</a></li>
             <li><a href="{% url apps.frontend.views.register %}">Sign up</a></li>
             <li><a href="{% url apps.frontend.views.login %}">Login</a></li>
           </ul>
@@ -66,7 +66,7 @@ _8
     <div class="container">
       <div class="row">
         <div class="span12 center graded">
-          <a href="#" class="signup">Try demo</a>
+          <a href="{% url apps.frontend.views.trydemo %}" class="signup">Try demo</a>
           <a href="{% url apps.frontend.views.register %}" class="signup">Sign up for free</a>
         </div>
       </div>

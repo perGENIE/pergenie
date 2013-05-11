@@ -1,0 +1,59 @@
+{% extends "layout.html" %}
+{% block title %}Error{% endblock %}
+{% block description %}Error{% endblock %}
+
+{% load staticfiles %}
+
+{% block main_container %}
+<div id="main_container" class="span14">
+  <section id="main">
+    <div class="container">
+
+      <div class="row-fluid">
+        <div class="span12">
+          <div class="padded">
+            <div class="content-box">
+              <div class="content-box-header">
+                <icon class="icon-exclamation-sign"></icon> Notifications
+              </div>
+
+              {% if msg %}
+              <div class="alert alert-info">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <strong>Information:</strong> {{ msg }}
+              </div>
+              {% endif %}
+
+              {% if warns %}
+              {% for warn in warns %}
+              <div class="alert alert-warning">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <strong>Warning!</strong> {{ warn }}
+              </div>
+              {% endfor %}
+              {% endif %}
+
+              {% if err %}
+              <div class="alert alert-error">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <strong>Error!</strong> {{ err }}
+              </div>
+              {% endif %}
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+  </section>
+</div>
+{% endblock %}
+
+{% block js %}
+<link href="{% static 'css/introjs.css' %}" rel="stylesheet">
+<script type="text/javascript" src="{% static 'js/intro.js' %}"></script>
+{% if do_intro %}<script type="text/javascript">introJs().start()</script>{% endif %}
+
+<script type="text/javascript">window.upload_status_url = "{% url apps.upload.views.status %}";</script>
+<script type="text/javascript" src="{% static 'js/upload.js' %}"></script>
+{% endblock %}

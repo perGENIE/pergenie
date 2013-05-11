@@ -18,9 +18,9 @@ urlpatterns = patterns('',
 
     url(r'^static/(?P<path>.*)$', 'django.views.static.serve',{'document_root': DOCUMENT_ROOT}),
 
-    # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
 
+    # 23andme-api
     url(r'^auth/callback/$', 'apps.api.views.callback'),
     url(r'^auth/logout/$', 'apps.api.views.logout'),
     url(r'^auth/profiles/$', 'apps.api.views.profiles'),
@@ -28,15 +28,19 @@ urlpatterns = patterns('',
     url(r'^auth/genotype/(?P<snpid>\w+)/$', 'apps.api.views.genotype'),
     url(r'^login_with_23andme/$', 'apps.login_with_23andme.views.view'),
 
+    # frontend
     url(r'^$', 'apps.frontend.views.index'),
     url(r'^login/$', 'apps.frontend.views.login'),
     url(r'^logout/$', 'apps.frontend.views.logout'),
+    url(r'^trydemo/$', 'apps.frontend.views.trydemo'),
+
     url(r'^register/$', 'apps.frontend.views.register'),
 
     url(r'^accounts/', include('registration.backends.default.urls')),
     # registration.backends.default.urls or registration.urls
     # TODO: revise registration settings
 
+    # contents
     url(r'^dashboard/$', 'apps.dashboard.views.index'),
     url(r'^user_settings/$', 'apps.settings.views.user_settings'),
 

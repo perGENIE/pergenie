@@ -98,13 +98,16 @@
 
                       <li class="divider"></li>
 
+                      {% ifnotequal user.username demo_user_id %}
                       <li class="">
                         <a href="{% url apps.upload.views.index %}">
                           <i class="icon-arrow-up"></i> Upload
                         </a>
                       </li>
-
                       <li class="divider"></li>
+                      {% else %}
+
+                      {% endifnotequal %}
 
                       <li class="">
                         <a href="{% url apps.library.views.index %}">
