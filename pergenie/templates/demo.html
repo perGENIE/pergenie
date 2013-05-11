@@ -1,0 +1,110 @@
+{% extends "home.html" %}
+{% load staticfiles %}
+
+{% block demo %}
+
+<div id="demo">
+    <div class="block">
+
+    <div class="username">{{ request.session.name }}</div>
+
+       <div class="cols two demo">
+            <div class="col left">
+                <h1 class="snphead">SNP</h1>
+                <ul class="snplist">
+                    <li class="snp">rs53576</li>
+                    <li class="desc">In the oxytocin receptor influences social behavior and personality</li>
+
+                    <li class="snp">rs1815739</li>
+                    <li class="desc">Muscle performance</li>
+
+                    <li class="snp">rs6152</li>
+                    <li class="desc">Can influence baldness</li>
+
+                    <li class="snp">rs1800497</li>
+                    <li class="desc">In a dopamine receptor may influence the sense of pleasure</li>
+
+                    <li class="snp">rs1805007</li>
+                    <li class="desc">Determines red hair and sensitivity to anesthetics</li>
+
+                    <li class="snp">rs9939609</li>
+                    <li class="desc">Triggers obesity and type-2 diabetes</li>
+
+                    <li class="snp">rs662799</li>
+                    <li class="desc">Prevents weight gain from high fat diets</li>
+
+                    <li class="snp">rs7495174</li>
+                    <li class="desc">Green eye color and rs12913832 for blue eye color</li>
+
+                    <li class="snp">rs7903146</li>
+                    <li class="desc">In 3% of the population greatly increases the risk of type-2 diabetes</li>
+
+                    <li class="snp">rs12255372</li>
+                    <li class="desc">Linked to type-2 diabetes and breast cancer</li>
+
+                    <li class="snp">rs1799971</li>
+                    <li class="desc">Makes alcohol cravings stronger</li>
+
+                    <li class="snp">rs17822931</li>
+                    <li class="desc">Determines earwax</li>
+
+                    <li class="snp">rs4680</li>
+                    <li class="desc">Varied cognitive effects</li>
+
+                    <li class="snp">rs1333049</li>
+                    <li class="desc">Coronary heart disease</li>
+
+                    <li class="snp">rs1801133</li>
+                    <li class="desc">Folate metabolism and several cancers</li>
+
+                    <li class="snp">rs1051730</li>
+                    <li class="desc">Nicotine dependence</li>
+
+                    <li class="snp">rs3750344</li>
+                    <li class="desc">Also nicotine dependence</li>
+
+                    <li class="snp">rs4988235</li>
+                    <li class="desc">Lactose intolerance</li>
+
+                </ul>
+            </div>
+            <div class="col right">
+                <h1>Description</h1>
+                <div class="snpdesc">
+                    <div class="chosensnp">Select a SNP from the list</div> 
+                    <div class="chosendesc"></div>
+                </div>
+
+                <div id="tabs">
+                    <h1>23andMe</h1>
+                    <ul>
+                        <li><a href="#tab-1">Demo</a></li>
+                        <li><a href="#tab-2">Source</a></li>
+                    </ul>
+                    <div id="tab-1" class="ttarea">
+                        <div class="ttcontent"><div><p>Select a SNP from the list</p></div></div>
+                    </div>
+                    <div id="tab-2" class="ttarea">
+                        <div class="">
+                        <img src="{% static 'images/apidemo/genotypeSource.png' %}" width="655" height="262" class="thumbs" alt="Geno Diagram" />
+                        </div>
+                    </div>
+                </div>
+
+                <h1>SNPedia</h1>
+                <div class="sarea">
+                    <div class="scontent">Select a SNP from the list</div>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_body_js %}
+    <script>
+
+    </script>
+{% endblock %}

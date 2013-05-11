@@ -21,6 +21,13 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
 
+    url(r'^auth/callback/$', 'apps.api.views.callback'),
+    url(r'^auth/logout/$', 'apps.api.views.logout'),
+    url(r'^auth/profiles/$', 'apps.api.views.profiles'),
+    url(r'^auth/user/$', 'apps.api.views.user'),
+    url(r'^auth/genotype/(?P<snpid>\w+)/$', 'apps.api.views.genotype'),
+    url(r'^demo/$', 'apps.demo.views.view'),
+
     url(r'^$', 'apps.frontend.views.index'),
     url(r'^login/$', 'apps.frontend.views.login'),
     url(r'^login_with_23andme/$', 'apps.frontend.views.login_with_23andme'),
