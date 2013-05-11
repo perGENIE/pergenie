@@ -8,12 +8,11 @@ from django.utils import translation
 from django.utils.translation import ugettext as _
 from django.conf import settings
 # from apps.library.forms import LibraryForm
+from models import *
 
 import pymongo
 
-from lib.mongo import search_variants
 from lib.mongo import search_catalog
-from lib.mongo.get_latest_catalog import get_latest_catalog
 from lib.mongo.get_traits_infos import get_traits_infos
 from lib.utils.io import pickle_load_obj
 from lib.utils.clogging import getColorLogger
@@ -21,13 +20,12 @@ log = getColorLogger(__name__)
 
 TRAITS, TRAITS_JA, TRAITS_CATEGORY, TRAITS_WIKI_URL_EN = get_traits_infos()
 
+
 @login_required
 def index(request):
     msg, err = '', ''
 
-    with pymongo.Connection(port=settings.MONGO_PORT) as connection:
-        catalog_info = connection['pergenie']['catalog_info']
-        latest_catalog_date = catalog_info.find_one({'status': 'latest'})['date']
+    latest_catalog_date = get_latest_catalog_date()
 
     return direct_to_template(request, 'library/index.html',
                               dict(msg=msg, err=err,
@@ -92,39 +90,20 @@ def trait_index(request):
 def trait(request, trait):
     user_id = request.user.username
     msg, err = '', ''
-
-    library_list = []
-    variants_maps = {}
+    library_list, variants_maps = list(), dict()
 
     if not trait in TRAITS:
         err += 'trait not found'
 
     else:
-        # get variants data
-        with pymongo.Connection(port=settings.MONGO_PORT) as connection:
-
-            # for debug
-            catalog = get_latest_catalog(port=settings.MONGO_PORT)
-            founds = catalog.find({'trait': trait})
-            log.debug('catalog.find: {}'.format(list(founds)))
-
-            data_info = connection['pergenie']['data_info']
-
-            uploadeds = list(data_info.find({'user_id': user_id}))
-            file_names = [uploaded['name'] for uploaded in uploadeds]
-
-            variants_maps = {}
-            for file_name in file_names:
-                library_map, variants_maps[file_name] = search_variants.search_variants(user_id, file_name, trait, 'trait')
-
-            library_list = [library_map[found_id] for found_id in library_map]  ###
-            log.debug(library_list)
+        library_list, variants_maps = get_libarary_and_variatns_of_a_trait(trait, user_id)
 
     log.error(err)
 
     return direct_to_template(request, 'library/trait.html',
                               dict(msg=msg, err=err,
-                                   trait_name=trait, library_list=library_list,
+                                   trait_name=trait,
+                                   library_list=library_list,
                                    variants_maps=variants_maps))
 
 
@@ -157,8 +136,8 @@ def snps(request, rs):
     user_id = request.user.username
     err = ''
 
-    with pymongo.Connection(port=settings.MONGO_PORT) as connection:
-        db = connection['pergenie']
+    with pymongo.MongoClient(port=settings.MONGO_PORT) as c:
+        db = c['pergenie']
         data_info = db['data_info']
         uploadeds = list(data_info.find({'user_id': user_id}))
         file_names = [uploaded['name'] for uploaded in uploadeds]
@@ -170,7 +149,7 @@ def snps(request, rs):
             variants[file_name] = variant['genotype'] if variant else 'NA'
 
         # data from dbsnp
-        dbsnp = connection['dbsnp']['B132']
+        dbsnp = c['dbsnp']['B132']
         dbsnp_record = dbsnp.find_one({'rs': rs})
         log.debug('dbsnp_record {}'.format(dbsnp_record))
 
