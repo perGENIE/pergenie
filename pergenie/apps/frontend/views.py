@@ -12,12 +12,16 @@ from django.utils.translation import ugettext as _
 from django.conf import settings
 from django.db import IntegrityError
 
+import urllib2
+
 from smtplib import SMTPRecipientsRefused
 
 from apps.frontend.forms import LoginForm, RegisterForm
 
 from utils import clogging
 log = clogging.getColorLogger(__name__)
+
+# import pymongo
 
 
 class ReservedUserIDError(Exception):
@@ -47,6 +51,11 @@ def login(request):
 
             if user:
                 auth_login(request, user)
+
+                log.info('===========')
+                log.info(user)
+                log.info('===========')
+
                 return redirect('apps.dashboard.views.index')
 
             else:
@@ -61,6 +70,21 @@ def login(request):
 def logout(request):
     auth_logout(request)
     return redirect('apps.frontend.views.login')
+
+
+def login_with_23andme(request):
+    # TODO: if not redirected from 23andme, return 403
+
+    # authenticate(username=user_id)
+
+    # Get username (emai-address) via 23andme-API
+    request = urllib2.Request("http://www.google.com", headers={"Accept" : "text/html"})
+    contents = urllib2.urlopen(request).read()
+
+    # user = ''
+    auth_login(request, user)
+    return redirect('apps.dashboard.views.index')
+
 
 
 @require_http_methods(['GET', 'POST'])

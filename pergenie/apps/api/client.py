@@ -3,7 +3,7 @@ import requests
 
 from django.conf import settings
 
-SCOPE = "basic names rs53576 rs1815739 rs6152 rs1800497 rs1805007 rs9939609 rs662799 rs7495174 rs7903146 rs12255372 rs1799971 rs17822931 rs4680 rs1333049 rs1801133 rs1051730 rs3750344 rs4988235"
+SCOPE = settings.SCOPE
 
 # leave these alone
 BASE_URL = "https://api.23andme.com/1/"
