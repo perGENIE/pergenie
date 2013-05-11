@@ -2,6 +2,8 @@
 
 import os
 import urllib
+import socket
+socket.setdefaulttimeout(30)  # timeout for urlretrieve
 try:
     import cPickle as pickle
 except ImportError:
@@ -32,22 +34,22 @@ def get_url_content(url, dst):
     # TODO: error handling
     urllib.urlretrieve(url, dst)
 
-try:
-    import pyPdf
+# try:
+#     import pyPdf
 
-    def get_pdf_content(path):
-        """Get PDF-content from .pdf
+#     def get_pdf_content(path):
+#         """Get PDF-content from .pdf
 
-        ref: http://code.activestate.com/recipes/511465/
-        """
+#         ref: http://code.activestate.com/recipes/511465/
+#         """
 
-        content = []
+#         content = []
 
-        pdf = pyPdf.PdfFileReader(file(path, "rb"))
-        for i in range(0, pdf.getNumPages()):
-            content.append(pdf.getPage(i).extractText())
+#         pdf = pyPdf.PdfFileReader(file(path, "rb"))
+#         for i in range(0, pdf.getNumPages()):
+#             content.append(pdf.getPage(i).extractText())
 
-        return content
+#         return content
 
-except ImportError:
-    pass
+# except ImportError:
+#     pass

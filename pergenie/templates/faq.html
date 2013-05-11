@@ -1,0 +1,58 @@
+{% extends "layout.html" %}
+{% load staticfiles %}
+{% block title %}FAQ{% endblock %}
+{% block description %}FAQ{% endblock %}
+
+{% block main_container %}
+<div id="main_container" class="span10">
+  <section id="main">
+    <div class="container">
+
+      <div class="row-fluid">
+        <div class="span12">
+          <h2>Frequently Asked Questions (FAQ)</h2>
+        </div>
+      </div>
+
+      <div class="content-box">
+        <div class="content-box-header">
+          <i class="icon-wrench"></i> FAQ
+        </div>
+
+        <div class="row-fluid">
+          <div class="span12">
+            <div class="padded">
+
+              <li>
+                <h4>How are risk values calculated in perGENIE?</h4>
+                <p>See <a href="{% static 'images/snaps/methods.png' %}">Methods</a>.</p>
+              </li>
+              <li>
+                <h4>What does <code>na</code> in genotypes mean?</h4>
+                <p><code>na</code> means genotype is Not Available in uploaded file, like following:</p>
+<pre class="prettyprint">
+if snp is not in uploaded_file:
+
+  if file_format == &#039;23andme&#039;:
+      -&gt; na
+  elif file_format == &#039;vcf_whole_genome&#039;:
+      -&gt; ref
+  elif file_format == &#039;vcf_exome_truseq&#039;:
+      if is_in_truseq:
+          -&gt; ref
+      else:
+          -&gt; na</pre>
+              </li>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </section>
+</div>
+{% endblock %}
+
+{% block js %}
+{% endblock %}

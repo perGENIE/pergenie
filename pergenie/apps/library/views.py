@@ -2,61 +2,35 @@
 import os
 
 from django.contrib.auth.decorators import login_required
-from django.views.decorators.http import require_http_methods
+# from django.views.decorators.http import require_http_methods
 from django.views.generic.simple import direct_to_template
-from django.utils.translation import get_language
+from django.utils import translation
 from django.utils.translation import ugettext as _
 from django.conf import settings
-
-from apps.library.forms import LibraryForm
+# from apps.library.forms import LibraryForm
+from models import *
 
 import pymongo
 
-from lib.mongo import search_variants
 from lib.mongo import search_catalog
-from utils.io import pickle_load_obj
-from utils import clogging
-log = clogging.getColorLogger(__name__)
+from lib.mongo.get_traits_infos import get_traits_infos
+from lib.utils.io import pickle_load_obj
+from lib.utils.clogging import getColorLogger
+log = getColorLogger(__name__)
 
-MY_TRAIT_LIST = pickle_load_obj(os.path.join(settings.CATALOG_SUMMARY_CACHE_DIR, 'trait_list.p'))
-MY_TRAIT_LIST_JA = pickle_load_obj(os.path.join(settings.CATALOG_SUMMARY_CACHE_DIR, 'trait_list_ja.p'))
+TRAITS, TRAITS_JA, TRAITS_CATEGORY, TRAITS_WIKI_URL_EN = get_traits_infos()
 
 
-@require_http_methods(['GET', 'POST'])
 @login_required
 def index(request):
-    user_id = request.user.username
-    err = ''
-    msgs = {}
+    msg, err = '', ''
 
-    msgs['dbsnp_version'] = settings.DBSNP_VERSION
-    msgs['refgenome_version'] = settings.REFGENOME_VERSION
+    latest_catalog_date = get_latest_catalog_date()
 
-    if request.method == 'POST':
-        # if query:
-        with pymongo.Connection(port=settings.MONGO_PORT) as connection:
-            db = connection['pergenie']
-            data_info = db['data_info']
-
-            uploadeds = list(data_info.find({'user_id': user_id}))
-            file_name = uploadeds[0]['name']
-
-            query = '"{}"'.format(LibraryForm.query)
-            catalog_map, variants_map = search_variants.search_variants(user_id, file_name, query)
-            catalog_list = [catalog_map[found_id] for found_id in catalog_map]  # somehow catalog_map.found_id does not work in templete...
-
-            return direct_to_template(request,
-                                      'library_trait.html',
-                                      {'err': err,
-                                       'trait_name': query,
-                                       'catalog_list': catalog_list,
-                                       'variants_map': variants_map})
-
-    msgs['err'] = err
-    msgs['my_trait_list'] = MY_TRAIT_LIST
-    msgs['my_trait_list_ja'] = MY_TRAIT_LIST_JA
-
-    return direct_to_template(request, 'library.html', msgs)
+    return direct_to_template(request, 'library/index.html',
+                              dict(msg=msg, err=err,
+                                   dbsnp_version=settings.DBSNP_VERSION, refgenome_version=settings.REFGENOME_VERSION,
+                                   latest_catalog_date=latest_catalog_date))
 
 
 @login_required
@@ -77,7 +51,7 @@ def summary_index(request):
 
     log.debug('catalog_uniqs_counts', catalog_uniqs_counts)
 
-    return direct_to_template(request, 'library_summary_index.html',
+    return direct_to_template(request, 'library/summary_index.html',
                               {'err': err,
                                'catalog_uniqs_counts': catalog_uniqs_counts})
 
@@ -94,7 +68,7 @@ def summary(request, field_name):
         err = 'not found'
         uniqs_counts = {}
 
-    return direct_to_template(request, 'library_summary.html',
+    return direct_to_template(request, 'library/summary.html',
                               {'err': err,
                                'uniqs_counts': uniqs_counts,
                                'field_name': field_name})
@@ -102,53 +76,35 @@ def summary(request, field_name):
 
 @login_required
 def trait_index(request):
-    err = ''
+    msg, err = '', ''
+    is_ja = bool(translation.get_language() == 'ja')
 
-    return direct_to_template(request,
-                              'library_trait_index.html',
-                              {'err': err,
-                               'my_trait_list': MY_TRAIT_LIST,
-                               'my_trait_list_ja': MY_TRAIT_LIST_JA,
-                               })
+    return direct_to_template(request, 'library/trait_index.html',
+                              dict(msg=msg, err=err,
+                                   is_ja=is_ja,
+                                   traits=TRAITS, traits_ja=TRAITS_JA, traits_category=TRAITS_CATEGORY,
+                                   wiki_url_en=TRAITS_WIKI_URL_EN))
 
 
 @login_required
 def trait(request, trait):
     user_id = request.user.username
-    err = ''
+    msg, err = '', ''
+    library_list, variants_maps = list(), dict()
 
-    query = trait.replace('_', ' ')
-    library_list = []
-    variants_maps = {}
-
-    if not trait.replace('_', ' ') in MY_TRAIT_LIST:
-        err = 'trait not found'
+    if not trait in TRAITS:
+        err += 'trait not found'
 
     else:
-        with pymongo.Connection(port=settings.MONGO_PORT) as connection:
-            db = connection['pergenie']
-            data_info = db['data_info']
-
-            uploadeds = list(data_info.find({'user_id': user_id}))
-            file_names = [uploaded['name'] for uploaded in uploadeds]
-
-            variants_maps = {}
-            for file_name in file_names:
-                library_map, variants_maps[file_name] = search_variants.search_variants(user_id, file_name, query, 'trait')
-
-            # pprint(library_map)
-            # print variants_maps
-
-            library_list = [library_map[found_id] for found_id in library_map]  ###
+        library_list, variants_maps = get_libarary_and_variatns_of_a_trait(trait, user_id)
 
     log.error(err)
 
-    return direct_to_template(request,
-                              'library_trait.html',
-                              {'err': err,
-                               'trait_name': query,
-                               'library_list': library_list,
-                               'variants_maps': variants_maps})
+    return direct_to_template(request, 'library/trait.html',
+                              dict(msg=msg, err=err,
+                                   trait_name=trait,
+                                   library_list=library_list,
+                                   variants_maps=variants_maps))
 
 
 # TODO: table view for snps
@@ -160,7 +116,7 @@ def snps_index(request):
     uniq_snps_list = list(catalog_summary['snps'])
 
     return direct_to_template(request,
-                              'library_snps_index.html',
+                              'library/snps_index.html',
                               {'err': err,
                                'uniq_snps_list': uniq_snps_list
                                })
@@ -180,8 +136,8 @@ def snps(request, rs):
     user_id = request.user.username
     err = ''
 
-    with pymongo.Connection(port=settings.MONGO_PORT) as connection:
-        db = connection['pergenie']
+    with pymongo.MongoClient(port=settings.MONGO_PORT) as c:
+        db = c['pergenie']
         data_info = db['data_info']
         uploadeds = list(data_info.find({'user_id': user_id}))
         file_names = [uploaded['name'] for uploaded in uploadeds]
@@ -193,7 +149,7 @@ def snps(request, rs):
             variants[file_name] = variant['genotype'] if variant else 'NA'
 
         # data from dbsnp
-        dbsnp = connection['dbsnp']['B132']
+        dbsnp = c['dbsnp']['B132']
         dbsnp_record = dbsnp.find_one({'rs': rs})
         log.debug('dbsnp_record {}'.format(dbsnp_record))
 
@@ -220,7 +176,7 @@ def snps(request, rs):
         catalog_record = None
 
     return direct_to_template(request,
-                              'library_snps.html',
+                              'library/snps.html',
                               {'err': err,
                                'rs': rs,
                                'dbsnp_record': dbsnp_record,

@@ -3,62 +3,63 @@
 
 import sys
 import os
-import subprocess
 import datetime
 import argparse
+from subprocess import check_output
 
+from termcolor import colored
 import pymongo
 
-from VCFParser import VCFParser, VCFParseError
-from andmeParser import andmeParser, andmeParseError
+from common import clean_file_name
+from parser.VCFParser import VCFParser, VCFParseError
+from parser.andmeParser import andmeParser, andmeParseError
 
 
-def import_variants(file_path, population, sex, file_format, user_id, mongo_port=27017):
-    """doc"""
+def import_variants(file_path, population, sex, file_format, user_id,
+                    mongo_port=27017):
+    """Import variants (genotypes) file, into MongoDB.
 
-    # remove dots from file_name
-    file_name = file_path.split('/')[-1]
-    file_name_cleaned = file_name.replace('.', '').replace(' ', '')
-    print >>sys.stderr, '[INFO] collection name: {}'.format(file_name_cleaned)
+    * This function is independent from Django.
 
-    with pymongo.Connection(port=mongo_port) as connection:
-        db = connection['pergenie']
+    * Supported file formats are:
+      * SNP array data from 23andMe
+      * VCF (Variant Call Format)
+    """
+
+    file_name = os.path.basename(file_path)
+    file_name_cleaned = clean_file_name(file_name)
+    print >>sys.stderr, '[INFO] Input file: {}'.format(file_path)
+
+    # Count input lines for calculating progress of import_variants
+    file_lines = int(check_output(['wc', '-l', file_path]).split()[0])
+    print >>sys.stderr, '[INFO] #lines: {}'.format(file_lines)
+
+    with pymongo.Connection(port=mongo_port) as con:
+        db = con['pergenie']
         users_variants = db['variants'][user_id][file_name_cleaned]
         data_info = db['data_info']
 
-        data_info.update({'user_id': user_id, 'name': file_name_cleaned}, {"$set": {'file_name_cleaned': file_name_cleaned}}, upsert=True)
-
-        # ensure this variants file is not imported
+        # Ensure that this variants file has not been imported
         if users_variants.find_one():
             db.drop_collection(users_variants)
-            # print >>sys.stderr, colors.yellow('[WARNING] dropped old collection of {}'.format(file_name_cleaned))
+            print >>sys.stderr, colored('[WARN] Dropped old collection of {}'.format(file_name_cleaned), 'yellow')
 
-        print >>sys.stderr, '[INFO] Countiong input lines ...',
-        print >>sys.stderr, '[INFO] {}'.format(file_path)
-        file_lines = int(subprocess.check_output(['wc', '-l', file_path]).split()[0])
-        print >>sys.stderr, 'done. # of lines: {}'.format(file_lines)
-
-
-        today = str(datetime.datetime.today()).replace('-', '/')
         info = {'user_id': user_id,
                 'name': file_name_cleaned,
                 'raw_name': file_name,
-                'date': today,
+                'date': datetime.datetime.today(),
                 'population': population,
                 'sex': sex,
                 'file_format': file_format,
                 'status': float(1.0)}
 
-        data_info.update({'user_id': user_id, 'name': file_name_cleaned}, {"$set": info}, upsert=True)
-
-        print >>sys.stderr,'[INFO] Start importing {0} as {1}...'.format(file_name, file_name_cleaned)
-
-        print '[INFO] file_path:', file_path
-        print '[INFO] file_format:', file_format
+        data_info.update({'user_id': user_id, 'name': file_name_cleaned},
+                         {"$set": info}, upsert=True)
 
         prev_collections = db.collection_names()
 
-        # Parse lines
+        print >>sys.stderr,'[INFO] Start importing ...'
+
         with open(file_path, 'rb') as fin:
             try:
                 p = {'vcf': VCFParser,
@@ -67,7 +68,6 @@ def import_variants(file_path, population, sex, file_format, user_id, mongo_port
                 for i,data in enumerate(p.parse_lines()):
                     if info['file_format'] == 'vcf':
                         # TODO: handling multi-sample .vcf file
-
                         # currently, choose first sample from multi-sample .vcf
                         tmp_genotypes = data['genotype']
                         data['genotype'] = tmp_genotypes[p.sample_names[0]]
@@ -78,33 +78,34 @@ def import_variants(file_path, population, sex, file_format, user_id, mongo_port
 
                     if i > 0 and i % 10000 == 0:
                         upload_status = int(100 * (i * 0.9 / file_lines) + 1)
-                        data_info.update({'user_id': user_id, 'name': file_name_cleaned}, {"$set": {'status': upload_status}})
+                        data_info.update({'user_id': user_id, 'name': file_name_cleaned},
+                                         {"$set": {'status': upload_status}})
 
                         tmp_status = data_info.find({'user_id': user_id, 'name': file_name_cleaned})[0]['status']
-                        print '[INFO] status: {0}, db.collection.count():{1}'.format(tmp_status, users_variants.count())
+                        if tmp_status % 10 == 0:
+                            print '[INFO] status: {0}, db.collection.count(): {1}'.format(tmp_status, users_variants.count())
 
                 print >>sys.stderr,'[INFO] ensure_index ...'
                 users_variants.ensure_index('rs', unique=True)  # ok?
 
-                data_info.update({'user_id': user_id, 'name': file_name_cleaned}, {"$set": {'status': 100}})
+                data_info.update({'user_id': user_id, 'name': file_name_cleaned},
+                                 {"$set": {'status': 100}})
+                print >>sys.stderr, '[INFO] done!'
+                print >>sys.stderr, '[INFO] Added collection: {}'.format(set(db.collection_names()) - set(prev_collections))
 
-                print >>sys.stderr, '[INFO] status: {}'.format(data_info.find({'user_id': user_id, 'name': file_name_cleaned})[0]['status'])
-                print >>sys.stderr, '[INFO] done. added collection {}'.format(set(db.collection_names()) - set(prev_collections))
                 return None
 
             except (VCFParseError, andmeParseError), e:
                 print '[ERROR] ParseError:', e.error_code
                 # data_info.remove({'user_id': user_id})
-                data_info.update({'user_id': user_id, 'name': file_name_cleaned}, {"$set": {'status': -1}})
+                data_info.update({'user_id': user_id, 'name': file_name_cleaned},
+                                 {"$set": {'status': -1}})
                 db.drop_collection(users_variants)
                 return e.error_code
 
 
-    parse_map = parse_maps[file_format]
-
-
 def _main():
-    parser = argparse.ArgumentParser(description='import variants file into mongodb')
+    parser = argparse.ArgumentParser(description='Import variants (genotypes) file, into MongoDB.')
     parser.add_argument('--file-paths', metavar='filepath', nargs='+', required=True)
     parser.add_argument('--population', required=True)
     parser.add_argument('--sex', required=True)
@@ -114,7 +115,6 @@ def _main():
     args = parser.parse_args()
 
     for file_path in args.file_paths:
-        # print colors.blue('[INFO] import {}'.format(file_path))
         import_variants(file_path, args.population, args.sex, args.file_format, args.user_id, args.mongo_port)
 
 

@@ -1,0 +1,160 @@
+{% extends "layout.html" %}
+{% block title %}Library {{ trait_name }}{% endblock %}
+{% block description %}library of risk SNPs{% endblock %}
+{% block cookie_id %}library_record{% endblock %}
+{% load extras %}}
+
+{% block main_container %}
+<div id="main_container" class="span14">
+  <section id="main">
+
+  <div class="row-fluid">
+    <div class="span12">
+      <h2 class="box_head round_top">{{ trait_name }}</h2>
+    </div>
+
+    <!-- Breadcrumb -->
+    <div class="row-fluid">
+      <ul class="breadcrumb">
+        <li><a href="{% url apps.library.views.index %}">Library</a><span class="divider">/</span></li>
+        <li><a href="{% url apps.library.views.trait_index %}">trait</a><span class="divider">/</span></li>
+        <li class="active">{{ trait_name }}</li>
+      </ul>
+    </div>
+
+    {% if msg %}
+    <div class="alert alert-info">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      <strong>Information:</strong> {{ msg }}
+    </div>
+    {% endif %}
+
+    {% if err %}
+    <div class="alert alert-error">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      <strong>Error!</strong> {{ err }}
+    </div>
+    {% endif %}
+
+    {% if library_list %}
+    <div class="row-fluid">
+      <div class="span12">
+        <div class="padded">
+          <div class="content-box">
+            <!-- <div class="content-box-header"> -->
+            <!--   <icon class="icon-exclamation-sign"></icon> Risk alleles -->
+            <!-- </div> -->
+
+            <div class="padded">
+              <div class="row-fluid">
+                <div class="span12">
+
+                  <table cellpadding="0" cellspacing="0" border="0" class="display datatable" id="library_record_table">
+                    <thead>
+                      <tr>
+                        <th>rs</th>
+                        <th>trait</th>
+                        <th>study</th>
+                        <th>population</th>
+                        <th>initial sample</th>
+                        <th>p-value</th>
+                        <th>risk allele</th>
+                        <th>frequency</th>
+                        <th>OR</th>
+                        <th>95&#37;CI(text)</th>
+                        <th>Gene</th>
+                        <th>Chrom.</th>
+                        <th>Pos.</th>
+                        <th>Context</th>
+                        {% for filename in variants_maps %}
+                        <th>
+                          {{ filename|limit:10 }}
+                        </th>
+                        {% endfor %}
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      {% for library in library_list %}
+                      {% set rs = library.rs %}
+                      <tr>
+                        <td>
+                          {% ifnotequal rs 'na' %}<a href="{% url apps.library.views.snps rs=rs %}">{{ rs }}</a>
+                          {% else %}{{ rs }}{% endifnotequal %}
+                        </td>
+                        <td class="center">{{ library.trait }}</td>
+                        <td class="center">
+                          <a href="{{ library.pubmed_link }}" target="_blank">
+                          {{ library.study|limit:100 }}
+                          </a>
+                        </td>
+                        <td class="center">
+                          {% if library.population %}
+                          {% for p in library.population %}
+                          <span class="badge badge-green">{{ p }}</span>
+                          {% endfor %}
+                          {% endif %}
+                        </td>
+                        <td class="center">{{ library.initial_sample_size }}</td>
+                        <td class="center">{{ library.p_value }}</td>
+                        <td class="center">{{ library.risk_allele }}</td>
+                        <td class="center">{{ library.risk_allele_frequency }}</td>
+                        <td class="center">{{ library.OR_or_beta }}</td>
+                        <td class="center">{{ library.CI_95 }}</td>
+                        <td class="center">
+                          {% set genes = library.snp_genes %}
+
+                          {% if genes %}
+                          {% for g in genes %}
+                          {% if g.entrez_gene_id %}<a href="http://www.ncbi.nlm.nih.gov/gene/?term={{ g.entrez_gene_id }}" target="_blank" >{% endif %}
+                            <!-- {{ g.gene_symbol }} -->
+                            entrez_gene_id: {{ g.entrez_gene_id }}
+                            {% if g.entrez_gene_id %}</a>{% endif %}
+                          {% endfor %}
+                          {% endif %}
+
+                        </td>
+                        <td class="center">{{ library.chr_id }}</td>
+                        <td class="center">{{ library.chr_pos }}</td>
+                        <td class="center">{{ library.context }}</td>
+                        {% for filename in variants_maps %}
+                        <td class="center">{{variants_maps|keyvalue:filename|keyvalue:rs }}</td>
+                        {% endfor %}
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+{% endblock %}
+
+
+{% block js %}
+<script type="text/javascript">
+$(document).ready(function(){
+  $('#library_record_table').dataTable({
+   "bJQueryUI": true,
+   "bPaginate": false,
+   "bLengthChange": false,
+   "bFilter": true,
+   "bAutoWidth": false,
+   "oLanguage": {
+            "sLengthMenu": "Display _MENU_ records per page",
+            "sZeroRecords": "Nothing found - sorry",
+            "sInfo": "Showing _TOTAL_ records",
+            "sInfoEmpty": "Showing 0 record",
+            "sInfoFiltered": "(filtered from _MAX_ total records)"
+   },
+   "sDom": '<"top"if>t<"bottom"lp><"clear">',
+  });
+});
+</script>
+{% endblock %}

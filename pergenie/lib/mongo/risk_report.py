@@ -10,7 +10,7 @@ import math
 import pymongo
 
 # import colors
-import search_variants
+# import search_variants
 
 from pprint import pprint
 import doctest

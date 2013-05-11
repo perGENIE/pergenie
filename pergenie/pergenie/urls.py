@@ -23,6 +23,7 @@ urlpatterns = patterns('',
 
     url(r'^$', 'apps.frontend.views.index'),
     url(r'^login/$', 'apps.frontend.views.login'),
+    url(r'^login_with_23andme/$', 'apps.frontend.views.login_with_23andme'),
     url(r'^logout/$', 'apps.frontend.views.logout'),
     url(r'^register/$', 'apps.frontend.views.register'),
 
@@ -35,8 +36,11 @@ urlpatterns = patterns('',
 
 
     url(r'^riskreport/$', 'apps.riskreport.views.index'),
-    url(r'^riskreport/(?P<file_name>[^/]*)/(?P<trait>[^/]*)/$', 'apps.riskreport.views.trait'),
-    url(r'^riskreport/(?P<file_name>[^/]*)/(?P<trait>[^/]*)/(?P<study_name>[^/]*)/$', 'apps.riskreport.views.study'),
+    url(r'^riskreport/show_all/$', 'apps.riskreport.views.show_all'),
+    url(r'^riskreport/(?P<trait>[^/]*)/(?P<file_name>[^/]*)/$', 'apps.riskreport.views.trait'),
+    url(r'^riskreport/(?P<trait>[^/]*)/(?P<study>[^/]*)/(?P<file_name>[^/]*)/$', 'apps.riskreport.views.study'),
+
+    url(r'^traits/$', 'apps.traits.views.index'),
 
     url(r'^library/$', 'apps.library.views.index'),
     url(r'^library/trait/$', 'apps.library.views.trait_index'),
@@ -50,9 +54,11 @@ urlpatterns = patterns('',
     url(r'^upload/delete', 'apps.upload.views.delete'),
     url(r'^upload/status', 'apps.upload.views.status'),
 
-    url(r'^tutorial/$', 'apps.tutorial.views.index'),
+
     url(r'^tutorial/personal$', 'apps.tutorial.views.personal'),
     url(r'^tutorial/institution$', 'apps.tutorial.views.institution'),
+
+    url(r'^faq/$', 'apps.faq.views.index'),
 )
 
 if 'rosetta' in settings.INSTALLED_APPS:

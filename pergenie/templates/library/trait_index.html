@@ -1,0 +1,82 @@
+{% extends "layout.html" %}
+{% load i18n %}
+{% load extras %}
+{% block title %}Library index{% endblock %}
+{% block description %}Library index for trait{% endblock %}
+
+{% block main_container %}
+<div id="main_container" class="span14">
+  <section id="main">
+
+    <div class="row-fluid">
+      <div class="span12">
+        <h2>Library index - trait -</h2>
+      </div>
+    </div>
+
+    <!-- Breadcrumb -->
+    <div class="row-fluid">
+      <div class="span12">
+        <ul class="breadcrumb">
+          <li><a href="{% url apps.library.views.index %}">Library</a><span class="divider">/</span></li>
+        <li class="active">trait</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="row-fluid">
+      <div class="span12">
+        <div class="content-box">
+          <div class="padded">
+
+            <table cellpadding="0" cellspacing="0" border="0" class="display datatable" id="library_table">
+              <thead>
+                <tr>
+                  <th><b>Trait</b></th>
+                  <th>Category</th>
+                  <th><i class="icon-share-alt"></i>Links</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {% for trait in traits %}
+                <tr>
+
+                  <td>
+                    <a href="{% url apps.library.views.trait trait=trait %}">
+                      {% autoescape off %}{{ trait|limit:40 }}{% endautoescape %}
+                      {% if is_ja %}({{ traits_ja|listvalue:forloop.counter0|limit:20 }}){% endif %}
+                    </a>
+                  </td>
+
+                  <td>{{ traits_category|listvalue:forloop.counter0 }}</td>
+                  <td>{% if wiki_url_en|listvalue:forloop.counter0 %}<span class="badge badge-yellow"><a href="{{ wiki_url_en|listvalue:forloop.counter0 }}" target="_blank">Wikipedia</a></span>{% endif %}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+{% endblock %}
+
+
+{% block js %}
+<script type="text/javascript">
+$(document).ready(function(){
+  $('#library_table').dataTable({
+    "bJQueryUI": true,
+    "sPaginationType": "full_numbers",
+    "iDisplayLength": 30,
+    "oLanguage": {
+            "sZeroRecords": "Nothing found - sorry",
+            "sInfo": "Showing _START_ to _END_ of _TOTAL_ records",
+            "sInfoEmpty": "Showing 0 to 0 of 0 records",
+            "sInfoFiltered": "(filtered from _MAX_ total records)"
+    },
+    "sDom": '<"top"if>t<"bottom"p><"clear">'
+  });
+});
+</script>
+{% endblock %}

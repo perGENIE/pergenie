@@ -6,38 +6,86 @@
 {% block description %}login{% endblock %}
 
 {% block main_container %}
-<div class="container-fluid">
-  <div class="row-fluid">
-    <div class="span4">&nbsp;</div>
-    <div class="span4"><a href="{% url apps.frontend.views.index %}"><img class="login_logo" src="{% static 'images/logo.png' %}"></a></div>
-  </div>
-  <div class="row-fluid">
-    <div class="span4">&nbsp;</div>
-    <div class="span4">
-      <div class="box grad_colour_dark_blue">
-        <h2 class="box_head round_top">Login</h2>
-        <div class="toggle_container">
-          <div class="block box_content round_bottom padding_20">
+  <body id="body">
 
-            <form class="well form-search" action="." method="POST">
-	      {% csrf_token %}
-              <input type="text" class="input-small" placeholder="Email" name="user_id">
-              <input type="password" class="input-small" placeholder="Password" name="password">
-              <button type="submit" class="btn">Go</button>
-              <!-- <label class="inline uniform" for="remember" style="vertical-align: bottom;"> -->
-              <!--   <input class="uniform_on" type="checkbox" id="remember" value="option1">Remember me? -->
-              <!-- </label> -->
-            </form>
+    <!-- <div class="span4"><a href="{% url apps.frontend.views.index %}"><img class="login_logo" src="{% static 'images/logo.png' %}"></a></div> -->
 
-	    {% if error %}
-	    <div class="alert alert-error">{{ error }}</div>
-	    {% endif %}
-            <a href="{% url apps.frontend.views.register %}">{% trans "Create an account." %}</a>
+    <section id="main">
+      <div class="container">
+        <div class="row-fluid">
+
+          <div class="span12">
+            <div class="login-container center">
+              <div class="title"><a href="{% url apps.frontend.views.index %}"><img class="login_logo" src="{% static 'images/logo.png' %}"></a></div>
+
+              <form class="login-form" action="." method="POST">
+                {% csrf_token %}
+                <ul class="fields-list">
+                  <li>
+                    <i class="icon-envelope-alt" style="float: left;"></i>
+                    <input autocomplete="off" id="email" name="user_id" placeholder="email" type="text">
+                  </li>
+                  <li>
+                    <i class="icon-key"></i>
+                    <input autocomplete="off" id="password" name="password" placeholder="password" type="password">
+                  </li>
+                </ul>
+
+                <div class="actions">
+                  <input class="btn btn-green btn-large login-btn" name="commit" type="submit" value="Login">
+                </div>
+
+
+                <div class="social-actions">
+                  <img src="{% static 'images/connect-button-example.png' %}"/>
+
+                  <!-- <a href="#" class="btn btn-twitter btn-block"> -->
+                  <!--   <i class="icon-twitter-sign"></i> Login with Twitter -->
+                  <!-- </a> -->
+
+                  <!-- <a href="#" class="btn btn-facebook btn-block"> -->
+                  <!--   <i class="icon-facebook-sign"></i> Login with Facebook -->
+                  <!-- </a> -->
+
+                  <a href="https://api.23andme.com/authorize/?redirect_uri=http://localhost:5000/login_with_23andme/&response_type=code&client_id=f19ad5aed4c9e8f42f538505a2ccad81&scope=basic rs123">Connect with 23andMe</a>
+
+                <!-- <script src="https://api.23andme.com/res/js/ttam-0.3.js"></script> -->
+                <!-- <div id="wrapper">Button...</div> -->
+                <!-- <script> -->
+                <!--   window.onload = function () { -->
+                <!--   var ttam = TTAM('123456789abcdef0123456789abcdef0'); -->
+                <!--   ttam.connectButton('wrapper', ["basic", "rs1234"]); -->
+                <!--   }; -->
+                <!-- </script> -->
+
+                </div>
+
+
+              </form>
+
+	          {% if error %}
+	          <div class="alert alert-error">{{ error }}</div>
+	          {% endif %}
+              <a href="{% url apps.frontend.views.register %}">{% trans "Create an account." %}</a>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <div class="container">
+      <div class="row-fluid">
+        <div class="span12">
+
+          <div class="footer">
+            <h5 class="transparent-text center">
+              <div>&copy; 2012-2013 perGENIE Team</div>
+            </h5>
           </div>
         </div>
       </div>
     </div>
-  </div>
-</div><!--/.fluid-container-->
-
-{% endblock %}
+  </body>
+  {% endblock %}

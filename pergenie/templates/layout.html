@@ -1,17 +1,28 @@
 {% load staticfiles %}
 {% load i18n %}
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
+
+    <!-- Always force latest IE rendering engine or request Chrome Frame -->
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+
     <title>{% block title %}{% endblock %} - perGENIE</title>
     <meta name="description" content="{% block description %}{% endblock %}">
     <meta name="keywords" content="pergenie, pergene">
 
-    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <meta name="viewport" content="width=device-width, maximum-scale=1, initial-scale=1, user-scalable=0">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!-- there's an IE separated stylesheet with the following resets for IE -->
     <!--[if lt IE 9]>
-	<script src="{% static 'js/html5shiv.js' %}"></script>
-    <![endif]-->
+        <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+        <script src="../js/html5shiv.js" type="text/javascript"></script>
+        <script src="../js/excanvas.min.js" type="text/javascript"></script>
+        <script src="../js/ie_fix.js" type="text/javascript"></script>
+        <link href="../stylesheets/ie_fix.css" media="screen" rel="stylesheet" type="text/css" /> -->
 
     <!-- Bootstrap -->
     <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
@@ -21,204 +32,222 @@
     <!--[if lt IE 7]><link rel="stylesheet" href="http://blueimp.github.com/cdn/css/bootstrap-ie6.min.css"><![endif]-->
 
     <!-- jQuery UI Bootstrap theme -->
-    <link type="text/css" href="{% static 'css/jquery-ui-1.8.16.custom.css' %}" rel="stylesheet">
+    <!-- <link type="text/css" href="{% static 'css/jquery-ui-1.8.16.custom.css' %}" rel="stylesheet"> -->
 
     <!-- Bootstrap google prettify -->
     <link href="{% static 'css/prettify.css' %}" rel="stylesheet">
 
     <!-- UI to Top -->
     <link rel="stylesheet" type="text/css" media="screen,projection" href="{% static 'css/ui.totop.css' %}">
-
-    <!-- Datatables -->
-    <link rel="stylesheet" href="{% static 'css/demo_table_jui.intenso.css' %}">
-
-    <!-- Admin Instenso main scripts -->
-    <link rel="stylesheet" href="{% static 'css/main.css' %}">
-    <link rel="stylesheet" href="{% static 'css/side_nav.css' %}">
-
-    <!-- Favorites and Appple touch icons -->
-    <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}">
-    <link rel="apple-touch-icon" href="{% static 'images/apple-touch-icon.png' %}">
-    <link rel="apple-touch-icon" sizes="72x72" href="{% static 'images/apple-touch-icon-72x72.png' %}">
-    <link rel="apple-touch-icon" sizes="114x114" href="{% static 'images/apple-touch-icon-114x114.png' %}">
-
-    <!-- windows8 -->
-    <meta name="application-name" content="perGENIE">
-    <meta name="msapplication-TileColor" content="#000000">
-    <meta name="msapplication-TileImage" content="{% static 'images/apple-touch-icon-114x114.png' %}"/>
-
+    <link href="{% static 'css/application.css' %}" media="all" rel="stylesheet" type="text/css" />
   </head>
 
-  <body id="{% block cookie_id %}{% endblock %}"><!-- This id is used for the cookies -->
 
-    <!-- Top navigation bar -->
-    <div class="navbar navbar-fixed-top">
+  <body onload="prettyPrint()" id="body">
+  <!-- <body id="{% block cookie_id %}{% endblock %}"><\!-- This id is used for the cookies -\-> -->
+    <div class="navbar navbar-fixed-top navbar-inverse top-nav">
       <div class="navbar-inner">
-        <div class="container-fluid">
-          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="i-bar"></span>
-            <span class="i-bar"></span>
-            <span class="i-bar"></span>
-          </a>
-          <div class="nav-collapse">
-            <ul class="nav">
-              <li><a href="{% url apps.frontend.views.logout %}">Logout</a></li>
-              <li><a data-toggle="modal" href="#aboutModal">&copy; perGENIE</a></li>
-            </ul>
-            <p class="navbar-text pull-right">
-              {% if user %}Logged in as <a href="{% url apps.settings.views.user_settings %}">{{user.username}}</a>{% else %}Not logged in{% endif %}
-            </p>
+
+        <div class="container">
+          <div class="row-fluid">
+            <div class="span12">
+
+              <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <div class="nav-collapse collapse">
+                <ul class="nav primary">
+                  <li class="brand">
+                    <span class="title"><a href="{% url apps.dashboard.views.index %}"><i class="icon-cogs"></i> perGENIE </a></span>
+                  </li>
+
+                  <!-- <li class=""> -->
+                  <!--   <a href="{% url apps.dashboard.views.index %}"> -->
+                  <!--     <i class="icon-dashboard"></i> Dashboard -->
+                  <!--   </a> -->
+                  <!-- </li> -->
+
+                  <!-- components -->
+                  <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                      <i class="icon-wrench"></i> Components
+                      <b class="caret"></b>
+                    </a>
+
+                    <ul class="dropdown-menu secondary">
+                      <li class="">
+                        <a href="{% url apps.riskreport.views.index %}">
+                          <i class="icon-align-left"></i> RiskReport
+                        </a>
+                      </li>
+
+                      <li class="">
+                        <a href="{% url apps.traits.views.index %}">
+                          <i class="icon-user"></i> Traits
+                        </a>
+                      </li>
+
+                      <li class="">
+                        <a href="#">
+                          <i class="icon-globe"></i> Population
+                        </a>
+                      </li>
+
+                      <li class="divider"></li>
+
+                      <li class="">
+                        <a href="{% url apps.upload.views.index %}">
+                          <i class="icon-arrow-up"></i> Upload
+                        </a>
+                      </li>
+
+                      <li class="divider"></li>
+
+                      <li class="">
+                        <a href="{% url apps.library.views.index %}">
+                          <i class="icon-book"></i> Library
+                        </a>
+                        <!-- <li><a href="{% url apps.library.views.index %}">Index</a></li> -->
+                        <!-- <li><a href="{% url apps.library.views.trait_index %}">- Traits</a></li> -->
+                        <!-- <li><a href="{% url apps.library.views.snps_index %}">- SNPs</a></li> -->
+                        <!-- <li><a href="{% url apps.library.views.summary_index %}">Summary</a></li> -->
+
+                      <li class="">
+                        <a href="{% url apps.faq.views.index %}">
+                          <i class="icon-question-sign"></i> FAQ
+                        </a>
+                      </li>
+
+                    </ul>
+                  </li>
+
+                  <li id="docs-trigger">
+                    <button style="padding-left: 10px; margin-top: 14px" class="btn btn-inverse btn-mini" type="button" onclick="introJs().start()">
+                      <span id="dtrigger">Show navigation</span>
+                    </button>
+                  </li>
+
+                </ul>
+
+                <!-- profile -->
+                <ul class="nav pull-right primary">
+                  <li class="dropdown profile">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                      <i class="icon-unlock"></i>
+                      {% if user %}{{ user.username }}{% endif %}
+                      <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu secondary ">
+                      <li class="">
+                        <a href="{% url apps.settings.views.user_settings %}">
+                          <i class="icon-cog"></i> Account settings
+                        </a>
+                      </li>
+                      <li class="divider"></li>
+                      <li class="">
+                        <a href="{% url apps.frontend.views.logout %}">
+                          <i class="icon-off"></i> Logout
+                        </a>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- about modal -->
-    <div id="aboutModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="aboutModalLabel" aria-hidden="true">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h3 id="aboutModalLabel">About perGENIE</h3>
-      </div>
-      <div class="modal-body">
-        
-        <ul class="unstyled">
-          <li><h4>Credits</h4></li>
-          <li>perGENIE uses data from</li>
-          <ul>
-            <li><code><a href="http://www.genome.gov/gwastudies">The NHGRI GWAS catalog</a></code></li>
-            <li><code><a href="http://www.hapmap.org">The HapMap project</a></code></li>
-          </ul>
-          <hr>
-          <li><h4>License</h4></li>
-          <ul>
-            <li>The perGENIE is licensed under CC BY SA 3.0. ??</li>
-            <li>The data is licensed under CC0 1.0. ??</li>
-          </ul>
-        </ul>
-        
-        <div class="modal-footer">
-        <button class="btn" data-dismiss="modal">Close</button>
-        </div>
-      </div>
-    </div>
-    
-    <!-- side nav -->
-    <div class="container-fluid">
-      <div class="row-fluid">
-        <div id="side_nav" class="span2 sidebar-nav side_nav">
-          <ul class="clearfix">
-            <li><a class="round_top" href="{% url apps.dashboard.views.index %}">
-                <img src="{% static 'images/icons/grey/Laptop.png' %}">
-                <span>Dashboard</span></a></li>
-            <li><a href="{% url apps.riskreport.views.index %}">
-                <img src="{% static 'images/icons/grey/alert_2.png' %}">
-                <span>RiskReport</span></a></li>
 
-            <li><a href="{% url apps.library.views.index %}">
-                <img src="{% static 'images/icons/grey/Book.png' %}">
-                <span>Library</span>
-                <span class="icon">&nbsp;</span>
-              </a>
-              <ul>
-                <li><a href="{% url apps.library.views.index %}">Index</a></li>
-                <li><a href="{% url apps.library.views.trait_index %}">- Traits</a></li>
-                <li><a href="{% url apps.library.views.snps_index %}">- SNPs</a></li>
-                <li><a href="{% url apps.library.views.summary_index %}">Summary</a></li>
-              </ul>
-            </li>
+  <!-- <a data-toggle="modal" href="#aboutModal">&copy; perGENIE</a> -->
 
-            <!-- <li><a href="#todo.admin.search"> -->
-            <!--     <img src="{% static 'images/icons/grey/Archive.png' %}"> -->
-            <!--     <span>Search</span></li> -->
-            <li><a href="{% url apps.upload.views.index %}">
-                <img src="{% static 'images/icons/grey/bended_arrow_up.png' %}">
-                <span>Upload</span></a></li>
-            <li><a href="{% url apps.tutorial.views.index %}">
-                <img src="{% static 'images/icons/grey/light_bulb.png' %}">
-                <span>Tutorial</span></a></li>
-          </ul>
-        </div><!--/span-->
+  <!--   <div id="aboutModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="aboutModalLabel" aria-hidden="true"> -->
+  <!--     <div class="modal-header"> -->
+  <!--       <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button> -->
+  <!--       <h3 id="aboutModalLabel">About perGENIE</h3> -->
+  <!--     </div> -->
+  <!--     <div class="modal-body"> -->
+
+  <!--       <ul class="unstyled"> -->
+  <!--         <li><h4>Credits</h4></li> -->
+  <!--         <li>perGENIE uses data from</li> -->
+  <!--         <ul> -->
+  <!--           <li><code><a href="http://www.genome.gov/gwastudies">The NHGRI GWAS catalog</a></code></li> -->
+  <!--           <li><code><a href="http://www.hapmap.org">The HapMap project</a></code></li> -->
+  <!--         </ul> -->
+  <!--         <hr> -->
+  <!--         <li><h4>License</h4></li> -->
+  <!--         <ul> -->
+  <!--           <li>The perGENIE is licensed under CC BY SA 3.0. ??</li> -->
+  <!--           <li>The data is licensed under CC0 1.0. ??</li> -->
+  <!--         </ul> -->
+  <!--       </ul> -->
+
+  <!--       <div class="modal-footer"> -->
+  <!--       <button class="btn" data-dismiss="modal">Close</button> -->
+  <!--       </div> -->
+  <!--     </div> -->
+  <!--   </div> -->
+
 
         <!-- main container -->
         {% block main_container %}
         {% endblock %}
         <!-- main container end -->
 
-    <!-- footer -->
-    </div><!--/.fluid-container-->
+        <!-- footer -->
+        <div class="container">
+          <div class="row-fluid">
+            <div class="span12">
+
+              <div class="footer">
+                <h5 class="transparent-text center">
+                  <div>&copy; 2012-2013 perGENIE Team</div>
+                </h5>
+              </div>
+            </div>
+          </div>
+        </div>
 
 
-    <!-- javascript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
     <!-- jQuery (UI) -->
     <script type="text/javascript" language="javascript" src="{% static 'js/jquery.min.js' %}"></script>
     <script type="text/javascript" language="javascript" src="{% static 'js/jquery-ui.min.js' %}"></script>
 
     <!-- jQuery Cookie -->
-    <script type="text/javascript" language="javascript" src="{% static 'js/jquery.cookie.js' %}"></script>
-
-    <!-- Sherpa side nav -->
-    <script type="text/javascript" language="javascript" src="{% static 'js/jquery.hoverIntent.minified.js' %}"></script>
+    <!-- <script type="text/javascript" language="javascript" src="{% static 'js/jquery.cookie.js' %}"></script> -->
 
     <!-- UI to Top -->
     <script type="text/javascript" language="javascript" src="{% static 'js/jquery.ui.totop.js' %}"></script>
 
-    <!-- Bootstrap Scripts -->
-    <script type="text/javascript" language="javascript" src="{% static 'js/bootstrap-dropdown.js' %}"></script>
-    <script type="text/javascript" language="javascript" src="{% static 'js/bootstrap-tooltip.js' %}"></script>
-    <script type="text/javascript" language="javascript" src="{% static 'js/bootstrap-popover.js' %}"></script>
-    <script type="text/javascript" language="javascript" src="{% static 'js/bootstrap-alert.js' %}"></script>
-    <script type="text/javascript" language="javascript" src="{% static 'js/bootstrap-tab.js' %}"></script>
-    <script type="text/javascript" language="javascript" src="{% static 'js/bootstrap-typeahead.js' %}"></script>
-    <script type="text/javascript" language="javascript" src="{% static 'js/bootstrap-modal.js' %}"></script>
+    <!-- Bootstrap -->
+    <script type="text/javascript" language="javascript" src="{% static 'js/bootstrap/bootstrap-dropdown.js' %}"></script>
+    <script type="text/javascript" language="javascript" src="{% static 'js/bootstrap/bootstrap-collapse.js' %}"></script>
+    <script type="text/javascript" language="javascript" src="{% static 'js/bootstrap/bootstrap-tooltip.js' %}"></script>
+    <script type="text/javascript" language="javascript" src="{% static 'js/bootstrap/bootstrap-popover.js' %}"></script>
+    <script type="text/javascript" language="javascript" src="{% static 'js/bootstrap/bootstrap-alert.js' %}"></script>
+    <script type="text/javascript" language="javascript" src="{% static 'js/bootstrap/bootstrap-tab.js' %}"></script>
+    <script type="text/javascript" language="javascript" src="{% static 'js/bootstrap/bootstrap-typeahead.js' %}"></script>
+    <script type="text/javascript" language="javascript" src="{% static 'js/bootstrap/bootstrap-modal.js' %}"></script>
     <script type="text/javascript" language="javascript" src="{% static 'js/prettify.js' %}"></script>
 
-    <!-- <\!-- Datatables -\-> -->
+    <script type="text/javascript" language="javascript" src="{% static 'js/bootstrap/bootstrap-affix.js' %}"></script>
+    <script type="text/javascript" language="javascript" src="{% static 'js/bootstrap/bootstrap-button.js' %}"></script>
+    <script type="text/javascript" language="javascript" src="{% static 'js/bootstrap/bootstrap-carousel.js' %}"></script>
+    <script type="text/javascript" language="javascript" src="{% static 'js/bootstrap/bootstrap-scrollspy.js' %}"></script>
+    <script type="text/javascript" language="javascript" src="{% static 'js/bootstrap/bootstrap-transition.js' %}"></script>
+
+    <!-- DataTable -->
+    <link rel="stylesheet" href="{% static 'css/demo_table_jui.intenso.css' %}">
     <script type="text/javascript" language="javascript" src="{% static 'js/jquery.datatables.js' %}"></script>
 
-    <!-- Flot Graphs -->
-    <!--[if lte IE 8]><script type="text/javascript" language="javascript" src="{% static 'js/excanvas.min.js' %}"></script><![endif]-->
-    <!-- <script type="text/javascript" language="javascript" src="{% static 'js/jquery.flot.min.js' %}"></script> -->
-    <!-- <script type="text/javascript" language="javascript" src="{% static 'js/jquery.flot.selection.js' %}"></script> -->
-    <!-- <script type="text/javascript" language="javascript" src="{% static 'js/jquery.flot.resize.js' %}"></script> -->
-
-    <script type="text/javascript" language="javascript" src="{% static 'js/intenso.js' %}"></script>
-    <!-- <script type="text/javascript" language="javascript" src="{% static 'js/intenso.charts.js' %}"></script> -->
-    <!-- <script type="text/javascript" language="javascript" src="{% static 'js/intenso.calendar.js' %}"></script> -->
-    <!-- <div id="visits_per_day_placeholder" style="width:95%;height:300px;margin-top:20px;"></div> -->
-    <!-- <div id="visits_per_day_overview" style="margin-left:5%;margin-top:20px;width:85%;height:50px"></div> -->
-
-
-    <!-- Additional javascript files -->
+    <!-- Additional js -->
     {% block js %}{% endblock %}
-
-
-<script type=text/javascript>
-  var $SCRIPT_ROOT = "";
-</script>
-
-<!-- <script type=text/javascript> -->
-<!--   $(function() { -->
-<!--     $('a#calculate').click(function() { -->
-<!--       $.getJSON($SCRIPT_ROOT + '/_add_numbers', { -->
-<!--         a: $('input[name="a"]').val(), -->
-<!--         b: $('input[name="b"]').val() -->
-<!--       }, function(data) { -->
-<!--         $("#result").text(data.result); -->
-<!--       }); -->
-<!--       return false; -->
-<!--     }); -->
-<!--   }); -->
-<!-- </script> -->
-
-
-<!-- label "unknown" as warning -->
-<script type=text/javascript>
-  $(function() {
-    $("span:contains('unkown')").removeClass().addClass("label label-warning");;
-  });
-</script>
 
   </body>
 </html>

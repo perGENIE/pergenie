@@ -1,25 +1,53 @@
 syntax: glob
+
 .DS_Store
 ._.DS_Store
 *~
 \#*
 .\#*
 *.pyc
+*.orig
+*_flymake.py
+
+# Packages
 *.egg
+*.egg-info
 build
 dist
 bin
-perGENIE.egg-info
-pergenie/db.sqlite3
+
+# Tests
+.coverage
+.tox
+nosetests.xml
+
+# Translations
+*.mo
+
+# DB, pickle
+*.sqlite3
+*.p
+
+# Log
 *.log
+
+# Secret settings
 pergenie/settings/develop.py
 pergenie/settings/staging.py
-data/gwascatalog*
-misc
-celeryd.pid
-static/vendor
-config
+
+# Temporary file
 pergenie/tmp
-*.orig
-*.p
-*_flymake.py
+
+#
+data/gwascatalog*
+data/large_dbs/
+data/summary/
+static/vendor
+_static/
+wood-admin/
+misc
+
+celeryd.pid
+
+# ?
+# config

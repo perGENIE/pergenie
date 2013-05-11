@@ -1,0 +1,261 @@
+{% extends "layout.html" %}
+{% block title %}Risk report{% endblock %}
+{% block description %}risk report{% endblock %}
+{% block cookie_id %}risk_report{% endblock %}
+{% load staticfiles %}
+{% load extras %}
+
+{% block main_container %}
+<div id="main_container" class="span14">
+  <section id="main">
+
+    <div class="container">
+
+      <div class="row-fluid">
+        <div class="span12">
+          <div class="content-box transparent">
+            <div class="padded">
+              <h2>Disease Risk Report</h2>
+              <div class="padded">
+                <a href="{% static 'images/snaps/methods.png' %}">[FAQ] How are risk values calculated in perGENIE?</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- alerts -->
+      {% if msg %}
+      <div class="alert alert-info">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>Information:</strong> {{ msg }}
+      </div>
+      {% endif %}
+
+      {% if warns %}
+      {% for warn in warns %}
+      <div class="alert alert-warning">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>Warning!</strong> {{ warn }}
+      </div>
+      {% endfor %}
+      {% endif %}
+
+      {% if err %}
+      <div class="alert alert-error">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>Error!</strong> {{ err }}
+      </div>
+      {% endif %}
+
+      <!-- risk reports -->
+      {% if h_risk_traits %}
+      <div class="row-fluid">
+        <div class="span12">
+          <div class="content-box green">
+            <div class="padded">
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>Selected genome file:</th>
+                    <th><i class="icon-globe"></i>Population</th>
+                    <th><i class="icon-user"></i>Sex</th>
+                    <th><i class="icon-file"></i>File Format</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="center">
+                      <form action="{% url apps.riskreport.views.index %}" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+		                <fieldset>
+                          <select name="file_name" onchange="submit(this.form)">
+                            {% for info in infos %}
+                            {% if info == tmp_infos.0 %}
+                            <option value="{{ info.name }}" selected>{{ info.raw_name }}</option>
+                            {% else%}
+                            <option value="{{ info.name }}">{{ info.raw_name }}</option>
+                            {% endif %}
+                            {% endfor %}
+                          </select>
+
+                        </fieldset>
+                      </form>
+                    </td>
+                    <td class="center"><span class="label label-success">{{ tmp_infos.0.population }}</span></td>
+                    <td class="center"><span class="label label-success">{{ tmp_infos.0.sex }}</span></td>
+                    <td class="center"><span class="label label-success">{{ tmp_infos.0.file_format }}</span></td>
+                  </tr>
+                </tbody>
+              </table>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row-fluid">
+        {% if h_risk_traits %}
+        <div class="span6">
+          <div class="content-box">
+            <div class="content-box-header">
+              <icon class="icon-exclamation-sign"></icon> Top 10 Highest
+            </div>
+
+            <div class="padded">
+              <div class="row-fluid">
+                <div class="span12">
+                  <div id="container_highest_risks"></div>
+                  <a href="{% url apps.riskreport.views.show_all %}"><button class="btn btn-green"><i class="icon-resize-full icon-white" style="margin-top: 1px;"></i> View more</button></a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+
+        <div class="span6">
+          <div class="padded">
+            <div class="content-box">
+              <div class="content-box-header">
+                <icon class="icon-exclamation-sign"></icon> Top 10 Lowest
+              </div>
+
+              <div class="padded">
+                <div class="row-fluid">
+                  <div class="span12">
+                    ..
+
+            {% for star in stars %}
+            <i class="icon-star"></i>
+            {% endfor %}
+            <span class="label label-green">Meta</span>
+
+                    <!-- <div id="container_lowest_risks"></div> -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+  </section>
+</div>
+{% endblock %}
+
+{% block js %}
+
+<script type="text/javascript" src="{% static 'js/highcharts/highcharts.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/highcharts/modules/exporting.js' %}"></script>
+
+
+<script type="text/javascript">
+$(function () {
+    var chart;
+    $(document).ready(function() {
+        chart = new Highcharts.Chart({
+            chart: {
+                renderTo: 'container_highest_risks',
+                type: 'bar'
+            },
+            title: {
+                text: ''
+            },
+            xAxis: {
+                categories: [{% for trait in h_risk_traits %}
+                             "{% autoescape off %}{{ trait|limit:20 }}{% endautoescape %}",
+                             {% endfor %}],
+                title: {
+                    text: null
+                }
+            },
+            yAxis: {
+                max: 10,
+                min: 0,
+                title: {
+                    text: '[Risk relative to average population]',
+                    align: 'high'
+                }
+            },
+            tooltip: {
+                formatter: function() {
+                    return ''+
+                        this.x+': x'+ this.y + ' ';
+                }
+            },
+            plotOptions: {
+            series: {
+                shadow:true,
+                cursor:'pointer',
+                    point: {
+                        events: {
+                            click: function() {
+                                location.href = this.options.url;
+                                <!-- window.open(this.options.url); -->
+                            }
+                        }
+                    }
+                },
+                bar: {
+                    dataLabels: {
+                        enabled: true,
+                        rotation: 0,
+                        color: '#FFFFFF',
+                        align: 'right',
+                        x: 0,
+                        y: 5,
+                        style: {
+                            fontSize: '13px',
+                            fontFamily: 'Verdana, sans-serif'
+                        }
+                    }
+                }
+            },
+            credits: {
+                enabled: false
+            },
+            exporting: {
+                enabled: false
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'top',
+                x: -50,
+                y: 50,
+                floating: true,
+                borderWidth: 1,
+                backgroundColor: '#FFFFFF',
+                shadow: true,
+                enabled: false
+            },
+
+            series: [
+                    {
+                    name: '{{ tmp_infos.0.name }}',
+                    data: [{% for risk_value in h_risk_values.0 %}
+                             {y: {{ risk_value }},
+                              color: {% if risk_value < 0 %}'#2ca6f1'{% elif risk_value == 0 %}'#8a8a8a'{% else %}'#f12ca6'{% endif %},
+                              url:"{% url apps.riskreport.views.study trait=h_risk_traits|listvalue:forloop.counter0 file_name=tmp_infos.0.name study=h_risk_studies|listvalue:forloop.counter0 %}"},
+                           {% endfor %}],
+                    },
+            ]
+        });
+    });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){
+  $('#risk_reports_table').dataTable({
+    "bJQueryUI": true,
+    "sPaginationType": "full_numbers",
+    "iDisplayLength": 25,
+    "aLengthMenu": [ 25, 50, -1 ]
+  });
+});
+</script>
+
+{% endblock %}

@@ -1,0 +1,258 @@
+{% extends "layout.html" %}
+{% block title %}Risk report - {{ study_name }}{% endblock %}
+{% block description %}risk report detail{% endblock %}
+<!-- {% block cookie_id %}risk_report_detail{% endblock %} -->
+{% load staticfiles %}
+{% load extras %}
+
+{% block main_container %}
+<div id="main_container" class="span12">
+  <section id="main">
+
+    <div class="container">
+
+      {{ file_name }}
+
+      <!-- Breadcrumb -->
+      <div class="row-fluid">
+        <div class="span12">
+          <ul class="breadcrumb">
+            <li><a href="{% url apps.riskreport.views.index %}">Risk report</a><span class="divider">/</span></li>
+            <li class="active">{{ trait }}<span class="divider">/</span></li>
+            <li class="active">{{ study }}</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="row-fluid">
+        <div class="span12">
+          <div class="content-box transparent">
+            <div class="padded">
+              <h4>{{ trait }}{% if is_ja %} ({{ trait_eng }}){% endif %}
+                {% if wiki_url_en %}<span class="badge badge-yellow"><a href="{{ wiki_url_en }}" target="_blank">Wikipedia</a></span>{% endif %}
+              </h4>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row-fluid">
+        <div class="span2">
+          <div class="content-box">
+
+            <div class="content-box-header">
+              <i class="icon-bar-chart"></i> Effects of SNPs
+            </div>
+
+            <!-- <div id="container" style="max-width: 100px; height: 300px; margin: auto"></div> -->
+            <div id="container"> <!-- style="max-width: 400px; height: 300px; margin: 0 auto"></div> -->
+            </div>
+          </div>
+        </div>
+
+        <div class="span10">
+          <div class="content-box">
+            <div class="content-box-header">
+              <i class="icon-book"></i> Information about reference study
+            </div>
+
+            <table class="table table-hover">
+              <tbody>
+                <tr>
+                  <td>Study name</td>
+                  <td>{{ study }} <span class="badge badge-yellow"><a href="{{ catalog_infos.0.pubmed_link }}" target="_blank">Pubmed</a></span></td>
+                </tr>
+                <tr>
+                  <td>Population</td>
+                  <td>
+                    {% if catalog_infos.0.population %}
+                    {% for p in catalog_infos.0.population %}
+                    <span class="badge badge-green">{{ p }}</span>
+                    {% endfor %}
+                    {% endif %}
+                  </td>
+                </tr>
+                <tr>
+                  <td>Initial sample size</td>
+                  <td>{{ catalog_infos.0.initial_sample_size }}</td>
+                </tr>
+                <tr>
+                  <td>Journal</td>
+                  <td>{{ catalog_infos.0.jornal }}</td>
+                </tr>
+                <tr>
+                  <td>First author</td>
+                  <td>{{ catalog_infos.0.first_author }}</td>
+                </tr>
+                <tr>
+                  <td>Date</td>
+                  <td>{{ catalog_infos.0.date }}</td>
+                </tr>
+                <tr>
+                  <td>p-value</td>
+                  <td>{{ catalog_infos.0.p_value }}</td>
+                </tr>
+                <tr>
+                  <td><a href="#">Reliability rank <i class="icon-question-sign"></i></a></td>
+                  <td>
+                    {% for r in rank %}
+                    {% ifequal r "m" %}<span class="label label-green">Meta</span>
+                    {% else %}{% ifequal r "*" %}<i class="icon-star"></i>{% endifequal %}{% endifequal %}
+                    {% endfor %}
+
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <a href="{% url apps.riskreport.views.trait trait=trait_name file_name=file_name %}"><button class="btn btn-green"><i class="icon-book icon-white" style="margin-top: 1px;"></i> Other studies</button></a>
+          </div>
+        </div>
+      </div>
+
+      <div class="row-fluid">
+        <div class="span12">
+          <div class="content-box">
+
+            <div class="content-box-header">
+              <i class="icon-bar-chart"></i> Information about SNPs
+            </div>
+
+
+
+              <table cellpadding="0" cellspacing="0" border="0" class="display datatable" id="risk_reports_table">
+                <thead>
+                  <tr>
+                    <th>SNPs</th>
+                    <th>Chrom.</th>
+                    <th>Pos.</th>
+                    <th>in TrueSeq</th>
+                    <th>Context</th>
+                    <th>Genotype</th>
+                    <th>Risk allele</th>
+                    <th>Risk allele frequency</th>
+                    <th>OR in GWAS</th>
+                    <th>Risk of yours</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {% for catalog_info in catalog_infos %}
+                  <tr>
+                    <td class="center">rs{{ catalog_info.snps }}</td>
+                    <td class="center">{{ catalog_info.chr_id }}</td>
+                    <td class="center">{{ catalog_info.chr_pos }}</td>
+                    <td class="center">{{ catalog_info.is_in_truseq }}</td>
+                    <td class="center">{{ catalog_info.context }}</td>
+                    <td class="center">
+                      {{ genotype_list }}
+                      {% if genotype_list in risk_allele %}
+                      <span>{{ genotype_list.0 }}</span>
+                      {% else %}
+                      <span style="color : #c5c5c5">{{ genotype_list.0 }}</span>
+                      {% endif %}
+                      {% if genotype_list.1 in risk_allele %}
+                      <span>{{ genotype_list.1 }}</span>
+                      {% else %}
+                      <span style="color : #c5c5c5">{{ genotype.1 }}</span>
+                      {% endif %}
+                    </td>
+                    <td class="center">{{ catalog_info.risk_allele }}</td>
+                    <td class="center">{{ catalog_info.risk_allele_frequency }}</td>
+                    <td class="center">{{ catalog_info.OR }}</td>
+                    <td class="center">{{ RR_list }}</td>
+		          </tr>
+		          {% endfor %}
+                </tbody>
+              </table>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+  </section>
+</div>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+$(function () {
+    var chart;
+    $(document).ready(function() {
+        chart = new Highcharts.Chart({
+            chart: {
+                renderTo: 'container',
+                type: 'column'
+            },
+            title: {
+                text: ''
+            },
+            xAxis: {
+                categories: [{% for snp in snps_list %}"rs{{ snp }}",{% endfor %}],
+                labels: {
+                    rotation: -45,
+                    align: 'right',
+                }
+            },
+            yAxis: {
+                max: 1.0,
+                min: -1.0,
+                title: {
+                    text: 'Risk relative to average population'
+                }
+            },
+
+            tooltip: {
+                formatter: function() {
+                    return '<b>'+ this.x +'</b><br/>'+
+                        'Risk value: '+ Highcharts.numberFormat(this.y, 3) + '[log10] <br/>' ;
+                }
+            },
+            credits: {
+                enabled: false
+            },
+            exporting: {
+                enabled: false
+            },
+            legend: {
+                enabled: false
+            },
+            series: [{
+                name: "{{ file_name }}",
+                data: [{% for RR_value in RR_list %}
+                         {y: {{ RR_value }},
+                          color: {% if RR_value < 0 %}'#2ca6f1'{% elif RR_value == 0 %}'#8a8a8a'{% else %}'#f12ca6'{% endif %},
+                          },
+                       {% endfor %}],
+                },
+            ]
+
+
+        });
+    });
+
+});
+</script>
+
+<script type="text/javascript" src="{% static 'js/highcharts/highcharts.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/highcharts/modules/exporting.js' %}"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){
+  $('#risk_reports_table').dataTable({
+    "bJQueryUI": true,
+    "sPaginationType": "full_numbers",
+    "iDisplayLength": 30,
+    "oLanguage": {
+            "sZeroRecords": "Nothing found - sorry",
+            "sInfo": "Showing _START_ to _END_ of _TOTAL_ records",
+            "sInfoEmpty": "Showing 0 to 0 of 0 records",
+            "sInfoFiltered": "(filtered from _MAX_ total records)"
+    },
+    "sDom": '<"top">t<"bottom"p><"clear">'
+  });
+});
+</script>
+
+{% endblock %}
