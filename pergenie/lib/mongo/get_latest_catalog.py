@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 
-import pymongo
+from pymongo import MongoClient
 from django.conf import settings
 
 
 def get_latest_catalog(port):
-    with pymongo.Connection(port=port) as connection:
-        latest_document = connection['pergenie']['catalog_info'].find_one({'status': 'latest'})  # -> {'date': datetime.datetime(2012, 12, 12, 0, 0),}
+    with MongoClient(port=port) as c:
+        latest_document = c['pergenie']['catalog_info'].find_one({'status': 'latest'})  # -> {'date': datetime.datetime(2012, 12, 12, 0, 0),}
 
         if latest_document:
             latest_date = str(latest_document['date'].date()).replace('-', '_')  # -> '2012_12_12'
-            catalog = connection['pergenie']['catalog'][latest_date]
+            catalog = c['pergenie']['catalog'][latest_date]
         else:
             err += 'latest does not exist in catalog_info!'
 
@@ -21,8 +21,8 @@ def get_latest_catalog(port):
 
 
 def get_traits_infos():
-    with pymongo.Connection(port=settings.MONGO_PORT) as connection:
-        trait_info = connection['pergenie']['trait_info']
+    with MongoClient(port=settings.MONGO_PORT) as c:
+        trait_info = c['pergenie']['trait_info']
 
         founds = trait_info.find({})
         traits = set([found['eng'] for found in founds])

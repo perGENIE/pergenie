@@ -191,57 +191,44 @@
         <div class="span6">
           <div class="content-box">
             <div class="content-box-header">
-              <i class="icon-comments-alt"></i> Recent
+              <i class="icon-comments-alt"></i> Recently Added Studies
             </div>
 
+            {% if recent_catalog_records %}
             <div class="row-fluid">
               <div class="span12">
                 <ul class="latest-comments">
+                  {% for record in recent_catalog_records %}
                   <li class="comment-box">
                     <!-- <div class="avatar user1 pull-left"></div> -->
                     <div class="article">
-                      <div class="post-info"> Mike, 24 minutes ago </div>
+                      <div class="post-info"> {{ record.added|date }} </div>
                       <div class="post-content">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                        Maecenas sit amet arcu eu urna posuere lobortis. Aenean sit amet lectus ligula, ut bibendum sapien...
+                        <table>
+                          <tbody>
+                            <tr>
+                              <td>
+                                <b>Trait: </b><a href="{% url apps.library.views.trait trait=record.trait %}">{{ record.trait }}</a>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <b>Study: </b>{{ record.study }} <span class="badge badge-yellow"><a href="{{ record.pubmed_link }}" target="_blank">Pubmed</a></span></td>
+                            </tr>
+                          </tbody>
+                        </table>
                       </div>
-
                     </div>
                   </li>
-
-                  <li class="comment-box">
-                    <!-- <div class="avatar user2 pull-left"></div> -->
-
-                    <div class="article">
-                      <div class="post-info"> Jeremy, 2 days ago </div>
-                      <div class="post-content">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                        Maecenas sit amet arcu eu urna posuere lobortis. Aenean sit amet lectus ligula, ut bibendum sapien...
-                      </div>
-
-                    </div>
-                  </li>
-
-                  <li class="comment-box">
-                    <!-- <div class="avatar user3 pull-left" > </div> -->
-
-                    <div class="article">
-                      <div class="post-info"> Helen, 3 days ago </div>
-                      <div class="post-content">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                        Maecenas sit amet arcu eu urna posuere lobortis. Aenean sit amet lectus ligula, ut bibendum sapien...
-                      </div>
-
-
-                    </div>
-                  </li>
-
-                  <li class="comment-box view-more" style="text-align: center">
-                    <a href="#">View more...</a>
-                  </li>
+                  {% endfor %}
+                  <!-- <li class="comment-box view-more" style="text-align: center"> -->
+                  <!--   <a href="#">View more...</a> -->
+                  <!-- </li> -->
                 </ul>
               </div>
             </div>
+            {% endif %}
+
           </div>
         </div>
 

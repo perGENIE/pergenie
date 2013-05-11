@@ -25,6 +25,7 @@ def index(request):
     while True:
         catalog_latest_new_records_data = get_latest_added_date()
         infos = get_data_infos(user_id)
+        recent_catalog_records = get_recent_catalog_records()
 
         # check if latest riskreports are outdated
         for info in infos:
@@ -48,11 +49,12 @@ def index(request):
 
         break
 
-    log.debug(infos)
+    # log.debug(infos)
 
     msgs = dict(msg=msg, err=err, warns=warns, user_id=user_id,
                 catalog_latest_new_records_data=catalog_latest_new_records_data,
                 n_out_dated_riskreports=n_out_dated_riskreports,
+                recent_catalog_records=recent_catalog_records,
                 do_intro=do_intro, do_intro_risk_report=do_intro_risk_report,
                 intros=intros, infos=infos)
 
