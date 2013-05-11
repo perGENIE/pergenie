@@ -10,7 +10,6 @@ from django.views.generic.simple import direct_to_template
 # from django.utils import translation
 from django.utils.translation import ugettext as _
 from django.conf import settings
-
 from django.db import IntegrityError
 
 from smtplib import SMTPRecipientsRefused
@@ -19,8 +18,6 @@ from apps.frontend.forms import LoginForm, RegisterForm
 
 from utils import clogging
 log = clogging.getColorLogger(__name__)
-
-# import pymongo
 
 
 class ReservedUserIDError(Exception):
@@ -50,11 +47,6 @@ def login(request):
 
             if user:
                 auth_login(request, user)
-
-                log.info('===========')
-                log.info(user)
-                log.info('===========')
-
                 return redirect('apps.dashboard.views.index')
 
             else:
@@ -69,19 +61,6 @@ def login(request):
 def logout(request):
     auth_logout(request)
     return redirect('apps.frontend.views.login')
-
-
-def login_with_23andme(request):
-    # TODO: if not redirected from 23andme, return 403
-
-    # user = authenticate(username=form.cleaned_data['user_id'],
-    #                     password=form.cleaned_data['password'])
-
-    # Get username (emai-address) via 23andme-API
-    user = ''
-    auth_login(request, user)
-    return redirect('apps.dashboard.views.index')
-
 
 
 @require_http_methods(['GET', 'POST'])

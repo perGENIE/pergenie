@@ -47,7 +47,7 @@ def callback(request):
     names = json.loads(names_json)
     request.session["name"] = "%s %s" % (names['first_name'], names['last_name'])
 
-    return redirect("/demo/")
+    return redirect("/login_with_23andme/")
 
 def logout(request):
     log.debug("logging out...")
