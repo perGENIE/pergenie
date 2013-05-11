@@ -11,7 +11,6 @@ from apps.riskreport.forms import RiskReportForm
 # import sys, os
 # import re
 
-from utils.date import today_date, today_str
 from utils import clogging
 log = clogging.getColorLogger(__name__)
 

@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
+
 import sys, os
+import datetime
 from pymongo import MongoClient, ASCENDING, DESCENDING
 
 from django.utils.translation import get_language
@@ -10,7 +12,6 @@ from lib.mongo.get_traits_infos import get_traits_infos
 from lib.mongo.reliability_rank import calc_reliability_rank, get_highest_priority_study
 import lib.mongo.search_variants as search_variants
 import lib.mongo.risk_report as risk_report
-from utils.date import today_date, today_str
 from utils import clogging
 log = clogging.getColorLogger(__name__)
 
@@ -81,10 +82,10 @@ def _import_riskreport(tmp_info):
                                   highest=highest['study'],
                                   studies=studies), upsert=True)
 
-    # upsert data_info['riskreport'] = today
+    # update data_info
     data_info = c['pergenie']['data_info']
     data_info.update({'user_id': tmp_info['user_id'], 'name': tmp_info['name'] },
-                     {"$set": {'riskreport': today_date}}, upsert=True)
+                     {"$set": {'riskreport': datetime.datetime.today()}}, upsert=True)
 
 
 def get_risk_values_for_indexpage(tmp_info, category=[], is_higher=False, is_lower=False, top=None, is_log=True):

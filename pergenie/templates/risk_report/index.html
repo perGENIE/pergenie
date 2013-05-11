@@ -72,9 +72,9 @@
                           <select name="file_name" onchange="submit(this.form)">
                             {% for info in infos %}
                             {% if info == tmp_infos.0 %}
-                            <option value="{{ info.name }}" selected>{{ info.name }}</option>
+                            <option value="{{ info.name }}" selected>{{ info.raw_name }}</option>
                             {% else%}
-                            <option value="{{ info.name }}">{{ info.name }}</option>
+                            <option value="{{ info.name }}">{{ info.raw_name }}</option>
                             {% endif %}
                             {% endfor %}
                           </select>
