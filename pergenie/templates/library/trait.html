@@ -55,6 +55,7 @@
                         <th>rs</th>
                         <th>trait</th>
                         <th>study</th>
+                        <th>population</th>
                         <th>initial sample</th>
                         <th>p-value</th>
                         <th>risk allele</th>
@@ -63,7 +64,7 @@
                         <th>95&#37;CI(text)</th>
                         <th>Gene</th>
                         <th>Chrom.</th>
-                        <!-- <th>Pos.</th> -->
+                        <th>Pos.</th>
                         <th>Context</th>
                         {% for filename in variants_maps %}
                         <th>
@@ -87,6 +88,13 @@
                           {{ library.study|limit:100 }}
                           </a>
                         </td>
+                        <td class="center">
+                          {% if library.population %}
+                          {% for p in library.population %}
+                          <span class="badge badge-green">{{ p }}</span>
+                          {% endfor %}
+                          {% endif %}
+                        </td>
                         <td class="center">{{ library.initial_sample_size }}</td>
                         <td class="center">{{ library.p_value }}</td>
                         <td class="center">{{ library.risk_allele }}</td>
@@ -107,7 +115,7 @@
 
                         </td>
                         <td class="center">{{ library.chr_id }}</td>
-                        <!-- <td class="center">{{ library.chr_pos }}</td> -->
+                        <td class="center">{{ library.chr_pos }}</td>
                         <td class="center">{{ library.context }}</td>
                         {% for filename in variants_maps %}
                         <td class="center">{{variants_maps|keyvalue:filename|keyvalue:rs }}</td>

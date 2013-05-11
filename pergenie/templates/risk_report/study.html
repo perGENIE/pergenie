@@ -63,6 +63,20 @@
                   <td>{{ study }} <span class="badge badge-yellow"><a href="{{ catalog_infos.0.pubmed_link }}" target="_blank">Pubmed</a></span></td>
                 </tr>
                 <tr>
+                  <td>Population</td>
+                  <td>
+                    {% if catalog_infos.0.population %}
+                    {% for p in catalog_infos.0.population %}
+                    <span class="badge badge-green">{{ p }}</span>
+                    {% endfor %}
+                    {% endif %}
+                  </td>
+                </tr>
+                <tr>
+                  <td>Initial sample size</td>
+                  <td>{{ catalog_infos.0.initial_sample_size }}</td>
+                </tr>
+                <tr>
                   <td>Journal</td>
                   <td>{{ catalog_infos.0.jornal }}</td>
                 </tr>
@@ -73,10 +87,6 @@
                 <tr>
                   <td>Date</td>
                   <td>{{ catalog_infos.0.date }}</td>
-                </tr>
-                <tr>
-                  <td>Initial sample size</td>
-                  <td>{{ catalog_infos.0.initial_sample_size }}</td>
                 </tr>
                 <tr>
                   <td>p-value</td>
