@@ -10,7 +10,7 @@ import os
 import pymongo
 from pprint import pformat
 
-from utils.io import pickle_load_obj
+# from utils.io import pickle_load_obj
 from utils.date import today_date
 from utils.clogging import getColorLogger
 log = getColorLogger(__name__)

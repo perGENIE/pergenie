@@ -6,10 +6,10 @@ import csv
 import datetime
 import time
 import json
+from collections import Counter
 import pymongo
-from extract_region import extract_region
 
-from utils.io import pickle_dump_obj
+from extract_region import extract_region
 from utils import clogging
 log = clogging.getColorLogger(__name__)
 
@@ -80,13 +80,16 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja, path_t
     # catalog_date = datetime.datetime.strptime(catalog_date_raw , '%Y_%m_%d')
 
     catalog = c['pergenie']['catalog'][catalog_date_raw]
-    dbsnp = c['dbsnp']['B132']
+    catalog_stats = c['pergenie']['catalog_stats']
+    counter = Counter()
 
-    # ensure db.catalog does not exist
-    if catalog.find_one():
-        c['pergenie'].drop_collection(catalog)
-        log.info('dropped old collection')
+    # ensure old collections does not exist
+    if catalog.find_one(): c['pergenie'].drop_collection(catalog)
     assert catalog.count() == 0
+    if catalog_stats.find_one(): c['pergenie'].drop_collection(catalog_stats)
+    assert catalog_stats.count() == 0
+
+    dbsnp = c['dbsnp']['B132']
 
     if not dbsnp.find_one():
         log.warn('========================================')
@@ -146,9 +149,9 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja, path_t
     log.info('# of fields: {}'.format(len(fields)))
 
     log.debug('Importing gwascatalog.txt...')
-    catalog_summary = {}
+    # catalog_summary = {}
     with open(path_to_gwascatalog, 'rb') as fin:
-        for i,record in enumerate(csv.DictReader(fin, delimiter='\t')):# , quotechar="'"):
+        for i,record in enumerate(csv.DictReader(fin, delimiter='\t')):  # , quotechar="'"):
 
             # some traits contains `spaces` at the end of it, e.g., "Airflow obstruction "...
             record['Disease/Trait'] = record['Disease/Trait'].rstrip()
@@ -185,7 +188,6 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja, path_t
                     # for DEGUG
                     if type(data['OR']) == float:
                         data['OR_or_beta'] = data['OR']
-                        # print data['OR_or_beta'], data['OR'], 'rs{}'.format(data['snps'])
                     else:
                         data['OR_or_beta'] = None
 
@@ -193,27 +195,22 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja, path_t
                     for field,value in data.items():
                         if '_gene' in field or field == 'CI_95':
                             pass
-
                         else:
                             if type(value) == list:
                                 value = str(value)
-                            try:
-                                catalog_summary[field][value] += 1
-                            except KeyError:
-
-                                try:
-                                    catalog_summary[field].update({value: 1})
-                                except KeyError:
-                                    catalog_summary[field] = {value: 1}
-
+                            counter[(field, value)] += 1
 
                     # TODO: call `add_record_reliability`
                     # add_record_reliability(data)
 
                     catalog.insert(data)
 
-        # TODO: indexing target
-        # catalog.create_index([('snps', pymongo.ASCENDING)])
+        counter_dicts = [{'field':k[0], 'value':k[1], 'count':v} for (k,v) in dict(counter).items()]
+        catalog_stats.insert(counter_dicts)
+
+        log.info('Creating indexes...')
+        catalog.create_index('population')
+        catalog_stats.create_index('field')
 
     log.info('# of documents in catalog (after): {}'.format(catalog.count()))
 
@@ -247,28 +244,12 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja, path_t
 
     stats = {'catalog_cover_rate': {'vcf_whole_genome': 100,
                                     'vcf_exome_truseq': int(round(100 * n_truseq / n_records)),
-                                    'andme': int(round(100 * n_andme / n_records))}}
+                                    'andme': int(round(100 * n_andme / n_records))},
+    }
     log.info(stats)
-
-    catalog_stats = c['pergenie']['catalog_stats']
-    if catalog_stats.find_one():
-        c['pergenie'].drop_collection(catalog_stats)
-
     catalog_stats.insert(stats)
 
     log.info('catalog.find_one(): {}'.format(catalog.find_one()))
-
-    # dump as pickle (always overwrite)
-    pickle_dump_obj(catalog_summary, os.path.join(catalog_summary_cache_dir, 'catalog_summary.p'))
-    pickle_dump_obj(field_names, os.path.join(catalog_summary_cache_dir, 'field_names.p'))
-    log.info('dumped catalog_summary.p, field_names.p as pickle')
-
-    trait_list = list(catalog_summary['trait'])
-    trait_list_ja = [eng2ja.get(trait, trait) for trait in list(catalog_summary['trait'])]
-    pickle_dump_obj(trait_list, os.path.join(catalog_summary_cache_dir, 'trait_list.p'))
-    pickle_dump_obj(trait_list_ja, os.path.join(catalog_summary_cache_dir, 'trait_list_ja.p'))
-    log.info('dumped trait_list.p, trait_list_ja.p as pickle')
-
     log.info('import catalog done')
 
     return
