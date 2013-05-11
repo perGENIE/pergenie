@@ -6,7 +6,7 @@ nosetests=/opt/local/Library/Frameworks/Python.framework/Versions/2.7/bin/nosete
 . /Users/numa/.virtualenvs/perGENIE/bin/activate
 
 # main
-cd /Users/numa/Dropbox/py/pergenie_staging/pergenie/
+cd /Users/numa/Dropbox/py/pergenie/pergenie/
 python manage.py celeryd_detach
 
 # tests for ./app
@@ -22,7 +22,7 @@ done
 
 # tests for ./lib
 cd lib/
-$nosetests -v --with-doctest
+$nosetests -v --with-doctest --doctest-extension=.txt
 if [ $? -eq 1 ]; then
     $notifier -message "pergenie-test-runner.sh: Test Failed: nosetests"
 fi
