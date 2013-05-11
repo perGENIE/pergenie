@@ -34,7 +34,6 @@ urlpatterns = patterns('',
     url(r'^dashboard/$', 'apps.dashboard.views.index'),
     url(r'^user_settings/$', 'apps.settings.views.user_settings'),
 
-
     url(r'^riskreport/$', 'apps.riskreport.views.index'),
     url(r'^riskreport/show_all/$', 'apps.riskreport.views.show_all'),
     url(r'^riskreport/(?P<trait>[^/]*)/(?P<file_name>[^/]*)/$', 'apps.riskreport.views.trait'),
@@ -53,10 +52,6 @@ urlpatterns = patterns('',
     url(r'^upload/$', 'apps.upload.views.index'),
     url(r'^upload/delete', 'apps.upload.views.delete'),
     url(r'^upload/status', 'apps.upload.views.status'),
-
-
-    url(r'^tutorial/personal$', 'apps.tutorial.views.personal'),
-    url(r'^tutorial/institution$', 'apps.tutorial.views.institution'),
 
     url(r'^faq/$', 'apps.faq.views.index'),
 )

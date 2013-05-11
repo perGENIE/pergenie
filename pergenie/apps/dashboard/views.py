@@ -58,4 +58,4 @@ def index(request):
                 do_intro=do_intro, do_intro_risk_report=do_intro_risk_report,
                 intros=intros, infos=infos)
 
-    return direct_to_template(request, 'dashboard.html', msgs)
+    return direct_to_template(request, 'dashboard/index.html', msgs)
