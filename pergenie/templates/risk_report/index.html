@@ -59,7 +59,7 @@
                   <tr>
                     <th>Selected genome file:</th>
                     <th><i class="icon-globe"></i>Population</th>
-                    <th><i class="icon-user"></i>Sex</th>
+                    <!-- <th><i class="icon-user"></i>Sex</th> -->
                     <th><i class="icon-file"></i>File Format</th>
                   </tr>
                 </thead>
@@ -82,8 +82,8 @@
                         </fieldset>
                       </form>
                     </td>
-                    <td class="center"><span class="label label-success">{{ tmp_infos.0.population }}</span></td>
-                    <td class="center"><span class="label label-success">{{ tmp_infos.0.sex }}</span></td>
+                    <td class="center">Number of studies for <span class="label label-success">{{ tmp_infos.0.population }}</span> is {{ tmp_infos.0.n_studies }}. Cover rate for this population is {{ tmp_infos.0.catalog_cover_rate_for_this_population }} percent.</td>
+                    <!-- <td class="center"><span class="label label-success">{{ tmp_infos.0.sex }}</span></td> -->
                     <td class="center"><span class="label label-success">{{ tmp_infos.0.file_format }}</span></td>
                   </tr>
                 </tbody>

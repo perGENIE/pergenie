@@ -50,7 +50,7 @@ def search_catalog_by_query(raw_query, query_type=None, mongo_port=27017):
     sub_queries = []
     query_map = {'rs': 'snps',
                  'chr': 'chr_id',
-                 'population': 'initial_sample_size',
+                 'population': 'population',
                  'trait': 'trait'}
 
                  # 'gene': ['mapped_genes.gene_symbol', 'reported_genes.gene_symbol']
@@ -58,7 +58,7 @@ def search_catalog_by_query(raw_query, query_type=None, mongo_port=27017):
     if query_type == 'trait':
         sub_queries.append({'trait': raw_query})
     elif query_type == 'population':
-        sub_queries.append({'initial_sample_size': re.compile(raw_query)})
+        sub_queries.append({'population': re.compile(raw_query)})
 
 
     else:
@@ -79,8 +79,9 @@ def search_catalog_by_query(raw_query, query_type=None, mongo_port=27017):
                 sub_queries.append({query_map[query_type]: int(query)})
 
             elif query_type == 'population':
+                # TODO: do not use re.compile, instead, use `X in list`
                 for or_sub_query in query.split(OR_SYMBOL):
-                    or_queries.append({'initial_sample_size': re.compile(or_sub_query)})
+                    or_queries.append({'population': re.compile(or_sub_query)})
 
 
             elif query_type in query_map:
@@ -117,7 +118,7 @@ def _main():
     found_records = search_catalog_by_query(args.query, query_type=args.type, mongo_port=args.mongo_port)
 
     for record in found_records.sort('trait', 1):
-        print record['snps'], record['trait'], record['risk_allele'], record['risk_allele_frequency'], record['OR_or_beta'], record['initial_sample_size']
+        print record['snps'], record['trait'], record['risk_allele'], record['risk_allele_frequency'], record['OR_or_beta'], record['initial_sample_size'], record['population']
 
 if __name__ == '__main__':
     _main()

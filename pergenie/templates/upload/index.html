@@ -48,22 +48,22 @@
                             <select name="population">
                               <option value="unknown">Unknown</option>
                               <option value="Asian">Asian</option>
-                              <option value="Europian">Europian</option>
+                              <option value="European">European</option>
                               <option value="Japanese">Japanese</option>
                             </select>
                           </div>
                         </div>
 
-                        <div class="control-group">
-                          <label class="control-label"><a data-toggle="modal" href="#uploadModal">Sex <i class="icon-question-sign"></i></a></label>
-                          <div class="controls">
-                            <select name="sex">
-                              <option value="unknown">Unknown</option>
-                              <option value="male">male</option>
-                              <option value="female">female</option>
-                            </select>
-                          </div>
-                        </div>
+                        <!-- <div class="control-group"> -->
+                        <!--   <label class="control-label"><a data-toggle="modal" href="#uploadModal">Sex <i class="icon-question-sign"></i></a></label> -->
+                        <!--   <div class="controls"> -->
+                        <!--     <select name="sex"> -->
+                        <!--       <option value="unknown">Unknown</option> -->
+                        <!--       <option value="male">male</option> -->
+                        <!--       <option value="female">female</option> -->
+                        <!--     </select> -->
+                        <!--   </div> -->
+                        <!-- </div> -->
 
                         <div class="control-group">
                           <label class="control-label"><a data-toggle="modal" href="#uploadModal">File Format <i class="icon-question-sign"></i></a></label>
@@ -173,7 +173,7 @@
                         <th>File Name</th>
                         <th>Date</th>
                         <th>Population</th>
-                        <th>Sex</th>
+                        <!-- <th>Sex</th> -->
                         <th>Format</th>
                         <th>Status</th>
                         <th></th>
@@ -190,9 +190,9 @@
                         <td class="center">
                           <span class="label label-success">{{ uploaded.population }}</span>
                         </td>
-                        <td class="center">
-                          <span class="label label-success">{{ uploaded.sex }}</span>
-                        </td>
+                        <!-- <td class="center"> -->
+                        <!--   <span class="label label-success">{{ uploaded.sex }}</span> -->
+                        <!-- </td> -->
                         <td class="center">
                           <span class="label label-success">{{ uploaded.file_format }}</span>
                         </td>

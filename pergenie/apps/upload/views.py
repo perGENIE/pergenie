@@ -54,7 +54,7 @@ def index(request):
                     err = _('Select data file.')
                     break
 
-                if not population or population not in ('unknown', 'Asian', 'Europian', 'Japanese'):
+                if not population or population not in ('unknown', 'Asian', 'European', 'Japanese'):
                     err = _('Select population.')
                     break
 

@@ -285,6 +285,17 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja, path_t
 
 
 def _population(text):
+    """
+    Parse `initial_sample_size` in GWAS Catalog,
+    then return a list of combination of
+    'European', 'Asian', 'African', 'Japanese', e.g.:
+
+    ['African', 'Asian', 'European']
+
+    If undefined or uncategorized, returns:
+
+    ['']
+    """
     result = set()
 
     # TODO: research about `human classification`

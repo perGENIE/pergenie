@@ -2,6 +2,7 @@
 
 import sys, os
 import datetime
+from pprint import pformat
 from pymongo import MongoClient, ASCENDING, DESCENDING
 
 from django.utils.translation import get_language
@@ -38,13 +39,32 @@ def get_user_file_info(user_id, file_name):
 def _import_riskreport(tmp_info):
     c = MongoClient(port=settings.MONGO_PORT)
 
-    # Calculate risk
+    # Get GWAS Catalog records for this population
     population = 'population:{}'.format('+'.join(settings.POPULATION_MAP[tmp_info['population']]))
     catalog_map, variants_map = search_variants.search_variants(user_id=tmp_info['user_id'],
                                                                 file_name=tmp_info['name'],
                                                                 file_format=tmp_info['file_format'],
                                                                 query=population)
-    risk_store, risk_reports = risk_report.risk_calculation(catalog_map, variants_map, settings.POPULATION_CODE_MAP[tmp_info['population']],
+    # Get number of uniq studies for this population
+    # & Get cover rate of GWAS Catalog for this population
+
+    uniq, n_available = set(), 0
+    for record in catalog_map.values():
+        if not record['pubmed_id'] in uniq:
+            uniq.update([record['pubmed_id']])
+
+        if not tmp_info['file_format'] == 'vcf_whole_genome':
+            if record['is_in_{}'.format(tmp_info['file_format'])]:
+                n_available += 1
+
+    n_studies = len(uniq)
+    if not tmp_info['file_format'] == 'vcf_whole_genome':
+        catalog_cover_rate_for_this_population = int(round(100 * n_available / len(catalog_map)))
+    else:
+        catalog_cover_rate_for_this_population = 100
+
+    # Calculate risk
+    risk_store, risk_reports = risk_report.risk_calculation(catalog_map, variants_map, settings.POPULATION_MAP[tmp_info['population']],
                                                             tmp_info['sex'], tmp_info['user_id'], tmp_info['name'], False, True)
 
     # TODO: merge into import_catalog?
@@ -59,7 +79,7 @@ def _import_riskreport(tmp_info):
             tmp_risk_reports[trait].update({study: [r_rank, value]})
     risk_reports = tmp_risk_reports
 
-    # import riskreport
+    # Import riskreport into MongoDB
     users_reports = c['pergenie']['reports'][tmp_info['user_id']][tmp_info['name']]
     if users_reports.find_one():
         c['pergenie'].drop_collection(users_reports)
@@ -82,15 +102,16 @@ def _import_riskreport(tmp_info):
                                   highest=highest['study'],
                                   studies=studies), upsert=True)
 
-    # update data_info
+    # Update data_info
     data_info = c['pergenie']['data_info']
     data_info.update({'user_id': tmp_info['user_id'], 'name': tmp_info['name'] },
-                     {"$set": {'riskreport': datetime.datetime.today()}}, upsert=True)
+                     {"$set": {'riskreport': datetime.datetime.today(),
+                               'n_studies': n_studies,
+                               'catalog_cover_rate_for_this_population': catalog_cover_rate_for_this_population}}, upsert=True)
 
 
 def get_risk_values_for_indexpage(tmp_info, category=[], is_higher=False, is_lower=False, top=None, is_log=True):
     c = MongoClient(port=settings.MONGO_PORT)
-    data_info = c['pergenie']['data_info']
 
     # TODO:
     # always upsert (for debug)

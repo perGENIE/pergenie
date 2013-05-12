@@ -2,10 +2,20 @@
 # -*- coding: utf-8 -*-
 
 import argparse
+from pprint import pprint
 import pymongo
 
 from search_catalog import search_catalog_by_query
 from get_latest_catalog import get_latest_catalog
+
+# settings.POPULATION_MAP = {'African': ['African'],
+#                            'European': ['European'],
+#                            'Asian': ['Asian'],
+#                            'Japanese': ['Japanese'],
+#                            'unknown': ['']}
+
+# example of `population`:
+# ['African', 'Asian', 'European']
 
 
 def search_variants(user_id, file_name, file_format, query, query_type=None, mongo_port=27017):
@@ -17,6 +27,20 @@ def search_variants(user_id, file_name, file_format, query, query_type=None, mon
     with pymongo.MongoClient(port=mongo_port) as c:
         variants = c['pergenie']['variants'][user_id][file_name]
         catalog = get_latest_catalog(port=mongo_port)
+
+        # For debug:
+        # catalog_records = search_catalog_by_query(query, query_type=query_type).sort('trait', 1)
+
+        # print '==========='
+        # print catalog_records.count()
+
+        # # For debug, get uniq populations
+        # uniq = set()
+        # for rec in list(catalog_records):
+        #     if not str(rec['population']) in uniq:
+        #         uniq.update([str(rec['population'])])
+        # pprint(uniq)
+        # print '==========='
 
         catalog_records = search_catalog_by_query(query, query_type=query_type).sort('trait', 1)
 
