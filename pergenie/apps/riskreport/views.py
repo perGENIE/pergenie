@@ -26,6 +26,7 @@ def index(request):
     user_id = request.user.username
     msg, err = '', ''
     browser_language = get_language()
+    do_intro = False
 
     h_risk_traits, h_risk_values, h_risk_ranks, h_risk_studies = None, None, None, None
 
@@ -38,6 +39,10 @@ def index(request):
         if not infos:
             err = _('no data uploaded')
             break
+
+        # If this is the first time for riskreport,
+        if [bool(info.get('riskreport')) for info in infos].count(True) == 0:
+            do_intro = True
 
         if request.method == 'POST':
             form = RiskReportForm(request.POST)
@@ -78,7 +83,7 @@ def index(request):
         break
 
     return direct_to_template(request, 'risk_report/index.html',
-                              dict(msg=msg, err=err, infos=infos, tmp_infos=tmp_infos,
+                              dict(msg=msg, err=err, infos=infos, tmp_infos=tmp_infos, do_intro=do_intro,
                                    h_risk_traits=h_risk_traits, h_risk_values=h_risk_values,
                                    h_risk_ranks=h_risk_ranks, h_risk_studies=h_risk_studies
                                    ))

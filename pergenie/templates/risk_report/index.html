@@ -260,5 +260,5 @@ $(document).ready(function(){
 
 <link href="{% static 'css/introjs.css' %}" rel="stylesheet">
 <script type="text/javascript" src="{% static 'js/intro.js' %}"></script>
-<script type="text/javascript">introJs().start()</script>
+{% if do_intro %}<script type="text/javascript">introJs().start()</script>{% endif %}
 {% endblock %}
