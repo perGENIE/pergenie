@@ -102,7 +102,7 @@ def study(request, file_name, trait, study):
 
         trait = JA2TRAITS.get(trait, trait)
         risk_infos = get_risk_infos_for_subpage(info, trait=trait, study=study)
-        risk_infos.update(dict(msg=msg, err=err, file_name=file_name,
+        risk_infos.update(dict(msg=msg, err=err, file_name=file_name, info=info,
                                wiki_url_en=TRAITS2WIKI_URL_EN.get(trait),
                                is_ja=bool(get_language() == 'ja')))
         break

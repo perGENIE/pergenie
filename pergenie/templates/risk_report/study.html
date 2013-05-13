@@ -65,8 +65,8 @@
                 <tr>
                   <td>Population</td>
                   <td>
-                    {% if catalog_infos.0.population %}
-                    {% for p in catalog_infos.0.population %}
+                    {% if record.catalog_info.population %}
+                    {% for p in record.catalog_info.population %}
                     <span class="badge badge-green">{{ p }}</span>
                     {% endfor %}
                     {% endif %}
@@ -74,33 +74,37 @@
                 </tr>
                 <tr>
                   <td>Initial sample size</td>
-                  <td>{{ catalog_infos.0.initial_sample_size }}</td>
+                  <td>{{ record.catalog_info.initial_sample_size }}</td>
                 </tr>
                 <tr>
                   <td>Journal</td>
-                  <td>{{ catalog_infos.0.jornal }}</td>
+                  <td>{{ record.catalog_info.jornal }}</td>
                 </tr>
                 <tr>
                   <td>First author</td>
-                  <td>{{ catalog_infos.0.first_author }}</td>
+                  <td>{{ record.catalog_info.first_author }}</td>
                 </tr>
                 <tr>
                   <td>Date</td>
-                  <td>{{ catalog_infos.0.date }}</td>
+                  <td>{{ record.catalog_info.date }}</td>
                 </tr>
                 <tr>
                   <td>p-value</td>
-                  <td>{{ catalog_infos.0.p_value }}</td>
+                  <td>{{ record.catalog_info.p_value }}</td>
                 </tr>
                 <tr>
                   <td><a href="#">Reliability rank <i class="icon-question-sign"></i></a></td>
                   <td>
-                    {% for r in rank %}
+                    {% for r in record.rank %}
                     {% ifequal r "m" %}<span class="label label-green">Meta</span>
                     {% else %}{% ifequal r "*" %}<i class="icon-star"></i>{% endifequal %}{% endifequal %}
                     {% endfor %}
 
                   </td>
+                <!-- <tr> -->
+                <!--   <td>RR</td> -->
+                <!--   <td>{{ record.RR }}</td> -->
+                <!-- </tr> -->
                 </tr>
               </tbody>
             </table>
@@ -126,7 +130,9 @@
                     <th>SNPs</th>
                     <th>Chrom.</th>
                     <th>Pos.</th>
+                    {% ifequal info.file_format 'vcf_exome_truseq' %}
                     <th>in TrueSeq</th>
+                    {% endifequal %}
                     <th>Context</th>
                     <th>Genotype</th>
                     <th>Reference allele</th>
@@ -138,33 +144,26 @@
                 </thead>
 
                 <tbody>
-                  {% for catalog_info in catalog_infos %}
+                  {% for snp_record in snp_records %}
                   <tr>
-                    <td class="center">rs{{ catalog_info.snps }}</td>
-                    <td class="center">{{ catalog_info.chr_id }}</td>
-                    <td class="center">{{ catalog_info.chr_pos }}</td>
-                    <td class="center">{{ catalog_info.is_in_truseq }}</td>
-                    <td class="center">{{ catalog_info.context }}</td>
+                    <td class="center">rs{{ snp_record.snp }}</td>
+                    <td class="center">{{ snp_record.catalog_info.chr_id }}</td>
+                    <td class="center">{{ snp_record.catalog_info.chr_pos }}</td>
+                    {% ifequal info.file_format 'vcf_exome_truseq' %}
+                    <td class="center">{{ snp_record.catalog_info.is_in_truseq }}</td>
+                    {% endifequal %}
+                    <td class="center">{{ snp_record.catalog_info.context }}</td>
                     <td class="center">
-                      {{ genotype_list }}
-                      {% if genotype_list in risk_allele %}
-                      <span>{{ genotype_list.0 }}</span>
-                      {% else %}
-                      <span style="color : #c5c5c5">{{ genotype_list.0 }}</span>
-                      {% endif %}
-                      {% if genotype_list.1 in risk_allele %}
-                      <span>{{ genotype_list.1 }}</span>
-                      {% else %}
-                      <span style="color : #c5c5c5">{{ genotype.1 }}</span>
-                      {% endif %}
+                      <span{% if not snp_record.genotype.0 in snp_record.catalog_info.risk_allele %} style="color : #c5c5c5"{% endif %}>{{ snp_record.genotype.0 }}</span>
+                      <span{% if not snp_record.genotype.1 in snp_record.catalog_info.risk_allele %} style="color : #c5c5c5"{% endif %}>{{ snp_record.genotype.1 }}</span>
                     </td>
-                    <td class="center">{{ catalog_info.ref }}</td>
-                    <td class="center">{{ catalog_info.risk_allele }}</td>
-                    <td class="center">{{ catalog_info.risk_allele_frequency }}</td>
-                    <td class="center">{{ catalog_info.OR }}</td>
-                    <td class="center">{{ RR_list }}</td>
+                    <td class="center">{{ snp_record.catalog_info.ref }}</td>
+                    <td class="center">{{ snp_record.catalog_info.risk_allele }}</td>
+                    <td class="center">{{ snp_record.catalog_info.risk_allele_frequency }}</td>
+                    <td class="center">{{ snp_record.catalog_info.OR }}</td>
+                    <td class="center">{{ snp_record.RR }}</td>
 		          </tr>
-		          {% endfor %}
+                  {% endfor %}
                 </tbody>
               </table>
 
@@ -191,7 +190,7 @@ $(function () {
                 text: ''
             },
             xAxis: {
-                categories: [{% for snp in snps_list %}"rs{{ snp }}",{% endfor %}],
+                categories: [{% for snp_record in snp_records %}"rs{{ snp_record.snp }}",{% endfor %}],
                 labels: {
                     rotation: -45,
                     align: 'right',
@@ -222,9 +221,9 @@ $(function () {
             },
             series: [{
                 name: "{{ file_name }}",
-                data: [{% for RR_value in RR_list %}
-                         {y: {{ RR_value }},
-                          color: {% if RR_value < 0 %}'#2ca6f1'{% elif RR_value == 0 %}'#8a8a8a'{% else %}'#f12ca6'{% endif %},
+                data: [{% for snp_record in snp_records %}
+                         {y: {{ snp_record.RR }},
+                          color: {% if snp_record.RR < 0 %}'#2ca6f1'{% elif snp_record.RR == 0 %}'#8a8a8a'{% else %}'#f12ca6'{% endif %},
                           },
                        {% endfor %}],
                 },

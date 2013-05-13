@@ -167,21 +167,17 @@ def get_risk_infos_for_subpage(info, trait=None, study=None):
 
     if study and trait:
         record = users_reports.find_one({'trait': trait})
-        studies_list = [rec for rec in record['studies'] if rec['study'] == study ]
+        record['catalog_info'] = catalog.find_one({'study': study})
+
+        snp_records = [rec for rec in record['studies'] if rec['study'] == study]
+        for snp_record in snp_records:
+            snp_record['catalog_info'] = catalog.find_one({'study': study,
+                                                           'snps': snp_record['snp']})
 
         if get_language() == 'ja':
             trait = TRAITS2JA.get(trait, trait)
 
-        print '==='
-        print list(catalog.find({'study': study}))
-        print '==='
-
-        return dict(trait=trait, study=study, RR=record['RR'], rank=record['rank'],
-                    catalog_infos=list(catalog.find({'study': study})),
-                    studies_list=[rec for rec in record['studies'] if rec['study'] == study],
-                    snps_list=[rec['snp'] for rec in studies_list],
-                    RR_list=[rec['RR'] for rec in studies_list],
-                    genotype_list=[rec['genotype'] for rec in studies_list])
+        return dict(trait=trait, study=study, record=record, snp_records=snp_records)
 
     # elif not study and trait:
     #     pass
