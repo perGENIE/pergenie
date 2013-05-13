@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.shortcuts import redirect
 from django.utils import simplejson
 from django.views.decorators.http import require_http_methods
@@ -28,6 +28,9 @@ def index(request):
     user_id = request.user.username
     msg, err = '', ''
     do_intro = False
+
+    if user_id == settings.DEMO_USER_ID:
+        raise Http404
 
     with pymongo.Connection(port=settings.MONGO_PORT) as connection:
         db = connection['pergenie']
