@@ -163,6 +163,10 @@ def index(request):
 @login_required
 def delete(request):
     user_id = request.user.username
+
+    if user_id == settings.DEMO_USER_ID:
+        raise Http404
+
     name = request.POST.get('name')
 
     with pymongo.Connection(port=settings.MONGO_PORT) as connection:
