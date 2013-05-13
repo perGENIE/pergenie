@@ -24,9 +24,45 @@
             <div class="padded">
 
               <li>
-                <h4>How are risk values calculated in perGENIE?</h4>
+                <h4>How are risk values calculated?</h4>
                 <p>See <a href="{% static 'images/snaps/methods.png' %}">Methods</a>.</p>
               </li>
+
+              <li>
+                <h4>What is RR (Relative Risk)?</h4>
+                <p>See <a href="{% static 'images/snaps/methods.png' %}">Methods</a>.</p>
+              </li>
+
+              <li>
+                <h4>What is OR (Odds Ratio)?</h4>
+                <p>See <a href="{% static 'images/snaps/methods.png' %}">Methods</a>.</p>
+              </li>
+
+
+              <li>
+                <h4>What is VCF?</h4>
+                <p><a href="http://www.1000genomes.org/wiki/Analysis/Variant%20Call%20Format/vcf-variant-call-format-version-41" target="_blank">VCF (Variant Call Format)</a> is a tipical data format for DNA sequencing data from NGS.</p>
+                <p>Example:</p>
+<pre class="prettyprint">
+##fileformat=VCFv4.1
+...
+#CHROM POS     ID        REF    ALT     QUAL FILTER INFO                FORMAT      NA00001
+20     14370   rs6054257 G      A       29   PASS   NS=3;DP=14;AF=0.5   GT:GQ:DP:HQ 0|0:48:1:51,51
+20     17330   .         T      A       3    q10    NS=3;DP=11;AF=0.017 GT:GQ:DP:HQ 0|0:49:3:58,50
+</pre>
+              </li>
+
+              <li>
+                <h4>What is VCF (Whole Genome) or VCF (TruSeq Exome)?</h4>
+                <p>VCF file for <b>Whole Genome</b> contains whole (all) the genomic positions of your genome.<p>
+                <p>VCF file for <b>TruSeq Exome</b> contains targetted region of <a href="http://www.illumina.com/products/truseq_exome_enrichment_kit.ilmn" target="_blank">TruSeq Exome Enrichment Kit (Illumina, Inc.)</a> of your genome.<p>
+              </li>
+
+              <li>
+                <h4>What is 23andMe?</h4>
+                <p><a href="https://www.23andme.com/" target="_blank">23andMe (23andMe, Inc.)</a> is a common direct-to-consumer genetic testing service .</p>
+              </li>
+
               <li>
                 <h4>What does <code>na</code> in genotypes mean?</h4>
                 <p><code>na</code> means genotype is Not Available in uploaded file, like following:</p>
