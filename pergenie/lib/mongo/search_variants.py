@@ -76,32 +76,31 @@ def search_variants(user_id, file_name, file_format, query, query_type=None, mon
             # tmp_variants_map[record['rs']] = {'genotype':record['genotype']}
             tmp_variants_map[record['rs']] = record['genotype']
 
-        # in catalog, but not in variants
-        null_variant = 'na'
-        for found_id, catalog in tmp_catalog_map.items():
-            rs = catalog['rs']
-            if not rs in tmp_variants_map:
+        # in catalog, but not in variants. so genotype is homozygous of `ref` or `na`.
+        na = 'na'
+        for found_id, catalog_map in tmp_catalog_map.items():
+            rs = catalog_map['rs']
+            ref = catalog_map['ref']
+            is_in_truseq = catalog_map['is_in_truseq']
 
-                # `ref` or `na`
+            if rs and (not rs in tmp_variants_map):
                 if file_format == 'andme':
-                    tmp_variants_map[rs] = null_variant
+                    tmp_variants_map[rs] = na
                 elif file_format == 'vcf_whole_genome':
-                    # ref = tmp_catalog_map[rs]['ref']  # TODO: get ref allele
-                    tmp_variants_map[rs] = 'ref'
+                    tmp_catalog_map[rs] = ref * 2
                 elif file_format == 'vcf_exome_truseq':
-                    if tmp_catalog_map[rs]['is_in_truseq']:
-                        tmp_variants_map[rs] = 'ref'
+                    if is_in_truseq:
+                        tmp_variants_map[rs] = ref * 2
                     else:
-                        tmp_variants_map[rs] = null_variant
+                        tmp_variants_map[rs] = na
 
     # print for debug
-    for found_id, catalog in tmp_catalog_map.items():
-        rs = catalog['rs']
+    for found_id, catalog_map in tmp_catalog_map.items():
+        rs = catalog_map['rs']
         variant = tmp_variants_map[rs]
 
         if int(found_id) < 10:
-            print found_id, rs, catalog.get('trait'), catalog.get('risk_allele'), catalog.get('freq'), catalog.get('OR_or_beta'),
-            # print variant['genotype']
+            print found_id, rs, catalog_map.get('trait'), catalog_map.get('risk_allele'), catalog_map.get('freq'), catalog_map.get('OR_or_beta'),
             print variant
         elif int(found_id) == 10:
             print 'has more...'

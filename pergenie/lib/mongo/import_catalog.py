@@ -10,6 +10,8 @@ from collections import Counter
 import pymongo
 
 from extract_region import extract_region
+from get_reference_seq import MyFasta
+
 from utils import clogging
 log = clogging.getColorLogger(__name__)
 
@@ -17,7 +19,7 @@ _g_gene_symbol_map = {}  # { Gene Symbol => (Entrez Gene ID, OMIM Gene ID) }
 _g_gene_id_map = {}      # { Entrez Gene ID => (Gene Symbol, OMIM Gene ID) }
 
 
-def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja, path_to_disease2wiki, path_to_interval_list_dir,
+def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja, path_to_disease2wiki, path_to_interval_list_dir, path_to_reference_fasta,
                    catalog_summary_cache_dir, mongo_port):
     c = pymongo.MongoClient(port=mongo_port)
 
@@ -101,6 +103,15 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja, path_t
         log.warn('========================================')
         dbsnp = None
 
+    if path_to_reference_fasta:
+        fa = MyFasta(path_to_reference_fasta)
+    else:
+        log.warn('========================================')
+        log.warn('Reference Genome FASTA does not exist...')
+        log.warn('so `ref` for rs will not be added')
+        log.warn('========================================')
+        fa = None
+
     my_fields = [('my_added', 'Date Added to MyCatalog', _date),
                  ('who_added', 'Who Added', _string),
                  ('activated', 'Activated', _integer),
@@ -173,6 +184,11 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja, path_t
             data['is_in_andme'] = False
             data['population'] = _population(data['initial_sample_size'])
 
+            if data['chr_id'] and data['chr_pos']:
+                data['ref'] = fa.get_seq({23: 'X', 24: 'Y', 25: 'M'}.get(data['chr_id'], data['chr_id']), data['chr_pos'], 1)
+            else:
+                data['ref'] = ''
+
             if (not data['snps']) or (not data['strongest_snp_risk_allele']):
                 log.warn('absence of "snps" or "strongest_snp_risk_allele" {0} {1}. pubmed_id:{2}'.format(data['snps'], data['strongest_snp_risk_allele'], data['pubmed_id']))
                 data['snps'], data['strongest_snp_risk_allele'], data['risk_allele'] = 'na', 'na', 'na'
@@ -221,15 +237,19 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja, path_t
     n_records, n_truseq, n_andme = 0, 0, 0
     for chrom in [i + 1 for i in range(24)]:
         log.info('Addding flags... chrom: {}'.format(chrom))
+
+        # TODO: should be `uniq_` ?
         records = list(catalog.find({'chr_id': chrom}).sort('chr_pos', pymongo.ASCENDING))
-        n_records += len(records)
+
+        ok_records = [rec for rec in records if rec['snp_id_current']]
+        n_records += len(ok_records)
         log.info('records:{}'.format(n_records))
 
         # `is_in_truseq`
         region_file = os.path.join(path_to_interval_list_dir,
                                    'TruSeq-Exome-Targeted-Regions-BED-file.{}.interval_list'.format({23:'X', 24:'Y'}.get(chrom, chrom)))
         with open(region_file, 'r') as fin:
-            extracted = extract_region(region_file, records)
+            extracted = extract_region(region_file, ok_records)
             n_truseq += len(extracted)
             log.info('`is_in_truseq` extracted:{}'.format(n_truseq))
             for record in extracted:
@@ -239,7 +259,7 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja, path_t
         region_file = os.path.join(path_to_interval_list_dir,
                                    'andme_region.{}.interval_list'.format({23:'X', 24:'Y', 25:'MT'}.get(chrom, chrom)))
         with open(region_file, 'r') as fin:
-            extracted = extract_region(region_file, records)
+            extracted = extract_region(region_file, ok_records)
             n_andme += len(extracted)
             log.info('`is_in_andme` extracted:{}'.format(n_andme))
             for record in extracted:

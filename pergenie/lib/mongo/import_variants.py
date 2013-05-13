@@ -62,11 +62,12 @@ def import_variants(file_path, population, file_format, user_id,
 
         with open(file_path, 'rb') as fin:
             try:
-                p = {'vcf': VCFParser,
+                p = {'vcf_whole_genome': VCFParser,
+                     'vcf_exome_truseq': VCFParser,
                      'andme': andmeParser}[info['file_format']](fin)
 
                 for i,data in enumerate(p.parse_lines()):
-                    if info['file_format'] == 'vcf':
+                    if info['file_format'] in ('vcf_whole_genome', 'vcf_exome_truseq'):
                         # TODO: handling multi-sample .vcf file
                         # currently, choose first sample from multi-sample .vcf
                         tmp_genotypes = data['genotype']

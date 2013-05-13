@@ -129,6 +129,7 @@
                     <th>in TrueSeq</th>
                     <th>Context</th>
                     <th>Genotype</th>
+                    <th>Reference allele</th>
                     <th>Risk allele</th>
                     <th>Risk allele frequency</th>
                     <th>OR in GWAS</th>
@@ -157,6 +158,7 @@
                       <span style="color : #c5c5c5">{{ genotype.1 }}</span>
                       {% endif %}
                     </td>
+                    <td class="center">{{ catalog_info.ref }}</td>
                     <td class="center">{{ catalog_info.risk_allele }}</td>
                     <td class="center">{{ catalog_info.risk_allele_frequency }}</td>
                     <td class="center">{{ catalog_info.OR }}</td>

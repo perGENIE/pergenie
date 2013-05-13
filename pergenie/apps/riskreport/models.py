@@ -48,20 +48,27 @@ def _import_riskreport(tmp_info):
     # Get number of uniq studies for this population
     # & Get cover rate of GWAS Catalog for this population
 
-    uniq, n_available = set(), 0
+    uniq_studies, uniq_snps = set(), set()
+    n_available = 0
     for record in catalog_map.values():
-        if not record['pubmed_id'] in uniq:
-            uniq.update([record['pubmed_id']])
+        if not record['pubmed_id'] in uniq_studies:
+            uniq_studies.update([record['pubmed_id']])
 
-        if not tmp_info['file_format'] == 'vcf_whole_genome':
-            if record['is_in_{}'.format(tmp_info['file_format'])]:
+        if record['snp_id_current'] and record['snp_id_current'] not in uniq_snps:
+            uniq_snps.update([record['snp_id_current']])
+
+            if tmp_info['file_format'] == 'vcf_exome_truseq' and record['is_in_truseq']:
+                n_available += 1
+            elif tmp_info['file_format'] == 'andme' and record['is_in_andme']:
                 n_available += 1
 
-    n_studies = len(uniq)
-    if not tmp_info['file_format'] == 'vcf_whole_genome':
-        catalog_cover_rate_for_this_population = int(round(100 * n_available / len(catalog_map)))
-    else:
+    print 'n_available:', n_available
+
+    n_studies = len(uniq_studies)
+    if tmp_info['file_format'] == 'vcf_whole_genome':
         catalog_cover_rate_for_this_population = 100
+    else:
+        catalog_cover_rate_for_this_population = int(round(100 * n_available / len(uniq_snps)))
 
     # Calculate risk
     risk_store, risk_reports = risk_report.risk_calculation(catalog_map, variants_map, settings.POPULATION_MAP[tmp_info['population']],

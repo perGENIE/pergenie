@@ -65,7 +65,7 @@ def index(request):
                 #     err = _('Select sex.')
                 #     break
 
-                if not file_format or file_format not in ('andme', 'navi', 'vcf', 'tmmb'):
+                if not file_format or file_format not in ('andme', 'vcf_whole_genome', 'vcf_exome_truseq'):
                     err = _('Select file format.')
                     break
 
