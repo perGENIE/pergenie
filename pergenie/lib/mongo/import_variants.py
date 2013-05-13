@@ -15,7 +15,7 @@ from parser.VCFParser import VCFParser, VCFParseError
 from parser.andmeParser import andmeParser, andmeParseError
 
 
-def import_variants(file_path, population, sex, file_format, user_id,
+def import_variants(file_path, population, file_format, user_id,
                     mongo_port=27017):
     """Import variants (genotypes) file, into MongoDB.
 
@@ -49,7 +49,7 @@ def import_variants(file_path, population, sex, file_format, user_id,
                 'raw_name': file_name,
                 'date': datetime.datetime.today(),
                 'population': population,
-                'sex': sex,
+                # 'sex': sex,
                 'file_format': file_format,
                 'status': float(1.0)}
 
@@ -108,14 +108,14 @@ def _main():
     parser = argparse.ArgumentParser(description='Import variants (genotypes) file, into MongoDB.')
     parser.add_argument('--file-paths', metavar='filepath', nargs='+', required=True)
     parser.add_argument('--population', required=True)
-    parser.add_argument('--sex', required=True)
+    # parser.add_argument('--sex', required=True)
     parser.add_argument('--file-format', required=True)
     parser.add_argument('--user-id', required=True)
     parser.add_argument('--mongo-port', default=27017)
     args = parser.parse_args()
 
     for file_path in args.file_paths:
-        import_variants(file_path, args.population, args.sex, args.file_format, args.user_id, args.mongo_port)
+        import_variants(file_path, args.population, args.file_format, args.user_id, args.mongo_port)
 
 
 if __name__ == '__main__':

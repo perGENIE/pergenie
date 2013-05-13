@@ -37,6 +37,9 @@ def index(request):
         if request.method == 'POST':
             while True:
                 form = UploadForm(request.POST, request.FILES)
+                log.debug('=========')
+                log.debug(form)
+                log.debug('=========')
 
                 if not form.is_valid():
                     err = _('Invalid request')
@@ -44,7 +47,7 @@ def index(request):
 
                 call_file = request.FILES['call']
                 population = form.cleaned_data['population']
-                sex = form.cleaned_data['sex']
+                # sex = form.cleaned_data['sex']
                 file_format = form.cleaned_data['file_format']
 
                 # Validate: Forms are filled with valid value
@@ -58,9 +61,9 @@ def index(request):
                     err = _('Select population.')
                     break
 
-                if not sex or sex not in ('unknown', 'male', 'female'):
-                    err = _('Select sex.')
-                    break
+                # if not sex or sex not in ('unknown', 'male', 'female'):
+                #     err = _('Select sex.')
+                #     break
 
                 if not file_format or file_format not in ('andme', 'navi', 'vcf', 'tmmb'):
                     err = _('Select file format.')
@@ -127,7 +130,7 @@ def index(request):
                         'raw_name': call_file.name,
                         'date': datetime.datetime.today(),
                         'population': population,
-                        'sex': sex,
+                        # 'sex': sex,
                         'file_format': file_format,
                         'catalog_cover_rate': catalog_cover_rate.find_one({'stats': 'catalog_cover_rate'})['values'][file_format],
                         'genome_cover_rate': catalog_cover_rate.find_one({'stats': 'genome_cover_rate'})['values'][file_format],
