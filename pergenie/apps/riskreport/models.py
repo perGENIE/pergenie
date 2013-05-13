@@ -65,7 +65,7 @@ def _import_riskreport(tmp_info):
 
     # Calculate risk
     risk_store, risk_reports = risk_report.risk_calculation(catalog_map, variants_map, settings.POPULATION_MAP[tmp_info['population']],
-                                                            tmp_info['sex'], tmp_info['user_id'], tmp_info['name'], False, True)
+                                                            tmp_info['user_id'], tmp_info['name'], False, True)
 
     # TODO: merge into import_catalog?
     # Set reliability rank

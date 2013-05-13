@@ -168,7 +168,7 @@ def _relative_risk_to_general_population(freq, OR, zygosities):
     return round({'RR':risk_hom, 'R.':risk_het, '..':risk_ref, 'NA': 1.0}.get(zygosities, 1.0), 1), round(average_population_risk, 2)
 
 
-def risk_calculation(catalog_map, variants_map, population, sex, user_id, file_name,
+def risk_calculation(catalog_map, variants_map, population, user_id, file_name,
                      is_LD_block_clustered, is_log):
     risk_store = {}
     risk_report = {}
