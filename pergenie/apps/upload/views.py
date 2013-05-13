@@ -40,9 +40,6 @@ def index(request):
         if request.method == 'POST':
             while True:
                 form = UploadForm(request.POST, request.FILES)
-                log.debug('=========')
-                log.debug(form)
-                log.debug('=========')
 
                 if not form.is_valid():
                     err = _('Invalid request')

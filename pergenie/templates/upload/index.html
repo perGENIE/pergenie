@@ -25,7 +25,7 @@
 
               <div class="padded">
                 <div class="row-fluid">
-                  <div class="span12" data-step="1" data-intro="Hello all! :) This project's called Intro.js.">
+                  <div class="span12" data-step="1" data-intro="You can upload your genome file via this form!">
 
                     <form class="form-horizontal" action="{% url apps.upload.views.index %}" method="post" enctype="multipart/form-data">
                       {% csrf_token %}
@@ -34,14 +34,14 @@
                         <!--   <small>...</small> -->
                         <!-- </div> -->
 
-                        <div class="control-group" data-step="2" data-intro="Hello all! :) This project's called Intro.js.">
+                        <div class="control-group" data-step="2" data-intro="First, selcet your genome file.">
                           <label class="control-label"><a data-toggle="modal" href="#uploadModal">Genome File <i class="icon-question-sign"></i></a></label>
                           <div class="controls">
                             <input type="file" name="call">
                           </div>
                         </div>
 
-                        <div data-step="3" data-intro="Hello all! :) This project's called Intro.js.">
+                        <div data-step="3" data-intro="Next, select popultion and some other features if you can.">
                         <div class="control-group">
                           <label class="control-label"><a data-toggle="modal" href="#uploadModal">Population <i class="icon-question-sign"></i></a></label>
                           <div class="controls">
@@ -76,8 +76,8 @@
                           </div>
                         </div>
                         </div>
-                        <span class="label label-warning">Notice</span> genome fileをアップロードする前に，<a href="#">利用規約</a>をご確認ください．
-                        <div  data-step="3" data-intro="Hello all! :) This project's called Intro.js.">
+                        <!-- <span class="label label-warning">Notice</span> genome fileをアップロードする前に，<a href="#">利用規約</a>をご確認ください． -->
+                        <div  data-step="3" data-intro="Finally, submit!">
                         <div class="form-actions">
                           <input type="submit" class="btn btn-primary">
                           <input type="reset" value="reset" class="btn">

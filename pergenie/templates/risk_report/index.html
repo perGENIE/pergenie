@@ -13,7 +13,7 @@
 
       <div class="row-fluid">
         <div class="span12">
-          <div class="content-box transparent">
+          <div class="content-box transparent" data-step="1" data-intro="Your disease risk report is shown bellow.">
             <div class="padded">
               <h2>Disease Risk Report</h2>
               <div class="padded">
@@ -52,7 +52,7 @@
       {% if h_risk_traits %}
       <div class="row-fluid">
         <div class="span12">
-          <div class="content-box green">
+          <div class="content-box green" data-step="3" data-intro="Information about this genome file is here.">
             <div class="padded">
               <table class="table table-bordered">
                 <thead>
@@ -82,7 +82,7 @@
                         </fieldset>
                       </form>
                     </td>
-                    <td class="center">Number of studies for <span class="label label-success">{{ tmp_infos.0.population }}</span> is {{ tmp_infos.0.n_studies }}. Cover rate for this population is {{ tmp_infos.0.catalog_cover_rate_for_this_population }} percent.</td>
+                    <td class="center" data-step="4" data-intro="You can see how many studies are referenced for this population.">Number of studies for <span class="label label-success">{{ tmp_infos.0.population }}</span> is {{ tmp_infos.0.n_studies }}. Cover rate for this population is {{ tmp_infos.0.catalog_cover_rate_for_this_population }} percent.</td>
                     <!-- <td class="center"><span class="label label-success">{{ tmp_infos.0.sex }}</span></td> -->
                     <td class="center"><span class="label label-success">{{ tmp_infos.0.file_format }}</span></td>
                   </tr>
@@ -98,7 +98,7 @@
         {% if h_risk_traits %}
         <div class="span6">
           <div class="content-box">
-            <div class="content-box-header">
+            <div class="content-box-header" data-step="2" data-intro="Your top 10 highest risks are listed here.">
               <icon class="icon-exclamation-sign"></icon> Top 10 Highest
             </div>
 
@@ -258,4 +258,7 @@ $(document).ready(function(){
 });
 </script>
 
+<link href="{% static 'css/introjs.css' %}" rel="stylesheet">
+<script type="text/javascript" src="{% static 'js/intro.js' %}"></script>
+<script type="text/javascript">introJs().start()</script>
 {% endblock %}
