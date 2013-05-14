@@ -54,7 +54,7 @@ class SimpleTest(unittest.TestCase):
         # import test data (VCF format)
         import_variants.import_variants(file_path=file_path,
                                         population='unknown',
-                                        file_format='vcf',
+                                        file_format='vcf_whole_genome',
                                         user_id='test',
                                         mongo_port=self.mongo_port)
 
