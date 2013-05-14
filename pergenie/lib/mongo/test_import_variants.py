@@ -27,7 +27,6 @@ class SimpleTest(unittest.TestCase):
         # import test data (23andme format)
         import_variants.import_variants(file_path=file_path,
                                         population='unknown',
-                                        sex='unknown',
                                         file_format='andme',
                                         user_id='test',
                                         mongo_port=self.mongo_port)
@@ -55,7 +54,6 @@ class SimpleTest(unittest.TestCase):
         # import test data (VCF format)
         import_variants.import_variants(file_path=file_path,
                                         population='unknown',
-                                        sex='unknown',
                                         file_format='vcf',
                                         user_id='test',
                                         mongo_port=self.mongo_port)

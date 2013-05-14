@@ -10,11 +10,13 @@ class MyFasta(object):
     def get_seq(self, chrom, start, read_len):
         """Get sequence (one-based) of Fasta.
 
-        >>> fa = MyFasta('test.fasta')
+        >>> import os
+        >>> fasta_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'test.fasta')
+        >>> fa = MyFasta(fasta_path)
         >>> fa.get_seq(chrom=1, start=1, read_len=1)
-        A
+        'A'
         >>> fa.get_seq(chrom=1, start=1, read_len=2)
-        AT
+        'AT'
         """
 
         seq = self.fa.sequence({'chr': str(chrom), 'start': int(start), 'stop': int(start) + int(read_len) - 1}, one_based=True)
