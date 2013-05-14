@@ -6,7 +6,7 @@ if __name__ == "__main__":
     who_am_i = getpass.getuser()
     print 'i am', who_am_i
 
-    if who_am_i == 'w3pgenie' or 'root':
+    if who_am_i in ('w3pgenie', 'root'):
         os.environ.setdefault("DJANGO_SETTINGS_MODULE", "pergenie.settings.staging")
     else:
         os.environ.setdefault("DJANGO_SETTINGS_MODULE", "pergenie.settings.develop")
