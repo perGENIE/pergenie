@@ -56,19 +56,12 @@ class SimpleTestCase(TestCase):
                                                    'password2': self.test_user_password})
         self.failUnlessEqual(bool('Already registered.' in response.context['message']), True)
 
-        # success
-        response = self.client.post('/register/', {'user_id': 'user',
-                                                   'password1': 'pwd1',
-                                                   'password2': 'pwd1'}, follow=True)
-        self.failUnlessEqual(response.status_code, 200)
-        self.failUnlessEqual(bool('<title>Dashboard - perGENIE</title>' in response.content), True)
-        # TODO: check auth
-        
-        
+        # # success
+        # response = self.client.post('/register/', {'user_id': 'user',
+        #                                            'password1': 'pwd1',
+        #                                            'password2': 'pwd1'}, follow=True)
+        # self.failUnlessEqual(response.status_code, 200)
+        # self.failUnlessEqual(bool('<title>Dashboard - perGENIE</title>' in response.content), True)
 
-
-
-
-
-
-
+        # TODO: add other password check
+        # TODO: with mail activation

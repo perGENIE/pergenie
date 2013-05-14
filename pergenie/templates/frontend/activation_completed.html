@@ -1,0 +1,51 @@
+{% extends "frontend_layout.html" %}
+{% load staticfiles %}
+{% load i18n %}
+{% block title %}Activation completed{% endblock %}
+{% block cookie_id %}activation_completed{% endblock %}
+{% block description %}activation completed{% endblock %}
+
+{% block main_container %}
+<body id="body">
+
+  <section id="main">
+    <div class="container">
+      <div class="row-fluid">
+
+        <div class="span12">
+          <div class="login-container center">
+            <div class="title"><a href="{% url apps.frontend.views.index %}"><img class="login_logo" src="{% static 'images/logo.png' %}"></a></div>
+
+            <h3>Activation completed</h3>
+
+            {% trans "Thanks for signing up! Now you can " %}<b><a href="/login/">Login</a></b>{% trans " and enjoy perGENIE!" %}
+
+            {% if err %}
+            <div class="alert alert-error">
+              <strong>Error!</strong> {{ err }}
+            </div>
+            {% endif %}
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <div class="container">
+    <div class="row-fluid">
+      <div class="span12">
+
+        <div class="footer">
+          <h5 class="transparent-text center">
+            <div>&copy; 2012-2013 perGENIE Team</div>
+          </h5>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+
+{% endblock %}

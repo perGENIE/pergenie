@@ -34,17 +34,11 @@
 
                 <div class="actions clearfix">
                   <input class="btn btn-green btn-large login-btn" name="commit" type="submit" value="Register">
+
+                  <a href="{% url apps.login_with_23andme.views.view %}" class="btn btn-facebook btn-block">or Login with 23andMe <img src="{% static 'images/apidemo/favicon.ico' %}"/></a>
+
                 </div>
 
-                <div class="social-actions">
-                  <img src="{% static 'images/connect-button-example.png' %}"/>
-                <!--   <a href="#" class="btn btn-twitter btn-block"> -->
-                <!--     <i class="icon-twitter-sign"></i> Login with Twitter -->
-                <!--   </a> -->
-                <!--   <a href="#" class="btn btn-facebook btn-block"> -->
-                <!--     <i class="icon-facebook-sign"></i> Login with Facebook -->
-                <!--   </a> -->
-                </div>
               </form>
 
 
@@ -52,9 +46,18 @@
 	          <!-- <div class="alert alert-">{% autoescape off %}{{ message }}{% endautoescape %}</div> -->
 	          <!-- {% endif %} -->
 
-	          {% if has_error %}
-	          <div class="alert alert-error">{% autoescape off %}{{ message }}{% endautoescape %}</div>
-	          {% endif %}
+
+              {% if msg %}
+              <div class="alert alert-info">
+                <strong>Information:</strong> {{ msg }}
+              </div>
+              {% endif %}
+
+              {% if err %}
+              <div class="alert alert-error">
+                <strong>Error!</strong> {{ err }}
+              </div>
+              {% endif %}
 
             </div>
           </div>

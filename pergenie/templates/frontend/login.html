@@ -33,10 +33,10 @@
 
                 <div class="actions">
                   <input class="btn btn-green btn-large login-btn" name="commit" type="submit" value="Login">
-                </div>
+                <!-- </div> -->
 
 
-                <div class="social-actions">
+                <!-- <div class="social-actions"> -->
                   <!-- <a href="#" class="btn btn-twitter btn-block"> -->
                   <!--   <i class="icon-twitter-sign"></i> Login with Twitter -->
                   <!-- </a> -->
@@ -49,9 +49,12 @@
 
               </form>
 
-	          {% if error %}
-	          <div class="alert alert-error">{{ error }}</div>
-	          {% endif %}
+              {% if err %}
+              <div class="alert alert-error">
+                <strong>Error!</strong> {{ err }}
+              </div>
+              {% endif %}
+
               <a href="{% url apps.frontend.views.register %}">{% trans "Create an account." %}</a>
 
             </div>
