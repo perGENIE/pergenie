@@ -27,7 +27,7 @@ class SimpleTest(TestCase):
         user = User.objects.create_user(self.test_user_id,
                                         '',
                                         self.test_user_password)
-        self.test_user_dir = os.path.join(settings.RISKREPORT_CACHE_DIR, self.test_user_id)
+        self.test_user_dir = os.path.join(settings.UPLOAD_DIR, self.test_user_id)
         if not os.path.exists(self.test_user_dir):
             os.mkdir(self.test_user_dir)
 
