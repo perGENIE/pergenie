@@ -37,6 +37,7 @@ pergenie/settings/staging.py
 
 # Temporary file
 pergenie/tmp
+pergenie/uploaded
 
 #
 data/gwascatalog*
