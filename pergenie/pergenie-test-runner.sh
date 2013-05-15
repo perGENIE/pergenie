@@ -6,13 +6,6 @@ notifier=/opt/local/bin/terminal-notifier
 which python
 which nosetests
 
-# tests for lib
-cd lib/
-nosetests -v --with-doctest --doctest-extension=.txt
-if [ $? -eq 1 ]; then
-    $notifier -message "pergenie-test-runner.sh: Test Failed: nosetests"
-fi
-
 cd /Users/numa/Dropbox/py/pergenie/pergenie/
 python manage.py celeryd_detach
 
@@ -26,3 +19,10 @@ do
     $notifier -message "pergenie-test-runner.sh: Test Failed: ${app}"
   fi
 done
+
+# tests for lib
+cd lib/
+nosetests -v --with-doctest --doctest-extension=.txt
+if [ $? -eq 1 ]; then
+    $notifier -message "pergenie-test-runner.sh: Test Failed: nosetests"
+fi

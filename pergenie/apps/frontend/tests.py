@@ -1,9 +1,8 @@
-# from django.core import management
-
 from django.contrib.auth.models import User
 from django.test import TestCase
 from django.test.client import Client
 from django.conf import settings
+
 
 class SimpleTestCase(TestCase):
     def setUp(self):
@@ -12,56 +11,87 @@ class SimpleTestCase(TestCase):
         self.test_user_id = settings.TEST_USER_ID
         self.test_user_password = settings.TEST_USER_PASSWORD
         self.dummy_user_id = settings.TEST_DUMMY_USER_ID
-        self.failUnlessEqual(bool(self.test_user_id != self.dummy_user_id), True)
-        user = User.objects.create_user(self.test_user_id,
-                                        '',
-                                        self.test_user_password)
-
-        # user.save()
-
-        # options = dict(verbosity=0,)
-        # management.call_command('loaddata', 'task/fixtures/test.json', **options)
+        self.assertNotEqual(self.test_user_id, self.dummy_user_id)
+        self.user = User.objects.create_user(self.test_user_id,
+                                             '',
+                                             self.test_user_password)
+        self.user.is_active = False
+        self.user.save()
 
     def test_get_index_page(self):
-        """ """
         response = self.client.get('/', follow=True)
-        self.failUnlessEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
     def test_get_login_page(self):
-        """ """
         response = self.client.get('/login/')
-        self.failUnlessEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
     def test_login(self):
+        # not activated
+        self.assertFalse(self.user.is_active)
+
+        response = self.client.post('/login/', {'user_id': self.test_user_id,
+                                                'password': self.test_user_password})
+        self.assertTrue(bool(response.context['err'] == 'invalid mail address or password'))
+        # activate user
+        self.user.is_active = True
+        self.user.save()
+        self.assertTrue(self.user.is_active)
+
         # user does not exist
-        self.failUnlessEqual(self.client.login(username=self.dummy_user_id, password='anonymousLogin'), False)
+        response = self.client.post('/login/', {'user_id': self.dummy_user_id,
+                                                'password': self.test_user_password})
+        self.assertTrue(bool(response.context['err'] == 'invalid mail address or password'))
 
         # incorrect password
-        self.failUnlessEqual(self.client.login(username=self.test_user_id, password='incorrectPassword'), False)
+        response = self.client.post('/login/', {'user_id': self.test_user_id,
+                                                'password': self.test_user_password+'1'})
+        self.assertTrue(bool(response.context['err'] == 'invalid mail address or password'))
 
         # success
-        self.failUnlessEqual(self.client.login(username=self.test_user_id, password=self.test_user_password), True)
+        response = self.client.post('/login/', {'user_id': self.test_user_id,
+                                                'password': self.test_user_password},
+                                    follow=True)
+        self.assertEqual(response.__dict__['request']['PATH_INFO'], '/dashboard/')
 
+    def test_logout(self):
+        self.user.is_active = True
+        self.user.save()
+
+        # login
+        self.client.login(username=self.test_user_id, password=self.test_user_password)
+
+        # logout
+        response = self.client.post('/logout/', follow=True)
+        self.assertEqual(response.__dict__['request']['PATH_INFO'], '/login/')
 
     def test_register(self):
-        # passwords do not match
+        # password and confirm-password do not match
         response = self.client.post('/register/', {'user_id': self.test_user_id,
-                                                   'password1': 'pwd1',
-                                                   'password2': 'pwd2'})
-        self.failUnlessEqual(bool(response.context['message'] == 'Passwords do not match.'), True)
+                                                   'password1': 'password123',
+                                                   'password2': 'password1234'})
+        self.assertEqual(response.context['err'], 'Passwords do not match.')
 
-        # reserved_user_id
+        # too short password
+        response = self.client.post('/register/', {'user_id': self.test_user_id,
+                                                   'password1': '123',
+                                                   'password2': '123'})
+        self.assertTrue('Passwords too short' in response.context['err'])
+
+        # invalid email address
+        response = self.client.post('/register/', {'user_id': 'test_user_fail',
+                                                   'password1': self.test_user_password,
+                                                   'password2': self.test_user_password})
+        self.assertEqual(response.context['err'], 'Invalid mail address assumed.')
+
+        # RESERVED_USER_ID
         response = self.client.post('/register/', {'user_id': self.test_user_id,
                                                    'password1': self.test_user_password,
                                                    'password2': self.test_user_password})
-        self.failUnlessEqual(bool('Already registered.' in response.context['message']), True)
+        self.assertTrue('Already registered.' in response.context['err'])
 
-        # # success
-        # response = self.client.post('/register/', {'user_id': 'user',
-        #                                            'password1': 'pwd1',
-        #                                            'password2': 'pwd1'}, follow=True)
-        # self.failUnlessEqual(response.status_code, 200)
-        # self.failUnlessEqual(bool('<title>Dashboard - perGENIE</title>' in response.content), True)
-
-        # TODO: add other password check
-        # TODO: with mail activation
+        # success
+        response = self.client.post('/register/', {'user_id': 'test_user_success@pergenie.org',
+                                                   'password1': self.test_user_password,
+                                                   'password2': self.test_user_password}, follow=True)
+        self.assertTrue('<title>Registeration completed - perGENIE</title>' in response.content)

@@ -18,6 +18,8 @@ from apps.frontend.forms import LoginForm, RegisterForm
 import sys, os
 from smtplib import SMTPRecipientsRefused
 from pymongo import MongoClient
+import lepl.apps.rfc3696
+email_validator = lepl.apps.rfc3696.Email()
 
 from demo import *
 from utils import clogging
@@ -55,9 +57,9 @@ def login(request):
             user_id = form.cleaned_data['user_id']
             password = form.cleaned_data['password']
 
-            if user_id in settings.RESERVED_USER_ID:
-                err = _('invalid mail address or password')
-                break
+            # if user_id in settings.RESERVED_USER_ID:
+            #     err = _('invalid mail address or password')
+            #     break
 
             user = authenticate(username=user_id, password=password)
 
@@ -66,7 +68,9 @@ def login(request):
                 break
 
             if not user.is_active:
+                # err = _('invalid mail address or password')
                 err = _('invalid mail address or password')
+
                 break
 
             auth_login(request, user)
@@ -99,7 +103,6 @@ def register(request):
             password2 = form.cleaned_data['password2']
 
             # TODO: check if user_id is valid char. not ", ', \, ...
-            # TODO: 半角アルファベット、半角数字、@/./+/-/_ で30文字以下にしてください。
 
             if password1 != password2:
                 params['err'] = _('Passwords do not match.')
@@ -107,6 +110,10 @@ def register(request):
 
             if len(password1) < int(settings.MIN_PASSWORD_LENGTH):
                 params['err'] = _('Passwords too short (passwords should be longer than %(min_password_length)s characters).' % {'min_password_length': settings.MIN_PASSWORD_LENGTH})
+                break
+
+            if not email_validator(user_id):
+                params['err'] = _('Invalid mail address assumed.')
                 break
 
             if user_id in settings.RESERVED_USER_ID:
