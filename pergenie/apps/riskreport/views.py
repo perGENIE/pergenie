@@ -2,14 +2,14 @@
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 from django.views.generic.simple import direct_to_template
+from django.shortcuts import redirect
 from django.utils.translation import get_language
 from django.utils.translation import ugettext as _
 from django.conf import settings
 from models import *
 from apps.riskreport.forms import RiskReportForm
 
-# import sys, os
-# import re
+import sys, os
 
 from utils import clogging
 log = clogging.getColorLogger(__name__)
@@ -32,7 +32,7 @@ def index(request):
 
     while True:
         # determine file
-        infos = get_user_infos(user_id)
+        infos = get_user_data_infos(user_id)
         tmp_info = None
 
         if not infos:
@@ -43,10 +43,18 @@ def index(request):
         if [bool(info.get('riskreport')) for info in infos].count(True) == 0:
             do_intro = True
 
-        # By default, choose first file_name.
+        # By default, browse `last_viewed_file`
         if not request.method == 'POST':
-            info = infos[0]
-            file_name = info['name']
+            tmp_user_info = get_user_info(user_id)
+            if tmp_user_info.get('last_viewed_file'):
+                file_name = tmp_user_info['last_viewed_file']
+                info = get_user_file_info(user_id, file_name)
+
+            # If this is the first time, choose first file_name in infos.
+            else:
+                info = infos[0]
+                file_name = info['name']
+
             if not info['status'] == 100:
                 err = _('%(file_name)s is in importing, please wait for seconds...') % {'file_name': file_name}
                 break
@@ -78,6 +86,9 @@ def index(request):
             # get top-10 highest & top-10 lowest
             h_risk_traits, h_risk_values, h_risk_ranks, h_risk_studies = get_risk_values_for_indexpage(tmp_info, category=['Disease'], is_higher=True, top=10, is_log=False)
 
+            # set `last_viewed_file`
+            set_user_last_viewed_file(user_id, file_name)
+
             # translate to Japanese
             if browser_language == 'ja':
                 h_risk_traits = [TRAITS2JA.get(trait) for trait in h_risk_traits]
@@ -92,7 +103,7 @@ def index(request):
 
 
 @login_required
-def study(request, file_name, trait, study):
+def study(request, trait, study):
     user_id = request.user.username
     msg, err = '', ''
 
@@ -102,6 +113,12 @@ def study(request, file_name, trait, study):
         if not trait in TRAITS:
             err = _('trait not found')
             break
+
+        file_name = get_user_info(user_id).get('last_viewed_file')
+
+        # If you have no riskreports, but this time you try to browse details of reprort,
+        if not file_name:
+            return redirect('apps.riskreport.views.index')
 
         info = get_user_file_info(user_id, file_name)
 
@@ -120,19 +137,20 @@ def study(request, file_name, trait, study):
 
 
 @login_required
-def trait(request, file_name, trait):
+def trait(request, trait):
     """Show risk value by studies, for each trait.
     """
 
-    user_id = request.user.username
-    trait = JA2TRAITS.get(trait, trait)
-    risk_infos = get_risk_infos_for_subpage(user_id, file_name, trait)
+    # user_id = request.user.username
+    # trait = JA2TRAITS.get(trait, trait)
+    # risk_infos = get_risk_infos_for_subpage(user_id, file_name, trait)
 
-    risk_infos.update(dict(msg=msg, err=err, file_name=file_name,
-                           wiki_url_en=TRAITS2WIKI_URL_EN.get(trait),
-                           is_ja=bool(get_language() == 'ja')))
+    # risk_infos.update(dict(msg=msg, err=err, file_name=file_name,
+    #                        wiki_url_en=TRAITS2WIKI_URL_EN.get(trait),
+    #                        is_ja=bool(get_language() == 'ja')))
 
-    return direct_to_template(request, 'risk_report/trait.html', risk_infos)
+    # return direct_to_template(request, 'risk_report/trait.html', risk_infos)
+    return redirect('apps.riskreport.views.index')
 
 
 @require_http_methods(['GET', 'POST'])
@@ -150,65 +168,71 @@ def show_all(request):
 
     user_id = request.user.username
     msg, err = '', ''
-    risk_reports, risk_traits, risk_values = None, None, None
+    # risk_reports, risk_traits, risk_values = None, None, None
+    risk_traits, risk_values, risk_ranks, risk_studies = [], [], [], []
     browser_language = get_language()
 
     while True:
         # determine file
-        infos = get_user_infos(user_id)
+        infos = get_user_data_infos(user_id)
         tmp_info = None
         tmp_infos = []
+        data_map = {}
 
         if not infos:
             err = _('no data uploaded')
             break
 
-        if request.method == 'POST':
-            """User chose file_name via select box & requested as POST
-            """
+        if not request.method == 'POST':
+            file_name = get_user_info(user_id).get('last_viewed_file')
 
-            log.debug('method == POST')
+            # If you have no riskreports, but this time you try to browse details of reprort,
+            if not file_name:
+                return redirect('apps.riskreport.views.index')
 
-            form = RiskReportForm(request.POST)
-            if not form.is_valid():
-                err = _('Invalid request.')
-                break
+            tmp_infos.append(get_user_file_info(user_id, file_name))
 
-            for i, file_name in enumerate([request.POST['file_name'], request.POST['file_name2']]):
-                log.debug('file_name: {0} from form: {1}'.format(i+1, file_name))
+        # If file_name is selected by user with Form,
+        elif request.method == 'POST':
+            # form = RiskReportForm(request.POST)
+            # if not form.is_valid():
+            #     err = _('Invalid request.')
+            #     break
 
-                for info in infos:
-                    if info['name'] == file_name:
-                        if not info['status'] == 100:
-                            # err = str(file_name) + _(' is in importing, please wait for seconds...')
-                            err = _('%(file_name)s is in importing, please wait for seconds...') % {'file_name': file_name}
+            # for i, file_name in enumerate([request.POST['file_name'], request.POST['file_name2']]):
+            #     log.debug('file_name: {0} from form: {1}'.format(i+1, file_name))
 
-                        tmp_info = info
-                        tmp_infos.append(tmp_info)
-                        break
+            #     for info in infos:
+            #         if info['name'] == file_name:
+            #             if not info['status'] == 100:
+            #                 err = _('%(file_name)s is in importing, please wait for seconds...') % {'file_name': file_name}
 
-                if not tmp_info:
-                    err = _('no such file %(file_name)s') % {'file_name': file_name}
-                    break
+            #             tmp_info = info
+            #             tmp_infos.append(tmp_info)
+            #             break
 
-        else:
-            log.debug('method != POST')
-
-            # choose first file_name by default
-            info = infos[0]
-            file_name = info['name']
-            if not info['status'] == 100:
-                err = _('%(file_name)s is in importing, please wait for seconds...') % {'file_name': file_name}
-            tmp_infos.append(info)
+            #     if not tmp_info:
+            #         err = _('no such file %(file_name)s') % {'file_name': file_name}
+            #         break
+            pass
 
         if not err:
-            risk_reports, risk_traits, risk_values, risk_ranks, risk_studies = get_risk_values_for_indexpage(tmp_infos, category=['Disease'])
+            for i,tmp_info in enumerate(tmp_infos):
+                tmp_risk_traits, tmp_risk_values, tmp_risk_ranks, tmp_risk_studies = get_risk_values_for_indexpage(tmp_infos[i], category=['Disease'])
+
+                if i == 0:
+                    risk_traits = tmp_risk_traits
+
+                risk_values.append(tmp_risk_values[0])
+                risk_ranks.append(tmp_risk_ranks)
+                risk_studies.append(tmp_risk_studies)
 
             # translate to Japanese
             if browser_language == 'ja':
                 risk_traits = [TRAITS2JA.get(trait) for trait in risk_traits]
+
         break
 
     return direct_to_template(request, 'risk_report/show_all.html',
                               dict(msg=msg, err=err, infos=infos, tmp_infos=tmp_infos,
-                                   risk_reports=risk_reports, risk_traits=risk_traits, risk_values=risk_values, risk_studies=risk_studies))
+                                   risk_traits=risk_traits, risk_values=risk_values, risk_ranks=risk_ranks, risk_studies=risk_studies))

@@ -20,7 +20,7 @@ TRAITS, TRAITS2JA, TRAITS2CATEGORY, TRAITS2WIKI_URL_EN = get_traits_infos(as_dic
 JA2TRAITS = dict([(v, k) for (k, v) in TRAITS2JA.items()])
 
 
-def get_user_infos(user_id):
+def get_user_data_infos(user_id):
     c = MongoClient(port=settings.MONGO_PORT)
     data_info = c['pergenie']['data_info']
     infos = list(data_info.find({'user_id': user_id}))
@@ -34,6 +34,21 @@ def get_user_file_info(user_id, file_name):
     info = data_info.find_one({'user_id': user_id, 'name': file_name})
 
     return info
+
+
+def get_user_info(user_id):
+    c = MongoClient(port=settings.MONGO_PORT)
+    user_info = c['pergenie']['user_info']
+    info = user_info.find_one({'user_id': user_id})
+
+    return info
+
+
+def set_user_last_viewed_file(user_id, file_name):
+    c = MongoClient(port=settings.MONGO_PORT)
+    user_info = c['pergenie']['user_info']
+    user_info.update({'user_id': user_id},
+                     {"$set": {'last_viewed_file': file_name}}, upsert=True)
 
 
 def _import_riskreport(tmp_info):
