@@ -110,7 +110,7 @@ _8
                       </li>
 
                       <li class="divider"></li>
-                      {% ifnotequal user.username demo_user_id %}
+                      {% ifnotequal user.username "demo@pergenie.org" %}
                       <li class="">
                         <a href="{% url apps.upload.views.index %}">
                           <i class="icon-arrow-up"></i> Upload

@@ -35,19 +35,12 @@
                 <span class="button-text">Population</span>
               </button>
 
-              {% ifnotequal user.username demo_user_id %}
+              {% ifnotequal user.username "demo@pergenie.org" %}
               <a href="{% url apps.upload.views.index %}">
               <button class="button square" href="#" {% ifequal intro_type.0 'first' %}data-step="1" data-intro="{{ intros.0 }}" {% endifequal %}>
                 <i class="icon-arrow-up icon-large"></i>
                 <span class="button-text">Upload</span>
               </button></a>
-              {% else %}
-              <!-- <a href="#"> -->
-              <!-- <button class="button square disabled"> -->
-              <!--   <i class="icon-arrow-up icon-large"></i> -->
-              <!--   <span class="button-text">Upload</span> -->
-              <!-- </button> -->
-              <!-- </a> -->
               {% endifnotequal %}
 
               <a href="{% url apps.library.views.index %}">
