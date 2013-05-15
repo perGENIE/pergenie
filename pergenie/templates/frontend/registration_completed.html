@@ -16,9 +16,9 @@
           <div class="login-container center">
             <div class="title"><a href="{% url apps.frontend.views.index %}"><img class="login_logo" src="{% static 'images/logo.png' %}"></a></div>
 
-            <h3>Registeration completed</h3>
+            <h3>{% trans "Registeration completed" %}</h3>
 
-            {% trans "Registration completed. An activation link has been sent to the email address you supplied:" %}
+            {% trans "Registration completed. An activation link has been sent to the email address you supplied " %}
             <b>{{ user_id }}</b>.
             {% trans " Check the email and follow the instructions for activating your account!" %}
 

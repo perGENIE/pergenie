@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-05-15 08:09+0900\n"
+"POT-Creation-Date: 2013-05-15 22:02+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,21 +27,20 @@ msgstr "まずは，genome fileをアップロードしましょう!"
 msgid "Next, ...."
 msgstr "次に，...."
 
-#: apps/frontend/views.py:52 apps/frontend/views.py:94
+#: apps/frontend/views.py:54 apps/frontend/views.py:98
 #: apps/riskreport/views.py:50 apps/riskreport/views.py:172
 msgid "Invalid request."
 msgstr "不正なリクエストです．"
 
-#: apps/frontend/views.py:59 apps/frontend/views.py:65
-#: apps/frontend/views.py:69
+#: apps/frontend/views.py:67 apps/frontend/views.py:72
 msgid "invalid mail address or password"
 msgstr "メールアドレスかパスワードが正しくありません．"
 
-#: apps/frontend/views.py:105
+#: apps/frontend/views.py:108
 msgid "Passwords do not match."
 msgstr "パスワードが一致していません．"
 
-#: apps/frontend/views.py:109
+#: apps/frontend/views.py:112
 #, python-format
 msgid ""
 "Passwords too short (passwords should be longer than %(min_password_length)s "
@@ -50,17 +49,17 @@ msgstr ""
 "短すぎるパスワードです．%(min_password_length)s 文字以上のパスワードを設定し"
 "て下さい．"
 
-#: apps/frontend/views.py:113 apps/frontend/views.py:123
+#: apps/frontend/views.py:116 apps/frontend/views.py:210
+msgid "Invalid mail address assumed."
+msgstr "不正なメールアドレスです．"
+
+#: apps/frontend/views.py:120 apps/frontend/views.py:130
 msgid "Already registered."
 msgstr "すでに登録済みです．"
 
-#: apps/frontend/views.py:128
+#: apps/frontend/views.py:135
 msgid "Unexpected error"
 msgstr "予期しないエラーが発生しました．"
-
-#: apps/frontend/views.py:202
-msgid "Invalid mail address assumed."
-msgstr "メールアドレスかパスワードが正しくありません．"
 
 #: apps/riskreport/views.py:40 apps/riskreport/views.py:161
 msgid "no data uploaded"
@@ -142,30 +141,37 @@ msgid ""
 "unable to complete your request."
 msgstr "サーバー内部でのエラーが起きました．"
 
+#: templates/frontend/activation_completed.html:19
+msgid "Activation completed"
+msgstr ""
+
 #: templates/frontend/activation_completed.html:21
 msgid "Thanks for signing up! Now you can "
 msgstr "ご登録ありがとうございます!"
 
 #: templates/frontend/activation_completed.html:21
 msgid " and enjoy perGENIE!"
-msgstr "からログインができるようになりました．perGENIEをお楽しみください!"
+msgstr "より，perGENIEをお楽しみください!"
 
 #: templates/frontend/login.html:58
 msgid "Create an account."
 msgstr "新規アカウント登録"
 
+#: templates/frontend/registration_completed.html:19
+msgid "Registeration completed"
+msgstr ""
+
 #: templates/frontend/registration_completed.html:21
 msgid ""
 "Registration completed. An activation link has been sent to the email "
-"address you supplied:"
+"address you supplied "
 msgstr ""
-"登録作業は以上で完了です．アカウントを有効にするために，入力したEmailアドレ"
-"ス:"
+"登録は以上で完了です．アカウントを有効にするために，登録したEmailアドレス"
 
 #: templates/frontend/registration_completed.html:23
 msgid ""
 " Check the email and follow the instructions for activating your account!"
-msgstr "宛に送られる，perGENIEからのメールをチェックしてください．"
+msgstr "宛に送られる，perGENIEからのメールをご確認ください．"
 
 #~ msgid "Select sex."
 #~ msgstr "Sexを選択して下さい．"
