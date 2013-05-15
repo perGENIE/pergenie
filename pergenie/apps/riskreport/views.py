@@ -34,7 +34,6 @@ def index(request):
         # determine file
         infos = get_user_infos(user_id)
         tmp_info = None
-        tmp_infos = []
 
         if not infos:
             err = _('no data uploaded')
@@ -44,37 +43,40 @@ def index(request):
         if [bool(info.get('riskreport')) for info in infos].count(True) == 0:
             do_intro = True
 
-        if request.method == 'POST':
+        # By default, choose first file_name.
+        if not request.method == 'POST':
+            info = infos[0]
+            file_name = info['name']
+            if not info['status'] == 100:
+                err = _('%(file_name)s is in importing, please wait for seconds...') % {'file_name': file_name}
+                break
+            else:
+                tmp_info = info
+
+        # If file_name is selected by user with Form,
+        elif request.method == 'POST':
             form = RiskReportForm(request.POST)
             if not form.is_valid():
                 err = _('Invalid request.')
                 break
 
-            for i, file_name in enumerate([request.POST['file_name']]):
-                for info in infos:
-                    if info['name'] == file_name:
-                        if not info['status'] == 100:
-                            err = _('%(file_name)s is in importing, please wait for seconds...') % {'file_name': file_name}
-
+            file_name = request.POST['file_name']
+            for info in infos:
+                if info['name'] == file_name:
+                    if not info['status'] == 100:
+                        err = _('%(file_name)s is in importing, please wait for seconds...') % {'file_name': file_name}
+                    else:
                         tmp_info = info
-                        tmp_infos.append(tmp_info)
-                        break
-
-                if not tmp_info:
-                    err = _('no such file %(file_name)s') % {'file_name': file_name}
                     break
 
-        else:
-            # choose first file_name by default
-            info = infos[0]
-            file_name = info['name']
-            if not info['status'] == 100:
-                err = _('%(file_name)s is in importing, please wait for seconds...') % {'file_name': file_name}
-            tmp_infos.append(info)
+            if not tmp_info:
+                err = _('no such file %(file_name)s') % {'file_name': file_name}
+                break
 
+        # Selected file_name exists & has been imported, so calculate risk.
         if not err:
             # get top-10 highest & top-10 lowest
-            h_risk_traits, h_risk_values, h_risk_ranks, h_risk_studies = get_risk_values_for_indexpage(tmp_infos[0], category=['Disease'], is_higher=True, top=10, is_log=False)
+            h_risk_traits, h_risk_values, h_risk_ranks, h_risk_studies = get_risk_values_for_indexpage(tmp_info, category=['Disease'], is_higher=True, top=10, is_log=False)
 
             # translate to Japanese
             if browser_language == 'ja':
@@ -83,7 +85,7 @@ def index(request):
         break
 
     return direct_to_template(request, 'risk_report/index.html',
-                              dict(msg=msg, err=err, infos=infos, tmp_infos=tmp_infos, do_intro=do_intro,
+                              dict(msg=msg, err=err, infos=infos, tmp_info=tmp_info, do_intro=do_intro,
                                    h_risk_traits=h_risk_traits, h_risk_values=h_risk_values,
                                    h_risk_ranks=h_risk_ranks, h_risk_studies=h_risk_studies
                                    ))
@@ -95,7 +97,9 @@ def study(request, file_name, trait, study):
     msg, err = '', ''
 
     while True:
-        if not JA2TRAITS.get(trait, trait) in TRAITS:
+        trait = JA2TRAITS.get(trait, trait)
+
+        if not trait in TRAITS:
             err = _('trait not found')
             break
 
@@ -105,7 +109,7 @@ def study(request, file_name, trait, study):
             err = _('no such file %(file_name)s') % {'file_name': file_name}
             break
 
-        trait = JA2TRAITS.get(trait, trait)
+        # Trait & file_name exists, so get the risk information about this trait.
         risk_infos = get_risk_infos_for_subpage(info, trait=trait, study=study)
         risk_infos.update(dict(msg=msg, err=err, file_name=file_name, info=info,
                                wiki_url_en=TRAITS2WIKI_URL_EN.get(trait),
@@ -129,8 +133,6 @@ def trait(request, file_name, trait):
                            is_ja=bool(get_language() == 'ja')))
 
     return direct_to_template(request, 'risk_report/trait.html', risk_infos)
-
-
 
 
 @require_http_methods(['GET', 'POST'])

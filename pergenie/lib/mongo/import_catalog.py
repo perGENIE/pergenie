@@ -8,6 +8,9 @@ import time
 import json
 from collections import Counter
 import pymongo
+import HTMLParser
+h = HTMLParser.HTMLParser()
+from xml.sax.saxutils import *
 
 from extract_region import extract_region
 from get_reference_seq import MyFasta
@@ -646,9 +649,20 @@ def _string_without_slash(text):
     if not text or text in ('NR', 'NS'):
         return None
     else:
-        # avoid slash
-        # if '/' in text:
-        #     log.warn('/ in {}'.format(text))
+        if escape(text) != text:
+            log.warn('Escaped: {}'.format(text))
+
+        # HTML Escape
+        text = escape(text)
+
+        # if h.unescape(text) != text:
+        #     log.error('Problem with escaping: {}'.format(text))
+        # elif unescape(text) != text:
+        #     log.error('Problem with escaping: {}'.format(text))
+
+        # Escape slash
+        if '/' in text:
+            log.warn('/ in {}'.format(text))
         text = text.replace('/', '&#47;')
 
         return text
