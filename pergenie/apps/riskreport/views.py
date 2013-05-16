@@ -30,6 +30,7 @@ def index(request):
     do_intro = False
     tmp_info = None
     h_risk_traits, h_risk_values, h_risk_ranks, h_risk_studies = None, None, None, None
+    file_name = ''
 
     while True:
         infos = get_user_data_infos(user_id)
@@ -62,11 +63,17 @@ def index(request):
         # If file_name is selected by user with Form,
         elif request.method == 'POST':
             form = RiskReportForm(request.POST)
+
             if not form.is_valid():
                 err = _('Invalid request.')
                 break
 
-            file_name = request.POST['file_name']
+            file_name = request.POST.get('file_name')
+            population = request.POST.get('population')
+
+            if population in ['unknown', 'Asian', 'European', 'Japanese']:
+                set_user_data_population(user_id, file_name, population)
+
             for info in infos:
                 if info['name'] == file_name:
                     if info['status'] == 100:
@@ -101,7 +108,7 @@ def index(request):
         break
 
     return direct_to_template(request, 'risk_report/index.html',
-                              dict(msg=msg, err=err, infos=infos, tmp_info=tmp_info, do_intro=do_intro,
+                              dict(msg=msg, err=err, infos=infos, tmp_info=tmp_info, do_intro=do_intro, file_name=file_name,
                                    h_risk_traits=h_risk_traits, h_risk_values=h_risk_values,
                                    h_risk_ranks=h_risk_ranks, h_risk_studies=h_risk_studies
                                    ))

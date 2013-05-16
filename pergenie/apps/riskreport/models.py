@@ -50,6 +50,13 @@ def set_user_last_viewed_file(user_id, file_name):
     user_info.update({'user_id': user_id},
                      {"$set": {'last_viewed_file': file_name}}, upsert=True)
 
+def set_user_data_population(user_id, file_name, population):
+    c = MongoClient(port=settings.MONGO_PORT)
+    user_info = c['pergenie']['data_info']
+    user_info.update({'user_id': user_id,
+                      'name': file_name},
+                     {"$set": {'population': population}})
+
 
 def _import_riskreport(tmp_info):
     c = MongoClient(port=settings.MONGO_PORT)

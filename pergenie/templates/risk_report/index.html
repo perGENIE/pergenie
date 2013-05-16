@@ -52,6 +52,7 @@
                 </thead>
                 <tbody>
                   <tr>
+                    <!-- Genome file -->
                     <td class="center">
                       <form action="{% url apps.riskreport.views.index %}" method="post" enctype="multipart/form-data">
                         {% csrf_token %}
@@ -65,13 +66,36 @@
                             {% endif %}
                             {% endfor %}
                           </select>
-
                         </fieldset>
                       </form>
                     </td>
+
+                    <!-- Population -->
                     <td class="center" data-step="4" data-intro="You can see how many studies are referenced for this population.">
-                      <a href=""><span class="badge badge-green" title="change population?">{{ tmp_info.population }}</span></a>
+                      <a data-toggle="modal" href="#changeModal"><span class="badge badge-green" title="change population?">{{ tmp_info.population }}</span></a>
+
+                      <div id="changeModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="changeModalLabel" aria-hidden="true">
+                        <div class="modal-body">
+                          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                          <h4 id="changeModalLabel">Change population to ...</h4>
+                          <form action="{% url apps.riskreport.views.index %}" method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+		                    <fieldset>
+                              <select name="population" onchange="submit(this.form)" class="population" title="change population?">
+                                <option value="unknown" {% ifequal tmp_info.population 'unknown' %}selected{% endifequal %}>Unknown</option>
+                                <option value="Asian" {% ifequal tmp_info.population 'Asian' %}selected{% endifequal %}>Asian</option>
+                                <option value="European" {% ifequal tmp_info.population 'European' %}selected{% endifequal %}>European</option>
+                                <option value="Japanese" {% ifequal tmp_info.population 'Japanese' %}selected{% endifequal %}>Japanese</option>
+                              </select>
+                            </fieldset>
+                            <input type="hidden" name="file_name" value="{{ file_name }}" />
+                          </form>
+                        </div>
+                      </div>
+
                     </td>
+
+                    <!-- File Format -->
                     <td class="center">
                       <span class="badge badge-green">{{ tmp_info.file_format|file_format }}</span>
                     </td>
