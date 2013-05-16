@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 from django.views.generic.simple import direct_to_template
 from django.shortcuts import redirect
+from django.http import Http404
 from django.utils.translation import get_language
 from django.utils.translation import ugettext as _
 from django.conf import settings
@@ -27,39 +28,36 @@ def index(request):
     msg, err = '', ''
     browser_language = get_language()
     do_intro = False
-
+    tmp_info = None
     h_risk_traits, h_risk_values, h_risk_ranks, h_risk_studies = None, None, None, None
 
     while True:
-        # determine file
         infos = get_user_data_infos(user_id)
-        tmp_info = None
 
         if not infos:
             err = _('no data uploaded')
             break
 
-        # If this is the first time for riskreport,
-        if [bool(info.get('riskreport')) for info in infos].count(True) == 0:
-            do_intro = True
+        # Determine file_name & tmp_info
 
-        # By default, browse `last_viewed_file`
         if not request.method == 'POST':
+            # By default, browse `last_viewed_file` if exists.
             tmp_user_info = get_user_info(user_id)
-            if tmp_user_info.get('last_viewed_file'):
-                file_name = tmp_user_info['last_viewed_file']
-                info = get_user_file_info(user_id, file_name)
+            if tmp_user_info.get('last_viewed_file') and get_user_file_info(user_id, tmp_user_info['last_viewed_file']):
+                tmp_info = get_user_file_info(user_id, tmp_user_info['last_viewed_file'])
+                file_name = tmp_info['name']
 
-            # If this is the first time, choose first file_name in infos.
+            # If this is the first time, choose first file_name in infos (with status == 100).
             else:
-                info = infos[0]
-                file_name = info['name']
+                for info in infos:
+                    if info['status'] == 100:
+                        file_name = info['name']
+                        tmp_info = info
+                        break
 
-            if not info['status'] == 100:
-                err = _('%(file_name)s is in importing, please wait for seconds...') % {'file_name': file_name}
-                break
-            else:
-                tmp_info = info
+                if not tmp_info:
+                    err = _('Your files are in importing, please wait for seconds...')
+                    break
 
         # If file_name is selected by user with Form,
         elif request.method == 'POST':
@@ -71,11 +69,14 @@ def index(request):
             file_name = request.POST['file_name']
             for info in infos:
                 if info['name'] == file_name:
-                    if not info['status'] == 100:
-                        err = _('%(file_name)s is in importing, please wait for seconds...') % {'file_name': file_name}
-                    else:
+                    if info['status'] == 100:
                         tmp_info = info
-                    break
+                        break
+                    else:
+                        err = _('%(file_name)s is in importing, please wait for seconds...') % {'file_name': file_name}
+
+            if err:
+                break
 
             if not tmp_info:
                 err = _('no such file %(file_name)s') % {'file_name': file_name}
@@ -93,6 +94,10 @@ def index(request):
             if browser_language == 'ja':
                 h_risk_traits = [TRAITS2JA.get(trait) for trait in h_risk_traits]
 
+            # If this is the first time for riskreport,
+            if [bool(info.get('riskreport')) for info in infos].count(True) == 0:
+                do_intro = True
+
         break
 
     return direct_to_template(request, 'risk_report/index.html',
@@ -102,33 +107,45 @@ def index(request):
                                    ))
 
 
+@require_http_methods(['GET'])
 @login_required
 def study(request, trait, study):
     user_id = request.user.username
     msg, err = '', ''
+    risk_infos = None
 
     while True:
         trait = JA2TRAITS.get(trait, trait)
 
         if not trait in TRAITS:
             err = _('trait not found')
-            break
+            raise Http404
 
-        file_name = get_user_info(user_id).get('last_viewed_file')
+        # # no need ?
+        # if not request.method == 'GET':
+        #     return redirect('apps.riskreport.views.index')
 
-        # If you have no riskreports, but this time you try to browse details of reprort,
+        # Determine `file_name`.
+        # If file_name is selected,
+        file_name = request.GET.get('file_name')
+
         if not file_name:
-            return redirect('apps.riskreport.views.index')
+            # By default, browse `last_viewed_file`
+            file_name = get_user_info(user_id).get('last_viewed_file')
+
+            # If you have no riskreports, but this time you try to browse details of reprort,
+            if not file_name:
+                return redirect('apps.riskreport.views.index')
 
         info = get_user_file_info(user_id, file_name)
 
         if not info:
             err = _('no such file %(file_name)s') % {'file_name': file_name}
-            break
+            raise Http404
 
         # Trait & file_name exists, so get the risk information about this trait.
         risk_infos = get_risk_infos_for_subpage(info, trait=trait, study=study)
-        risk_infos.update(dict(msg=msg, err=err, file_name=file_name, info=info,
+        risk_infos.update(dict(msg=msg, file_name=file_name, info=info,
                                wiki_url_en=TRAITS2WIKI_URL_EN.get(trait),
                                is_ja=bool(get_language() == 'ja')))
         break
@@ -177,7 +194,6 @@ def show_all(request):
         infos = get_user_data_infos(user_id)
         tmp_info = None
         tmp_infos = []
-        data_map = {}
 
         if not infos:
             err = _('no data uploaded')
@@ -194,27 +210,25 @@ def show_all(request):
 
         # If file_name is selected by user with Form,
         elif request.method == 'POST':
-            # form = RiskReportForm(request.POST)
-            # if not form.is_valid():
-            #     err = _('Invalid request.')
-            #     break
+            form = RiskReportForm(request.POST)
+            if not form.is_valid():
+                err = _('Invalid request.')
+                break
 
-            # for i, file_name in enumerate([request.POST['file_name'], request.POST['file_name2']]):
-            #     log.debug('file_name: {0} from form: {1}'.format(i+1, file_name))
+            #
+            for i, file_name in enumerate([request.POST['file_name'], request.POST['file_name2']]):
+                for info in infos:
+                    if info['name'] == file_name:
+                        if not info['status'] == 100:
+                            err = _('%(file_name)s is in importing, please wait for seconds...') % {'file_name': file_name}
 
-            #     for info in infos:
-            #         if info['name'] == file_name:
-            #             if not info['status'] == 100:
-            #                 err = _('%(file_name)s is in importing, please wait for seconds...') % {'file_name': file_name}
+                        tmp_info = info
+                        tmp_infos.append(tmp_info)
+                        break
 
-            #             tmp_info = info
-            #             tmp_infos.append(tmp_info)
-            #             break
-
-            #     if not tmp_info:
-            #         err = _('no such file %(file_name)s') % {'file_name': file_name}
-            #         break
-            pass
+                if not tmp_info:
+                    err = _('no such file %(file_name)s') % {'file_name': file_name}
+                    break
 
         if not err:
             for i,tmp_info in enumerate(tmp_infos):

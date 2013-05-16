@@ -8,42 +8,70 @@ from django.conf import settings
 from django.utils.translation import ugettext as _
 from django.utils.translation import activate as translation_activate
 
-import mongo.import_variants as import_variants
-# from lib.utils.date import now_date
+from lib.mongo.import_variants import import_variants
 
-import sys
-import os
-import pymongo
+import sys, os
+import datetime
+from pymongo import MongoClient
 
 
 class SimpleTest(TestCase):
     def setUp(self):
-        # create test user
+        translation_activate('en')
+
+        # create user
         self.client = Client()
         self.test_user_id = settings.TEST_USER_ID
         self.test_user_password = settings.TEST_USER_PASSWORD
         self.dummy_user_id = settings.TEST_DUMMY_USER_ID
         self.failUnlessEqual(bool(self.test_user_id != self.dummy_user_id), True)
-        user = User.objects.create_user(self.test_user_id,
-                                        '',
-                                        self.test_user_password)
-        self.test_user_dir = os.path.join(settings.UPLOAD_DIR, self.test_user_id)
-        if not os.path.exists(self.test_user_dir):
-            os.mkdir(self.test_user_dir)
+        self.user = User.objects.create_user(self.test_user_id,
+                                             '',
+                                             self.test_user_password)
 
-        translation_activate('en')
+        # no need to make directory for upload, because we will import stored data.
+
+        # create user_info
+        with MongoClient(port=settings.MONGO_PORT) as c:
+            user_info = c['pergenie']['user_info']
+            user_info.insert({'user_id': self.test_user_id,
+                              'risk_report_show_level': 'show_all',
+                              'activation_key': ''})
 
         self.file_raw_path = settings.TEST_23ANDME_FILE
         self.file_raw_name = os.path.basename(settings.TEST_23ANDME_FILE)
         self.file_cleaned_name = self.file_raw_name.replace('.', '').replace(' ', '')
 
-
-    def _delete_data(self):
-        """Delete existing test-data.
+    def _import_data(self):
+        """Import genome data for test.
         """
 
-        with pymongo.Connection(port=settings.MONGO_PORT) as connection:
-            db = connection['pergenie']
+        with MongoClient(port=settings.MONGO_PORT) as c:
+            catalog_cover_rate = c['pergenie']['catalog_cover_rate']
+            info = {'user_id': self.test_user_id,
+                    'name': self.file_cleaned_name,
+                    'raw_name': self.file_raw_name,
+                    'date': datetime.datetime.today(),
+                    'population': 'unknown',
+                    'file_format': 'andme',
+                    'catalog_cover_rate': catalog_cover_rate.find_one({'stats': 'catalog_cover_rate'})['values']['andme'],
+                    'genome_cover_rate': catalog_cover_rate.find_one({'stats': 'genome_cover_rate'})['values']['andme'],
+                    'status': float(0.0)}
+
+            data_info = c['pergenie']['data_info']
+            data_info.insert(info)
+
+            import_variants(file_path=self.file_raw_path,
+                            population='unknown',
+                            file_format='andme',
+                            user_id=self.test_user_id)
+
+    def _delete_data(self):
+        """Delete existing *test data*.
+        """
+
+        with MongoClient(port=settings.MONGO_PORT) as c:
+            db = c['pergenie']
             data_info = db['data_info']
 
             # delete collection `variants.user_id.filename`
@@ -55,84 +83,84 @@ class SimpleTest(TestCase):
             if data_info.find_one({'user_id': self.test_user_id}):
                 data_info.remove({'user_id': self.test_user_id})
 
+    def test_login_required(self):
+        response = self.client.get('/riskreport/')
+        self.assertEqual(response.status_code, 302)
 
-#     def upload_data(self):
-#         """Import test-data.
-#         """
+        # TODO: check all studies?
+        response = self.client.get('/riskreport/もやもや病%28ウィリス動脈輪閉塞症%29/A%20genome-wide%20association%20study%20identifies%20RNF213%20as%20the%20first%20Moyamoya%20disease%20gene./')
+        self.assertEqual(response.status_code, 302)
 
-#         with pymongo.Connection(port=settings.MONGO_PORT) as connection:
-#             db = connection['pergenie']
-#             data_info = db['data_info']
+        response = self.client.get('/riskreport/もやもや病%28ウィリス動脈輪閉塞症%29/A%20genome-wide%20association%20study%20identifies%20RNF213%20as%20the%20first%20Moyamoya%20disease%20gene./?file_name=' + self.file_cleaned_name)
+        self.assertEqual(response.status_code, 302)
 
-#             today =
-
-#             # add data_info
-#             info = {'user_id': self.test_user_id,
-#                     'name': self.file_cleaned_name,
-#                     'raw_name': self.file_raw_name,
-#                     'date': today,
-#                     'population': 'unknown',
-#                     'sex': 'unknown',
-#                     'file_format': 'andme',
-#                     'status': float(0.0)}
-#             data_info.insert(info)
-
-#             # add variants.user_id.file_cleaned_name
-#             import_error_state = import_variants.import_variants(self.file_raw_path,
-#                                                                  'unknown',
-#                                                                  'unknown',
-#                                                                  'andme',
-#                                                                  self.test_user_id)
-#             print import_error_state
-
-#         # TODO: mongo
-
-    # def test_login_required(self):
-    #     pass
-
-    # TODO: check if is_invalid form
-
-
-    def test_data_no_data_uploaded(self):
+    def test_index_success(self):
         self.client.login(username=self.test_user_id, password=self.test_user_password)
+        self._import_data()
 
+        response = self.client.get('/riskreport/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['err'], '')
+        self._delete_data()
+
+    def test_index_no_data_uploaded(self):
+        self.client.login(username=self.test_user_id, password=self.test_user_password)
         self._delete_data()
 
         response = self.client.get('/riskreport/')
-        self.failUnlessEqual(response.context['err'], 'no data uploaded')
+        self.assertEqual(response.context['err'], 'no data uploaded')
 
+    def test_index_file_is_in_importing(self):
+        self.client.login(username=self.test_user_id, password=self.test_user_password)
+        self._import_data()
 
-    # TODO: status < 100 の状態をどうつくるか．
-    # def test_is_importing(self):
+        # create *in importing* file
+        with MongoClient(port=settings.MONGO_PORT) as c:
+            data_info = c['pergenie']['data_info']
+            data_info.update({'name': self.file_cleaned_name,
+                              'user_id': self.test_user_id},
+                             {"$set": {'status': float(50.0)}})
+
+        response = self.client.post('/riskreport/', {'file_name': self.file_cleaned_name})
+        self.assertEqual(response.context['err'], '{} is in importing, please wait for seconds...'.format(self.file_cleaned_name))
+        self._delete_data()
+
+    def test_index_files_are_in_importing(self):
+        self.client.login(username=self.test_user_id, password=self.test_user_password)
+        self._import_data()
+
+        # create *in importing* file
+        with MongoClient(port=settings.MONGO_PORT) as c:
+            data_info = c['pergenie']['data_info']
+            data_info.update({'name': self.file_cleaned_name,
+                              'user_id': self.test_user_id},
+                             {"$set": {'status': float(50.0)}})
+
+        response = self.client.get('/riskreport/')
+        self.assertEqual(response.context['err'], 'Your files are in importing, please wait for seconds...')
+        self._delete_data()
+
+    def test_index_no_such_file(self):
+        self.client.login(username=self.test_user_id, password=self.test_user_password)
+        self._import_data()
+
+        response = self.client.post('/riskreport/', {'file_name': 'dummytxt'})
+        self.assertEqual(response.context['err'], 'no such file dummytxt')
+        self._delete_data()
+
+    # TODO: will get 302... ?
+    # def test_study_success(self):
     #     self.client.login(username=self.test_user_id, password=self.test_user_password)
+    #     self._import_data()
 
-    #     self.delete_data()
-    #     self.upload_data()
+    #     response = self.client.get('/riskreport/もやもや病%28ウィリス動脈輪閉塞症%29/A%20genome-wide%20association%20study%20identifies%20RNF213%20as%20the%20first%20Moyamoya%20disease%20gene./')
+    #     self.assertEqual(response.status_code, 200)
+    #     self._delete_data()
 
-    #     response = self.client.get('/riskreport/')
+    def test_study_nosuch_file(self):
+        self.client.login(username=self.test_user_id, password=self.test_user_password)
+        self._import_data()
 
-    #     err = _('%(file_name)s is in importing, please wait for seconds...') % {'file_name': self.file_cleaned_name}
-    #     self.failUnlessEqual(response.context['err'], err)
-
-
-    # def test_success(self):
-    #     self.client.login(username=self.test_user_id, password=self.test_user_password)
-
-    #     self.delete_data()
-    #     self.upload_data()
-
-    #     response = self.client.get('/riskreport/')
-
-    #     self.failUnlessEqual(response.context['err'], '')
-
-
-
-
-
-
-# def addition():
-#     """
-#     >>> 1+1
-#     2
-#     """
-#     pass
+        response = self.client.get('/riskreport/もやもや病%28ウィリス動脈輪閉塞症%29/A%20genome-wide%20association%20study%20identifies%20RNF213%20as%20the%20first%20Moyamoya%20disease%20gene./?file_name=' + 'dummy')
+        self.assertEqual(response.status_code, 404)
+        self._delete_data()

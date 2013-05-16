@@ -11,9 +11,19 @@ log = clogging.getColorLogger(__name__)
 
 
 def _create_demo_user():
+    # create user
     User.objects.create_user(settings.DEMO_USER_ID,
                              '',
                              settings.DEMO_USER_ID)
+
+    # no need to make directory for upload, because we will import stored data.
+
+    # create user_info
+    with MongoClient(port=settings.MONGO_PORT) as c:
+        user_info = c['pergenie']['user_info']
+        user_info.insert({'user_id': settings.DEMO_USER_ID,
+                          'risk_report_show_level': 'show_all',
+                          'activation_key': ''})
 
 
 def _import_demo_genome():
