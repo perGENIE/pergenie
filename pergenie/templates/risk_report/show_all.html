@@ -222,7 +222,7 @@ $(function () {
                     data: [{% for risk_value in risk_values.0 %}
                              {y: {{ risk_value }},
                               color: {% if risk_value < 0 %}'#2ca6f1'{% elif risk_value == 0 %}'#8a8a8a'{% else %}'#f12ca6'{% endif %},
-                              url:"{% url apps.riskreport.views.study trait=risk_traits|listvalue:forloop.counter0|urlencode study=risk_studies.0|listvalue:forloop.counter0|urlencode %}?file_name={{ tmp_infos.0.name }}%}"},
+                              url:"{% url apps.riskreport.views.study trait=risk_traits|listvalue:forloop.counter0|urlencode study=risk_studies.0|listvalue:forloop.counter0|urlencode %}?file_name={{ tmp_infos.0.name }}"},
                            {% endfor %}],
                     },
 

@@ -234,14 +234,32 @@ def show_all(request):
             for i,tmp_info in enumerate(tmp_infos):
                 tmp_risk_traits, tmp_risk_values, tmp_risk_ranks, tmp_risk_studies = get_risk_values_for_indexpage(tmp_infos[i], category=['Disease'])
 
+                # Data for person A
                 if i == 0:
                     risk_traits = tmp_risk_traits
+                    risk_values.append(tmp_risk_values)
+                    risk_ranks.append(tmp_risk_ranks)
+                    risk_studies.append(tmp_risk_studies)
 
-                risk_values.append(tmp_risk_values[0])
-                risk_ranks.append(tmp_risk_ranks)
-                risk_studies.append(tmp_risk_studies)
+                # Data for person B. (Traits in chart is based on person A, so some traits are not in person B.)
+                if i == 1:
+                    risk_values.append([])
+                    risk_ranks.append([])
+                    risk_studies.append([])
 
-            # translate to Japanese
+                    for trait in risk_traits:
+                        if not trait in tmp_risk_traits:
+                            risk_values[1].append(0.0)
+                            risk_ranks[1].append('na')
+                            risk_studies[1].append('na')
+
+                        else:
+                            j = tmp_risk_traits.index(trait)
+                            risk_values[1].append(tmp_risk_values[j])
+                            risk_ranks[1].append(tmp_risk_ranks[j])
+                            risk_studies[1].append(tmp_risk_studies[j])
+
+            # Translate to Japanese
             if browser_language == 'ja':
                 risk_traits = [TRAITS2JA.get(trait) for trait in risk_traits]
 

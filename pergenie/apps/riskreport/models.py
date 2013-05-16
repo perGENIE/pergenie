@@ -168,7 +168,7 @@ def get_risk_values_for_indexpage(tmp_info, category=[], is_higher=False, is_low
     risk_traits = [record['trait'] for record in records][:int(top)]
     risk_ranks = [record['rank'] for record in records][:int(top)]
     risk_studies = [record['highest'] for record in records][:int(top)]
-    risk_values = [[round(to_log(record['RR']), 1) for record in records if is_ok(record['RR'])][:int(top)]]
+    risk_values = [round(to_log(record['RR']), 1) for record in records if is_ok(record['RR'])][:int(top)]
 
     return risk_traits, risk_values, risk_ranks, risk_studies
 

@@ -235,7 +235,7 @@ $(function () {
             series: [
                     {
                     name: '{{ tmp_info.name }}',
-                    data: [{% for risk_value in h_risk_values.0 %}
+                    data: [{% for risk_value in h_risk_values %}
                              {y: {{ risk_value }},
                               color: {% if risk_value < 0 %}'#2ca6f1'{% elif risk_value == 0 %}'#8a8a8a'{% else %}'#f12ca6'{% endif %},
                               url:"{% url apps.riskreport.views.study trait=h_risk_traits|listvalue:forloop.counter0|urlencode study=h_risk_studies|listvalue:forloop.counter0|urlencode %}?file_name={{ tmp_info.name}}"},
