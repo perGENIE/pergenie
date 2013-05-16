@@ -16,9 +16,7 @@
           <div class="content-box transparent" data-step="1" data-intro="Your disease risk report is shown bellow.">
             <div class="padded">
               <h2>Disease Risk Report</h2>
-              <div class="padded">
-                <a href="{% static 'images/snaps/methods.png' %}">[FAQ] How are risk values calculated in perGENIE?</a>
-              </div>
+                <a href="{% static 'images/snaps/methods.png' %}">[FAQ] How are the disease risk values calculated?</a>
             </div>
           </div>
         </div>
@@ -30,15 +28,6 @@
         <button type="button" class="close" data-dismiss="alert">&times;</button>
         <strong>Information:</strong> {{ msg }}
       </div>
-      {% endif %}
-
-      {% if warns %}
-      {% for warn in warns %}
-      <div class="alert alert-warning">
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
-        <strong>Warning!</strong> {{ warn }}
-      </div>
-      {% endfor %}
       {% endif %}
 
       {% if err %}
@@ -67,7 +56,7 @@
                       <form action="{% url apps.riskreport.views.index %}" method="post" enctype="multipart/form-data">
                         {% csrf_token %}
 		                <fieldset>
-                          <select name="file_name" onchange="submit(this.form)">
+                          <select name="file_name" onchange="submit(this.form)" class="file_name" title="change genome file?">
                             {% for info in infos %}
                             {% if info == tmp_info %}
                             <option value="{{ info.name }}" selected>{{ info.raw_name }}</option>
@@ -81,9 +70,11 @@
                       </form>
                     </td>
                     <td class="center" data-step="4" data-intro="You can see how many studies are referenced for this population.">
-                      <span class="label label-success">{{ tmp_info.population }}</span>
+                      <a href=""><span class="badge badge-green" title="change population?">{{ tmp_info.population }}</span></a>
                     </td>
-                    <td class="center"><span class="label label-success">{{ tmp_info.file_format|file_format }}</span></td>
+                    <td class="center">
+                      <span class="badge badge-green">{{ tmp_info.file_format|file_format }}</span>
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -104,7 +95,7 @@
               <div class="row-fluid">
                 <div class="span12">
                   <div id="container_highest_risks"></div>
-                  <a href="{% url apps.riskreport.views.show_all %}"><button class="btn btn-green"><i class="icon-resize-full icon-white" style="margin-top: 1px;"></i> View more</button></a>
+                  <a href="{% url apps.riskreport.views.show_all %}"><button class="btn btn-green" title="view all the traits!"><i class="icon-resize-full icon-white" style="margin-top: 1px;"></i> View more</button></a>
                 </div>
               </div>
             </div>
@@ -262,4 +253,7 @@ $(document).ready(function(){
 <link href="{% static 'css/donuts.css' %}" rel="stylesheet">
 <script src="{% static 'js/donuts.js' %}"></script>
 
+<script type="text/javascript">$('span.badge').tooltip();</script>
+<script type="text/javascript">$('button.btn').tooltip();</script>
+<script type="text/javascript">$('select.file_name').tooltip();</script>
 {% endblock %}
