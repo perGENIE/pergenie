@@ -4,6 +4,7 @@
 {% block cookie_id %}risk_report{% endblock %}
 {% load staticfiles %}
 {% load extras %}
+{% load add_get_parameter %}
 
 {% block main_container %}
 <div id="main_container" class="span14">
@@ -206,7 +207,7 @@ $(function () {
                     data: [{% for risk_value in risk_values.0 %}
                              {y: {{ risk_value }},
                               color: {% if risk_value < 0 %}'#2ca6f1'{% elif risk_value == 0 %}'#8a8a8a'{% else %}'#f12ca6'{% endif %},
-                              url:"{% url apps.riskreport.views.trait trait=risk_traits|listvalue:forloop.counter0 %}"},
+                              url:"{% add_get_paramater apps.riskreport.views.trait trait=risk_traits|listvalue:forloop.counter0 %}"},
                            {% endfor %}],
                     },
                     {% endif %}
