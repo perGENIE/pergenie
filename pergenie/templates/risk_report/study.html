@@ -19,15 +19,9 @@
             <li class="active">{{ trait }}<span class="divider">/</span></li>
             <li class="active">{{ study }}</li>
           </ul>
-        </div>
-      </div>
 
-      {{ file_name }}
-
-      <div class="row-fluid">
-        <div class="span12">
           <div class="content-box transparent">
-            <div class="padded">
+            <div class="padded10">
               <h4>{{ trait }}{% if is_ja %} ({{ trait_eng }}){% endif %}
                 {% if wiki_url_en %}<span class="badge badge-yellow"><a href="{{ wiki_url_en }}" target="_blank">Wikipedia</a></span>{% endif %}
               </h4>
@@ -121,9 +115,8 @@
           <div class="content-box">
 
             <div class="content-box-header">
-              <i class="icon-bar-chart"></i> Information about SNPs
+              <i class="icon-bar-chart"></i> Information about SNPs & Genotypes of "{{ file_name }}"
             </div>
-
 
 
               <table cellpadding="0" cellspacing="0" border="0" class="display datatable" id="risk_reports_table">

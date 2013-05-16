@@ -80,3 +80,12 @@ def listvalue(list, index):
 @register.filter
 def pow10(float, value):
     return round(10**value, 3)
+
+@stringfilter
+@register.filter
+def file_format(s):
+    maps = {'andme': '23andMe',
+            'vcf_whole_genome': 'VCF (Whole Genome)',
+            'vcf_exome_truseq': 'VCF (TruSeq Exome)'}
+
+    return maps[s]

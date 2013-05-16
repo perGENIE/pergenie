@@ -52,14 +52,12 @@
       {% if not err %}
       <div class="row-fluid">
         <div class="span12">
-          <div class="content-box green" data-step="3" data-intro="Information about this genome file is here.">
-            <div class="padded">
+          <div class="content-box" data-step="3" data-intro="Information about this genome file is here.">
               <table class="table table-bordered">
                 <thead>
                   <tr>
-                    <th>Selected genome file:</th>
+                    <th><i class="icon-user"></i>Genome file</th>
                     <th><i class="icon-globe"></i>Population</th>
-                    <!-- <th><i class="icon-user"></i>Sex</th> -->
                     <th><i class="icon-file"></i>File Format</th>
                   </tr>
                 </thead>
@@ -82,14 +80,14 @@
                         </fieldset>
                       </form>
                     </td>
-                    <td class="center" data-step="4" data-intro="You can see how many studies are referenced for this population.">Number of studies for <span class="label label-success">{{ tmp_info.population }}</span> is {{ tmp_info.n_studies }}. Cover rate for this population is {{ tmp_info.catalog_cover_rate_for_this_population }} percent.</td>
-                    <!-- <td class="center"><span class="label label-success">{{ tmp_info.sex }}</span></td> -->
-                    <td class="center"><span class="label label-success">{{ tmp_info.file_format }}</span></td>
+                    <td class="center" data-step="4" data-intro="You can see how many studies are referenced for this population.">
+                      <span class="label label-success">{{ tmp_info.population }}</span>
+                    </td>
+                    <td class="center"><span class="label label-success">{{ tmp_info.file_format|file_format }}</span></td>
                   </tr>
                 </tbody>
               </table>
 
-            </div>
           </div>
         </div>
       </div>
@@ -99,7 +97,7 @@
         <div class="span6">
           <div class="content-box">
             <div class="content-box-header" data-step="2" data-intro="Your top 10 highest risks are listed here.">
-              <icon class="icon-exclamation-sign"></icon> Top 10 Highest
+              <icon class="icon-align-left"></icon> Top 10 Highest
             </div>
 
             <div class="padded">
@@ -118,20 +116,19 @@
           <div class="padded">
             <div class="content-box">
               <div class="content-box-header">
-                <icon class="icon-exclamation-sign"></icon> Top 10 Lowest
+                <icon class="icon-ok-sign"></icon> Statistics
               </div>
 
               <div class="padded">
                 <div class="row-fluid">
                   <div class="span12">
-                    ..
+                    Number of studies for
+                    is <b>{{ tmp_info.n_studies }}</b>.<br>
+                    Cover rate for this population is <b>{{ tmp_info.catalog_cover_rate_for_this_population }}</b> percent.
+                    <div class="donut">
+                      <div class="donut-arrow" data-percentage="{{ tmp_info.catalog_cover_rate_for_this_population }}"></div>
+                    </div>
 
-            {% for star in stars %}
-            <i class="icon-star"></i>
-            {% endfor %}
-            <span class="label label-green">Meta</span>
-
-                    <!-- <div id="container_lowest_risks"></div> -->
                   </div>
                 </div>
               </div>
@@ -261,4 +258,8 @@ $(document).ready(function(){
 <link href="{% static 'css/introjs.css' %}" rel="stylesheet">
 <script type="text/javascript" src="{% static 'js/intro.js' %}"></script>
 {% if do_intro %}<script type="text/javascript">introJs().start()</script>{% endif %}
+
+<link href="{% static 'css/donuts.css' %}" rel="stylesheet">
+<script src="{% static 'js/donuts.js' %}"></script>
+
 {% endblock %}
