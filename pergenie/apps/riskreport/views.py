@@ -116,6 +116,7 @@ def study(request, trait, study):
 
     while True:
         trait = JA2TRAITS.get(trait, trait)
+        trait_eng = trait
 
         if not trait in TRAITS:
             err = _('trait not found')
@@ -145,7 +146,7 @@ def study(request, trait, study):
 
         # Trait & file_name exists, so get the risk information about this trait.
         risk_infos = get_risk_infos_for_subpage(info, trait=trait, study=study)
-        risk_infos.update(dict(msg=msg, file_name=file_name, info=info,
+        risk_infos.update(dict(msg=msg, file_name=file_name, info=info, trait_eng=trait_eng,
                                wiki_url_en=TRAITS2WIKI_URL_EN.get(trait),
                                is_ja=bool(get_language() == 'ja')))
         break
