@@ -71,13 +71,11 @@ def index(request):
             file_name = request.POST.get('file_name')
             population = request.POST.get('population')
 
-            if population in ['unknown', 'Asian', 'European', 'Japanese']:
-                set_user_data_population(user_id, file_name, population)
-
             for info in infos:
                 if info['name'] == file_name:
                     if info['status'] == 100:
                         tmp_info = info
+
                         break
                     else:
                         err = _('%(file_name)s is in importing, please wait for seconds...') % {'file_name': file_name}
@@ -88,6 +86,10 @@ def index(request):
             if not tmp_info:
                 err = _('no such file %(file_name)s') % {'file_name': file_name}
                 break
+
+            if population in ['unknown', 'Asian', 'European', 'Japanese']:
+                set_user_data_population(user_id, file_name, population)
+                tmp_info['population'] = population
 
         # Selected file_name exists & has been imported, so calculate risk.
         if not err:
