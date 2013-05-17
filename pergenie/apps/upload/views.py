@@ -206,7 +206,7 @@ def status(request):
 
             uploaded_files = {}
             for record in data_info.find({'user_id': user_id}):
-                uploaded_files[record['name']] = record['status']
+                uploaded_files[record['raw_name']] = record['status']
 
         result = {'status': 'ok',
                   'error_message': None,

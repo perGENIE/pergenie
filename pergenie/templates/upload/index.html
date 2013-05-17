@@ -209,27 +209,16 @@
 
 		                {% elif uploaded.status >= 100 %}
                         <div class="">
-                          <p>100%</p>
+                          <p>100&#37;</p>
 		                </div>
 
-                        <!--                     <div class="progress progress-success"> -->
-                        <!-- 		              <div class="bar" style="width: 100%;">100%</div> -->
-
 		                {% else %}
-                        <div class="progress progress-striped progress-info active">
-		                  <div class="bar" style="width: {{ uploaded.status }}%;"></div>
+                        <div class="progress progress-striped progress-success active">
+		                  <div class="bar" style="width: {{ uploaded.status }}&#37;;"></div>
                         </div>
 		                {% endif %}
                       </td>
                       <td class="center">
-                        <!-- <a class="btn btn-success" href="#"> -->
-                        <!--   <i class="icon-zoom-in icon-white"></i> -->
-                        <!--   View -->
-                        <!-- </a> -->
-                        <!-- <a class="btn btn-info" href="#"> -->
-                        <!--   <i class="icon-edit icon-white"></i> -->
-                        <!--   Edit -->
-                        <!-- </a> -->
                         <div id="deleteModal{{ forloop.counter0 }}" class="modal hide fade in delete" style="display: none;">
                           <div class="modal-header"></div>
                           <div class="modal-body"><p>Really delete "{{ uploaded.name }}"?</p></div>
