@@ -1,26 +1,49 @@
 {% extends "layout.html" %}
 {% block title %}Upload{% endblock %}
 {% block description %}upload genome file{% endblock %}
-<!-- {% block cookie_id %}upload{% endblock %} -->
 {% load staticfiles %}
+{% load extras %}
 
 {% block main_container %}
 <div id="main_container" class="span14">
   <section id="main">
+
     <div class="container">
 
       <div class="row-fluid">
         <div class="span12">
-          <h2>Upload</h2>
+          <div class="content-box transparent">
+            <div class="padded">
+              <h2>Upload</h2>
+              <a data-toggle="modal" href="#uploadModal" class="helpModal" title="see help?" >Help for Upload <i class="icon-question-sign"></i></a>
+            </div>
+          </div>
         </div>
       </div>
 
+      <!-- alerts -->
+      {% if msg %}
+      <div class="alert alert-info">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>Information:</strong> {{ msg }}
+      </div>
+      {% endif %}
+
+      {% if err %}
+      <div class="alert alert-error">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>Error!</strong> {{ err }}
+      </div>
+      {% endif %}
+
+      <!-- upload -->
+      {% if not err %}
       <div class="row-fluid">
         <div class="span12">
           <div class="padded">
             <div class="content-box">
               <div class="content-box-header">
-                <icon class="icon-exclamation-sign"></icon> Upload
+                <icon class="icon-file"></icon> Upload Genome Files
               </div>
 
               <div class="padded">
@@ -35,7 +58,7 @@
                         <!-- </div> -->
 
                         <div class="control-group" data-step="2" data-intro="First, selcet your genome file.">
-                          <label class="control-label"><a data-toggle="modal" href="#uploadModal">Genome File <i class="icon-question-sign"></i></a></label>
+                          <label class="control-label" title="see help?"><a data-toggle="modal" href="#uploadModal">Genome File <i class="icon-question-sign"></i></a></label>
                           <div class="controls">
                             <input type="file" name="call">
                           </div>
@@ -43,7 +66,7 @@
 
                         <div data-step="3" data-intro="Next, select popultion and some other features if you can.">
                         <div class="control-group">
-                          <label class="control-label"><a data-toggle="modal" href="#uploadModal">Population <i class="icon-question-sign"></i></a></label>
+                          <label class="control-label" title="see help?"><a data-toggle="modal" href="#uploadModal">Population <i class="icon-question-sign"></i></a></label>
                           <div class="controls">
                             <select name="population">
                               <option value="unknown">Unknown</option>
@@ -66,7 +89,7 @@
                         <!-- </div> -->
 
                         <div class="control-group">
-                          <label class="control-label"><a data-toggle="modal" href="#uploadModal">File Format <i class="icon-question-sign"></i></a></label>
+                          <label class="control-label" title="see help?"><a data-toggle="modal" href="#uploadModal">File Format <i class="icon-question-sign"></i></a></label>
                           <div class="controls">
                             <select name="file_format">
                               <option value="andme">23andMe</option>
@@ -123,32 +146,34 @@
           <ul class="unstyled">
             <li><h4>Genome File</h4></li>
             <li>Choose genome file to upload.</li>
-            <li>Suppoted input file formats are:</li>
-            <ul>
-            <li><a href="{% static 'example_data/23andme.txt' %}"><code>23andMe format (SNP array data)</code></a></li>
-            <li><a href="{% static 'example_data/vcf.v4.1.vcf' %}"><code>VCF (Variant Call Format)</code></a></li>
-            </ul>
             <hr>
             <li><h4>Population</h4></li>
+            <li>Choose population of your genome file.</li>
+            <li>Suppoted populations are:</li>
             <ul>
-              <li></li>
-            </ul>
-            <hr>
-            <li><h4>Sex</h4></li>
-            <ul>
-              <li></li>
+              <li><code>Asian</code></li>
+              <li><code>European</code></li>
+              <li><code>Japanese</code></li>
+            <!-- </ul> -->
+            <!-- <li>and,</li> -->
+            <!-- <ul> -->
+              <li><code>Unknown</code>: Population is unkown or cannot be difined.</li>
             </ul>
             <hr>
             <li><h4>File Format</h4></li>
+            <li>Choose file format of your genome file.</li>
+            <li>Suppoted populations are:</li>
             <ul>
-              <li></li>
+              <li><a href="{% static 'example_data/23andme.txt' %}"><code>23andMe format (SNP array data)</code></a></li>
+              <li><a href="{% static 'example_data/vcf.v4.1.vcf' %}"><code>VCF (Variant Call Format)</code></a></li>
             </ul>
-
+            <br>
+            <li>In addition, for VCF, we distinguish <code>While Genome Sequencing</code> and <code>Targeted Exome Sequencing</code>.
+              Otherwise, we cannot distinguish whether the genotype not appear in VCF is <b>reference allele</b> or <b>not available allele in the targeted sequence</b>.
+              (Usually, records in VCF is only <b>alternative allele (non-reference allele)</b>).</li>
+            <li>See more detail <a href="{% url apps.faq.views.index %}">[FAQ] What does na in genotypes mean?</a></li>
           </ul>
 
-          <div class="modal-footer">
-            <button class="btn" data-dismiss="modal">Close</button>
-          </div>
         </div>
       </div>
     </div>
@@ -157,116 +182,113 @@
     {% if uploadeds %}
     <div class="row-fluid">
       <div class="span12">
-        <div class="padded">
-          <div class="content-box">
-            <div class="content-box-header">
-              <icon class="icon-exclamation-sign"></icon> Uploaded status
-            </div>
 
-            <div class="padded">
-              <div class="row-fluid">
-                <div class="span12">
+        <div class="content-box">
+          <div class="content-box-header">
+            <icon class="icon-list-alt"></icon> Uploaded Status
+          </div>
 
-                  <table class="table table-striped table-condensed">
-                    <thead>
-                      <tr>
-                        <th>File Name</th>
-                        <th>Date</th>
-                        <th>Population</th>
-                        <!-- <th>Sex</th> -->
-                        <th>Format</th>
-                        <th>Status</th>
-                        <th></th>
-                      </tr>
-                    </thead>
+          <div class="padded10">
+            <div class="row-fluid">
+              <div class="span12">
 
-                    <tbody>
-                      {% if uploadeds %}
-                      {% for uploaded in uploadeds %}
+                <table class="table table-striped table-condensed">
+                  <thead>
+                    <tr>
+                      <th>File Name</th>
+                      <th>Date</th>
+                      <th>Population</th>
+                      <th>File Format</th>
+                      <th>Import Status</th>
+                      <th></th>
+                    </tr>
+                  </thead>
 
-                      <tr class="uploaded_file">
-                        <td class="dataname">{{ uploaded.raw_name }}</td>
-                        <td class="center">{{ uploaded.date }}</td>
-                        <td class="center">
-                          <span class="label label-success">{{ uploaded.population }}</span>
-                        </td>
-                        <!-- <td class="center"> -->
-                        <!--   <span class="label label-success">{{ uploaded.sex }}</span> -->
-                        <!-- </td> -->
-                        <td class="center">
-                          <span class="label label-success">{{ uploaded.file_format }}</span>
-                        </td>
-                        <td class="center">
-		                  {% if uploaded.status == -1 %}
-                          <div class="">
-                            <p>Failed</p>
-		                  </div>
+                  <tbody>
+                    {% if uploadeds %}
+                    {% for uploaded in uploadeds %}
 
-		                  {% elif uploaded.status >= 100 %}
-                          <div class="">
-                            <p>100%</p>
-		                  </div>
+                    <tr class="uploaded_file">
+                      <td class="dataname">{{ uploaded.raw_name }}</td>
+                      <td class="center">{{ uploaded.date }}</td>
+                      <td class="center">
+                        <span class="label label-success">{{ uploaded.population }}</span>
+                      </td>
+                      <td class="center">
+                        <span class="label label-success">{{ uploaded.file_format|file_format }}</span>
+                      </td>
+                      <td class="center">
+		                {% if uploaded.status == -1 %}
+                        <div class="">
+                          <p>Failed</p>
+		                </div>
 
-                          <!--                     <div class="progress progress-success"> -->
-                          <!-- 		              <div class="bar" style="width: 100%;">100%</div> -->
+		                {% elif uploaded.status >= 100 %}
+                        <div class="">
+                          <p>100%</p>
+		                </div>
 
-		                  {% else %}
-                          <div class="progress progress-striped progress-info active">
-		                    <div class="bar" style="width: {{ uploaded.status }}%;"></div>
+                        <!--                     <div class="progress progress-success"> -->
+                        <!-- 		              <div class="bar" style="width: 100%;">100%</div> -->
+
+		                {% else %}
+                        <div class="progress progress-striped progress-info active">
+		                  <div class="bar" style="width: {{ uploaded.status }}%;"></div>
+                        </div>
+		                {% endif %}
+                      </td>
+                      <td class="center">
+                        <!-- <a class="btn btn-success" href="#"> -->
+                        <!--   <i class="icon-zoom-in icon-white"></i> -->
+                        <!--   View -->
+                        <!-- </a> -->
+                        <!-- <a class="btn btn-info" href="#"> -->
+                        <!--   <i class="icon-edit icon-white"></i> -->
+                        <!--   Edit -->
+                        <!-- </a> -->
+                        <div id="deleteModal{{ forloop.counter0 }}" class="modal hide fade in delete" style="display: none;">
+                          <div class="modal-header"></div>
+                          <div class="modal-body"><p>Really delete "{{ uploaded.name }}"?</p></div>
+                          <div class="modal-footer">
+			                <form action="{% url apps.upload.views.delete %}" method="POST" enctype="multipart/form-data">
+                              {% csrf_token %}
+			                  <input type="hidden" name="name" value="{{ uploaded.name }}">
+
+			                  <button class="btn" data-dismiss="modal">No.</button>
+			                  <button class="btn btn-primary" href="#" type="submit">Yes, delete this data.</button>
+			                </form>
                           </div>
-		                  {% endif %}
-                        </td>
-                        <td class="center">
-                          <!-- <a class="btn btn-success" href="#"> -->
-                          <!--   <i class="icon-zoom-in icon-white"></i> -->
-                          <!--   View -->
-                          <!-- </a> -->
-                          <!-- <a class="btn btn-info" href="#"> -->
-                          <!--   <i class="icon-edit icon-white"></i> -->
-                          <!--   Edit -->
-                          <!-- </a> -->
-                          <div id="deleteModal{{ forloop.counter0 }}" class="modal hide fade in delete" style="display: none;">
-                            <div class="modal-header"></div>
-                            <div class="modal-body"><p>Really delete "{{ uploaded.name }}"?</p></div>
-                            <div class="modal-footer">
-			                  <form action="{% url apps.upload.views.delete %}" method="POST" enctype="multipart/form-data">
-                                {% csrf_token %}
-			                    <input type="hidden" name="name" value="{{ uploaded.name }}">
-
-			                    <button class="btn" data-dismiss="modal">No.</button>
-			                    <button class="btn btn-primary" href="#" type="submit">Yes, delete this data.</button>
-			                  </form>
-                            </div>
-                          </div>
-                          {% if uploaded.status %}
+                        </div>
+                        {% if uploaded.status %}
+                        <a data-toggle="modal" href="#deleteModal{{ forloop.counter0 }}" class="btn btn-danger">
+                          <i class="icon-trash icon-white"></i>Delete
+                          {% else %}
+                          <!--                     <a href="#" class="btn btn-danger disabled"> -->
                           <a data-toggle="modal" href="#deleteModal{{ forloop.counter0 }}" class="btn btn-danger">
                             <i class="icon-trash icon-white"></i>Delete
-                            {% else %}
-                            <!--                     <a href="#" class="btn btn-danger disabled"> -->
-                            <a data-toggle="modal" href="#deleteModal{{ forloop.counter0 }}" class="btn btn-danger">
-                              <i class="icon-trash icon-white"></i>Delete
-                              {% endif%}
-		                </td>
-		              </tr>
-		              {% endfor %}
-		              {% endif %}
-                    </tbody>
-                  </table>
+                            {% endif%}
+		              </td>
+		            </tr>
+		            {% endfor %}
+		            {% endif %}
+                  </tbody>
+                </table>
 
-	              <form id="uploaded-file-deleter" style="display: none;"
-		                action="{% url apps.upload.views.delete %}" method="POST" enctype="multipart/form-data">
-                    {% csrf_token %}
-	                <input type="hidden" name="name" value="">
-	              </form>
+	            <form id="uploaded-file-deleter" style="display: none;"
+		              action="{% url apps.upload.views.delete %}" method="POST" enctype="multipart/form-data">
+                  {% csrf_token %}
+	              <input type="hidden" name="name" value="">
+	            </form>
 
-                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    {% endif %}
+    {% endif %} <!-- end uploaded -->
+
+    {% endif %} <!-- end not err -->
 
   </section>
 </div>
@@ -279,4 +301,8 @@
 
 <script type="text/javascript">window.upload_status_url = "{% url apps.upload.views.status %}";</script>
 <script type="text/javascript" src="{% static 'js/upload.js' %}"></script>
+
+
+<script type="text/javascript">$('label.control-label').tooltip();</script>
+<script type="text/javascript">$('a.helpModal').tooltip({ position: "bottom center"});</script>
 {% endblock %}
