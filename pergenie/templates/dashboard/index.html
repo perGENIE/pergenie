@@ -30,10 +30,11 @@
                 <span class="button-text">Traits</span>
               </button></a>
 
+              <a href="{% url apps.population.views.index %}">
               <button class="button square" href="#">
                 <i class="icon-globe icon-large"></i>
                 <span class="button-text">Population</span>
-              </button>
+              </button></a>
 
               {% ifnotequal user.username "demo@pergenie.org" %}
               <a href="{% url apps.upload.views.index %}">
@@ -59,28 +60,20 @@
         </div>
       </div>
 
-      <div class="row-fluid">
-        <div class="span12">
-          <div class="padded">
-            <div class="content-box">
-              <div class="content-box-header">
-                <icon class="icon-exclamation-sign"></icon> Notifications
-              </div>
+      <!-- <div class="row-fluid"> -->
+      <!--   <div class="span12"> -->
+      <!--     <div class="padded"> -->
+
+      <!--       <div class="content-box"> -->
+      <!--         <div class="content-box-header"> -->
+      <!--           <icon class="icon-exclamation-sign"></icon> Notifications -->
+      <!--         </div> -->
 
               {% if msg %}
               <div class="alert alert-info">
                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                 <strong>Information:</strong> {{ msg }}
               </div>
-              {% endif %}
-
-              {% if warns %}
-              {% for warn in warns %}
-              <div class="alert alert-warning">
-                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                <strong>Warning!</strong> {{ warn }}
-              </div>
-              {% endfor %}
               {% endif %}
 
               {% if err %}
@@ -90,10 +83,11 @@
               </div>
               {% endif %}
 
-            </div>
-          </div>
-        </div>
-      </div>
+      <!--       </div> -->
+
+      <!--     </div> -->
+      <!--   </div> -->
+      <!-- </div> -->
 
       <div class="row-fluid">
         <div class="span6">

@@ -54,6 +54,8 @@ urlpatterns = patterns('',
 
     url(r'^traits/$', 'apps.traits.views.index'),
 
+    url(r'^population/$', 'apps.population.views.index'),
+
     url(r'^library/$', 'apps.library.views.index'),
     url(r'^library/trait/$', 'apps.library.views.trait_index'),
     url(r'^library/trait/(?P<trait>.*?)/$', 'apps.library.views.trait'),
