@@ -197,6 +197,7 @@ def show_all(request):
     msg, err = '', ''
     # risk_reports, risk_traits, risk_values = None, None, None
     risk_traits, risk_values, risk_ranks, risk_studies = [], [], [], []
+    do_intro = False
     browser_language = get_language()
 
     while True:
@@ -210,7 +211,8 @@ def show_all(request):
             break
 
         if not request.method == 'POST':
-            file_name = get_user_info(user_id).get('last_viewed_file')
+            tmp_user_info = get_user_info(user_id)
+            file_name = tmp_user_info.get('last_viewed_file')
 
             # If you have no riskreports, but this time you try to browse details of reprort,
             if not file_name:
@@ -273,8 +275,13 @@ def show_all(request):
             if browser_language == 'ja':
                 risk_traits = [TRAITS2JA.get(trait) for trait in risk_traits]
 
+            if not tmp_user_info.get('viewed_riskreport_showall'):
+                log.debug(tmp_user_info.get('viewed_riskreport_showall'))
+                set_user_viewed_riskreport_showall_done(user_id)
+                do_intro = True
+
         break
 
     return direct_to_template(request, 'risk_report/show_all.html',
-                              dict(msg=msg, err=err, infos=infos, tmp_infos=tmp_infos,
+                              dict(msg=msg, err=err, infos=infos, tmp_infos=tmp_infos, do_intro=do_intro,
                                    risk_traits=risk_traits, risk_values=risk_values, risk_ranks=risk_ranks, risk_studies=risk_studies))

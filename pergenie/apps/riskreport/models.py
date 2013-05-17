@@ -57,6 +57,12 @@ def set_user_data_population(user_id, file_name, population):
                       'name': file_name},
                      {"$set": {'population': population}})
 
+def set_user_viewed_riskreport_showall_done(user_id):
+    c = MongoClient(port=settings.MONGO_PORT)
+    user_info = c['pergenie']['user_info']
+    user_info.update({'user_id': user_id},
+                     {"$set": {'viewed_riskreport_showall': True}}, upsert=True)
+
 
 def _import_riskreport(tmp_info):
     c = MongoClient(port=settings.MONGO_PORT)
