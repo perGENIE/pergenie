@@ -219,6 +219,8 @@ This email address is SEND ONLY, NO-REPLY.
 
             break
 
+    params['is_already'] = True if params['err'] == _('Already registered.') else False
+
     log.debug(params)
     return direct_to_template(request, 'frontend/register.html', params)
 

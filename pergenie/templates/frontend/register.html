@@ -3,6 +3,7 @@
 {% load i18n %}
 {% block title %}Register{% endblock %}
 {% block description %}account registration{% endblock %}
+{% load extras %}
 
 {% block main_container %}
   <body id="body">
@@ -56,6 +57,7 @@
               {% if err %}
               <div class="alert alert-error">
                 <strong>Error!</strong> {{ err }}
+                {% if is_already %}<b><a href="/login/"> Login</a></b>{% endif %}
               </div>
               {% endif %}
 
