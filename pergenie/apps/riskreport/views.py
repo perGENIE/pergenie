@@ -99,6 +99,9 @@ def index(request):
             # set `last_viewed_file`
             set_user_last_viewed_file(user_id, file_name)
 
+            # reload
+            tmp_info = get_user_file_info(user_id, file_name)
+
             # translate to Japanese
             if browser_language == 'ja':
                 h_risk_traits = [TRAITS2JA.get(trait) for trait in h_risk_traits]

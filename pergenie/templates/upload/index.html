@@ -21,23 +21,7 @@
         </div>
       </div>
 
-      <!-- alerts -->
-      {% if msg %}
-      <div class="alert alert-info">
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
-        <strong>Information:</strong> {{ msg }}
-      </div>
-      {% endif %}
-
-      {% if err %}
-      <div class="alert alert-error">
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
-        <strong>Error!</strong> {{ err }}
-      </div>
-      {% endif %}
-
       <!-- upload -->
-      {% if not err %}
       <div class="row-fluid">
         <div class="span12">
           <div class="padded">
@@ -287,8 +271,6 @@
       </div>
     </div>
     {% endif %} <!-- end uploaded -->
-
-    {% endif %} <!-- end not err -->
 
   </section>
 </div>
