@@ -21,7 +21,6 @@ from pymongo import MongoClient
 import lepl.apps.rfc3696
 email_validator = lepl.apps.rfc3696.Email()
 
-from demo import init_demo_user
 from utils import clogging
 log = clogging.getColorLogger(__name__)
 
@@ -32,9 +31,6 @@ def index(request):
 
 def trydemo(request):
     """Login as DEMO USER (demo@pergenie.org)"""
-
-    if not User.objects.filter(username=settings.DEMO_USER_ID):
-        init_demo_user()
 
     user = authenticate(username=settings.DEMO_USER_ID,
                         password=settings.DEMO_USER_ID)

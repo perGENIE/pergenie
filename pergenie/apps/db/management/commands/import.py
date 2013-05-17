@@ -1,17 +1,19 @@
 # -*- coding: utf-8 -*-
 
 from django.core.management.base import BaseCommand
+from django.contrib.auth.models import User
 from django.conf import settings
 
-from optparse import make_option
-import sys
-import os
+import sys, os
 import re
 import datetime
-import pymongo
-from termcolor import colored
 import glob
+from optparse import make_option
+from termcolor import colored
+from pymongo import MongoClient
 
+from lib.common import clean_file_name
+from lib.mongo.import_variants import import_variants
 from utils.date import today_date, today_str
 from utils import clogging
 log = clogging.getColorLogger(__name__)
@@ -33,12 +35,12 @@ class Command(BaseCommand):
             dest="gwascatalog",
             help=colored("Import GWAS Catalog into database", "green")
         ),
-        # make_option(
-        #     "-f",
-        #     action="store_true",
-        #     dest="force",
-        #     help=colored("force", "green")
-        # ),
+        make_option(
+            "--demodata",
+            action="store_true",
+            dest="demodata",
+            help=colored("Import Demo data & Demo user (if not exists) into database", "green")
+        ),
     )
 
     def handle(self, *args, **options):
@@ -113,8 +115,8 @@ class Command(BaseCommand):
                 # TODO: do risk report as test. (check if import catalog was succeed & odd records were handeled)
 
             # update 'latest' catalog in db.catalog_info
-            with pymongo.Connection(port=settings.MONGO_PORT) as connection:
-                catalog_info = connection['pergenie']['catalog_info']
+            with MongoClient(port=settings.MONGO_PORT) as c:
+                catalog_info = c['pergenie']['catalog_info']
 
                 latest_document = catalog_info.find_one({'status': 'latest'})
                 log.info('latest_document: {}'.format(latest_document))
@@ -142,6 +144,77 @@ class Command(BaseCommand):
                     log.info('No need to update catalog_info.')
 
                 log.info('latest: {}'.format(catalog_info.find_one({'status': 'latest'})))
+
+
+        elif options["demodata"]:
+            # Create user
+            if not User.objects.filter(username=settings.DEMO_USER_ID):
+                User.objects.create_user(settings.DEMO_USER_ID,
+                                         '',
+                                         settings.DEMO_USER_ID)
+
+                # no need to make directory for upload, because we will import from *stored data*.
+
+                # create user_info
+                with MongoClient(port=settings.MONGO_PORT) as c:
+                    user_info = c['pergenie']['user_info']
+
+                    if user_info.find_one({'user_id': settings.DEMO_USER_ID}):
+                        user_info.remove({'user_id': settings.DEMO_USER_ID})
+
+                    user_info.insert({'user_id': settings.DEMO_USER_ID,
+                                      'risk_report_show_level': 'show_all',
+                                      'activation_key': ''})
+
+            # Import demo data
+            with MongoClient(port=settings.MONGO_PORT) as c:
+                db = c['pergenie']
+
+                # drop old collections of `db.variants.user_id.file_name`
+                olds = []
+                for collection_name in db.collection_names():
+                    if collection_name.startswith('variants.{}.'.format(settings.DEMO_USER_ID)):
+                        olds.append(collection_name)
+
+                for old in olds:
+                    db.drop_collection(old)
+                log.debug('dropped old collections {}'.format(olds))
+
+                # remove old documents in `data_info`
+                olds = list(db['data_info'].find({'user_id': settings.DEMO_USER_ID}))
+                if olds:
+                    targets_in_data_info = db['data_info'].remove({'user_id': settings.DEMO_USER_ID})
+                log.debug('remove old documents in data_info {}'.format(olds))
+
+                # Import new data
+                targets = [settings.DEMO_23ANDME_GENOME_EU_M,
+                           settings.DEMO_23ANDME_GENOME_EU_F]  # ,
+                           # settings.TOMITA_GENOME]
+
+                for target in targets:
+                    if os.path.exists(target['name']):
+                        log.debug('demo data exists {}'.format(target['name']))
+
+                        catalog_cover_rate = c['pergenie']['catalog_cover_rate']
+                        info = {'user_id': settings.DEMO_USER_ID,
+                                'name': clean_file_name(os.path.basename(target['name'])),
+                                'raw_name': os.path.basename(target['name']),
+                                'date': datetime.datetime.today(),
+                                'population': target['population'],
+                                'file_format': target['file_format'],
+                                'catalog_cover_rate': catalog_cover_rate.find_one({'stats': 'catalog_cover_rate'})['values'][target['file_format']],
+                                'genome_cover_rate': catalog_cover_rate.find_one({'stats': 'genome_cover_rate'})['values'][target['file_format']],
+                                'status': float(0.0)}
+
+                        data_info = c['pergenie']['data_info']
+                        data_info.insert(info)
+
+                        log.debug('start importing ...')
+                        import_variants(file_path=target['name'],
+                                        population=target['population'],
+                                        file_format=target['file_format'],
+                                        user_id=settings.DEMO_USER_ID)
+
 
         else:
             self.print_help("import", "help")
