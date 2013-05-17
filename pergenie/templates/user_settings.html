@@ -1,103 +1,107 @@
 {% extends "layout.html" %}
+{% load extras %}
+{% load staticfiles %}
 {% block title %}Settings{% endblock %}
 {% block description %}settings{% endblock %}
 
-{% block main_container %}          
+{% block main_container %}
 <div id="main_container" class="span10">
+  <section id="main">
 
-  <!-- <\!-- Breadcrumb -\-> -->
-  <!-- <div class="row-fluid"> -->
-  <!--   <div class="span12"> -->
-  <!--     <ul class="breadcrumb"> -->
-  <!--       <li class="active">Catalog</li> -->
-  <!--     </ul> -->
-  <!--   </div><\!--/span-\-> -->
-  <!-- </div> -->
-            
-  <!-- Content start -->                     
-  <!-- Draggable Widgets start -->
-  <div class="row-fluid">
-    <div class="span12">
-      <div class="box grad_colour_dark_blue" id="box_1">
-        <h2 class="box_head round_top"></h2>
-        <div class="toggle_container">
-          <div class="block box_content round_bottom padding_20">
-            <div class="row-fluid">
+    <div class="container">
 
-              <div class="page-header">
-                <h1>User settings</h1>
-              </div>
-              
-              <form class="form-horizontal" action="{% url apps.settings.views.user_settings %}" method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-		        <fieldset>
-                  
-                  <!-- <label class="radio"> -->
-                  <!--   <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked> -->
-                  <!--   Option one is this and that—be sure to include why it's great -->
-                  <!-- </label> -->
-                  <!-- <label class="radio"> -->
-                  <!--   <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2"> -->
-                  <!--   Option two can be something else and selecting it will deselect option one -->
-                  <!-- </label> -->
-
-                  <p>Risk Report</p>
-
-                  current {{ current_settings.risk_report_show_level }}
-
-                    <div class="control-group">
-                      <label class="control-label">Show level</label>
-                      <div class="controls">
-                        <select name="show_level">
-                          
-                          {% if current_settings.risk_report_show_level == "not_show_all" %}
-                          <option value="show_all">Show all trait/disease</option>
-
-
-                          <option value="not_show_all" selected>Do not show some trait/disease</option>
-                          {% else %}
-                          <option value="show_all">Show all trait/disease</option>
-
-
-                          <option value="not_show_all">Do not show some trait/disease</option>
-                          {% endif %}
-
-
-
-                        </select>
-                      </div>
-                    </div>
-
-                  
-                  <div class="form-actions">
-                    <input type="submit" class="btn btn-primary">
-                    <input type="reset" value="reset" class="btn">
-                  </div>
-
-                  {% if msg %}
-                  <div class="alert alert-success">
-                    <!-- <button type="button" class="close" data-dismiss="alert">×</button> -->
-                    {{ msg }}
-                  </div>
-                  {% endif %}
-                  
-                  {% if err %}
-                  <div class="alert alert-error">
-                    <!-- <button type="button" class="close" data-dismiss="alert">×</button> -->
-                    {{ err }}
-                  </div>
-                  {% endif %}
-                  
-                </fieldset>
-              </form>
-              
+      <div class="row-fluid">
+        <div class="span12">
+          <div class="content-box transparent" data-step="1" data-intro="Your disease risk report is shown bellow.">
+            <div class="padded">
+              <h2>Settings</h2>
             </div>
           </div>
         </div>
       </div>
-    </div><!--/span-->
-  </div><!--/row-->
-  <!-- Draggable Widgets end -->
-  <!-- Content end -->
+
+      <div class="row-fluid">
+        <div class="span12">
+          <div class="content-box" data-step="3" data-intro="Information about this genome file is here.">
+
+            <div class="content-box-header" data-step="2" data-intro="Your top 10 highest risks are listed here.">
+              <icon class="icon-cogs"></icon> Risk Report Settings
+            </div>
+
+            <div class="padded">
+              <div class="row-fluid">
+                <div class="span12">
+
+                  <form class="form-horizontal" action="{% url apps.settings.views.user_settings %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+		            <fieldset>
+                      <div class="control-group">
+                        <label class="control-label" title="see help?"><a data-toggle="modal" href="#riskreportSettingModal">Show Level <i class="icon-question-sign"></i></a></label>
+                        <div class="controls">
+                          <select name="show_level">
+                            <option value="show_all" {% if current_settings.risk_report_show_level == "show_all" %}selected{% endif %}>Show all trait/disease</option>
+                            <option value="not_show_all" {% if current_settings.risk_report_show_level == "not_show_all" %}selected{% endif %}>Do not show some trait/disease</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div class="form-actions">
+                        <input type="submit" class="btn btn-primary">
+                        <input type="reset" value="reset" class="btn">
+                      </div>
+
+                    </fieldset>
+                  </form>
+
+                  <!-- Risk Report Setting Modal -->
+                  <div id="riskreportSettingModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="riskreportSettingModalLabel" aria-hidden="true">
+                    <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                      <h3 id="uploadModalLabel">Help for Risk Report Settings</h3>
+                    </div>
+                    <div class="modal-body">
+
+                      <ul class="unstyled">
+                        <!-- <li><h4></h4></li> -->
+                        <!-- <li></li> -->
+                        <!-- <hr> -->
+                        <li><h4>Show Level</h4></li>
+                        <li></li>
+                        <ul>
+                          <li><code>Show all traits and diseases. [Default]</code></li>
+                          <li><code>Do not show some traits and diseases.</code></li>
+                        </ul>
+                    </div>
+                  </div>
+
+                  <!-- alerts -->
+                  {% if msg %}
+                  <div class="alert alert-info">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    <strong>Information:</strong> {{ msg }}
+                  </div>
+                  {% endif %}
+
+                  {% if err %}
+                  <div class="alert alert-error">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    <strong>Error!</strong> {{ err }}
+                  </div>
+                  {% endif %}
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      </div>
+  </section>
 </div>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">$('label.control-label').tooltip();</script>
 {% endblock %}
