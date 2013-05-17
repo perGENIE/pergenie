@@ -10,10 +10,11 @@ from django.core.mail import mail_admins
 from django.conf import settings
 
 from apps.api import client
-# from apps.api.views import genotype, profiles, user
 
 from utils.clogging import getColorLogger
 log = getColorLogger(__name__)
+
+# SCOPE_RS_LIST = ["rs53576", "rs1815739", "rs6152", "rs1800497", "rs1805007", "rs9939609", "rs662799", "rs7495174", "rs7903146", "rs12255372", "rs1799971", "rs17822931", "rs4680", "rs1333049", "rs1801133", "rs1051730", "rs3750344", "rs4988235"]
 
 
 def view(request):
@@ -22,24 +23,17 @@ def view(request):
         access_token = request.session[client.OAUTH_KEY]
         log.debug("user has oauth access token: %s" % access_token)
 
-        #
         c = client.OAuthClient(request.session[client.OAUTH_KEY])
 
-        # TODO: check `genotyped` ?
         user_info = c.get_user()
         user_genotypes = {}
 
-        #
-        # TODO: get genotype using rabbit-mq
-        rsids = [settings.SCOPE_RS_LIST[0], 'rrr']
-
-        for rsid in rsids:
+        for rsid in setting.SCOPE_RS_LIST[0:4]:
             try:
                 user_genotypes[rsid] = c.get_genotype(rsid)
-            except:  # if external SCOPE, get `400 Client Error: Bad Request`
+            except:
+                # if external SCOPE, get `400 Client Error: Bad Request`
                 user_genotypes[rsid] = u'[]'
-
-
 
         return direct_to_template(request, "demo.html",
                                   dict(user_info=user_info,

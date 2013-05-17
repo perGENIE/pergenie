@@ -6,7 +6,7 @@ from django.conf import settings
 SCOPE = settings.SCOPE
 
 # leave these alone
-BASE_URL = "https://api.23andme.com/1/"
+BASE_URL = "https://api.23andme.com/1/demo/"
 LOGIN_URL = "https://api.23andme.com/authorize/?redirect_uri=%s&response_type=code&client_id=%s&scope=%s" % (settings.CALLBACK_URL, settings.CLIENT_ID, SCOPE)
 OAUTH_KEY = "access_token"
 

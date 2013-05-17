@@ -28,6 +28,7 @@ The 23andMe api calls this view with a ?code=xxxxxx paramter.  This parameter is
 def callback(request):
     c = client.OAuthClient()
     code = request.GET["code"]
+
     log.debug("code: %s" % code)
 
     log.debug("fetching token...")
