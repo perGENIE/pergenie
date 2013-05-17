@@ -83,6 +83,11 @@ class SimpleTest(TestCase):
             if data_info.find_one({'user_id': self.test_user_id}):
                 data_info.remove({'user_id': self.test_user_id})
 
+            user_info = c['pergenie']['user_info']
+            user_info.update({'user_id': self.test_user_id,
+                              'file_name': self.file_cleaned_name},
+                             {'$set': {'last_viewed_file': ''}}, upsert=True)
+
     def test_login_required(self):
         response = self.client.get('/riskreport/')
         self.assertEqual(response.status_code, 302)
