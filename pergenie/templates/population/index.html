@@ -1,0 +1,67 @@
+{% extends "layout.html" %}
+{% block title %}Population{% endblock %}
+{% block description %}population{% endblock %}
+{% load staticfiles %}
+{% load extras %}
+
+{% block main_container %}
+<div id="main_container" class="span14">
+  <section id="main">
+
+    <div class="container">
+
+      <div class="row-fluid">
+        <div class="span12">
+          <div class="content-box transparent">
+            <div class="padded">
+              <h2>Population</h2>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- alerts -->
+      {% if msg %}
+      <div class="alert alert-info">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>Information:</strong> {{ msg }}
+      </div>
+      {% endif %}
+
+      {% if err %}
+      <div class="alert alert-error">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>Error!</strong> {{ err }}
+      </div>
+      {% endif %}
+
+      <div class="row-fluid">
+        <div class="span14">
+          <div class="content-box">
+            <div class="content-box-header">
+              <icon class="icon-globe"></icon>
+            </div>
+
+            <div class="padded">
+              <div class="row-fluid">
+                <div class="span14">
+                  <p>PCAベースのAncestral Analysisをして，</p>
+                  <ul>
+                    <li>地図</li>
+                    <li>PCAの主成分空間の二次元・三次元上の民族クラスタにプロットした図</li>
+                  </ul>
+                  <p>などを載せる予定です．</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+</div>
+{% endblock %}
+
+{% block js %}
+{% endblock %}
