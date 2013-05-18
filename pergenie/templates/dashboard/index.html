@@ -113,8 +113,9 @@
                 {% for info in infos %}
                 <div class="tab-pane{% ifequal forloop.counter0|add:1 1 %} active{% endifequal %}" id="tab{{ forloop.counter0|add:1 }}">
                   <div class="row-fluid">
-                    <div class="span12 padded">
-                      <p><b>File name</b>: {{ info.raw_name|limit:30 }}</p>
+                    <div class="span12 padded uploaded_file">
+                      <p><b>File name</b>: </p>
+                      <p class="dataname" style="word-break: break-all">{{ info.raw_name }}</p>
                       <table class="table table-bordered">
                         <tbody>
 
@@ -124,7 +125,9 @@
                             </td>
                             <td class="center">
                               <div class="donut donut-big">
-                                <div class="donut-arrow" data-percentage="{{ info.status }}"></div>
+
+                                <div class="donut-arrow import-status" data-percentage="{{ info.status }}"></div>
+
                               </div>
                             </td>
                           </tr>
@@ -241,4 +244,7 @@
 
 <link href="{% static 'css/donuts.css' %}" rel="stylesheet">
 <script src="{% static 'js/donuts.js' %}"></script>
+
+<script type="text/javascript">window.upload_status_url = "{% url apps.upload.views.status %}";</script>
+<script type="text/javascript" src="{% static 'js/dashboard.js' %}"></script>
 {% endblock %}
