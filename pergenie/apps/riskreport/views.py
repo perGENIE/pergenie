@@ -229,6 +229,12 @@ def show_all(request):
 
             tmp_infos.append(get_user_file_info(user_id, file_name))
 
+            # Intro.js
+            if not tmp_user_info.get('viewed_riskreport_showall'):
+                log.debug(tmp_user_info.get('viewed_riskreport_showall'))
+                set_user_viewed_riskreport_showall_done(user_id)
+                do_intro = True
+
         # If file_name is selected by user with Form,
         elif request.method == 'POST':
             form = RiskReportForm(request.POST)
@@ -283,11 +289,6 @@ def show_all(request):
             # Translate to Japanese
             if browser_language == 'ja':
                 risk_traits = [TRAITS2JA.get(trait) for trait in risk_traits]
-
-            if not tmp_user_info.get('viewed_riskreport_showall'):
-                log.debug(tmp_user_info.get('viewed_riskreport_showall'))
-                set_user_viewed_riskreport_showall_done(user_id)
-                do_intro = True
 
         break
 
