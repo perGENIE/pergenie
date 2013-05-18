@@ -126,6 +126,21 @@ if snp is not in uploaded_file:
                 </p>
               </li>
 
+              <hr>
+              <li>
+                <h4>[Advanced] Why are there no riks values betwee 0 to 1 in charts?</h4>
+                <p>まず，Relative risk (RR)は2つの確率の比であるため，常に正の値になります．</p>
+                <p>RRが1より大きい値xをとるとき，x倍リスクが高いという意味です．
+                  しかし，RRが1より小さい値をとるとき，0.y倍リスクが高い，となりますが，
+                  これは逆数をとって，y倍リスクが「低い」と言い換えた方がわかりやすいと考えられます．
+                </p>
+                <p>そのため，perGENIEではRRが0から1の値を取るときその逆数をとり，
+                  また符号をマイナスにしてリスクが低くなるという意味で表記しているので，
+                  0から1の値が表示されていません．
+                </p>
+              </li>
+
+
             </div>
           </div>
         </div>
