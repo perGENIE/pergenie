@@ -38,7 +38,7 @@
             <li class="active">Show All and Comparison</li>
           </ul>
 
-          <div class="content-box transparent" data-step="1" data-intro="Your disease risk report is shown bellow.">
+          <div class="content-box transparent">
             <div class="padded10">
               <h4>Show All and Comparison</h4>
               <ul>
@@ -54,8 +54,8 @@
       <div class="row-fluid">
         <div class="span12">
           <div class="padded">
-            <div class="content-box" data-step="1" data-intro="All the disease risk values are listed in this chart." data-position='top'>
-              <div class="content-box-header">
+            <div class="content-box">
+              <div class="content-box-header" data-step="1" data-intro="All the disease risk values are listed in this chart." data-position='top'>
                 <icon class="icon-exclamation-sign"></icon>Disease Risk (Show All and Comparison)
               </div>
 
@@ -165,8 +165,8 @@ $(function () {
                 }
             },
             yAxis: {
-                max: 1,
-                min: -1,
+                max: 10,
+                min: -10,
                 title: {
                     text: '[RR]',
                     align: 'high'
@@ -219,7 +219,7 @@ $(function () {
                     {
                     name: '{ tmp_infos.1.name }}',
                     data: [{% for risk_value in risk_values.1 %}
-                             {y: {{ risk_value }},
+                             {y: {% ifnotequal risk_value 1.0 %}{{ risk_value }}{% else %}0.0{% endifnotequal %},
                               color: {% if risk_value < 0 %}'#2cf177'{% elif risk_value == 0 %}'#8a8a8a'{% else %}'#f1772c'{% endif %},
                               url:"{% url apps.riskreport.views.study trait=risk_traits|listvalue:forloop.counter0|urlencode study=risk_studies.1|listvalue:forloop.counter0|urlencode %}?file_name={{ tmp_infos.1.name }}"},
                            {% endfor %}],
@@ -227,7 +227,7 @@ $(function () {
                     {
                     name: '{{ tmp_infos.0.name }}',
                     data: [{% for risk_value in risk_values.0 %}
-                             {y: {{ risk_value }},
+                             {y: {% ifnotequal risk_value 1.0 %}{{ risk_value }}{% else %}0.0{% endifnotequal %},
                               color: {% if risk_value < 0 %}'#2ca6f1'{% elif risk_value == 0 %}'#8a8a8a'{% else %}'#f12ca6'{% endif %},
                               url:"{% url apps.riskreport.views.study trait=risk_traits|listvalue:forloop.counter0|urlencode study=risk_studies.0|listvalue:forloop.counter0|urlencode %}?file_name={{ tmp_infos.0.name }}"},
                            {% endfor %}],
@@ -238,7 +238,7 @@ $(function () {
                     {
                     name: '{{ tmp_infos.0.name }}',
                     data: [{% for risk_value in risk_values.0 %}
-                             {y: {{ risk_value }},
+                             {y: {% ifnotequal risk_value 1.0 %}{{ risk_value }}{% else %}0.0{% endifnotequal %},
                               color: {% if risk_value < 0 %}'#2ca6f1'{% elif risk_value == 0 %}'#8a8a8a'{% else %}'#f12ca6'{% endif %},
                               url:"{% url apps.riskreport.views.study trait=risk_traits|listvalue:forloop.counter0|urlencode study=risk_studies.0|listvalue:forloop.counter0|urlencode %}?file_name={{ tmp_infos.0.name }}"},
                            {% endfor %}],

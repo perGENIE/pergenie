@@ -100,7 +100,7 @@ def index(request):
         # Selected file_name exists & has been imported, so calculate risk.
         if not err:
             # get top-10 highest & top-10 lowest
-            h_risk_traits, h_risk_values, h_risk_ranks, h_risk_studies = get_risk_values_for_indexpage(tmp_info, category=['Disease'], is_higher=True, top=10, is_log=False)
+            h_risk_traits, h_risk_values, h_risk_ranks, h_risk_studies = get_risk_values_for_indexpage(tmp_info, category=['Disease'], is_higher=True, top=10)
 
             # set `last_viewed_file`
             set_user_last_viewed_file(user_id, file_name)

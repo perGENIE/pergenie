@@ -144,8 +144,36 @@ def _import_riskreport(tmp_info):
                                'n_studies': n_studies,
                                'catalog_cover_rate_for_this_population': catalog_cover_rate_for_this_population}}, upsert=True)
 
+def _log_to_signed_real(records):
+    """
+    >>> records = [{'RR': -1.0}, {'RR': 0.0}, {'RR': 0.1}, {'RR': 1.0}]
+    >>> print _log_to_signed_real(records)
+    [{'RR': -10.0}, {'RR': 1.0}, {'RR': 1.3}, {'RR': 10.0}]
+    """
+    results = []
 
-def get_risk_values_for_indexpage(tmp_info, category=[], is_higher=False, is_lower=False, top=None, is_log=True):
+    for record in records:
+        tmp_record = record
+
+        # Convert to real
+        tmp_record['RR'] = pow(10, record['RR'])
+
+        # If RR is negative effects, i.e, 0.0 < RR < 1.0,
+        # inverse it and minus sign
+        if 0.0 < tmp_record['RR'] < 1.0:
+            tmp_record['RR'] = -1.0 / record['RR']
+        elif tmp_record['RR'] == 0.0:
+            tmp_record['RR'] = 1.0
+        else:
+            tmp_record['RR'] = record['RR']
+
+        tmp_record['RR'] = round(tmp_record['RR'], 1)
+
+        results.append(tmp_record)
+
+    return results
+
+def get_risk_values_for_indexpage(tmp_info, category=[], is_higher=False, is_lower=False, top=None):  # , is_log=True):
     c = MongoClient(port=settings.MONGO_PORT)
 
     # TODO:
@@ -161,6 +189,8 @@ def get_risk_values_for_indexpage(tmp_info, category=[], is_higher=False, is_low
     # in category (=disease)
     records = [record for record in founds if TRAITS2CATEGORY.get(record['trait'], 'NA') in category ]
 
+    records = _log_to_signed_real(records)
+
     # filter for is_higher & is_lower as is_ok
     if is_higher:
         is_ok = lambda x: x >= 0.0
@@ -169,19 +199,13 @@ def get_risk_values_for_indexpage(tmp_info, category=[], is_higher=False, is_low
     else:
         is_ok = lambda x: True
 
-    # filter for is_log (default return value of risk_report() is in log)
-    if is_log:
-        to_log = lambda x: x
-    elif not is_log:
-        to_log = lambda x: 10 ** x
-
     if not top:
         top = 2000
 
     risk_traits = [record['trait'] for record in records][:int(top)]
     risk_ranks = [record['rank'] for record in records][:int(top)]
     risk_studies = [record['highest'] for record in records][:int(top)]
-    risk_values = [round(to_log(record['RR']), 1) for record in records if is_ok(record['RR'])][:int(top)]
+    risk_values = [round(record['RR'], 1) for record in records if is_ok(record['RR'])][:int(top)]
 
     return risk_traits, risk_values, risk_ranks, risk_studies
 
@@ -201,6 +225,7 @@ def get_risk_infos_for_subpage(info, trait=None, study=None):
         for snp_record in snp_records:
             snp_record['catalog_info'] = catalog.find_one({'study': study,
                                                            'snps': snp_record['snp']})
+        snp_records = _log_to_signed_real(snp_records)
 
         if get_language() == 'ja':
             trait = TRAITS2JA.get(trait, trait)
