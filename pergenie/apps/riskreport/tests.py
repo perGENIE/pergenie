@@ -130,21 +130,20 @@ class SimpleTest(TestCase):
         self.assertEqual(response.context['err'], '{} is in importing, please wait for seconds...'.format(self.file_cleaned_name))
         self._delete_data()
 
-    # FIXME:
-    # def test_index_files_are_in_importing(self):
-    #     self.client.login(username=self.test_user_id, password=self.test_user_password)
-    #     self._import_data()
+    def test_index_files_are_in_importing(self):
+        self.client.login(username=self.test_user_id, password=self.test_user_password)
+        self._import_data()
 
-    #     # create *in importing* file
-    #     with MongoClient(port=settings.MONGO_PORT) as c:
-    #         data_info = c['pergenie']['data_info']
-    #         data_info.update({'name': self.file_cleaned_name,
-    #                           'user_id': self.test_user_id},
-    #                          {"$set": {'status': float(50.0)}})
+        # create *in importing* file
+        with MongoClient(port=settings.MONGO_PORT) as c:
+            data_info = c['pergenie']['data_info']
+            data_info.update({'name': self.file_cleaned_name,
+                              'user_id': self.test_user_id},
+                             {"$set": {'status': float(50.0)}})
 
-    #     response = self.client.get('/riskreport/')
-    #     self.assertEqual(response.context['err'], 'Your files are in importing, please wait for seconds...')
-    #     self._delete_data()
+        response = self.client.get('/riskreport/')
+        self.assertEqual(response.context['err'], 'Your files are in importing, please wait for seconds...')
+        self._delete_data()
 
     def test_index_no_such_file(self):
         self.client.login(username=self.test_user_id, password=self.test_user_password)

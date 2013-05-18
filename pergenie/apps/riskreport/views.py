@@ -42,14 +42,20 @@ def index(request):
         # Determine file_name & tmp_info
 
         if not request.method == 'POST':
-            # By default, browse `last_viewed_file` if exists.
             tmp_user_info = get_user_info(user_id)
-            if tmp_user_info.get('last_viewed_file') and get_user_file_info(user_id, tmp_user_info['last_viewed_file']):
-                tmp_info = get_user_file_info(user_id, tmp_user_info['last_viewed_file'])
-                file_name = tmp_info['name']
+            while True:
+                # By default, browse `last_viewed_file` if exists.
+                log.debug(tmp_user_info.get('last_viewed_file') )
+                log.debug(get_user_file_info(user_id, tmp_user_info['last_viewed_file']))
 
-            # If this is the first time, choose first file_name in infos (with status == 100).
-            else:
+                if tmp_user_info.get('last_viewed_file'):
+                    if get_user_file_info(user_id, tmp_user_info['last_viewed_file']):
+                        if get_user_file_info(user_id, tmp_user_info['last_viewed_file'])['status'] == 100:
+                            tmp_info = get_user_file_info(user_id, tmp_user_info['last_viewed_file'])
+                            file_name = tmp_info['name']
+                            break
+
+                # If this is the first time, choose first file_name in infos (with status == 100).
                 for info in infos:
                     if info['status'] == 100:
                         file_name = info['name']
