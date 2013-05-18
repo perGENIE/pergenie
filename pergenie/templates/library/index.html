@@ -1,4 +1,5 @@
 {% extends "layout.html" %}
+{% load i18n %}
 {% load extras %}
 {% block title %}Library{% endblock %}
 {% block description %}library{% endblock %}
@@ -6,6 +7,7 @@
 {% block main_container %}
 <div id="main_container" class="span14">
   <section id="main">
+
     <div class="container">
 
       <div class="row-fluid">
@@ -60,7 +62,7 @@
               </thead>
               <tbody>
                 <tr>
-                  <td class="center"><a href="{% url apps.library.views.trait_index %}">Trait index</a></td>
+                  <td class="center"><a href="{% url apps.library.views.trait_index %}">Traits Index</a></td>
                   <td class="center">All the disease and traits in perGENIE (=GWAS Catalog, currently).</td>
                   <td class="center">
                     <span class="badge badge-yellow" title="Go to the NHGRI GWAS Catalog website"><a href="http://www.genome.gov/gwastudies/" target="_blank">GWAS Catalog</a></span>
@@ -70,7 +72,7 @@
                   </td>
                 </tr>
                 <tr>
-                  <td class="center">SNPs index</td>
+                  <td class="center">SNPs Index</td>
                   <td class="center">Under construction...</td>
                   <td class="center">
                       <span class="badge badge-yellow" title="Go to the NHGRI GWAS Catalog website"><a href="http://www.genome.gov/gwastudies/" target="_blank">GWAS Catalog</a></span>
