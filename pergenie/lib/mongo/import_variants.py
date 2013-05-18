@@ -30,6 +30,7 @@ def import_variants(file_path, population, file_format, user_id,
     file_name_cleaned = clean_file_name(file_name)
     print >>sys.stderr, '[INFO] Input file: {}'.format(file_path)
 
+    print >>sys.stderr, '[INFO] counting lines...'
     # Count input lines for calculating progress of import_variants
     file_lines = int(check_output(['wc', '-l', file_path]).split()[0])
     print >>sys.stderr, '[INFO] #lines: {}'.format(file_lines)

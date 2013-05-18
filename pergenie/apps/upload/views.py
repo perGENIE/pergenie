@@ -83,10 +83,13 @@ def index(request):
 
                 log.debug('content_type: {}'.format(call_file.content_type))
 
-                if call_file.content_type == 'text/directory' and call_file_ext == 'vcf':
+                if call_file.content_type == 'text/plain':
                     pass
-                elif not call_file.content_type == 'text/plain':
+                elif call_file.content_type in ('text/directory', 'text/vcard') and call_file_ext == 'vcf':
+                    pass
+                else:
                     err = _('file type not allowed')
+                    break
 
                 # Still need to validate that the file contains the content that the content-type header claims -- "trust but verify."
 
@@ -106,9 +109,9 @@ def index(request):
                 # Filetype identification using libmagic via python-magic
                 m = magic.Magic(mime_encoding=True)
                 magic_filetype = m.from_file(uploaded_file_path)
+                log.debug('magic_filetype {}'.format(magic_filetype))
                 if not magic_filetype in ('us-ascii'):
                     err = _('file type not allowed, or encoding not allowed')
-                    log.debug('magic_filetype {}'.format(magic_filetype))
                     try:
                         os.remove(uploaded_file_path)
                     except OSError:
@@ -120,6 +123,7 @@ def index(request):
 
                 # TODO: check if celery is alive
 
+                log.debug('checking done.')
                 # ------------------------------------
                 # Variants file passed our validation!
                 # So, import it into MongoDB.
@@ -130,7 +134,6 @@ def index(request):
                         'raw_name': call_file.name,
                         'date': datetime.datetime.today(),
                         'population': population,
-                        # 'sex': sex,
                         'file_format': file_format,
                         'catalog_cover_rate': catalog_cover_rate.find_one({'stats': 'catalog_cover_rate'})['values'][file_format],
                         'genome_cover_rate': catalog_cover_rate.find_one({'stats': 'genome_cover_rate'})['values'][file_format],

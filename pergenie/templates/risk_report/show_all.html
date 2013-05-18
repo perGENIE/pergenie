@@ -175,7 +175,7 @@ $(function () {
             tooltip: {
                 formatter: function() {
                     return ''+
-                        this.x+': '+ this.y + '[log10] '+ Math.pow(10, this.y).toFixed(3) +'[real] ';
+                        this.x + ': x' + ((this.y == 0.0) ? 1.0 : this.y);
                 }
             },
             plotOptions: {

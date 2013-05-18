@@ -212,8 +212,8 @@ $(function () {
 
             tooltip: {
                 formatter: function() {
-                    return '<b>'+ this.x +'</b><br/>'+
-                        'Risk value: '+ Highcharts.numberFormat(this.y, 3) + '[log10] <br/>' ;
+                    return '<b>'+ this.x +'</b><br/>' +
+                           ': x' + ((this.y == 0.0) ? 1.0 : this.y);
                 }
             },
             credits: {
@@ -228,7 +228,7 @@ $(function () {
             series: [{
                 name: "{{ file_name }}",
                 data: [{% for snp_record in snp_records %}
-                         {y: {{ snp_record.RR }},
+                         {y: {% ifnotequal snp_record.RR 1.0 %}{{ snp_record.RR }}{% else %}0.0{% endifnotequal %},
                           color: {% if snp_record.RR < 0 %}'#2ca6f1'{% elif snp_record.RR == 0 %}'#8a8a8a'{% else %}'#f12ca6'{% endif %},
                           },
                        {% endfor %}],

@@ -58,11 +58,7 @@
 		                <fieldset>
                           <select name="file_name" onchange="submit(this.form)" class="file_name" title="change genome file?">
                             {% for info in infos %}
-                            {% if info == tmp_info %}
-                            <option value="{{ info.name }}" selected>{{ info.raw_name }}</option>
-                            {% else%}
-                            <option value="{{ info.name }}">{{ info.raw_name }}</option>
-                            {% endif %}
+                            <option value="{{ info.name }}" {% if info.name == tmp_info.name %}selected{% endif %}>{{ info.raw_name }}</option>
                             {% endfor %}
                           </select>
                         </fieldset>
@@ -198,7 +194,7 @@ $(function () {
             tooltip: {
                 formatter: function() {
                     return ''+
-                        this.x+': x'+ this.y + ' ';
+                           this.x + ': x' + ((this.y == 0.0) ? 1.0 : this.y);
                 }
             },
             plotOptions: {
@@ -252,7 +248,7 @@ $(function () {
                     {
                     name: '{{ tmp_info.name }}',
                     data: [{% for risk_value in h_risk_values %}
-                             {y: {{ risk_value }},
+                             {y: {% ifnotequal risk_value 1.0 %}{{ risk_value }}{% else %}0.0{% endifnotequal %},
                               color: {% if risk_value < 0 %}'#2ca6f1'{% elif risk_value == 0 %}'#8a8a8a'{% else %}'#f12ca6'{% endif %},
                               url:"{% url apps.riskreport.views.study trait=h_risk_traits|listvalue:forloop.counter0|urlencode study=h_risk_studies|listvalue:forloop.counter0|urlencode %}?file_name={{ tmp_info.name}}"},
                            {% endfor %}],
