@@ -87,7 +87,7 @@ def search_variants(user_id, file_name, file_format, query, query_type=None, mon
                 if file_format == 'andme':
                     tmp_variants_map[rs] = na
                 elif file_format == 'vcf_whole_genome':
-                    tmp_catalog_map[rs] = ref * 2
+                    tmp_variants_map[rs] = ref * 2
                 elif file_format == 'vcf_exome_truseq':
                     if is_in_truseq:
                         tmp_variants_map[rs] = ref * 2
@@ -97,7 +97,7 @@ def search_variants(user_id, file_name, file_format, query, query_type=None, mon
     # print for debug
     for found_id, catalog_map in tmp_catalog_map.items():
         rs = catalog_map['rs']
-        variant = tmp_variants_map[rs]
+        variant = tmp_variants_map.get(rs)
 
         if int(found_id) < 10:
             print found_id, rs, catalog_map.get('trait'), catalog_map.get('risk_allele'), catalog_map.get('freq'), catalog_map.get('OR_or_beta'),
