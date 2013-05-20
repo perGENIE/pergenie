@@ -45,9 +45,6 @@ def index(request):
             tmp_user_info = get_user_info(user_id)
             while True:
                 # By default, browse `last_viewed_file` if exists.
-                log.debug(tmp_user_info.get('last_viewed_file') )
-                log.debug(get_user_file_info(user_id, tmp_user_info['last_viewed_file']))
-
                 if tmp_user_info.get('last_viewed_file'):
                     if get_user_file_info(user_id, tmp_user_info['last_viewed_file']):
                         if get_user_file_info(user_id, tmp_user_info['last_viewed_file'])['status'] == 100:
@@ -65,6 +62,8 @@ def index(request):
                 if not tmp_info:
                     err = _('Your files are in importing, please wait for seconds...')
                     break
+
+                break
 
         # If file_name is selected by user with Form,
         elif request.method == 'POST':
