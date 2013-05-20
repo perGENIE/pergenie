@@ -22,6 +22,7 @@ from utils.io import get_url_content
 from lib.mongo.clean_catalog import clean_catalog
 from lib.mongo.import_catalog import import_catalog
 from lib.mongo.import_dbsnp import import_dbsnp
+from lib.mongo.import_strand_db import import_strand_db
 
 
 def date2datetime(d):
@@ -47,6 +48,12 @@ class Command(BaseCommand):
             action="store_true",
             dest="dbsnp",
             help=colored("Import dbSNP into database", "green")
+        ),
+        make_option(
+            "--strand_db",
+            action="store_true",
+            dest="strand_db",
+            help=colored("Import strand_db into database", "green")
         ),
     )
 
@@ -101,7 +108,7 @@ class Command(BaseCommand):
             else:
                 # do `clean_catalog`
                 log.info('Cleaning latest gwascatalog...')
-                clean_catalog.clean_catalog(latest_catalog, latest_catalog_cleaned)
+                clean_catalog(latest_catalog, latest_catalog_cleaned)
 
             import_catalog(path_to_gwascatalog=latest_catalog_cleaned,
                            path_to_mim2gene=settings.PATH_TO_MIM2GENE,
@@ -226,6 +233,10 @@ class Command(BaseCommand):
         elif options["dbsnp"]:
             log.info('Try to import dbsnp to localhost:{0}/dbsnp.{1} ...'.format(settings.MONGO_PORT, settings.DBSNP_VERSION))
             import_dbsnp(settings.PATH_TO_DBSNP, 'dbsnp', settings.DBSNP_VERSION, True, settings.MONGO_PORT)
+
+        elif options["strand_db"]:
+            log.info('Try to import strand_db localhost:{0}/strand_db ...'.format(settings.MONGO_PORT))
+            import_strand_db(settings.STRAND_DB_DIR, settings.MONGO_PORT)
 
         else:
             self.print_help("import", "help")

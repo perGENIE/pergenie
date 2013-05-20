@@ -97,12 +97,19 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja, path_t
     if catalog_cover_rate.find_one(): c['pergenie'].drop_collection(catalog_cover_rate)
     assert catalog_cover_rate.count() == 0
 
-    dbsnp = c['dbsnp'][dbsnp_version]
+    strand_db = c['strand_db']
+    if not strand_db.collection_names():
+        log.warn('========================================')
+        log.warn('strand_db does not exist in mongodb ...')
+        log.warn('so strand check will be skipped')
+        log.warn('========================================')
+        strand_db = None
 
+    dbsnp = c['dbsnp'][dbsnp_version]
     if not dbsnp.find_one():
         log.warn('========================================')
         log.warn('dbsnp.{} does not exist in mongodb ...'.format(dbsnp_version))
-        log.warn('so strand-check will be skipped')
+        log.warn('so dbSNP check will be skipped')
         log.warn('========================================')
         dbsnp = None
 
@@ -169,7 +176,6 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja, path_t
     # catalog_summary = {}
     with open(path_to_gwascatalog, 'rb') as fin:
         for i,record in enumerate(csv.DictReader(fin, delimiter='\t')):  # , quotechar="'"):
-
             # some traits contains `spaces` at the end of it, e.g., "Airflow obstruction "...
             record['Disease/Trait'] = record['Disease/Trait'].rstrip()
 
@@ -196,36 +202,36 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja, path_t
                 log.warn('absence of "snps" or "strongest_snp_risk_allele" {0} {1}. pubmed_id:{2}'.format(data['snps'], data['strongest_snp_risk_allele'], data['pubmed_id']))
                 data['snps'], data['strongest_snp_risk_allele'], data['risk_allele'] = 'na', 'na', 'na'
                 catalog.insert(data)
+                continue
+
+            rs, data['risk_allele'] = _risk_allele(data, dbsnp=dbsnp, strand_db=strand_db)
+            if data['snps'] != rs:
+                log.warn('"snps" != "risk_allele": {0} != {1}'.format(data['snps'], rs))
+                catalog.insert(data)
+                continue
+
+            # identfy OR or beta & TODO: convert beta to OR if can
+            data['OR'] = identfy_OR_or_beta(data['OR_or_beta'], data['CI_95'])
+
+            # for DEGUG
+            if type(data['OR']) == float:
+                data['OR_or_beta'] = data['OR']
             else:
+                data['OR_or_beta'] = None
 
-                rs, data['risk_allele'] = _risk_allele(data['strongest_snp_risk_allele'], dbsnp)
-                if data['snps'] != rs:
-                    log.warn('"snps" != "risk_allele": {0} != {1}'.format(data['snps'], rs))
-                    catalog.insert(data)
-
+            # TODO: support gene records
+            for field,value in data.items():
+                if '_gene' in field or field == 'CI_95':
+                    pass
                 else:
-                    # identfy OR or beta & TODO: convert beta to OR if can
-                    data['OR'] = identfy_OR_or_beta(data['OR_or_beta'], data['CI_95'])
+                    if type(value) == list:
+                        value = str(value)
+                    counter[(field, value)] += 1
 
-                    # for DEGUG
-                    if type(data['OR']) == float:
-                        data['OR_or_beta'] = data['OR']
-                    else:
-                        data['OR_or_beta'] = None
+            # TODO: call `add_record_reliability`
+            # add_record_reliability(data)
 
-                    # TODO: support gene records
-                    for field,value in data.items():
-                        if '_gene' in field or field == 'CI_95':
-                            pass
-                        else:
-                            if type(value) == list:
-                                value = str(value)
-                            counter[(field, value)] += 1
-
-                    # TODO: call `add_record_reliability`
-                    # add_record_reliability(data)
-
-                    catalog.insert(data)
+            catalog.insert(data)
 
         counter_dicts = [{'field':k[0], 'value':k[1], 'count':v} for (k,v) in dict(counter).items()]
         catalog_stats.insert(counter_dicts)
@@ -534,76 +540,148 @@ def _rss(text):
             log.warn('in _rss, failed to convert to int: {}'.format(text))
             return None   #
 
-
-def _risk_allele(text, dbsnp):
-    """
-    * use strongest_snp_risk_allele in GWAS Catalog as risk allele, e.g., rs331615-T -> T
-    * check if is in dbSNP REF,ALT considering RV; (if dbsnp.B132 is available)
+def _platform(text):
     """
 
-    reg_risk_allele = re.compile('rs(\d+)\-(\S+)')
-    RV_map = {'A': 'T', 'T': 'A', 'G': 'C', 'C': 'G'}
+    >>> _platform('Illumina [2,272,849] (imputed)')
+    ['Illumina']
+    >>> _platform('Ilumina [475,157]')
+    ['Illumina']
+    >>> _platform('Affymetrix & Illumina [2,217,510] (imputed)')
+    ['Affymetrix', 'Illumina']
+    >>> _platform('Affymetrix[200,220]')
+    ['Affymetrix']
+    >>> _platform('Afymetrix [287,554]')
+    ['Affymetrix']
+    >>> _platform('Perlegen[438,784]')
+    ['Perlegen']
 
-    if not text or text in ('NR', 'NS'):
+    """
+    if not text: return []
+
+    result = set()
+    regexps = [(re.compile('Il(|l)umina', re.I), 'Illumina'),
+               (re.compile('Af(|f)ymetrix', re.I), 'Affymetrix'),
+               (re.compile('Perlegen', re.I), 'Perlegen')]
+
+    for regexp, vender in regexps:
+        founds = regexp.findall(text)
+
+        if founds: result.update([vender])
+
+    return sorted(list(result))
+
+def _risk_allele(data, dbsnp=None, strand_db=None):
+    """Use strongest_snp_risk_allele in GWAS Catalog as risk allele, e.g., rs331615-T -> T
+
+    Following checks will be done if available.
+
+    * Strand check: If strand of snp is `-` in strand_db, convert it to reverse complement,
+                    so that all the snp are in `+` oriented.
+
+    * dbSNP check:
+
+    TODO:
+
+    * Consistency check based on allele frequency.
+
+    """
+
+    chrom = data['chr_id']
+    pos = data['chr_pos']
+    platform = _platform(data['platform'])
+
+    if not data['strongest_snp_risk_allele']:
+        return None
+
+    # Parse `strongest_snp_risk_allele`
+    regexp_risk_allele = re.compile('rs(\d+)\-(\S+)')
+
+    try:
+        rs, risk_allele = regexp_risk_allele.findall(data['strongest_snp_risk_allele'])[0]
+    except (ValueError, IndexError):
+        log.warn('failed to parse "strongest_snp_risk_allele": {}'.format(data))
         return None, None
 
-    else:
-        try:
-            rs, risk_allele = reg_risk_allele.findall(text)[0]
-        except (ValueError, IndexError):
-            log.warn('failed to parse "strongest_snp_risk_allele": {}'.format(text))
-            return text, None
-
-        #
-        if risk_allele == '?':
-            # log.warn('allele is "?": {}'.format(text))
-            return int(rs), risk_allele
-
-        if not risk_allele in ('A', 'T', 'G', 'C'):
-            log.warn('allele is not (A,T,G,C): {}'.format(text))
-            return text, None
-
-        # *** Check if record is in dbSNP REF, ALT ***
-        else:
-            # Check if record is in dbSNP (if dbsnp is available)
-            if dbsnp:
-                tmp_rs_record = list(dbsnp.find({'rs': int(rs)}))
-                if not tmp_rs_record:
-                    log.warn('rs{0} is not in dbSNP ...'.format(rs))
-                    return int(rs), risk_allele + '?'
-                assert len(tmp_rs_record) < 2, text
-
-                ref, alt = tmp_rs_record[0]['ref'], tmp_rs_record[0]['alt']
-                ref_alt = ref.split(',') + alt.split(',')
-
-                # Check if record is in REF,ALT
-                if risk_allele in (ref, alt):
-                    pass
-
-                else:
-                    # Challenge considering RV case
-                    rev_risk_allele = RV_map[risk_allele]
-                    if 'RV' in tmp_rs_record[0]['info']:
-                        if rev_risk_allele in ref_alt:
-                            log.warn('for {0}, {1}(RV) is in REF:{2}, ALT:{3}, so return RVed. rs{4}'.format(risk_allele, rev_risk_allele, ref, alt, rs))
-                            risk_allele = rev_risk_allele
-
-                        else:
-                            log.warn('both {0} and {1}(RV) are not in REF:{2}, ALT:{3} ... rs{4}'.format(risk_allele, rev_risk_allele, ref, alt, rs))
-                            risk_allele += '?'
-
-                    # Although not RV, challenge supposing as RV
-                    else:
-                        log.warn('{0} is not in REF:{1}, ALT:{2} and not RV, '.format(risk_allele, ref, alt))
-                        if rev_risk_allele in ref_alt:
-                            log.warn('but somehow {0}(RV) is in REF, ALT ... rs{1}'.format(rev_risk_allele, rs))
-                            risk_allele = rev_risk_allele + '?'
-
-                        else:
-                            log.warn('and {0}(RV) is not in REF, ALT. rs{1}'.format(rev_risk_allele, rs))
-                            risk_allele += '?'
-
+    if risk_allele == '?':
+        log.warn('allele is "?": {}'.format(data))
         return int(rs), risk_allele
+
+    if not risk_allele in ('A', 'T', 'G', 'C'):
+        log.warn('allele is not in (A,T,G,C): {}'.format(data))
+        return int(rs), None
+
+    RV = {'A': 'T', 'T': 'A', 'G': 'C', 'C': 'G'}
+
+    # Strand check by strand_db (if strand_db is available)
+    # if strand_db:
+    #     if platform:
+    #         for vender in platform:
+    #             print chrom, pos
+    #             strand_record  = strand_db[vender].find_one({'chrom': chrom, 'pos': pos})
+    #             log.debug(strand_record)
+
+    #             # For Affymetrix, retry with rsid.
+    #             if vender == 'Affymetrix' and not strand_record:
+    #                 strand_record  = strand_db[vender].find_one({'rs': rs})
+
+    #             if strand_record:
+    #                 log.info('in strand_db {}'.format(strand_record))
+    #                 if strand_record['strand'] == '-':
+    #                     log.warn('RVed allele {}'.format(data))
+    #                     risk_allele = RV[risk_allele]
+
+    # dbSNP check (if dbsnp is available)
+    # * Strand check based on allele frequency.
+    # *
+    if dbsnp:
+        # Check if record is in dbSNP
+        found = dbsnp.find_one({'rs': int(rs)})
+        if not found:
+            log.warn('rs{0} is not in dbSNP ...'.format(rs))
+            return int(rs), risk_allele + '?'
+
+        ref, alt = found['ref'], found['alt']
+        refs = ref.split(',')
+        alts = alt.split(',')
+        assert len(refs) == 1, 'len(ref) is not 1 {}'.format(found)
+
+        # Check if record is in REF or ALT
+        if risk_allele in ref + alt:
+            pass
+
+        # TODO:
+        ref = refs[0]
+        alt = alts[0]
+
+        # Allele frequency check based on GMAF
+        # TODO: instead of GMAF, use allele frequency database for each population...
+
+        # TODO: in import_dbsnp, add {'GMAF': ...} instead of {'info': ['GMAF=...']}
+        gmaf = None
+        for info in found['info']:
+            if info.startswith('GMAF='):
+                gmaf = float(info.replace('GMAF=', ''))
+
+        if gmaf:
+            log.debug('GMAF based check...')
+
+            if not gmaf <= 0.5:
+                log.debug('GMAF > 0.5...')
+
+            # Suspicious case
+            ref_freq = 1.0 - gmaf
+            if ref == risk_allele and alt == RV[risk_allele]:
+                if ref_freq > 0.5 and data['risk_allele_frequency'] <= 0.5:
+                    log.warn('=======================================================')
+                    log.warn('Suspicious case in Allele frequency check based on GMAF')
+                    log.warn('risk_allele_frequency is not consistent with GMAF.')
+                    log.warn('maybe risk_allele is reverse stranded, so reverse it')
+                    log.warn(data)
+                    log.warn('=======================================================')
+                    return int(rs), RV[risk_allele]
+
+    return int(rs), risk_allele
 
 
 def _p_value(text):

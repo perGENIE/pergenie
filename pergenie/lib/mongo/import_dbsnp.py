@@ -72,6 +72,7 @@ def import_dbsnp(path_to_dbsnp, db_name, collection_name, is_snp_only=False, por
         print '100.0% done. {0} records imported.'.format(record_count)
 
         print 'Creating index for rsid ...',
+        dbsnp.create_index([('chrom', pymongo.ASCENDING), ('pos', pymongo.ASCENDING)])
         dbsnp.create_index([('rs', pymongo.ASCENDING)])
 
         print 'done.'
