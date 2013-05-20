@@ -21,6 +21,7 @@ from utils.io import get_url_content
 
 import mongo.clean_catalog as clean_catalog
 import mongo.import_catalog as import_catalog
+import mongo.import_dbsnp as import_dbsnp
 
 
 def date2datetime(d):
@@ -40,6 +41,12 @@ class Command(BaseCommand):
             action="store_true",
             dest="demodata",
             help=colored("Import Demo data & Demo user (if not exists) into database", "green")
+        ),
+        make_option(
+            "--dbsnp",
+            action="store_true",
+            dest="dbsnp",
+            help=colored("Import dbSNP into database", "green")
         ),
     )
 
@@ -215,6 +222,8 @@ class Command(BaseCommand):
                                         file_format=target['file_format'],
                                         user_id=settings.DEMO_USER_ID)
 
+        elif options["dbsnp"]:
+            import_dbsnp(settings.PATH_TO_DBSNP, 'dbsnp', settings.DBSNP_VERSION, True, settings.MONGO_PORT)
 
         else:
             self.print_help("import", "help")

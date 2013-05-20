@@ -97,11 +97,11 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja, path_t
     if catalog_cover_rate.find_one(): c['pergenie'].drop_collection(catalog_cover_rate)
     assert catalog_cover_rate.count() == 0
 
-    dbsnp = c['dbsnp']['B132']
+    dbsnp = c['dbsnp'][settings.DBSNP_VERSION]
 
     if not dbsnp.find_one():
         log.warn('========================================')
-        log.warn('dbsnp.B132 does not exist in mongodb ...')
+        log.warn('dbsnp.{} does not exist in mongodb ...'.format(settings.DBSNP_VERSION))
         log.warn('so strand-check will be skipped')
         log.warn('========================================')
         dbsnp = None
