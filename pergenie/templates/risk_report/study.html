@@ -228,7 +228,7 @@ $(function () {
             series: [{
                 name: "{{ file_name }}",
                 data: [{% for snp_record in snp_records %}
-                         {y: {% ifnotequal snp_record.RR 1.0 %}{{ snp_record.RR }}{% else %}0.0{% endifnotequal %},
+                         {y: {% ifnotequal snp_record.RR|abs 1.0 %}{{ snp_record.RR }}{% else %}0.0{% endifnotequal %},
                           color: {% if snp_record.RR < 0 %}'#2ca6f1'{% elif snp_record.RR == 0 %}'#8a8a8a'{% else %}'#f12ca6'{% endif %},
                           },
                        {% endfor %}],

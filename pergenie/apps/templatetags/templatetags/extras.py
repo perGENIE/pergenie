@@ -6,6 +6,7 @@ To use filters bellow, put `{% load extras %}}` in templates.
 
 from django import template
 from django.template.defaultfilters import stringfilter  # 第一引数に文字列しかとらない
+import math
 
 register = template.Library()
 
@@ -80,6 +81,17 @@ def listvalue(list, index):
 @register.filter
 def pow10(float, value):
     return round(10**value, 3)
+
+@stringfilter
+@register.filter
+def abs(s):
+    #
+    try:
+        value = float(s)
+    except ValueError:
+        return s
+
+    return math.fabs(value)
 
 @stringfilter
 @register.filter
