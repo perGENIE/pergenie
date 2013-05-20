@@ -262,8 +262,8 @@ def risk_calculation(catalog_map, variants_map, population, user_id, file_name,
 
                 tmp_value = risk_store[trait][study][rs]['RR']
 
+                #
                 if is_log:
-                   # log
                     try:
                         tmp_value = math.log10(risk_store[trait][study][rs]['RR'])
                     except ValueError:
@@ -272,20 +272,20 @@ def risk_calculation(catalog_map, variants_map, population, user_id, file_name,
                             tmp_value = -2.0  # -inf
 
                 risk_store[trait][study][rs]['RR_real'] = risk_store[trait][study][rs]['RR']
-                risk_store[trait][study][rs]['RR'] = round(tmp_value, 3)
+                risk_store[trait][study][rs]['RR'] = tmp_value
 
                 if tmp_value:
-                    # round
-                    tmp_value = round(tmp_value, 3)  # ##
-
                     if not trait in risk_report:
                         risk_report[trait] = {study: tmp_value}  # initial
                     else:
                         if not study in risk_report[trait]:
                             risk_report[trait][study] = tmp_value  # after initial
                         else:
-                            risk_report[trait][study] *= tmp_value
-                            risk_report[trait][study] = round(risk_report[trait][study], 2)
+                            #
+                            if is_log:
+                                risk_report[trait][study] += tmp_value
+                            else:
+                                risk_report[trait][study] *= tmp_value
 
     return risk_store, risk_report
 

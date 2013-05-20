@@ -119,23 +119,29 @@ def _import_riskreport(tmp_info):
     if users_reports.find_one():
         c['pergenie'].drop_collection(users_reports)
 
-    for trait, x in risk_reports.items():
+    for trait, study_level_rank_and_values in risk_reports.items():
+        # Get highest reriability study
         studies = list()
-        for study, y in risk_store[trait].items():
-            for snp, z in y.items():
-                studies.append(dict(snp=snp,
-                                    RR=z['RR'],  # snp-level
-                                    genotype=z['variant_map'],  # snp-level
-                                    study=study,
-                                    rank=x.get(study, ['na'])[0]  # study-level  # FIXME: why key-error occur?
-                                ))
-
+        for study, rank_and_values in study_level_rank_and_values.items():
+            studies.append(dict(study=study, rank=rank_and_values[0], RR=rank_and_values[1]))
         highest = get_highest_priority_study(studies)
+
+        # Get SNP level infos (RR, genotype, etc...)
+        snp_level_records = list()
+        for study, snp_level_sotres in risk_store[trait].items():
+            for snp, snp_level_sotre in snp_level_sotres.items():
+                snp_level_records.append(dict(snp=snp,
+                                              RR=snp_level_sotre['RR'],  # snp-level
+                                              genotype=snp_level_sotre['variant_map'],  # snp-level
+                                              study=study,
+                                              rank=study_level_rank_and_values.get(study, ['na'])[0]  # study-level  # FIXME: why key-error occur?
+                                          ))
+
         users_reports.insert(dict(trait=trait,
                                   RR=highest['RR'],
                                   rank=highest['rank'],
                                   highest=highest['study'],
-                                  studies=studies), upsert=True)
+                                  studies=snp_level_records), upsert=True)
 
     # Update data_info
     data_info = c['pergenie']['data_info']
@@ -185,6 +191,9 @@ def get_risk_values_for_indexpage(tmp_info, category=[], is_higher=False, is_low
 
     # get traits, sorted by RR
     founds = list(users_reports.find().sort('RR', DESCENDING))
+    log.info('===============')
+    log.info(pformat(founds))
+    log.info('===============')
 
     # in category (=disease)
     records = [record for record in founds if TRAITS2CATEGORY.get(record['trait'], 'NA') in category ]
@@ -221,6 +230,7 @@ def get_risk_infos_for_subpage(info, trait=None, study=None):
         record = users_reports.find_one({'trait': trait})
         record['catalog_info'] = catalog.find_one({'study': study})
 
+        # Get SNP infos (RR, genotype, etc...) for *this* stydy.
         snp_records = [rec for rec in record['studies'] if rec['study'] == study]
         for snp_record in snp_records:
             snp_record['catalog_info'] = catalog.find_one({'study': study,
