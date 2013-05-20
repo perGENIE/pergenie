@@ -19,9 +19,9 @@ from utils import clogging
 log = clogging.getColorLogger(__name__)
 from utils.io import get_url_content
 
-import mongo.clean_catalog as clean_catalog
-import mongo.import_catalog as import_catalog
-import mongo.import_dbsnp as import_dbsnp
+from lib.mongo.clean_catalog import clean_catalog
+from lib.mongo.import_catalog import import_catalog
+from lib.mongo.import_dbsnp import import_dbsnp
 
 
 def date2datetime(d):
@@ -103,15 +103,15 @@ class Command(BaseCommand):
                 log.info('Cleaning latest gwascatalog...')
                 clean_catalog.clean_catalog(latest_catalog, latest_catalog_cleaned)
 
-            import_catalog.import_catalog(path_to_gwascatalog=latest_catalog_cleaned,
-                                          path_to_mim2gene=settings.PATH_TO_MIM2GENE,
-                                          path_to_eng2ja=settings.PATH_TO_ENG2JA,
-                                          path_to_disease2wiki=settings.PATH_TO_DISEASE2WIKI,
-                                          path_to_interval_list_dir=settings.PATH_TO_INTERVAL_LIST_DIR,
-                                          path_to_reference_fasta=settings.PATH_TO_REFERENCE_FASTA,
-                                          dbsnp_version=settings.DBSNP_VERSION,
-                                          catalog_summary_cache_dir=settings.CATALOG_SUMMARY_CACHE_DIR,
-                                          mongo_port=settings.MONGO_PORT)
+            import_catalog(path_to_gwascatalog=latest_catalog_cleaned,
+                           path_to_mim2gene=settings.PATH_TO_MIM2GENE,
+                           path_to_eng2ja=settings.PATH_TO_ENG2JA,
+                           path_to_disease2wiki=settings.PATH_TO_DISEASE2WIKI,
+                           path_to_interval_list_dir=settings.PATH_TO_INTERVAL_LIST_DIR,
+                           path_to_reference_fasta=settings.PATH_TO_REFERENCE_FASTA,
+                           dbsnp_version=settings.DBSNP_VERSION,
+                           catalog_summary_cache_dir=settings.CATALOG_SUMMARY_CACHE_DIR,
+                           mongo_port=settings.MONGO_PORT)
 
             # TODO: get latest information of gwascatalog (dbSNP version & refgenome version)
             # form .pdf -> x
@@ -224,6 +224,7 @@ class Command(BaseCommand):
                                         user_id=settings.DEMO_USER_ID)
 
         elif options["dbsnp"]:
+            log.info('Try to import dbsnp to localhost:{0}/dbsnp.{1} ...'.format(settings.MONGO_PORT, settings.DBSNP_VERSION))
             import_dbsnp(settings.PATH_TO_DBSNP, 'dbsnp', settings.DBSNP_VERSION, True, settings.MONGO_PORT)
 
         else:
