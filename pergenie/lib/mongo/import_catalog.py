@@ -22,7 +22,7 @@ _g_gene_symbol_map = {}  # { Gene Symbol => (Entrez Gene ID, OMIM Gene ID) }
 _g_gene_id_map = {}      # { Entrez Gene ID => (Gene Symbol, OMIM Gene ID) }
 
 
-def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja, path_to_disease2wiki, path_to_interval_list_dir, path_to_reference_fasta,
+def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja, path_to_disease2wiki, path_to_interval_list_dir, path_to_reference_fasta, dbsnp_version,
                    catalog_summary_cache_dir, mongo_port):
     c = pymongo.MongoClient(port=mongo_port)
 
@@ -97,11 +97,11 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja, path_t
     if catalog_cover_rate.find_one(): c['pergenie'].drop_collection(catalog_cover_rate)
     assert catalog_cover_rate.count() == 0
 
-    dbsnp = c['dbsnp'][settings.DBSNP_VERSION]
+    dbsnp = c['dbsnp'][dbsnp_version]
 
     if not dbsnp.find_one():
         log.warn('========================================')
-        log.warn('dbsnp.{} does not exist in mongodb ...'.format(settings.DBSNP_VERSION))
+        log.warn('dbsnp.{} does not exist in mongodb ...'.format(dbsnp_version))
         log.warn('so strand-check will be skipped')
         log.warn('========================================')
         dbsnp = None
