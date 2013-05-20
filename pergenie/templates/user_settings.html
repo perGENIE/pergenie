@@ -31,6 +31,7 @@
             <div class="padded">
               <div class="row-fluid">
                 <div class="span12">
+                  {{ current_settings }}
 
                   <form class="form-horizontal" action="{% url apps.settings.views.user_settings %}" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
@@ -42,6 +43,26 @@
                             <option value="show_all" {% if current_settings.risk_report_show_level == "show_all" %}selected{% endif %}>Show all trait/disease</option>
                             <option value="not_show_all" {% if current_settings.risk_report_show_level == "not_show_all" %}selected{% endif %}>Do not show some trait/disease</option>
                           </select>
+                        </div>
+                      </div>
+
+                      <hr>
+                      <div class="control-group">
+                        <label class="control-label">Advanced Settings</label>
+                        <div class="controls">
+                          Restriction in VCF (Exome)
+                          <label class="checkbox">
+                            <input type="checkbox" id="exome_ristricted" name="exome_ristricted" {% if current_settings.exome_ristricted %}checked{% endif %}> DO NOT use variants outside the targeted exome region.
+                            <a href="{% url apps.faq.views.index%}#variatns_outside_targeted_region"> See [FAQ]</a>
+                          </label>
+                        </div>
+
+                        <div class="controls">
+                          Charts
+                          <label class="checkbox">
+                            <input type="checkbox" id="use_log" name="use_log" {% if current_settings.use_log %}checked{% endif %}> Use logarithmic scale in disease risk reports.
+                            <a href="{% url apps.faq.views.index%}#RR_scale_in_chart"> See [FAQ]</a>
+                          </label>
                         </div>
                       </div>
 
