@@ -5,7 +5,6 @@ import sys
 import subprocess
 import argparse
 import csv
-import time
 
 from pymongo import MongoClient
 
@@ -20,14 +19,18 @@ def import_dbsnp(path_to_dbsnp, db_name, collection_name, is_snp_only=False, por
       * This function is independent from Django.
     """
 
+    SNP_tag = 'VC=' + {'B132': 'SNP',
+                       'B137': 'SNV'}[collection_name]
+
     with MongoClient(port=port) as c:
         dbsnp = c[db_name][collection_name]
 
         # ensure old collections does not exist
-        if dbsnp.find_one(): c[db_name].drop_collection(collection_name)
+        if dbsnp.find_one():
+            c[db_name].drop_collection(collection_name)
+            print 'Dropped old collection.'
         assert dbsnp.count() == 0
 
-        start = time.time()
         print 'Counting input lines ...',
         file_lines = int(subprocess.check_output(['wc', '-l', path_to_dbsnp]).split()[0])
         print 'done. # of lines: {0}'.format(file_lines)
@@ -56,9 +59,12 @@ def import_dbsnp(path_to_dbsnp, db_name, collection_name, is_snp_only=False, por
                 for dict_name, record_name, converter in fields:
                     data[dict_name] = converter(record[record_name])
 
-                if not is_snp_only or (is_snp_only and 'VC=SNP' in data['info']):
-                    dbsnp.insert(data)
-                    record_count += 1
+                if is_snp_only:
+                    if not SNP_tag in data['info']:
+                        continue
+
+                dbsnp.insert(data)
+                record_count += 1
 
                 if i>0 and i%100000 == 0:
                     print '{0}% done. {1} records imported.'.format(round(float(i)/float(file_lines),3)*100, record_count)
@@ -68,8 +74,7 @@ def import_dbsnp(path_to_dbsnp, db_name, collection_name, is_snp_only=False, por
         print 'Creating index for rsid ...',
         dbsnp.create_index([('rs', pymongo.ASCENDING)])
 
-        end = time.time()
-        print 'done. total {0} mins.'.format(round((end - start) / 60))
+        print 'done.'
 
 
 def _integer(text):
