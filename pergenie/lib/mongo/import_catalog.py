@@ -7,6 +7,7 @@ import datetime
 import time
 import json
 from collections import Counter
+from pprint import pformat
 import pymongo
 import HTMLParser
 h = HTMLParser.HTMLParser()
@@ -21,6 +22,7 @@ log = clogging.getColorLogger(__name__)
 _g_gene_symbol_map = {}  # { Gene Symbol => (Entrez Gene ID, OMIM Gene ID) }
 _g_gene_id_map = {}      # { Entrez Gene ID => (Gene Symbol, OMIM Gene ID) }
 
+REVERSED_STATS = {'GMAF': 0, 'RV': 0}
 
 def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja, path_to_disease2wiki, path_to_interval_list_dir, path_to_reference_fasta, dbsnp_version,
                    catalog_summary_cache_dir, mongo_port):
@@ -241,6 +243,7 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja, path_t
         catalog_stats.create_index('field')
 
     log.info('# of documents in catalog (after): {}'.format(catalog.count()))
+    log.info('REVERSED_STATS: {}'.format(pformat(REVERSED_STATS)))
 
     # Add `is_in_truseq`, `is_in_andme` flags
     n_records, n_truseq, n_andme = 0, 0, 0
@@ -604,7 +607,7 @@ def _risk_allele(data, dbsnp=None, strand_db=None):
         return None, None
 
     if risk_allele == '?':
-        log.warn('allele is "?": {}'.format(data))
+        log.warn('allele is "?". pubmed_id:{}'.format(data['pubmed_id']))
         return int(rs), risk_allele
 
     if not risk_allele in ('A', 'T', 'G', 'C'):
@@ -647,8 +650,8 @@ def _risk_allele(data, dbsnp=None, strand_db=None):
         assert len(refs) == 1, 'len(ref) is not 1 {}'.format(found)
 
         # Check if record is in REF or ALT
-        if risk_allele in ref + alt:
-            pass
+        if not risk_allele in ref + alt:
+            log.warn('risk_allele is not in ref + alt...')
 
         # TODO:
         ref = refs[0]
@@ -658,14 +661,16 @@ def _risk_allele(data, dbsnp=None, strand_db=None):
         # TODO: instead of GMAF, use allele frequency database for each population...
 
         # TODO: in import_dbsnp, add {'GMAF': ...} instead of {'info': ['GMAF=...']}
+        # TODO: in import_dbsnp, add {'RV': True} instead of {'info': ['RV']}
         gmaf = None
+        is_RV = None
         for info in found['info']:
             if info.startswith('GMAF='):
                 gmaf = float(info.replace('GMAF=', ''))
+            if info == 'RV':
+                is_RV = True
 
         if gmaf:
-            log.debug('GMAF based check...')
-
             if not gmaf <= 0.5:
                 log.debug('GMAF > 0.5...')
 
@@ -674,11 +679,28 @@ def _risk_allele(data, dbsnp=None, strand_db=None):
             if ref == risk_allele and alt == RV[risk_allele]:
                 if ref_freq > 0.5 and data['risk_allele_frequency'] <= 0.5:
                     log.warn('=======================================================')
-                    log.warn('Suspicious case in Allele frequency check based on GMAF')
+                    log.warn('Suspicious case in Allele frequency check based on GMAF.')
                     log.warn('risk_allele_frequency is not consistent with GMAF.')
-                    log.warn('maybe risk_allele is reverse stranded, so reverse it')
+                    log.warn('Maybe risk_allele is reverse stranded, so reverse it.')
                     log.warn(data)
                     log.warn('=======================================================')
+                    REVERSED_STATS['GMAF'] += 1
+                    return int(rs), RV[risk_allele]
+
+        # Strand check based on `RV` tag.
+        if is_RV:
+            log.debug('is RV...')
+
+            # Suspicious case
+            if not risk_allele in [ref] + alts:
+                if RV[risk_allele] in [ref] + alts:
+                    log.warn('=================================================================')
+                    log.warn('Suspicious case in Allele frequency check based RV tag.')
+                    log.warn('risk_allele is not in ref + alts, but RV[risk_allele] is in them.')
+                    log.warn('Maybe risk_allele is reverse stranded, so reverse it.')
+                    log.warn(data)
+                    log.warn('=================================================================')
+                    REVERSED_STATS['RV'] += 1
                     return int(rs), RV[risk_allele]
 
     return int(rs), risk_allele

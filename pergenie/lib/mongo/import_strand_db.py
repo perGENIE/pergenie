@@ -10,6 +10,7 @@ def import_strand_db(path_to_reference_dir, port=27017):
     * source: http://www.well.ox.ac.uk/~wrayner/strand/
 
       * Illumina: `HumanOmni2.5M-b37-v2.strand`
+                  `HumanOmni5-Quad`
 
       ```
       GA008510 Y 13311305 100 + AG
@@ -75,24 +76,25 @@ def import_strand_db(path_to_reference_dir, port=27017):
             print 'Affymetrix done.', count
 
         # Illumina
-        with open(os.path.join(path_to_reference_dir, 'HumanOmni2.5M-b37-v2.strand'), 'rb') as fin:
-            illumina = db['Illumina']
-            count = 0
+        for file_name in ['HumanOmni1-Quad_v1-0_B-b37.strand', 'HumanOmni2.5M-b37-v2.strand']:
+            with open(os.path.join(path_to_reference_dir, file_name), 'rb') as fin:
+                illumina = db['Illumina']
+                count = 0
 
-            for line in fin:
-                record = line.strip().split('\t')
+                for line in fin:
+                    record = line.strip().split('\t')
 
-                _probe_set_id, chrom, pos, _prob, strand, _alleles = record
-                try:
-                    pos = int(pos)
-                except ValueError:
-                    print >>sys.stderr, record
-                    continue
+                    _probe_set_id, chrom, pos, _prob, strand, _alleles = record
+                    try:
+                        pos = int(pos)
+                    except ValueError:
+                        print >>sys.stderr, record
+                        continue
 
-                assert strand in ('+', '-')
+                    assert strand in ('+', '-')
 
-                illumina.insert({'chrom': chrom, 'pos': pos, 'strand': strand})
-                count += 1
+                    illumina.insert({'chrom': chrom, 'pos': pos, 'strand': strand})
+                    count += 1
 
             illumina.create_index([('chr', ASCENDING), ('pos', ASCENDING)])
             print 'Illumina done.', count
