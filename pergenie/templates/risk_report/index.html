@@ -40,7 +40,7 @@
       {% if not err %}
       <div class="row-fluid">
         <div class="span12">
-          <div class="content-box" data-step="3" data-intro="Information about this genome file is here.">
+          <div class="content-box" data-step="2" data-intro="Information about this genome file is here.">
               <table class="table table-bordered">
                 <thead>
                   <tr>
@@ -52,7 +52,7 @@
                 <tbody>
                   <tr>
                     <!-- Genome file -->
-                    <td class="center">
+                    <td class="center" data-step="3" data-intro="You can select and change genome files here.">
                       <form action="{% url apps.riskreport.views.index %}" method="post" enctype="multipart/form-data">
                         {% csrf_token %}
 		                <fieldset>
@@ -66,7 +66,7 @@
                     </td>
 
                     <!-- Population -->
-                    <td class="center" data-step="4" data-intro="You can see how many studies are referenced for this population.">
+                    <td class="center" data-step="4" data-intro="Also, you can change population setting for this genome file.">
                       <a data-toggle="modal" href="#changeModal"><span class="badge badge-green" title="change population?">{{ tmp_info.population }}</span></a>
 
                       <div id="changeModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="changeModalLabel" aria-hidden="true">
@@ -105,8 +105,8 @@
       <div class="row-fluid">
 
         <div class="span6">
-          <div class="content-box">
-            <div class="content-box-header" data-step="2" data-intro="Your top 10 highest risks are listed here.">
+          <div class="content-box"  data-step="5" data-intro="Your top 10 highest risks are listed here.">
+            <div class="content-box-header">
               <icon class="icon-align-left"></icon> Top 10 Highest
             </div>
 
@@ -115,7 +115,8 @@
                 <div class="span12">
                   {% if h_risk_traits %}
                   <div id="container_highest_risks"></div>
-                  <a href="{% url apps.riskreport.views.show_all %}"><button class="btn btn-green" title="view all the traits!"><i class="icon-resize-full icon-white" style="margin-top: 1px;"></i> View more</button></a>
+
+                  <a href="{% url apps.riskreport.views.show_all %}"><button class="btn btn-green" title="view all the traits!" data-step="6" data-intro="To see all the disease risks and/or compare two genomes, click here!"><i class="icon-resize-full icon-white" style="margin-top: 1px;"></i> View more</button></a>
                   {% else %}
                   <p>Sorry, you have no data for disease risk.</p>
                   <p>Probably, uploaded data was too few to calculate risk.</p>

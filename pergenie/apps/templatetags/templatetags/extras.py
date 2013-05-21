@@ -6,6 +6,7 @@ To use filters bellow, put `{% load extras %}}` in templates.
 
 from django import template
 from django.template.defaultfilters import stringfilter  # 第一引数に文字列しかとらない
+from django.conf import settings
 import math
 
 register = template.Library()
@@ -101,3 +102,11 @@ def file_format(s):
             'vcf_exome_truseq': 'VCF (TruSeq Exome)'}
 
     return maps[s]
+
+@stringfilter
+@register.filter
+def demouser_format(s):
+    if s.startswith(settings.DEMO_USER_ID):
+        s = settings.DEMO_USER_ID
+
+    return s

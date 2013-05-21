@@ -43,6 +43,8 @@ def index(request):
 
         if not request.method == 'POST':
             tmp_user_info = get_user_info(user_id)
+            log.debug(tmp_user_info)
+
             while True:
                 # By default, browse `last_viewed_file` if exists.
                 if tmp_user_info.get('last_viewed_file'):
@@ -112,7 +114,11 @@ def index(request):
                 h_risk_traits = [TRAITS2JA.get(trait) for trait in h_risk_traits]
 
             # If this is the first time for riskreport,
-            if [bool(info.get('riskreport')) for info in infos].count(True) == 0:
+            if ([bool(info.get('riskreport')) for info in infos].count(True) == 0):
+                do_intro = True
+
+            # For demo
+            if not tmp_user_info.get('last_viewed_file'):
                 do_intro = True
 
         break

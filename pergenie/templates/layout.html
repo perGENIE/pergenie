@@ -1,4 +1,5 @@
 {% load staticfiles %}
+{% load extras %}
 {% load i18n %}
 <!DOCTYPE html>
 
@@ -58,7 +59,7 @@ _8
 
   <body onload="prettyPrint()" id="body">
   <!-- <body id="{% block cookie_id %}{% endblock %}"><\!-- This id is used for the cookies -\-> -->
-    <div class="navbar navbar-fixed-top navbar-inverse top-nav">
+    <div class="navbar navbar-fixed-top navbar-inverse top-nav" {% ifequal intro_type.0 'invitation' %}data-step="1" data-intro="{{ intros.0 }}" {% endifequal %}>
       <div class="navbar-inner">
 
         <div class="container">
@@ -112,7 +113,7 @@ _8
                       </li>
 
                       <li class="divider"></li>
-                      {% ifnotequal user.username "demo@pergenie.org" %}
+                      {% ifnotequal user.username|demouser_format "demo@pergenie.org" %}
                       <li class="">
                         <a href="{% url apps.upload.views.index %}">
                           <i class="icon-arrow-up"></i> Upload
@@ -150,19 +151,31 @@ _8
                 </ul>
 
                 <!-- profile -->
-                <ul class="nav pull-right primary">
+                <ul class="nav pull-right primary" {% ifequal intro_type.0 'invitation' %}data-step="2" data-intro="{{ intros.1 }}" {% endifequal %}>
                   <li class="dropdown profile">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                       <i class="icon-unlock"></i>
-                      {% if user %}{{ user.username }}{% endif %}
+                      {% if user %}{{ user.username|demouser_format }}{% endif %}
                       <b class="caret"></b>
                     </a>
                     <ul class="dropdown-menu secondary ">
+
+                      {% ifnotequal user.username|demouser_format "demo@pergenie.org" %}
                       <li class="">
                         <a href="{% url apps.settings.views.user_settings %}">
                           <i class="icon-cog"></i> Account settings
                         </a>
                       </li>
+                      {% endifnotequal %}
+
+                      {% ifequal user.username|demouser_format "demo@pergenie.org" %}
+                      <li class="">
+                        <a href="{% url apps.frontend.views.register %}">
+                          <i class="icon-cog"></i> Register your account, for free!
+                        </a>
+                      </li>
+                      {% endifequal %}
+
                       <li class="divider"></li>
                       <li class="">
                         <a href="{% url apps.frontend.views.logout %}">

@@ -20,6 +20,7 @@ from smtplib import SMTPRecipientsRefused
 from pymongo import MongoClient
 import lepl.apps.rfc3696
 email_validator = lepl.apps.rfc3696.Email()
+from uuid import uuid4
 
 from utils import clogging
 log = clogging.getColorLogger(__name__)
@@ -32,9 +33,29 @@ def index(request):
 def trydemo(request):
     """Login as DEMO USER (demo@pergenie.org)"""
 
-    user = authenticate(username=settings.DEMO_USER_ID,
+    while True:
+        try:
+            demo_user_uid = settings.DEMO_USER_ID + '+' + str(uuid4())
+            user = User.objects.create_user(demo_user_uid, '', settings.DEMO_USER_ID)
+            user.save()
+            break
+        except IntegrityError, e:
+            pass
+        except:
+            return direct_to_template(request, 'frontend/index.html')
+
+    # create user_info
+    with MongoClient(port=settings.MONGO_PORT) as c:
+        user_info = c['pergenie']['user_info']
+
+        user_info.insert({'user_id': demo_user_uid,
+                          'risk_report_show_level': 'show_all',
+                          'activation_key': ''})
+
+    user = authenticate(username=demo_user_uid,
                         password=settings.DEMO_USER_ID)
     auth_login(request, user)
+
     return redirect('apps.dashboard.views.index')
 
 
@@ -82,6 +103,9 @@ def logout(request):
 
 @require_http_methods(['GET', 'POST'])
 def register(request):
+    #
+    auth_logout(request)
+
     params = {'is_succeeded': False,
               'err': '',
               'login_url': ''}

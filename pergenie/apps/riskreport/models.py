@@ -23,6 +23,9 @@ JA2TRAITS = dict([(v, k) for (k, v) in TRAITS2JA.items()])
 def get_user_data_infos(user_id):
     c = MongoClient(port=settings.MONGO_PORT)
     data_info = c['pergenie']['data_info']
+
+    if user_id.startswith(settings.DEMO_USER_ID): user_id = settings.DEMO_USER_ID
+
     infos = list(data_info.find({'user_id': user_id}))
 
     return infos
@@ -31,6 +34,9 @@ def get_user_data_infos(user_id):
 def get_user_file_info(user_id, file_name):
     c = MongoClient(port=settings.MONGO_PORT)
     data_info = c['pergenie']['data_info']
+
+    if user_id.startswith(settings.DEMO_USER_ID): user_id = settings.DEMO_USER_ID
+
     info = data_info.find_one({'user_id': user_id, 'name': file_name})
 
     return info
@@ -53,6 +59,9 @@ def set_user_last_viewed_file(user_id, file_name):
 def set_user_data_population(user_id, file_name, population):
     c = MongoClient(port=settings.MONGO_PORT)
     user_info = c['pergenie']['data_info']
+
+    if user_id.startswith(settings.DEMO_USER_ID): user_id = settings.DEMO_USER_ID
+
     user_info.update({'user_id': user_id,
                       'name': file_name},
                      {"$set": {'population': population}})
@@ -66,6 +75,8 @@ def set_user_viewed_riskreport_showall_done(user_id):
 
 def _import_riskreport(tmp_info):
     c = MongoClient(port=settings.MONGO_PORT)
+
+    if tmp_info['user_id'].startswith(settings.DEMO_USER_ID): tmp_info['user_id'] = settings.DEMO_USER_ID
 
     # Get GWAS Catalog records for this population
     population = 'population:{}'.format('+'.join(settings.POPULATION_MAP[tmp_info['population']]))
@@ -182,6 +193,8 @@ def _log_to_signed_real(records):
 def get_risk_values_for_indexpage(tmp_info, category=[], is_higher=False, is_lower=False, top=None):  # , is_log=True):
     c = MongoClient(port=settings.MONGO_PORT)
 
+    if tmp_info['user_id'].startswith(settings.DEMO_USER_ID): tmp_info['user_id'] = settings.DEMO_USER_ID
+
     # TODO:
     # always upsert (for debug)
     _import_riskreport(tmp_info)
@@ -191,9 +204,9 @@ def get_risk_values_for_indexpage(tmp_info, category=[], is_higher=False, is_low
 
     # get traits, sorted by RR
     founds = list(users_reports.find().sort('RR', DESCENDING))
-    log.info('===============')
-    log.info(pformat(founds))
-    log.info('===============')
+    # log.info('===============')
+    # log.info(pformat(founds))
+    # log.info('===============')
 
     # in category (=disease)
     records = [record for record in founds if TRAITS2CATEGORY.get(record['trait'], 'NA') in category ]
@@ -222,6 +235,8 @@ def get_risk_values_for_indexpage(tmp_info, category=[], is_higher=False, is_low
 def get_risk_infos_for_subpage(info, trait=None, study=None):
     c = MongoClient(port=settings.MONGO_PORT)
     catalog = get_latest_catalog(port=settings.MONGO_PORT)
+
+    if info['user_id'].startswith(settings.DEMO_USER_ID): info['user_id'] = settings.DEMO_USER_ID
 
     # TODO: check if riskreport.<user>.<file_name> exist and latest in data_info
     users_reports = c['pergenie']['reports'][info['user_id']][info['name']]

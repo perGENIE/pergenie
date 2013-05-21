@@ -9,7 +9,7 @@
   <section id="main">
     <div class="container">
 
-      <div class="content-box transparent">
+      <div class="content-box transparent" {% ifequal intro_type.0 'welcome' %} data-step="1" data-intro="{{ intros.0 }}" {% endifequal %}>
         <div class="content-box-header">
           <i class="icon-magic"></i> Components
         </div>
@@ -17,7 +17,7 @@
           <div class="span12">
             <div class="padded">
               <a href="{% url apps.riskreport.views.index %}">
-              <button class="button square" href="#"{% ifequal intro_type.0 'risk_report' %} data-step="1" data-intro="{{ intros.0 }}" {% endifequal %}>
+              <button class="button square" href="#"{% ifequal intro_type.0 'risk_report' %} data-step="1" data-intro="{{ intros.0 }}" {% endifequal %} {% ifequal intro_type.0 'welcome' %} data-step="3" data-intro="{{ intros.2 }}" {% endifequal %}>
                 <i class="icon-align-left icon-large"></i>
                 <span class="button-text">RiskReport</span>
                 {% if n_out_dated_riskreports > 0 %}<span class="badge badge-yellow">{{ n_out_dated_riskreports }}</span>{% endif %}
@@ -36,7 +36,7 @@
                 <span class="button-text">Population</span>
               </button></a>
 
-              {% ifnotequal user.username "demo@pergenie.org" %}
+              {% ifnotequal user.username|demouser_format "demo@pergenie.org" %}
               <a href="{% url apps.upload.views.index %}">
               <button class="button square" href="#" {% ifequal intro_type.0 'first' %}data-step="1" data-intro="{{ intros.0 }}" {% endifequal %}>
                 <i class="icon-arrow-up icon-large"></i>
@@ -91,7 +91,7 @@
 
       <div class="row-fluid">
         <div class="span6">
-          <div class="content-box">
+          <div class="content-box" {% ifequal intro_type.0 'welcome' %} data-step="2" data-intro="{{ intros.1 }}" {% endifequal %}>
             <div class="content-box-header">
               <icon class="icon-bar-chart"></icon> Genome Statistics
             </div>

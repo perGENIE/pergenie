@@ -6,7 +6,7 @@ import subprocess
 import argparse
 import csv
 
-from pymongo import MongoClient
+from pymongo import MongoClient, ASCENDING
 
 def import_dbsnp(path_to_dbsnp, db_name, collection_name, is_snp_only=False, port=27017):
     """Import VCF formatted dbSNP into MongoDB.
@@ -72,8 +72,8 @@ def import_dbsnp(path_to_dbsnp, db_name, collection_name, is_snp_only=False, por
         print '100.0% done. {0} records imported.'.format(record_count)
 
         print 'Creating index for rsid ...',
-        dbsnp.create_index([('chrom', pymongo.ASCENDING), ('pos', pymongo.ASCENDING)])
-        dbsnp.create_index([('rs', pymongo.ASCENDING)])
+        dbsnp.create_index([('chrom', ASCENDING), ('pos', ASCENDING)])
+        dbsnp.create_index([('rs', ASCENDING)])
 
         print 'done.'
 

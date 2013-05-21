@@ -26,11 +26,20 @@ def index(request):
         infos = get_data_infos(user_id)
         recent_catalog_records = get_recent_catalog_records()
 
-        if not infos:
-            intro_type = ['first']
+        if user_id.startswith(settings.DEMO_USER_ID):
+            tmp_user_info = get_user_info(user_id)
+            if not tmp_user_info.get('last_viewed_file'):
+                intro_type = ['welcome']
+            else:
+                intro_type = ['invitation']
 
         else:
+            if not infos:
+                intro_type = ['first']
+                break
+
             intro_type = ['wait_upload']
+
             # check if latest riskreports are outdated
             for info in infos:
                 risk_report_latest_date = info.get('riskreport')
@@ -42,25 +51,32 @@ def index(request):
                     if risk_report_latest_date.date() < catalog_latest_new_records_data:
                         warns.append('risk report outdated: {}'.format(info['name']))
                         n_out_dated_riskreports += 1
+
                 elif info['status'] == 100:
                     # If there is at least one 100% uploaded file,
                     intro_type = ['risk_report']
+
                 else:
                     pass
-
-        # Intro.js
-        if intro_type == ['first']:
-            # Translators: This message appears on the home page only
-            intros.append(_('First, upload your genome file!'))
-            intros.append(_('Next, ....'))
-        elif intro_type == ['wait_upload']:
-            intros.append('Please wait until your genome file uploaded...')
-        elif intro_type == ['risk_report']:
-            intros.append('Browse your Risk Report!')
-        else:
-            pass
-
         break
+
+    # Intro.js
+    if intro_type == ['first']:
+        intros.append(_('First, upload your genome file!'))
+        intros.append(_('Next, ....'))
+    elif intro_type == ['wait_upload']:
+        intros.append('Please wait until your genome file uploaded...')
+    elif intro_type == ['risk_report']:
+        intros.append('Browse your Risk Report!')
+    elif intro_type == ['welcome']:
+        intros.append('Welcome to perGENIE!')
+        intros.append('Genome files are already uploaded for demo users.')
+        intros.append('So, you can check disease risk report, right now!')
+    elif intro_type == ['invitation']:
+        intros.append('Did you have fun with perGENIE?')
+        intros.append('You can register account for free, at any time. Thanks for trying this demo!')
+    else:
+        pass
 
     msgs = dict(msg=msg, err=err, user_id=user_id, demo_user_id=settings.DEMO_USER_ID,
                 catalog_latest_new_records_data=catalog_latest_new_records_data,

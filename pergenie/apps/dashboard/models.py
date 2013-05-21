@@ -17,6 +17,8 @@ def get_data_infos(user_id):
     c = MongoClient(port=settings.MONGO_PORT)
     data_info = c['pergenie']['data_info']
 
+    if user_id.startswith(settings.DEMO_USER_ID): user_id = settings.DEMO_USER_ID
+
     infos = list(data_info.find({'user_id': user_id}))
 
     return infos
@@ -42,3 +44,10 @@ def get_recent_catalog_records():
         print record['added']
 
     return uniq_studies
+
+def get_user_info(user_id):
+    c = MongoClient(port=settings.MONGO_PORT)
+    user_info = c['pergenie']['user_info']
+    info = user_info.find_one({'user_id': user_id})
+
+    return info
