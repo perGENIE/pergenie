@@ -232,7 +232,7 @@ class Command(BaseCommand):
 
         elif options["dbsnp"]:
             log.info('Try to import dbsnp to localhost:{0}/dbsnp.{1} ...'.format(settings.MONGO_PORT, settings.DBSNP_VERSION))
-            import_dbsnp(settings.PATH_TO_DBSNP, 'dbsnp', settings.DBSNP_VERSION, True, settings.MONGO_PORT)
+            import_dbsnp(settings.PATH_TO_DBSNP, 'dbsnp', settings.DBSNP_VERSION, is_snp_only=True, port=settings.MONGO_PORT)
 
         elif options["strand_db"]:
             log.info('Try to import strand_db localhost:{0}/strand_db ...'.format(settings.MONGO_PORT))
