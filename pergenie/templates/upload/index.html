@@ -15,7 +15,7 @@
           <div class="content-box transparent">
             <div class="padded">
               <h2>Upload</h2>
-              <a data-toggle="modal" href="#uploadModal" class="helpModal" title="see help?" >Help for Upload <i class="icon-question-sign"></i></a>
+              <!-- <a data-toggle="modal" href="#uploadModal" class="helpModal" title="see help?" >Help for Upload <i class="icon-question-sign"></i></a> -->
             </div>
           </div>
         </div>
@@ -37,10 +37,8 @@
                     <form class="form-horizontal" action="{% url apps.upload.views.index %}" method="post" enctype="multipart/form-data">
                       {% csrf_token %}
 		              <fieldset>
-                        <!-- <div class="page-header"> -->
-                        <!--   <small>...</small> -->
-                        <!-- </div> -->
-
+                        <a href="{% url apps.faq.views.index%}#versions_of_reference_files">[FAQ] What versions of reference files are used?</a>
+                        <hr>
                         <div class="control-group" data-step="2" data-intro="First, selcet your genome file.">
                           <label class="control-label" title="see help?"><a data-toggle="modal" href="#uploadModal">Genome File <i class="icon-question-sign"></i></a></label>
                           <div class="controls">

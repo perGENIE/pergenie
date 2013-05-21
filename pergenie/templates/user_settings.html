@@ -31,7 +31,6 @@
             <div class="padded">
               <div class="row-fluid">
                 <div class="span12">
-                  {{ current_settings }}
 
                   <form class="form-horizontal" action="{% url apps.settings.views.user_settings %}" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
@@ -57,13 +56,13 @@
                           </label>
                         </div>
 
-                        <div class="controls">
-                          Charts
-                          <label class="checkbox">
-                            <input type="checkbox" id="use_log" name="use_log" {% if current_settings.use_log %}checked{% endif %}> Use logarithmic scale in disease risk reports.
-                            <a href="{% url apps.faq.views.index%}#RR_scale_in_chart"> See [FAQ]</a>
-                          </label>
-                        </div>
+                        <!-- <div class="controls"> -->
+                        <!--   Charts -->
+                        <!--   <label class="checkbox"> -->
+                        <!--     <input type="checkbox" id="use_log" name="use_log" {% if current_settings.use_log %}checked{% endif %}> Use logarithmic scale in disease risk reports. -->
+                        <!--     <a href="{% url apps.faq.views.index%}#RR_scale_in_chart"> See [FAQ]</a> -->
+                        <!--   </label> -->
+                        <!-- </div> -->
                       </div>
 
                       <div class="form-actions">
