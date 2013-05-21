@@ -22,7 +22,7 @@ class SimpleTestCase(TestCase):
                                         self.test_user_password)
 
         # #
-        # with pymongo.Connection(port=settings.MONGO_PORT) as connection:
+        # with pymongo.MongoClient(host=settings.MONGO_URI) as connection:
         #     db = connection['pergenie']
         #     catalog_info = db['catalog_info']
         #     data_info = db['data_info']

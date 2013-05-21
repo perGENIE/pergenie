@@ -32,7 +32,7 @@ def index(request):
     if user_id == settings.DEMO_USER_ID:
         raise Http404
 
-    with pymongo.Connection(port=settings.MONGO_PORT) as connection:
+    with pymongo.MongoClient(host=settings.MONGO_URI) as connection:
         db = connection['pergenie']
         data_info = db['data_info']
         catalog_cover_rate = db['catalog_cover_rate']
@@ -169,7 +169,7 @@ def delete(request):
 
     name = request.POST.get('name')
 
-    with pymongo.Connection(port=settings.MONGO_PORT) as connection:
+    with pymongo.MongoClient(host=settings.MONGO_URI) as connection:
         db = connection['pergenie']
         data_info = db['data_info']
 
@@ -203,7 +203,7 @@ def status(request):
     else:
         user_id = request.user.username
 
-        with pymongo.Connection(port=settings.MONGO_PORT) as connection:
+        with pymongo.MongoClient(host=settings.MONGO_URI) as connection:
             db = connection['pergenie']
             data_info = db['data_info']
 

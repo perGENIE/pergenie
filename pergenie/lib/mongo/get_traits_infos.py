@@ -5,7 +5,7 @@ from django.conf import settings
 
 
 def get_traits_infos(as_dict=False):
-    with pymongo.Connection(port=settings.MONGO_PORT) as connection:
+    with pymongo.MongoClient(host=settings.MONGO_URI) as connection:
         trait_info = connection['pergenie']['trait_info']
 
         founds = trait_info.find({})

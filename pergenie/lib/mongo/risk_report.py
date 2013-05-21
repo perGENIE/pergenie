@@ -1,19 +1,13 @@
 #!/usr/bin/env python2.7
 # -*- coding: utf-8 -*-
 
-
+import sys, os
 import argparse
-import sys
-import os
 import math
-
-import pymongo
-
-# import colors
-# import search_variants
-
 from pprint import pprint
 import doctest
+
+import pymongo
 
 from utils import clogging
 log = clogging.getColorLogger(__name__)
