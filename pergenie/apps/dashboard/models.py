@@ -3,7 +3,7 @@ from django.conf import settings
 from lib.mongo.get_latest_catalog import get_latest_catalog
 
 def get_latest_added_date():
-    c = MongoClient(port=settings.MONGO_PORT)
+    c = MongoClient(host=settings.MONGO_URI)
     catalog_stats = c['pergenie']['catalog_stats']
 
     # NOTE: If catalog is under importing, this date may not be correct. But it's ok.
@@ -14,7 +14,7 @@ def get_latest_added_date():
 
 
 def get_data_infos(user_id):
-    c = MongoClient(port=settings.MONGO_PORT)
+    c = MongoClient(host=settings.MONGO_URI)
     data_info = c['pergenie']['data_info']
 
     if user_id.startswith(settings.DEMO_USER_ID): user_id = settings.DEMO_USER_ID
@@ -46,7 +46,7 @@ def get_recent_catalog_records():
     return uniq_studies
 
 def get_user_info(user_id):
-    c = MongoClient(port=settings.MONGO_PORT)
+    c = MongoClient(host=settings.MONGO_URI)
     user_info = c['pergenie']['user_info']
     info = user_info.find_one({'user_id': user_id})
 

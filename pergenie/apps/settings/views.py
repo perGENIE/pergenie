@@ -17,7 +17,7 @@ def user_settings(request):
     user_id = request.user.username
     msg, err = '', ''
 
-    with MongoClient(port=settings.MONGO_PORT) as c:
+    with MongoClient(host=settings.MONGO_URI) as c:
         user_info = c['pergenie']['user_info']
 
         if request.method == 'POST':

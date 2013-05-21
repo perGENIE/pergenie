@@ -21,7 +21,7 @@ def get_latest_catalog(port):
 
 
 def get_traits_infos():
-    with MongoClient(port=settings.MONGO_PORT) as c:
+    with MongoClient(host=settings.MONGO_URI) as c:
         trait_info = c['pergenie']['trait_info']
 
         founds = trait_info.find({})

@@ -130,7 +130,7 @@ class Command(BaseCommand):
                 # TODO: do risk report as test. (check if import catalog was succeed & odd records were handeled)
 
             # update 'latest' catalog in db.catalog_info
-            with MongoClient(port=settings.MONGO_PORT) as c:
+            with MongoClient(host=settings.MONGO_URI) as c:
                 catalog_info = c['pergenie']['catalog_info']
 
                 latest_document = catalog_info.find_one({'status': 'latest'})
@@ -171,7 +171,7 @@ class Command(BaseCommand):
                 # no need to make directory for upload, because we will import from *stored data*.
 
                 # create user_info
-                with MongoClient(port=settings.MONGO_PORT) as c:
+                with MongoClient(host=settings.MONGO_URI) as c:
                     user_info = c['pergenie']['user_info']
 
                     if user_info.find_one({'user_id': settings.DEMO_USER_ID}):
@@ -182,7 +182,7 @@ class Command(BaseCommand):
                                       'activation_key': ''})
 
             # Import demo data
-            with MongoClient(port=settings.MONGO_PORT) as c:
+            with MongoClient(host=settings.MONGO_URI) as c:
                 db = c['pergenie']
 
                 # drop old collections of `db.variants.user_id.file_name`

@@ -45,7 +45,7 @@ def trydemo(request):
             return direct_to_template(request, 'frontend/index.html')
 
     # create user_info
-    with MongoClient(port=settings.MONGO_PORT) as c:
+    with MongoClient(host=settings.MONGO_URI) as c:
         user_info = c['pergenie']['user_info']
 
         user_info.insert({'user_id': demo_user_uid,
@@ -170,7 +170,7 @@ def register(request):
             """
             Registration *with* mail verification
             """
-            with MongoClient(port=settings.MONGO_PORT) as c:
+            with MongoClient(host=settings.MONGO_URI) as c:
                 user_info = c['pergenie']['user_info']
 
                 # Generate unique activation_key
@@ -251,7 +251,7 @@ def activation(request, activation_key):
     err = ''
 
     # find the user who has this activation key
-    with MongoClient(port=settings.MONGO_PORT) as c:
+    with MongoClient(host=settings.MONGO_URI) as c:
         user_info = c['pergenie']['user_info']
         challenging_user_info = user_info.find_one({'activation_key': activation_key})
 

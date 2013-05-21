@@ -136,7 +136,7 @@ def snps(request, rs):
     user_id = request.user.username
     err = ''
 
-    with pymongo.MongoClient(port=settings.MONGO_PORT) as c:
+    with pymongo.MongoClient(host=settings.MONGO_URI) as c:
         db = c['pergenie']
         data_info = db['data_info']
         uploadeds = list(data_info.find({'user_id': user_id}))

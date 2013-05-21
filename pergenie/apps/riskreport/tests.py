@@ -32,7 +32,7 @@ class SimpleTest(TestCase):
         # no need to make directory for upload, because we will import stored data.
 
         # create user_info
-        with MongoClient(port=settings.MONGO_PORT) as c:
+        with MongoClient(host=settings.MONGO_URI) as c:
             user_info = c['pergenie']['user_info']
             user_info.insert({'user_id': self.test_user_id,
                               'risk_report_show_level': 'show_all',
@@ -46,7 +46,7 @@ class SimpleTest(TestCase):
         """Import genome data for test.
         """
 
-        with MongoClient(port=settings.MONGO_PORT) as c:
+        with MongoClient(host=settings.MONGO_URI) as c:
             catalog_cover_rate = c['pergenie']['catalog_cover_rate']
             info = {'user_id': self.test_user_id,
                     'name': self.file_cleaned_name,
@@ -70,7 +70,7 @@ class SimpleTest(TestCase):
         """Delete existing *test data*.
         """
 
-        with MongoClient(port=settings.MONGO_PORT) as c:
+        with MongoClient(host=settings.MONGO_URI) as c:
             db = c['pergenie']
             data_info = db['data_info']
 
@@ -120,7 +120,7 @@ class SimpleTest(TestCase):
         self._import_data()
 
         # create *in importing* file
-        with MongoClient(port=settings.MONGO_PORT) as c:
+        with MongoClient(host=settings.MONGO_URI) as c:
             data_info = c['pergenie']['data_info']
             data_info.update({'name': self.file_cleaned_name,
                               'user_id': self.test_user_id},
@@ -135,7 +135,7 @@ class SimpleTest(TestCase):
         self._import_data()
 
         # create *in importing* file
-        with MongoClient(port=settings.MONGO_PORT) as c:
+        with MongoClient(host=settings.MONGO_URI) as c:
             data_info = c['pergenie']['data_info']
             data_info.update({'name': self.file_cleaned_name,
                               'user_id': self.test_user_id},

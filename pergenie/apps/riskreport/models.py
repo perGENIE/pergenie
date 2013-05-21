@@ -21,7 +21,7 @@ JA2TRAITS = dict([(v, k) for (k, v) in TRAITS2JA.items()])
 
 
 def get_user_data_infos(user_id):
-    c = MongoClient(port=settings.MONGO_PORT)
+    c = MongoClient(host=settings.MONGO_URI)
     data_info = c['pergenie']['data_info']
 
     if user_id.startswith(settings.DEMO_USER_ID): user_id = settings.DEMO_USER_ID
@@ -32,7 +32,7 @@ def get_user_data_infos(user_id):
 
 
 def get_user_file_info(user_id, file_name):
-    c = MongoClient(port=settings.MONGO_PORT)
+    c = MongoClient(host=settings.MONGO_URI)
     data_info = c['pergenie']['data_info']
 
     if user_id.startswith(settings.DEMO_USER_ID): user_id = settings.DEMO_USER_ID
@@ -43,7 +43,7 @@ def get_user_file_info(user_id, file_name):
 
 
 def get_user_info(user_id):
-    c = MongoClient(port=settings.MONGO_PORT)
+    c = MongoClient(host=settings.MONGO_URI)
     user_info = c['pergenie']['user_info']
     info = user_info.find_one({'user_id': user_id})
 
@@ -51,13 +51,13 @@ def get_user_info(user_id):
 
 
 def set_user_last_viewed_file(user_id, file_name):
-    c = MongoClient(port=settings.MONGO_PORT)
+    c = MongoClient(host=settings.MONGO_URI)
     user_info = c['pergenie']['user_info']
     user_info.update({'user_id': user_id},
                      {"$set": {'last_viewed_file': file_name}}, upsert=True)
 
 def set_user_data_population(user_id, file_name, population):
-    c = MongoClient(port=settings.MONGO_PORT)
+    c = MongoClient(host=settings.MONGO_URI)
     user_info = c['pergenie']['data_info']
 
     if user_id.startswith(settings.DEMO_USER_ID): user_id = settings.DEMO_USER_ID
@@ -67,14 +67,14 @@ def set_user_data_population(user_id, file_name, population):
                      {"$set": {'population': population}})
 
 def set_user_viewed_riskreport_showall_done(user_id):
-    c = MongoClient(port=settings.MONGO_PORT)
+    c = MongoClient(host=settings.MONGO_URI)
     user_info = c['pergenie']['user_info']
     user_info.update({'user_id': user_id},
                      {"$set": {'viewed_riskreport_showall': True}}, upsert=True)
 
 
 def _import_riskreport(tmp_info):
-    c = MongoClient(port=settings.MONGO_PORT)
+    c = MongoClient(host=settings.MONGO_URI)
 
     if tmp_info['user_id'].startswith(settings.DEMO_USER_ID): tmp_info['user_id'] = settings.DEMO_USER_ID
 
@@ -191,7 +191,7 @@ def _log_to_signed_real(records):
     return results
 
 def get_risk_values_for_indexpage(tmp_info, category=[], is_higher=False, is_lower=False, top=None):  # , is_log=True):
-    c = MongoClient(port=settings.MONGO_PORT)
+    c = MongoClient(host=settings.MONGO_URI)
 
     if tmp_info['user_id'].startswith(settings.DEMO_USER_ID): tmp_info['user_id'] = settings.DEMO_USER_ID
 
@@ -233,7 +233,7 @@ def get_risk_values_for_indexpage(tmp_info, category=[], is_higher=False, is_low
 
 
 def get_risk_infos_for_subpage(info, trait=None, study=None):
-    c = MongoClient(port=settings.MONGO_PORT)
+    c = MongoClient(host=settings.MONGO_URI)
     catalog = get_latest_catalog(port=settings.MONGO_PORT)
 
     if info['user_id'].startswith(settings.DEMO_USER_ID): info['user_id'] = settings.DEMO_USER_ID

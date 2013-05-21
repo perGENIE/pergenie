@@ -5,7 +5,7 @@ from lib.mongo import search_variants
 
 
 def get_latest_catalog_date():
-    c = MongoClient(port=settings.MONGO_PORT)
+    c = MongoClient(host=settings.MONGO_URI)
     catalog_info = c['pergenie']['catalog_info']
     latest_catalog_date = catalog_info.find_one({'status': 'latest'})['date']
 
@@ -13,7 +13,7 @@ def get_latest_catalog_date():
 
 
 def get_libarary_and_variatns_of_a_trait(trait, user_id):
-    c = MongoClient(port=settings.MONGO_PORT)
+    c = MongoClient(host=settings.MONGO_URI)
 
     # catalog = get_latest_catalog(port=settings.MONGO_PORT)
     # founds = catalog.find({'trait': trait})
