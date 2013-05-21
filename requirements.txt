@@ -32,6 +32,5 @@ python-magic==0.4.3
 requests==1.1.0
 ssh==1.8.0
 termcolor==1.1.0
-ufw==0.33
 virtualenv==1.9.1
 wsgiref==0.1.2
