@@ -18,6 +18,7 @@ log = getColorLogger(__name__)
 def index(request):
     user_id = request.user.username
     msg, err, = '', ''
+    msgs = []
     n_out_dated_riskreports = 0
     intro_type, intros = [''], []
 
@@ -49,7 +50,7 @@ def index(request):
                     intro_type = []
 
                     if risk_report_latest_date.date() < catalog_latest_new_records_data:
-                        warns.append('risk report outdated: {}'.format(info['name']))
+                        msgs.append('Risk report outdated, so re-calculate riskreport: {}'.format(info['raw_name']))
                         n_out_dated_riskreports += 1
 
                 elif info['status'] == 100:
@@ -62,8 +63,9 @@ def index(request):
 
     # Intro.js
     if intro_type == ['first']:
-        intros.append(_('First, upload your genome file!'))
-        intros.append(_('Next, ....'))
+        intros.append('Welcome to perGENIE!')
+        intros.append('You have no genome files uploaded.')
+        intros.append('So, first, upload your genome file!')
     elif intro_type == ['wait_upload']:
         intros.append('Please wait until your genome file uploaded...')
     elif intro_type == ['risk_report']:
@@ -78,7 +80,7 @@ def index(request):
     else:
         pass
 
-    msgs = dict(msg=msg, err=err, user_id=user_id, demo_user_id=settings.DEMO_USER_ID,
+    msgs = dict(msg=msg, err=err, msgs=msgs, user_id=user_id, demo_user_id=settings.DEMO_USER_ID,
                 catalog_latest_new_records_data=catalog_latest_new_records_data,
                 n_out_dated_riskreports=n_out_dated_riskreports,
                 recent_catalog_records=recent_catalog_records,
