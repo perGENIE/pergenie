@@ -40,11 +40,10 @@ def index(request):
             break
 
         # Determine file_name & tmp_info
+        tmp_user_info = get_user_info(user_id)
+        log.debug(tmp_user_info)
 
         if not request.method == 'POST':
-            tmp_user_info = get_user_info(user_id)
-            log.debug(tmp_user_info)
-
             while True:
                 # By default, browse `last_viewed_file` if exists.
                 if tmp_user_info.get('last_viewed_file'):
