@@ -4,42 +4,44 @@
 import sys
 import pymongo
 
-path_to_23adnme_snps = '/Users/numa/Dropbox/py/perGENIE/pergenie/data/large_dbs/23andme-api/snps.data'  # FIX to path of yours.
+path_to_regulomedb = '/Users/numa/Dropbox/py/perGENIE/pergenie/data/large_dbs/regulomedb/RegulomeDB.dbSNP132.Category1.txt'
 
 
-def import_23andme_snps():
-    print >>sys.stderr, 'Importing 23andMe SNPs...'
+def import_regulomedb():
+    print >>sys.stderr, 'Importing ...'
 
     with pymongo.MongoClient() as c:
         db = c['pergenie']
-        andme_snps = db['andme_snps']
+        regulomedb = db['regulomedb']
 
         # Ensure old collections does not exist
-        if andme_snps.find_one():
-            db.drop_collection(andme_snps)
-            assert andme_snps.count() == 0
+        if regulomedb.find_one():
+            db.drop_collection(regulomedb)
+            assert regulomedb.count() == 0
 
-        with open(path_to_23adnme_snps, 'rb') as fin:
+        with open(path_to_regulomedb, 'rb') as fin:
             for line in fin:
-                # Skip header lines
-                if line.startswith('#'): continue
-                if line.startswith('index'): continue
+                chrom, pos, rs, anotation, score = line.strip().split('\t')
 
-                index, snp, chrom, pos = line.strip().split('\t')
-                rs = int(snp.replace('rs', '')) if snp.startswith('rs') else None
+                chrom = chrom.replace('chr', '')
+                assert (chrom in [str(i+1) for i in range(22)] + ['X', 'Y'])  # no MT ?
 
-                # Insert record as {'index': 0, , 'snp': 'rs41362547', 'rs': 41362547, 'chrom': 'MT', 'pos': 10044}
-                record = dict(index=int(index), snp=snp, rs=rs, chrom=chrom, pos=int(pos))
-                andme_snps.insert(record)
+                assert rs.startswith('rs')
+                rs = int(rs.replace('rs', ''))
 
-        print >>sys.stderr, 'count: {}'.format(andme_snps.count())
+                anotation = anotation.split(',')
+
+                record = dict(chrom=chrom, pos=int(pos), rs=rs, anotation=anotation, score=score)
+
+                regulomedb.insert(record)
+
+        print >>sys.stderr, 'count: {}'.format(regulomedb.count())
 
         print >>sys.stderr, 'Creating indices...'
-        andme_snps.create_index([('index', pymongo.ASCENDING)])
-        andme_snps.create_index([('rs', pymongo.ASCENDING)])
-        # andme_snps.create_index([('chrom', pymongo.ASCENDING), ('pos', pymongo.ASCENDING)])
+        regulomedb.create_index([('rs', pymongo.ASCENDING)])
+        regulomedb.create_index([('chrom', pymongo.ASCENDING), ('pos', pymongo.ASCENDING)])
 
     print >>sys.stderr, 'done.'
 
 if __name__ == '__main__':
-    import_23andme_snps()
+    import_regulomedb()
