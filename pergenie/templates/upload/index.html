@@ -42,7 +42,7 @@
                         <div class="control-group" data-step="2" data-intro="First, selcet your genome file.">
                           <label class="control-label" title="see help?"><a data-toggle="modal" href="#uploadModal">Genome File <i class="icon-question-sign"></i></a></label>
                           <div class="controls">
-                            <input type="file" name="call">
+                            <input type="file" name="call" class="multi" maxlength="{{ allowed_upload_genomefile_count }}">
                           </div>
                         </div>
 
@@ -92,19 +92,31 @@
 
                         {% if msg %}
                         <div class="alert alert-success">
-                          <!-- <button type="button" class="close" data-dismiss="alert">×</button> -->
                           {{ msg }}
                         </div>
                         {% endif %}
 
+                        {% if msgs %}
+                        {% for m in msgs %}
+                        <div class="alert alert-success">
+                          {{ m }}
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+
                         {% if err %}
                         <div class="alert alert-error">
-                          <!-- <button type="button" class="close" data-dismiss="alert">×</button> -->
                           {{ err }}
                         </div>
                         {% endif %}
 
-
+                        {% if errs %}
+                        {% for e in errs %}
+                        <div class="alert alert-error">
+                          {{ e }}
+                        </div>
+                        {% endfor %}
+                        {% endif %}
 
                       </fieldset>
 

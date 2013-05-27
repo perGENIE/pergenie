@@ -10,6 +10,7 @@ from django.utils.translation import get_language
 from django.utils.translation import ugettext as _
 from django.conf import settings
 from apps.upload.forms import UploadForm
+from models import *
 
 import os
 import datetime
@@ -26,7 +27,7 @@ log = clogging.getColorLogger(__name__)
 @login_required
 def index(request):
     user_id = request.user.username
-    msg, err = '', ''
+    msg, err, msgs, errs = '', '', [], []
     do_intro = False
 
     if user_id == settings.DEMO_USER_ID:
@@ -37,6 +38,8 @@ def index(request):
         data_info = db['data_info']
         catalog_cover_rate = db['catalog_cover_rate']
 
+        uploadeds = list(data_info.find({'user_id': user_id}))
+
         if request.method == 'POST':
             while True:
                 form = UploadForm(request.POST, request.FILES)
@@ -45,15 +48,13 @@ def index(request):
                     err = _('Invalid request')
                     break
 
-                call_file = request.FILES['call']
+                call_files = request.FILES.getlist('call')
                 population = form.cleaned_data['population']
                 # sex = form.cleaned_data['sex']
                 file_format = form.cleaned_data['file_format']
 
                 # Validate: Forms are filled with valid value
-
-                # TODO: ok?
-                if not call_file:
+                if not call_files:
                     err = _('Select data file.')
                     break
 
@@ -69,81 +70,92 @@ def index(request):
                     err = _('Select file format.')
                     break
 
+                if len(call_files) > settings.UPLOAD_GENOMEFILE_COUNT:
+                    err = _('Too many files.')
+                    break
+
+                if len(uploadeds) + len(call_files) > settings.UPLOAD_GENOMEFILE_COUNT:
+                    err = _('Too many files.')
+                    break
+
                 # Validate: Uploaded file is valid
+                for call_file in call_files:
+                    if call_file.size > settings.UPLOAD_GENOMEFILE_SIZE_LIMIT:
+                        errs.append(_('too large file size') + ': ' + call_file.name)
+                        continue
 
-                if call_file.size > settings.UPLOAD_GENOMEFILE_SIZE_LIMIT:
-                    err = _('too large file size')
-                    break
+                    call_file_ext = os.path.splitext(call_file.name)[1].lower()[1:]
 
-                call_file_ext = os.path.splitext(call_file.name)[1].lower()[1:]
+                    if call_file_ext not in ('csv', 'txt', 'vcf'):
+                        errs.append(_('file extension not allowed') + ': ' + call_file.name)
+                        continue
 
-                if call_file_ext not in ('csv', 'txt', 'vcf'):
-                    err = _('file extension not allowdn')
-                    break
+                    log.debug('content_type: {}'.format(call_file.content_type))
 
-                log.debug('content_type: {}'.format(call_file.content_type))
+                    if call_file.content_type == 'text/plain':
+                        pass
+                    elif call_file.content_type in ('text/directory', 'text/vcard') and call_file_ext == 'vcf':
+                        pass
+                    else:
+                        errs.append(_('file type not allowed') + ': ' + call_file.name)
+                        continue
 
-                if call_file.content_type == 'text/plain':
-                    pass
-                elif call_file.content_type in ('text/directory', 'text/vcard') and call_file_ext == 'vcf':
-                    pass
-                else:
-                    err = _('file type not allowed')
-                    break
+                    # Still need to validate that the file contains the content that the content-type header claims -- "trust but verify."
 
-                # Still need to validate that the file contains the content that the content-type header claims -- "trust but verify."
+                    if data_info.find({'user_id': user_id, 'raw_name': call_file.name}).count() > 0:
+                        errs.append(_('Same file name exists. If you want to overwrite it, please delete old one.') + ': ' + call_file.name)
+                        continue
 
-                if data_info.find({'user_id': user_id, 'raw_name': call_file.name}).count() > 0:
-                    err = _('Same file name exists. If you want to overwrite it, please delete old one.')
-                    break
+                    if not os.path.exists(os.path.join(settings.UPLOAD_DIR, user_id)):
+                        os.makedirs(os.path.join(settings.UPLOAD_DIR, user_id))
 
-                if not os.path.exists(os.path.join(settings.UPLOAD_DIR, user_id)):
-                    os.makedirs(os.path.join(settings.UPLOAD_DIR, user_id))
+                    # Convert UploadedFile object to a file
+                    uploaded_file_path = os.path.join(settings.UPLOAD_DIR, user_id, call_file.name)
+                    with open(uploaded_file_path, 'wb') as fout:
+                        for chunk in call_file.chunks():
+                            fout.write(chunk)
 
-                # Convert UploadedFile object to a file
-                uploaded_file_path = os.path.join(settings.UPLOAD_DIR, user_id, call_file.name)
-                with open(uploaded_file_path, 'wb') as fout:
-                    for chunk in call_file.chunks():
-                        fout.write(chunk)
+                    # Filetype identification using libmagic via python-magic
+                    m = magic.Magic(mime_encoding=True)
+                    magic_filetype = m.from_file(uploaded_file_path)
+                    log.debug('magic_filetype {}'.format(magic_filetype))
+                    if not magic_filetype in ('us-ascii'):
+                        errs.append(_('file type not allowed, or encoding not allowed') + ': ' + call_file.name)
+                        try:
+                            os.remove(uploaded_file_path)
+                        except OSError:
+                            log.debug('[ERROR] could not remove invalid uploaded file')
 
-                # Filetype identification using libmagic via python-magic
-                m = magic.Magic(mime_encoding=True)
-                magic_filetype = m.from_file(uploaded_file_path)
-                log.debug('magic_filetype {}'.format(magic_filetype))
-                if not magic_filetype in ('us-ascii'):
-                    err = _('file type not allowed, or encoding not allowed')
-                    try:
-                        os.remove(uploaded_file_path)
-                    except OSError:
-                        log.debug('[ERROR] could not remove invalid uploaded file')
+                        continue
 
-                    break
+                    msg = _('%(file_name)s uploaded.') % {'file_name': call_file.name}
 
-                msg = _('%(file_name)s uploaded.') % {'file_name': call_file.name}
+                    # TODO: check if celery is alive
 
-                # TODO: check if celery is alive
+                    log.debug('checking done.')
+                    # ------------------------------------
+                    # Variants file passed our validation!
+                    # So, import it into MongoDB.
+                    # ------------------------------------
 
-                log.debug('checking done.')
-                # ------------------------------------
-                # Variants file passed our validation!
-                # So, import it into MongoDB.
-                # ------------------------------------
+                    info = {'user_id': user_id,
+                            'name': clean_file_name(call_file.name),
+                            'raw_name': call_file.name,
+                            'date': datetime.datetime.today(),
+                            'population': population,
+                            'file_format': file_format,
+                            'catalog_cover_rate': catalog_cover_rate.find_one({'stats': 'catalog_cover_rate'})['values'][file_format],
+                            'genome_cover_rate': catalog_cover_rate.find_one({'stats': 'genome_cover_rate'})['values'][file_format],
+                            'status': float(0.0)}
 
-                info = {'user_id': user_id,
-                        'name': clean_file_name(call_file.name),
-                        'raw_name': call_file.name,
-                        'date': datetime.datetime.today(),
-                        'population': population,
-                        'file_format': file_format,
-                        'catalog_cover_rate': catalog_cover_rate.find_one({'stats': 'catalog_cover_rate'})['values'][file_format],
-                        'genome_cover_rate': catalog_cover_rate.find_one({'stats': 'genome_cover_rate'})['values'][file_format],
-                        'status': float(0.0)}
+                    data_info.insert(info)
 
-                data_info.insert(info)
+                    # Throw as a background job
+                    qimport_variants.delay(info)
+                    msg += _(', and now importing...')
 
-                # Throw as a background job
-                qimport_variants.delay(info)
-                msg += _(', and now importing...')
+                    msgs.append(msg)
+                    msg = ''
 
                 break
 
@@ -156,8 +168,9 @@ def index(request):
     #     log.error('err: {}'.format(err))
 
     return direct_to_template(request, 'upload/index.html',
-                              dict(msg=msg, err=err, uploadeds=uploadeds,
-                                   do_intro=do_intro))
+                              dict(msg=msg, err=err, msgs=msgs, errs=errs, uploadeds=uploadeds,
+                                   do_intro=do_intro,
+                                   allowed_upload_genomefile_count=settings.UPLOAD_GENOMEFILE_COUNT))
 
 
 @login_required

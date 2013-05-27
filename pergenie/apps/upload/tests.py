@@ -55,6 +55,16 @@ class SimpleTest(TestCase):
         self.failUnlessEqual(r.successful(), True)
         self.failUnlessEqual(r.result, 10)
 
+    # TODO: write tests for /upload
+
+    def test_upload_success(self):
+        pass
+
+    def test_upload_invalid_request(self):
+        pass
+
+
+
     # def test_upload(self):
     #     response = self.client.get('/upload/')
     #     self.client.login(username='temp', password='temp')
