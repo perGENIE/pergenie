@@ -11,6 +11,7 @@ from django.utils.translation import activate as translation_activate
 from lib.mongo.import_variants import import_variants
 
 import sys, os
+import time
 import datetime
 from pymongo import MongoClient
 
@@ -39,8 +40,17 @@ class SimpleTest(TestCase):
                               'activation_key': ''})
 
         self.file_raw_path = settings.TEST_23ANDME_FILE
-        self.file_raw_name = os.path.basename(settings.TEST_23ANDME_FILE)
+        self.file_raw_name = os.path.basename(self.file_raw_path)
         self.file_cleaned_name = self.file_raw_name.replace('.', '').replace(' ', '')
+        self.file_population = 'unknown'
+
+        self.file_raw_path_2 = settings.TEST_VCF40_FILE
+        self.file_raw_name_2 = os.path.basename(self.file_raw_path_2)
+        self.file_cleaned_name_2 = self.file_raw_name_2.replace('.', '').replace(' ', '')
+        self.file_population_2 = 'unknown'
+
+    def tearDown(self):
+        self._delete_data()
 
     def _import_data(self):
         """Import genome data for test.
@@ -48,17 +58,18 @@ class SimpleTest(TestCase):
 
         with MongoClient(host=settings.MONGO_URI) as c:
             catalog_cover_rate = c['pergenie']['catalog_cover_rate']
+            data_info = c['pergenie']['data_info']
+
+            # Import data #1
             info = {'user_id': self.test_user_id,
                     'name': self.file_cleaned_name,
                     'raw_name': self.file_raw_name,
                     'date': datetime.datetime.today(),
-                    'population': 'unknown',
+                    'population': self.file_population,
                     'file_format': 'andme',
                     'catalog_cover_rate': catalog_cover_rate.find_one({'stats': 'catalog_cover_rate'})['values']['andme'],
                     'genome_cover_rate': catalog_cover_rate.find_one({'stats': 'genome_cover_rate'})['values']['andme'],
                     'status': float(0.0)}
-
-            data_info = c['pergenie']['data_info']
             data_info.insert(info)
 
             import_variants(file_path=self.file_raw_path,
@@ -66,8 +77,25 @@ class SimpleTest(TestCase):
                             file_format='andme',
                             user_id=self.test_user_id)
 
+            # Import data #2
+            info = {'user_id': self.test_user_id,
+                    'name': self.file_cleaned_name_2,
+                    'raw_name': self.file_raw_name_2,
+                    'date': datetime.datetime.today(),
+                    'population': self.file_population_2,
+                    'file_format': 'andme',
+                    'catalog_cover_rate': catalog_cover_rate.find_one({'stats': 'catalog_cover_rate'})['values']['vcf_whole_genome'],
+                    'genome_cover_rate': catalog_cover_rate.find_one({'stats': 'genome_cover_rate'})['values']['vcf_whole_genome'],
+                    'status': float(0.0)}
+            data_info.insert(info)
+
+            import_variants(file_path=self.file_raw_path_2,
+                            population='unknown',
+                            file_format='vcf_whole_genome',
+                            user_id=self.test_user_id)
+
     def _delete_data(self):
-        """Delete existing *test data*.
+        """Delete *test data*.
         """
 
         with MongoClient(host=settings.MONGO_URI) as c:
@@ -76,16 +104,18 @@ class SimpleTest(TestCase):
 
             # delete collection `variants.user_id.filename`
             db.drop_collection('variants.{0}.{1}'.format(self.test_user_id, self.file_cleaned_name))
+            db.drop_collection('variants.{0}.{1}'.format(self.test_user_id, self.file_cleaned_name_2))
 
             # because it is just a test, no need to delete `file`
 
             # delete document in `data_info`
-            if data_info.find_one({'user_id': self.test_user_id}):
-                data_info.remove({'user_id': self.test_user_id})
+            founds = list(data_info.find({'user_id': self.test_user_id}))
+            if founds:
+                for found in founds:
+                    data_info.remove(found)
 
             user_info = c['pergenie']['user_info']
-            user_info.update({'user_id': self.test_user_id,
-                              'file_name': self.file_cleaned_name},
+            user_info.update({'user_id': self.test_user_id},
                              {'$set': {'last_viewed_file': ''}}, upsert=True)
 
     def test_login_required(self):
@@ -106,11 +136,9 @@ class SimpleTest(TestCase):
         response = self.client.get('/riskreport/')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['err'], '')
-        self._delete_data()
 
     def test_index_no_data_uploaded(self):
         self.client.login(username=self.test_user_id, password=self.test_user_password)
-        self._delete_data()
 
         response = self.client.get('/riskreport/')
         self.assertEqual(response.context['err'], 'no data uploaded')
@@ -128,7 +156,6 @@ class SimpleTest(TestCase):
 
         response = self.client.post('/riskreport/', {'file_name': self.file_cleaned_name})
         self.assertEqual(response.context['err'], '{} is in importing, please wait for seconds...'.format(self.file_cleaned_name))
-        self._delete_data()
 
     def test_index_files_are_in_importing(self):
         self.client.login(username=self.test_user_id, password=self.test_user_password)
@@ -140,10 +167,28 @@ class SimpleTest(TestCase):
             data_info.update({'name': self.file_cleaned_name,
                               'user_id': self.test_user_id},
                              {"$set": {'status': float(50.0)}})
+            data_info.update({'name': self.file_cleaned_name_2,
+                              'user_id': self.test_user_id},
+                             {"$set": {'status': float(50.0)}})
 
         response = self.client.get('/riskreport/')
         self.assertEqual(response.context['err'], 'Your files are in importing, please wait for seconds...')
-        self._delete_data()
+
+    def test_index_success_imported_file_and_importing_file(self):
+        self.client.login(username=self.test_user_id, password=self.test_user_password)
+        self._import_data()
+
+        # create *in importing* file
+        with MongoClient(host=settings.MONGO_URI) as c:
+            data_info = c['pergenie']['data_info']
+            data_info.update({'name': self.file_cleaned_name,
+                              'user_id': self.test_user_id},
+                             {"$set": {'status': float(50.0)}})
+
+        # if there is *imported* file and *in importing* file,
+        # show *imported* file.
+        response = self.client.get('/riskreport/')
+        self.assertTrue('<option value="testvcf40vcf" selected>' in response.content)
 
     def test_index_no_such_file(self):
         self.client.login(username=self.test_user_id, password=self.test_user_password)
@@ -151,7 +196,7 @@ class SimpleTest(TestCase):
 
         response = self.client.post('/riskreport/', {'file_name': 'dummytxt'})
         self.assertEqual(response.context['err'], 'no such file dummytxt')
-        self._delete_data()
+
 
     # TODO: will get 302... ?
     # def test_study_success(self):
@@ -160,7 +205,6 @@ class SimpleTest(TestCase):
 
     #     response = self.client.get('/riskreport/もやもや病%28ウィリス動脈輪閉塞症%29/A%20genome-wide%20association%20study%20identifies%20RNF213%20as%20the%20first%20Moyamoya%20disease%20gene./')
     #     self.assertEqual(response.status_code, 200)
-    #     self._delete_data()
 
     def test_study_nosuch_file(self):
         self.client.login(username=self.test_user_id, password=self.test_user_password)
@@ -168,4 +212,41 @@ class SimpleTest(TestCase):
 
         response = self.client.get('/riskreport/もやもや病%28ウィリス動脈輪閉塞症%29/A%20genome-wide%20association%20study%20identifies%20RNF213%20as%20the%20first%20Moyamoya%20disease%20gene./?file_name=' + 'dummy')
         self.assertEqual(response.status_code, 404)
-        self._delete_data()
+
+    def test_index_not_change_population_or_file(self):
+        self.client.login(username=self.test_user_id, password=self.test_user_password)
+        self._import_data()
+
+        response = self.client.get('/riskreport/')
+        self.assertTrue('<option value="test23andmetxt" selected>' in response.content)
+        self.assertTrue('<option value="unknown" selected>' in response.content)
+
+        response = self.client.post('/riskreport/', {'file_name': self.file_cleaned_name,
+                                                     'population': self.file_population})
+        self.assertTrue('<option value="test23andmetxt" selected>' in response.content)
+        self.assertTrue('<option value="unknown" selected>' in response.content)
+
+    def test_index_change_population(self):
+        self.client.login(username=self.test_user_id, password=self.test_user_password)
+        self._import_data()
+
+        response = self.client.get('/riskreport/')
+        self.assertTrue('<option value="test23andmetxt" selected>' in response.content)
+        self.assertTrue('<option value="unknown" selected>' in response.content)
+
+        response = self.client.post('/riskreport/', {'file_name': self.file_cleaned_name,
+                                                     'population': 'Japanese'})
+        self.assertTrue('<option value="test23andmetxt" selected>' in response.content)
+        self.assertTrue('<option value="Japanese" selected>' in response.content)
+
+    def test_index_change_file(self):
+        self.client.login(username=self.test_user_id, password=self.test_user_password)
+        self._import_data()
+
+        response = self.client.get('/riskreport/')
+        self.assertTrue('<option value="test23andmetxt" selected>' in response.content)
+
+        response = self.client.post('/riskreport/', {'file_name': self.file_cleaned_name_2,
+                                                     'population': self.file_population})
+        self.assertTrue('<option value="testvcf40vcf" selected>' in response.content)
+        self.assertTrue('<option value="unknown" selected>' in response.content)
