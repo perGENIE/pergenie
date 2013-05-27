@@ -12,7 +12,7 @@ class andmeParseError(Exception):
 
 
 class andmeParser(object):
-    def __init__(self, fin):
+    def __init__(self, fin, allowed_ref_genome_versions=('b37')):
         self.handle = fin
         self.delimiter = '\t'
         self.ref_genome_version = None
@@ -42,6 +42,11 @@ class andmeParser(object):
 
         if not self.ref_genome_version:
             raise andmeParseError, 'Could not determine reference-genome version from header-lines.'
+
+        # TODO: support b36
+        if not self.ref_genome_version in allowed_ref_genome_versions:
+            raise andmeParseError, 'reference-genome version is not supported.'
+
 
     def parse_lines(self):
         data = {}
