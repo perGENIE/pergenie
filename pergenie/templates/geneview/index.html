@@ -1,0 +1,70 @@
+{% extends "layout.html" %}
+{% block title %}Geneview{% endblock %}
+{% block description %}geneview{% endblock %}
+{% load staticfiles %}
+{% load extras %}
+
+{% block main_container %}
+<div id="main_container" class="span14">
+  <section id="main">
+
+    <div class="container">
+
+      <div class="row-fluid">
+        <div class="span12">
+          <div class="content-box transparent">
+            <div class="padded">
+              <h2>GeneView</h2>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- alerts -->
+      {% if msg %}
+      <div class="alert alert-info">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>Information:</strong> {{ msg }}
+      </div>
+      {% endif %}
+
+      {% if err %}
+      <div class="alert alert-error">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>Error!</strong> {{ err }}
+      </div>
+      {% endif %}
+
+      <div class="row-fluid">
+        <div class="span14">
+          <div class="content-box">
+            <div class="content-box-header">
+              <icon class="icon-beaker"></icon>
+            </div>
+
+            <div class="padded">
+              <div class="row-fluid">
+                <div class="span14">
+                  <p>BioinformaticsやGeneticsがわかるひと向けに，パーソナルゲノム（=ここではvariants情報）へのアノテーションをいい感じに提供．</p>
+                  <ul>
+                    <li>dbSNP</li>
+                    <li>OMIM</li>
+                    <li>RegulomeDB</li>
+                  </ul>
+                  <p>Gene別に分ける．（Geneの簡単なアノテーション（GOとかも？）つける）</p>
+                  <p>まずはallele freqの低い順にソートした表を用意して，ViewAllも用意．</p>
+                  <p>ここではINDELもちゃんと扱う．Exomeを読んだひとがうれしいものをつくる．</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+</div>
+{% endblock %}
+
+{% block js %}
+{% endblock %}
