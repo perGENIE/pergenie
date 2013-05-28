@@ -6,4 +6,5 @@ from django.conf import settings
 def index(request):
     return direct_to_template(request, 'faq/index.html',
                               dict(dbsnp_version=settings.DBSNP_VERSION,
-                                   refgenome_version=settings.REFGENOME_VERSION))
+                                   refgenome_version=settings.REFGENOME_VERSION,
+                                   refgenome_link=settings.REFGENOME_LINK))

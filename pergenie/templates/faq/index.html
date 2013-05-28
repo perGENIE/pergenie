@@ -97,7 +97,7 @@ if snp is not in uploaded_file:
                 <h4>What versions of reference files are used?</h4>
                 <ul>
                   <li>dbSNP Build: {{ dbsnp_version }}</li>
-                  <li>Human Genome Assembly: {{ refgenome_version }}</li>
+                  <li>Human Genome Assembly: <a href="{{ refgenome_link }}" target="_blank">{{ refgenome_version }}</a></li>
                 </ul>
                 <p>Currently, we did not support data convertion between different versions of reference files. So, if you upload genome file based on hg18 version of Human Genome Assembly, we cannot handle it correctly. (Coordinates conversion from hg18 to hg19 are required).</p>
               </li>
