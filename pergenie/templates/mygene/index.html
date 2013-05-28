@@ -1,8 +1,9 @@
 {% extends "layout.html" %}
-{% block title %}Mygene{% endblock %}
-{% block description %}mygene{% endblock %}
-{% load staticfiles %}
+{% load i18n %}
 {% load extras %}
+{% load staticfiles %}
+{% block title %}MyGene{% endblock %}
+{% block description %}MyGene{% endblock %}
 
 {% block main_container %}
 <div id="main_container" class="span14">
@@ -68,6 +69,43 @@
                   <p>Gene別に分ける．（Geneの簡単なアノテーション（GOとかも？）つける）</p>
                   <p>まずはallele freqの低い順にソートした表を用意して，ViewAllも用意．</p>
                   <p>ここではINDELもちゃんと扱う．Exomeを読んだひとがうれしいものをつくる．</p>
+
+                  <hr>
+
+
+                  <table cellpadding="0" cellspacing="0" border="0" class="display datatable" id="mygene_table">
+                    <thead>
+                      <tr>
+                        <th><b>Gene</b></th>
+                        <th>chrom</th>
+                        <th>length</th>
+                        <th>mutations</th>
+                        <th>mut. freq.</th>
+                        <th>rare rank</th>
+                        <!-- <th><i class="icon-share-alt"></i>Links</th> -->
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      {% for gene in genes %}
+                      <tr>
+
+                        <td>
+                          <a href="{% url apps.mygene.views.my_gene gene=gene %}">{{ gene }}</a>
+                        </td>
+
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+
+
+
                 </div>
               </div>
             </div>
@@ -81,4 +119,20 @@
 {% endblock %}
 
 {% block js %}
+<script type="text/javascript">
+$(document).ready(function(){
+  $('#mygene_table').dataTable({
+    "bJQueryUI": true,
+    "sPaginationType": "full_numbers",
+    "iDisplayLength": 10,
+    "oLanguage": {
+            "sZeroRecords": "Nothing found - sorry",
+            "sInfo": "Showing _START_ to _END_ of _TOTAL_ records",
+            "sInfoEmpty": "Showing 0 to 0 of 0 records",
+            "sInfoFiltered": "(filtered from _MAX_ total records)"
+    },
+    "sDom": '<"top"if>t<"bottom"p><"clear">'
+  });
+});
+</script>
 {% endblock %}
