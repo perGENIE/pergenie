@@ -21,4 +21,4 @@ def index(request):
     user_id = request.user.username
     msg, err = '', ''
 
-    return direct_to_template(request, 'geneview/index.html', {})
+    return direct_to_template(request, 'mygene/index.html', {})

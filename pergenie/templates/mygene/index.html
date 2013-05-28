@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
-{% block title %}Geneview{% endblock %}
-{% block description %}geneview{% endblock %}
+{% block title %}Mygene{% endblock %}
+{% block description %}mygene{% endblock %}
 {% load staticfiles %}
 {% load extras %}
 
@@ -14,7 +14,7 @@
         <div class="span12">
           <div class="content-box transparent">
             <div class="padded">
-              <h2>GeneView</h2>
+              <h2>MyGene</h2>
             </div>
           </div>
         </div>
@@ -45,6 +45,20 @@
             <div class="padded">
               <div class="row-fluid">
                 <div class="span14">
+
+                  <p>geneごとにmutationを入れたfasta，およびそれらを結合したmulti-fastaをつくる．それぞれダウンロード可能にしておく．</p>
+                  <p>geneごとのfastaは，perGENIE内部では変化しているところを色付きで，Downloadボタンからはplainのがみれるようにする．</p>
+                  <p>geneはまずはlow freq variantsが多い順にソート．今後何らかの重篤度予測とかできたら，それ順でもできるようにする．</p>
+                  <p>misenseとか，loss of functionしてそうなのを，ピックアップもする．</p>
+                  <p>プロテインに変換した場合のケースについては，中田さんに相談．</p>
+                  <p>見た目としては，配列だけでなく，何らかの立体構造データを付けられるとかなり嬉しい．</p>
+
+                  <hr>
+
+                  <p>MyGene is only for VCF data; both Whole Genome Sequence and Whole Exome Sequence. SNP array data has not enough information to get correct results of MyGene. But JUST USING is ok.</p>
+
+                  <hr>
+
                   <p>BioinformaticsやGeneticsがわかるひと向けに，パーソナルゲノム（=ここではvariants情報）へのアノテーションをいい感じに提供．</p>
                   <ul>
                     <li>dbSNP</li>

@@ -52,7 +52,7 @@ urlpatterns = patterns('',
     url(r'^riskreport/(?P<trait>[^/]*)/$', 'apps.riskreport.views.trait'),
     url(r'^riskreport/(?P<trait>[^/]*)/(?P<study>[^/]*)/$', 'apps.riskreport.views.study'),
 
-    url(r'^geneview/$', 'apps.geneview.views.index'),
+    url(r'^mygene/$', 'apps.mygene.views.index'),
 
     url(r'^traits/$', 'apps.traits.views.index'),
 
