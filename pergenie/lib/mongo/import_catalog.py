@@ -607,7 +607,7 @@ def _risk_allele(data, dbsnp=None, strand_db=None):
         return None, None
 
     if risk_allele == '?':
-        log.warn('allele is "?". pubmed_id:{}'.format(data['pubmed_id']))
+        # log.warn('allele is "?". pubmed_id:{}'.format(data['pubmed_id']))
         return int(rs), risk_allele
 
     if not risk_allele in ('A', 'T', 'G', 'C'):
@@ -670,22 +670,30 @@ def _risk_allele(data, dbsnp=None, strand_db=None):
             if info == 'RV':
                 is_RV = True
 
-        if gmaf:
-            if not gmaf <= 0.5:
-                log.debug('GMAF > 0.5...')
+        # TODO: remove this, after bug fixed.
+        if int(rs) in [964184, 10762058, 9319321]:
+            log.warn('=======================================================')
+            log.warn(data)
+            log.warn('=======================================================')
 
-            # Suspicious case
-            ref_freq = 1.0 - gmaf
-            if ref == risk_allele and alt == RV[risk_allele]:
-                if ref_freq > 0.5 and data['risk_allele_frequency'] <= 0.5:
-                    log.warn('=======================================================')
-                    log.warn('Suspicious case in Allele frequency check based on GMAF.')
-                    log.warn('risk_allele_frequency is not consistent with GMAF.')
-                    log.warn('Maybe risk_allele is reverse stranded, so reverse it.')
-                    log.warn(data)
-                    log.warn('=======================================================')
-                    REVERSED_STATS['GMAF'] += 1
-                    return int(rs), RV[risk_allele]
+        if not int(rs) in [964184, 10762058, 9319321]:  # TODO: remove this, after bug fixed.
+            # FIXME: this is buggy, if reference allele is minor allele...
+            if gmaf:
+                if not gmaf <= 0.5:
+                    log.debug('GMAF > 0.5...')
+
+                # Suspicious case
+                ref_freq = 1.0 - gmaf
+                if ref == risk_allele and alt == RV[risk_allele]:
+                    if ref_freq > 0.5 and data['risk_allele_frequency'] <= 0.5:
+                        log.warn('=======================================================')
+                        log.warn('Suspicious case in Allele frequency check, based on GMAF.')
+                        log.warn('risk_allele_frequency is not consistent with GMAF.')
+                        log.warn('Maybe risk_allele is reverse stranded, so reverse it.')
+                        log.warn(data)
+                        log.warn('=======================================================')
+                        REVERSED_STATS['GMAF'] += 1
+                        return int(rs), RV[risk_allele]
 
         # Strand check based on `RV` tag.
         if is_RV:
@@ -695,7 +703,7 @@ def _risk_allele(data, dbsnp=None, strand_db=None):
             if not risk_allele in [ref] + alts:
                 if RV[risk_allele] in [ref] + alts:
                     log.warn('=================================================================')
-                    log.warn('Suspicious case in Allele frequency check based RV tag.')
+                    log.warn('Suspicious case in Allele frequency check, based RV tag.')
                     log.warn('risk_allele is not in ref + alts, but RV[risk_allele] is in them.')
                     log.warn('Maybe risk_allele is reverse stranded, so reverse it.')
                     log.warn(data)
