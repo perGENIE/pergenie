@@ -55,7 +55,28 @@
             <div class="padded">
               <div class="row-fluid">
                 <div class="span14">
-                  {{ gene_info }}
+                  <table>
+
+                    <tbody>
+                      {% for k,v in gene_info.items %}
+                      <tr>
+                        <td>
+                          {{ k }}:
+                        </td>
+                        <td>
+                          {% ifequal k 'seq' %}
+                          <pre>{{ v }}</pre>
+                          {% else %}
+                          {{ v }}
+                          {% endifequal %}
+                        </td>
+                      </tr>
+                      {% endfor %}
+                      </tbody>
+                  </table>
+
+
+
                 </div>
               </div>
             </div>

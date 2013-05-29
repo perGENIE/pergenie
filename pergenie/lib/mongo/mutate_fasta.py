@@ -11,10 +11,12 @@ class MutateFasta(object):
         # self.chroms = [str(i+1) for i in range(22)] + ['X', 'Y']  # , 'MT']
 
     def generate_seq(self, records, offset=None):
+        if not records and not offset: return
+
         seq = ''
-        chrom = records[0]['chrom']
-        prev_pos = offset[0] if offset else 0
-        last_pos = offset[1] if offset else len(self.fasta[chrom])
+        chrom = offset[0] if offset else records[0]['chrom']
+        prev_pos = offset[1] if offset else 0
+        last_pos = offset[2] if offset else len(self.fasta[chrom])
 
         for r in records:
             ref = self._slice_fasta(r['chrom'], r['pos'], r['pos'])
@@ -26,22 +28,22 @@ class MutateFasta(object):
             mut_type, sub_seq = self._classify_mut(r['ref'], r['alt'])
 
             if mut_type == 'snv':
-                seq += self._slice_fasta(r['chrom'], prev_pos + 1, r['pos'] - 1)
+                seq += self._slice_fasta(chrom, prev_pos + 1, r['pos'] - 1)
                 seq += sub_seq
                 prev_pos = r['pos']
 
             elif mut_type == 'del':
-                seq += self._slice_fasta(r['chrom'], prev_pos + 1, r['pos'])
+                seq += self._slice_fasta(chrom, prev_pos + 1, r['pos'])
                 prev_pos += len(sub_seq)
 
             elif mut_type == 'ins':
-                seq += self._slice_fasta(r['chrom'], prev_pos + 1, r['pos'])
+                seq += self._slice_fasta(chrom, prev_pos + 1, r['pos'])
                 seq += sub_seq
                 prev_pos = r['pos']
 
         # Reminder
         if prev_pos + 1 <= last_pos:
-            seq += self._slice_fasta(r['chrom'], prev_pos + 1, last_pos)
+            seq += self._slice_fasta(chrom, prev_pos + 1, last_pos)
 
         return seq
 
@@ -81,13 +83,17 @@ def _main():
 
     PATH_TO_REFERENCE_FASTA = os.path.join(LARGE_REFERENCE_DIR, 'human_g1k_v37.fasta')
 
-    PATH_TO_REFERENCE_FASTA = 'test.fasta'
+    # PATH_TO_REFERENCE_FASTA = 'test.fasta'
 
     m = MutateFasta(fasta=PATH_TO_REFERENCE_FASTA)
+
     records = [{'chrom': '1', 'pos': 5, 'ref': 'N', 'alt': 'A'},
                {'chrom': '1', 'pos': 6, 'ref': 'N', 'alt': 'T'}]
-    seq = m.generate_seq(records, offset=[0,8])
+    seq = m.generate_seq(records, offset=['1', 0, 8])
+    print seq
 
+    records = []
+    seq = m.generate_seq(records, offset=['1', 0, 8])
     print seq
 
 if __name__ == '__main__':
