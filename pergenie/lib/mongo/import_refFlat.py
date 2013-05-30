@@ -59,7 +59,7 @@ def import_refFlat():
 
                 refFlat.insert(record)
 
-        print >>sys.stderr, 'count: {}'.format(refFlat.count())
+        print >>sys.stderr, 'count: {0}'.format(refFlat.count())
 
         print >>sys.stderr, 'Creating indices...'
         refFlat.create_index([('gene', pymongo.ASCENDING)])

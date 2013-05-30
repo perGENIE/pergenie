@@ -70,7 +70,7 @@ class Command(BaseCommand):
             else:
                 # get latest gwascatalog from official web site
                 log.info('Getting latest gwascatalog form official web site...')
-                log.info('Getting from {} ...'.format(settings.GWASCATALOG_URL))
+                log.info('Getting from {0} ...'.format(settings.GWASCATALOG_URL))
 
                 try:
                     get_url_content(url=settings.GWASCATALOG_URL, dst=latest_catalog)
@@ -94,7 +94,7 @@ class Command(BaseCommand):
                         latest_date = local_latest_date
 
                         log.warn('=======================================================')
-                        log.warn('Use local latest gwascatalog: {}'.format(latest_catalog))
+                        log.warn('Use local latest gwascatalog: {0}'.format(latest_catalog))
                         log.warn('=======================================================')
 
                     else:
@@ -134,7 +134,7 @@ class Command(BaseCommand):
                 catalog_info = c['pergenie']['catalog_info']
 
                 latest_document = catalog_info.find_one({'status': 'latest'})
-                log.info('latest_document: {}'.format(latest_document))
+                log.info('latest_document: {0}'.format(latest_document))
 
                 #
                 latest_date = date2datetime(latest_date)
@@ -158,7 +158,7 @@ class Command(BaseCommand):
                 else:
                     log.info('No need to update catalog_info.')
 
-                log.info('latest: {}'.format(catalog_info.find_one({'status': 'latest'})))
+                log.info('latest: {0}'.format(catalog_info.find_one({'status': 'latest'})))
 
 
         elif options["demodata"]:
@@ -188,18 +188,18 @@ class Command(BaseCommand):
                 # drop old collections of `db.variants.user_id.file_name`
                 olds = []
                 for collection_name in db.collection_names():
-                    if collection_name.startswith('variants.{}.'.format(settings.DEMO_USER_ID)):
+                    if collection_name.startswith('variants.{0}.'.format(settings.DEMO_USER_ID)):
                         olds.append(collection_name)
 
                 for old in olds:
                     db.drop_collection(old)
-                log.debug('dropped old collections {}'.format(olds))
+                log.debug('dropped old collections {0}'.format(olds))
 
                 # remove old documents in `data_info`
                 olds = list(db['data_info'].find({'user_id': settings.DEMO_USER_ID}))
                 if olds:
                     targets_in_data_info = db['data_info'].remove({'user_id': settings.DEMO_USER_ID})
-                log.debug('remove old documents in data_info {}'.format(olds))
+                log.debug('remove old documents in data_info {0}'.format(olds))
 
                 # Import new data
                 targets = [settings.DEMO_23ANDME_GENOME_EU_M,
@@ -208,7 +208,7 @@ class Command(BaseCommand):
 
                 for target in targets:
                     if os.path.exists(target['name']):
-                        log.debug('demo data exists {}'.format(target['name']))
+                        log.debug('demo data exists {0}'.format(target['name']))
 
                         catalog_cover_rate = c['pergenie']['catalog_cover_rate']
                         info = {'user_id': settings.DEMO_USER_ID,

@@ -32,7 +32,7 @@ def import_23andme_snps():
                 record = dict(index=int(index), snp=snp, rs=rs, chrom=chrom, pos=int(pos))
                 andme_snps.insert(record)
 
-        print >>sys.stderr, 'count: {}'.format(andme_snps.count())
+        print >>sys.stderr, 'count:', andme_snps.count()
 
         print >>sys.stderr, 'Creating indices...'
         andme_snps.create_index([('index', pymongo.ASCENDING)])

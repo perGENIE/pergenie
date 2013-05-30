@@ -1,7 +1,8 @@
 #!/bin/sh
 
 notifier=/opt/local/bin/terminal-notifier
-. /Users/numa/.virtualenvs/perGENIE/bin/activate
+# . /Users/numa/.virtualenvs/perGENIE/bin/activate  # py27
+. /Users/numa/.virtualenvs/py26perGENIE/bin/activate  # py26
 
 which python
 which nosetests

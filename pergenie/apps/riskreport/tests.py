@@ -155,7 +155,7 @@ class SimpleTest(TestCase):
                              {"$set": {'status': float(50.0)}})
 
         response = self.client.post('/riskreport/', {'file_name': self.file_cleaned_name})
-        self.assertEqual(response.context['err'], '{} is in importing, please wait for seconds...'.format(self.file_cleaned_name))
+        self.assertEqual(response.context['err'], '{0} is in importing, please wait for seconds...'.format(self.file_cleaned_name))
 
     def test_index_files_are_in_importing(self):
         self.client.login(username=self.test_user_id, password=self.test_user_password)

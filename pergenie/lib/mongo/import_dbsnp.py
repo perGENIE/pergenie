@@ -33,7 +33,7 @@ def import_dbsnp(path_to_dbsnp, db_name, collection_name, is_snp_only=False, por
 
         print 'Counting input lines ...',
         file_lines = int(subprocess.check_output(['wc', '-l', path_to_dbsnp]).split()[0])
-        print 'done. # of lines: {0}'.format(file_lines)
+        print 'done. # of lines:', file_lines
 
         fields = [('chrom', '#CHROM', _string),
                   ('pos', 'POS', _integer),
@@ -51,9 +51,9 @@ def import_dbsnp(path_to_dbsnp, db_name, collection_name, is_snp_only=False, por
                 elif line.startswith('#CHROM'):
                     fieldnames = line.strip().split('\t')
                     break
-            print 'done. Field: {}'.format(fieldnames)
+            print 'done. Field:', fieldnames
 
-            print 'Importing {} ...'.format(path_to_dbsnp)
+            print 'Importing', path_to_dbsnp
             for i,record in enumerate(csv.DictReader(fin, fieldnames=fieldnames, delimiter='\t')):
                 data = {}
                 for dict_name, record_name, converter in fields:

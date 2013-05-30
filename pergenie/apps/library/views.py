@@ -151,14 +151,14 @@ def snps(request, rs):
         # data from dbsnp
         dbsnp = c['dbsnp']['B132']
         dbsnp_record = dbsnp.find_one({'rs': rs})
-        log.debug('dbsnp_record {}'.format(dbsnp_record))
+        log.debug('dbsnp_record {0}'.format(dbsnp_record))
 
         # TODO: data from HapMap
         # * allele freq by polulation (with allele strand dbsnp oriented)
         # * LD data(r^2)
 
     # data from gwascatalog
-    catalog_records = list(search_catalog.search_catalog_by_query('rs{}'.format(rs)))
+    catalog_records = list(search_catalog.search_catalog_by_query('rs{0}'.format(rs)))
     if len(catalog_records) > 0:
         catalog_record = catalog_records[0]
         if catalog_record['risk_allele_frequency']:

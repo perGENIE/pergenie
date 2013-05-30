@@ -25,7 +25,7 @@ def _main():
             # `collection` of variant
             targets = []
             for collection_name in db.collection_names():
-                if collection_name.startswith('variants.{}.'.format(args.drop)):
+                if collection_name.startswith('variants.{0}.'.format(args.drop)):
                     targets.append(collection_name)
 
             pprint(targets)
@@ -36,7 +36,7 @@ def _main():
             if not args.dry and wait == 'y':
                 for target in targets:
                     db.drop_collection(target)
-                after = [collection_name for collection_name in db.collection_names() if collection_name.startswith('variants.{}.'.format(args.drop))]
+                after = [collection_name for collection_name in db.collection_names() if collection_name.startswith('variants.{0}.'.format(args.drop))]
                 pprint(after)
 
             # `document` in data_info

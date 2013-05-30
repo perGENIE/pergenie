@@ -153,7 +153,7 @@ def register(request):
                 break
             except:
                 params['err'] = _('Unexpected error')
-                log.error('Unexpected error: {}'.format(e))
+                log.error('Unexpected error: {0}'.format(e))
                 break
 
             params['is_succeeded'] = True
@@ -291,7 +291,7 @@ This email address is SEND ONLY, NO-REPLY.
 """)
             except:  # smtplib.SMTPException
                 err = 'Activation successful, but failed to send you notification email...'
-                log.error('Failed to send notification. {}'.format(challenging_user_info['user_id']))
+                log.error('Failed to send notification. {0}'.format(challenging_user_info['user_id']))
 
             break
 

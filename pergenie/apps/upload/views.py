@@ -90,7 +90,7 @@ def index(request):
                         errs.append(_('file extension not allowed') + ': ' + call_file.name)
                         continue
 
-                    log.debug('content_type: {}'.format(call_file.content_type))
+                    log.debug('content_type: {0}'.format(call_file.content_type))
 
                     if call_file.content_type == 'text/plain':
                         pass
@@ -118,7 +118,7 @@ def index(request):
                     # Filetype identification using libmagic via python-magic
                     m = magic.Magic(mime_encoding=True)
                     magic_filetype = m.from_file(uploaded_file_path)
-                    log.debug('magic_filetype {}'.format(magic_filetype))
+                    log.debug('magic_filetype {0}'.format(magic_filetype))
                     if not magic_filetype in ('us-ascii'):
                         errs.append(_('file type not allowed, or encoding not allowed') + ': ' + call_file.name)
                         try:
@@ -165,7 +165,7 @@ def index(request):
             do_intro = True
 
     # if err:
-    #     log.error('err: {}'.format(err))
+    #     log.error('err: {0}'.format(err))
 
     return direct_to_template(request, 'upload/index.html',
                               dict(msg=msg, err=err, msgs=msgs, errs=errs, uploadeds=uploadeds,
@@ -188,9 +188,9 @@ def delete(request):
 
         # delete collection `variants.user_id.filename`
         target_collection = 'variants.{0}.{1}'.format(user_id, name)
-        log.debug('target is in db {}'.format(target_collection in db.collection_names()))
+        log.debug('target is in db {0}'.format(target_collection in db.collection_names()))
         db.drop_collection(target_collection)
-        log.debug('target is in db {}'.format(target_collection in db.collection_names()))
+        log.debug('target is in db {0}'.format(target_collection in db.collection_names()))
 
         # delete `file`
         if data_info.find_one({'user_id': user_id, 'name': name}):

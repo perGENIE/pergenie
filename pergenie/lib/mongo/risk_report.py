@@ -261,7 +261,7 @@ def risk_calculation(catalog_map, variants_map, population, user_id, file_name,
                     try:
                         tmp_value = math.log10(risk_store[trait][study][rs]['RR'])
                     except ValueError:
-                        log.error('ValueError {}'.format(tmp_value))
+                        log.error('ValueError {0}'.format(tmp_value))
                         if tmp_value == 0.0:
                             tmp_value = -2.0  # -inf
 
@@ -300,7 +300,7 @@ def risk_calculation(catalog_map, variants_map, population, user_id, file_name,
 #                       'Asian': ['Chinese', 'Japanese', 'Asian'],
 #                       'Japanese': ['Japanese', 'Asian'],
 #                       'none': ['']}
-#     population = 'population:{}'.format('+'.join(population_map[args.population]))
+#     population = 'population:{0}'.format('+'.join(population_map[args.population]))
 
 #     catalog_map, variants_map = search_variants.search_variants(args.user_id, args.file_name, population)
 
@@ -312,7 +312,7 @@ def risk_calculation(catalog_map, variants_map, population, user_id, file_name,
 
 #     risk_store, risk_report = risk_calculation(catalog_map, variants_map, population_code_map[args.population], args.sex,
 #                                                args.user_id, args.file_name, args.LD_block_clustering, True,
-#                                                os.path.join(UPLOAD_DIR, args.user_id, '{}_{}.p'.format(args.user_id, args.file_name)))
+#                                                os.path.join(UPLOAD_DIR, args.user_id, '{0}_{1}.p'.format(args.user_id, args.file_name)))
 
 
 # #     pprint(risk_store)

@@ -5,7 +5,8 @@ import sys
 import os
 import datetime
 import argparse
-from subprocess import check_output
+# from subprocess import check_output  # py27
+import subprocess
 
 from termcolor import colored
 import pymongo
@@ -28,12 +29,13 @@ def import_variants(file_path, population, file_format, user_id,
 
     file_name = os.path.basename(file_path)
     file_name_cleaned = clean_file_name(file_name)
-    print >>sys.stderr, '[INFO] Input file: {}'.format(file_path)
+    print >>sys.stderr, '[INFO] Input file:', file_path
 
     print >>sys.stderr, '[INFO] counting lines...'
     # Count input lines for calculating progress of import_variants
-    file_lines = int(check_output(['wc', '-l', file_path]).split()[0])
-    print >>sys.stderr, '[INFO] #lines: {}'.format(file_lines)
+    # file_lines = int(check_output(['wc', '-l', file_path]).split()[0])  # py27
+    file_lines = int(subprocess.Popen(['wc', '-l', file_path], stdout=subprocess.PIPE).communicate()[0].split()[0])  # py26
+    print >>sys.stderr, '[INFO] #lines:', file_lines
 
     with pymongo.Connection(port=mongo_port) as con:
         db = con['pergenie']
@@ -43,7 +45,7 @@ def import_variants(file_path, population, file_format, user_id,
         # Ensure that this variants file has not been imported
         if users_variants.find_one():
             db.drop_collection(users_variants)
-            print >>sys.stderr, colored('[WARN] Dropped old collection of {}'.format(file_name_cleaned), 'yellow')
+            print >>sys.stderr, colored('[WARN] Dropped old collection of {0}'.format(file_name_cleaned), 'yellow')
 
         info = {'user_id': user_id,
                 'name': file_name_cleaned,
@@ -75,7 +77,8 @@ def import_variants(file_path, population, file_format, user_id,
                         data['genotype'] = tmp_genotypes[p.sample_names[0]]
 
                     if data['rs']:
-                        sub_data = {k: data[k] for k in ('chrom', 'pos', 'rs', 'genotype')}
+                        # sub_data = {k: data[k] for k in ('chrom', 'pos', 'rs', 'genotype')}  # py27
+                        sub_data = dict((k, data[k]) for k in ('chrom', 'pos', 'rs', 'genotype'))  # py26
                         users_variants.insert(sub_data)
 
                     if i > 0 and i % 10000 == 0:
@@ -93,7 +96,7 @@ def import_variants(file_path, population, file_format, user_id,
                 data_info.update({'user_id': user_id, 'name': file_name_cleaned},
                                  {"$set": {'status': 100}})
                 print >>sys.stderr, '[INFO] done!'
-                print >>sys.stderr, '[INFO] Added collection: {}'.format(set(db.collection_names()) - set(prev_collections))
+                print >>sys.stderr, '[INFO] Added collection:', set(db.collection_names()) - set(prev_collections)
 
                 return None
 

@@ -79,7 +79,7 @@ def _import_riskreport(tmp_info):
     if tmp_info['user_id'].startswith(settings.DEMO_USER_ID): tmp_info['user_id'] = settings.DEMO_USER_ID
 
     # Get GWAS Catalog records for this population
-    population = 'population:{}'.format('+'.join(settings.POPULATION_MAP[tmp_info['population']]))
+    population = 'population:{0}'.format('+'.join(settings.POPULATION_MAP[tmp_info['population']]))
     catalog_map, variants_map = search_variants.search_variants(user_id=tmp_info['user_id'],
                                                                 file_name=tmp_info['name'],
                                                                 file_format=tmp_info['file_format'],

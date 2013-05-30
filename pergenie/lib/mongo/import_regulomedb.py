@@ -35,7 +35,7 @@ def import_regulomedb():
 
                 regulomedb.insert(record)
 
-        print >>sys.stderr, 'count: {}'.format(regulomedb.count())
+        print >>sys.stderr, 'count:', regulomedb.count()
 
         print >>sys.stderr, 'Creating indices...'
         regulomedb.create_index([('rs', pymongo.ASCENDING)])

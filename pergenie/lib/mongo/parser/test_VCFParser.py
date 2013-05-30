@@ -44,26 +44,39 @@ class SimpleTest(unittest.TestCase):
     def test_invalid_header(self):
         """case: without `#CHROM ...` line"""
 
-        with self.assertRaises(VCFParseError) as cm:
-            v = VCFParser(open(os.path.join(self.basedir, 'test', 'test.vcf41.invalid-header.vcf'), 'r'))
+        # py27
+        # with self.assertRaises(VCFParseError) as cm:
+        #     v = VCFParser(open(os.path.join(self.basedir, 'test', 'test.vcf41.invalid-header.vcf'), 'r'))
+        #
+        # self.assertEqual(cm.exception.error_code, 'Header-lines seem invalid. `#CHROM ...` does not exists.')
 
-        self.assertEqual(cm.exception.error_code, 'Header-lines seem invalid. `#CHROM ...` does not exists.')
+        # py26
+        try:
+            v = VCFParser(open(os.path.join(self.basedir, 'test', 'test.vcf41.invalid-header.vcf'), 'r'))
+        except VCFParseError as e:
+            self.assertEqual(e.error_code, 'Header-lines seem invalid. `#CHROM ...` does not exists.')
+        else:
+            self.fail('should have thrown VCFParseError')
 
     def test_invalid_header_2(self):
         """case: without whole header-lines"""
 
-        with self.assertRaises(VCFParseError) as cm:
+        try:
             v = VCFParser(open(os.path.join(self.basedir, 'test', 'test.vcf41.invalid-header.2.vcf'), 'r'))
-
-        self.assertEqual(cm.exception.error_code, 'Header-lines seem invalid. `#CHROM ...` does not exists.')
+        except VCFParseError as e:
+            self.assertEqual(e.error_code, 'Header-lines seem invalid. `#CHROM ...` does not exists.')
+        else:
+            self.fail('should have thrown VCFParseError')
 
     def test_invalid_header_3(self):
         """case: delimiter is not [tab]"""
 
-        with self.assertRaises(VCFParseError) as cm:
+        try:
             v = VCFParser(open(os.path.join(self.basedir, 'test', 'test.vcf41.invalid-header.3.vcf'), 'r'))
-
-        self.assertEqual(cm.exception.error_code, 'Header-lines seem invalid. Probably delimiter is not tab.')
+        except VCFParseError as e:
+            self.assertEqual(e.error_code, 'Header-lines seem invalid. Probably delimiter is not tab.')
+        else:
+            self.fail('should have thrown VCFParseError')
 
 
 if __name__ == '__main__':

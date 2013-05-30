@@ -6,7 +6,8 @@ import csv
 import datetime
 import time
 import json
-from collections import Counter
+# from collections import Counter  # py27
+from utils.Counter import Counter  # py26 (//code.activestate.com/recipes/576611/)
 from pprint import pformat
 import pymongo
 import HTMLParser
@@ -54,7 +55,7 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja, path_t
     assert trait_info.count() == 0
 
     # TODO: remove eng2ja, then use only db.trait_info
-    log.debug('Loading {} ...'.format(path_to_eng2ja))
+    log.debug('Loading {0} ...'.format(path_to_eng2ja))
     eng2ja = {}
     eng2category = {}
     with open(path_to_eng2ja, 'rb') as fin:
@@ -110,7 +111,7 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja, path_t
     dbsnp = c['dbsnp'][dbsnp_version]
     if not dbsnp.find_one():
         log.warn('========================================')
-        log.warn('dbsnp.{} does not exist in mongodb ...'.format(dbsnp_version))
+        log.warn('dbsnp.{0} does not exist in mongodb ...'.format(dbsnp_version))
         log.warn('so dbSNP check will be skipped')
         log.warn('========================================')
         dbsnp = None
@@ -172,7 +173,7 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja, path_t
     field_names = [field[0:2] for field in fields] + post_fields
 
     fields = my_fields + fields
-    log.info('# of fields: {}'.format(len(fields)))
+    log.info('# of fields: {0}'.format(len(fields)))
 
     log.debug('Importing gwascatalog.txt...')
     # catalog_summary = {}
@@ -243,37 +244,37 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja, path_t
         catalog_stats.create_index('field')
 
     log.info('# of documents in catalog (after): {}'.format(catalog.count()))
-    log.info('REVERSED_STATS: {}'.format(pformat(REVERSED_STATS)))
+    log.info('REVERSED_STATS: {0}'.format(pformat(REVERSED_STATS)))
 
     # Add `is_in_truseq`, `is_in_andme` flags
     n_records, n_truseq, n_andme = 0, 0, 0
     for chrom in [i + 1 for i in range(24)]:
-        log.info('Addding flags... chrom: {}'.format(chrom))
+        log.info('Addding flags... chrom: {0}'.format(chrom))
 
         # TODO: should be `uniq_` ?
         records = list(catalog.find({'chr_id': chrom}).sort('chr_pos', pymongo.ASCENDING))
 
         ok_records = [rec for rec in records if rec['snp_id_current']]
         n_records += len(ok_records)
-        log.info('records:{}'.format(n_records))
+        log.info('records:{0}'.format(n_records))
 
         # `is_in_truseq`
         region_file = os.path.join(path_to_interval_list_dir,
-                                   'TruSeq-Exome-Targeted-Regions-BED-file.{}.interval_list'.format({23:'X', 24:'Y'}.get(chrom, chrom)))
+                                   'TruSeq-Exome-Targeted-Regions-BED-file.{0}.interval_list'.format({23:'X', 24:'Y'}.get(chrom, chrom)))
         with open(region_file, 'r') as fin:
             extracted = extract_region(region_file, ok_records)
             n_truseq += len(extracted)
-            log.info('`is_in_truseq` extracted:{}'.format(n_truseq))
+            log.info('`is_in_truseq` extracted:{0}'.format(n_truseq))
             for record in extracted:
                 catalog.update(record, {"$set": {'is_in_truseq': True}})
 
         # `is_in_andme`
         region_file = os.path.join(path_to_interval_list_dir,
-                                   'andme_region.{}.interval_list'.format({23:'X', 24:'Y', 25:'MT'}.get(chrom, chrom)))
+                                   'andme_region.{0}.interval_list'.format({23:'X', 24:'Y', 25:'MT'}.get(chrom, chrom)))
         with open(region_file, 'r') as fin:
             extracted = extract_region(region_file, ok_records)
             n_andme += len(extracted)
-            log.info('`is_in_andme` extracted:{}'.format(n_andme))
+            log.info('`is_in_andme` extracted:{0}'.format(n_andme))
             for record in extracted:
                 catalog.update(record, {"$set": {'is_in_andme': True}})
 
@@ -293,7 +294,7 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja, path_t
     log.info(stats)
     catalog_cover_rate.insert(stats)
 
-    log.info('catalog.find_one(): {}'.format(catalog.find_one()))
+    log.info('catalog.find_one(): {0}'.format(catalog.find_one()))
     log.info('import catalog done')
 
     return
@@ -412,7 +413,7 @@ def _population(text):
 def identfy_OR_or_beta(OR_or_beta, CI_95):
     if CI_95['text']:
         # TODO: convert beta to OR if can
-        OR = 'beta:{}'.format(OR_or_beta)
+        OR = 'beta:{0}'.format(OR_or_beta)
 
     else:
         if OR_or_beta:
@@ -420,7 +421,7 @@ def identfy_OR_or_beta(OR_or_beta, CI_95):
 
             #
             if OR < 1.0:  # somehow beta without text in 95% CI ?
-                OR = 'beta:{}?'.format(OR_or_beta)
+                OR = 'beta:{0}?'.format(OR_or_beta)
 
         else:
             OR = None
@@ -512,7 +513,7 @@ def _OR_or_beta(text):
             if match:
                 value = float(match.group())
             else:
-                log.warn('OR_or_beta? {}'.format(text))
+                log.warn('OR_or_beta? {0}'.format(text))
                 return None
 
         return value
@@ -520,7 +521,7 @@ def _OR_or_beta(text):
         #     return value
 
         # else:
-        #     print >>sys.stderr, 'OR_or_beta? {}'.format(text)
+        #     print >>sys.stderr, 'OR_or_beta? {0}'.format(text)
         #     return text+'?'
 
 
@@ -534,13 +535,13 @@ def _rss(text):
 
     else:
         if len(text.split(',')) != 1:
-            log.warn('in _rss, more than one rs: {}'.format(text))
+            log.warn('in _rss, more than one rs: {0}'.format(text))
             return None   #
 
         try:
             return int(text.replace('rs', ''))
         except ValueError:
-            log.warn('in _rss, failed to convert to int: {}'.format(text))
+            log.warn('in _rss, failed to convert to int: {0}'.format(text))
             return None   #
 
 def _platform(text):
@@ -603,15 +604,15 @@ def _risk_allele(data, dbsnp=None, strand_db=None):
     try:
         rs, risk_allele = regexp_risk_allele.findall(data['strongest_snp_risk_allele'])[0]
     except (ValueError, IndexError):
-        log.warn('failed to parse "strongest_snp_risk_allele": {}'.format(data))
+        log.warn('failed to parse "strongest_snp_risk_allele": {0}'.format(data))
         return None, None
 
     if risk_allele == '?':
-        # log.warn('allele is "?". pubmed_id:{}'.format(data['pubmed_id']))
+        # log.warn('allele is "?". pubmed_id:{0}'.format(data['pubmed_id']))
         return int(rs), risk_allele
 
     if not risk_allele in ('A', 'T', 'G', 'C'):
-        log.warn('allele is not in (A,T,G,C): {}'.format(data))
+        log.warn('allele is not in (A,T,G,C): {0}'.format(data))
         return int(rs), None
 
     RV = {'A': 'T', 'T': 'A', 'G': 'C', 'C': 'G'}
@@ -647,7 +648,7 @@ def _risk_allele(data, dbsnp=None, strand_db=None):
         ref, alt = found['ref'], found['alt']
         refs = ref.split(',')
         alts = alt.split(',')
-        assert len(refs) == 1, 'len(ref) is not 1 {}'.format(found)
+        assert len(refs) == 1, 'len(ref) is not 1 {0}'.format(found)
 
         # Check if record is in REF or ALT
         if not risk_allele in ref + alt:
@@ -758,19 +759,19 @@ def _string_without_slash(text):
         return None
     else:
         if escape(text) != text:
-            log.warn('Escaped: {}'.format(text))
+            log.warn('Escaped: {0}'.format(text))
 
         # HTML Escape
         text = escape(text)
 
         # if h.unescape(text) != text:
-        #     log.error('Problem with escaping: {}'.format(text))
+        #     log.error('Problem with escaping: {0}'.format(text))
         # elif unescape(text) != text:
-        #     log.error('Problem with escaping: {}'.format(text))
+        #     log.error('Problem with escaping: {0}'.format(text))
 
         # Escape slash
         if '/' in text:
-            log.warn('/ in {}'.format(text))
+            log.warn('/ in {0}'.format(text))
         text = text.replace('/', '&#47;')
 
         return text
@@ -844,7 +845,7 @@ def _genes_from_ids(text):
                 result.append(_gene(gene_symbol, entrez_gene_id, omim_gene_id))
 
             else:
-                log.warn('Failed to get gene_id2gene_symbol EntrezGeneID: {}'.format(entrez_gene_id))
+                log.warn('Failed to get gene_id2gene_symbol EntrezGeneID: {0}'.format(entrez_gene_id))
 
                 result.append(_gene(None, entrez_gene_id, None))
 

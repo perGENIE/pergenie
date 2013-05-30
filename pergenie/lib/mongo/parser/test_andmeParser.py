@@ -26,26 +26,42 @@ class SimpleTest(unittest.TestCase):
     def test_invalid_file(self):
         """case: fin is another file-format"""
 
-        with self.assertRaises(andmeParseError) as cm:
-            p = andmeParser(open(os.path.join(self.basedir, 'test', 'test.vcf41.vcf'), 'r'))
+        # py27
+        # with self.assertRaises(andmeParseError) as cm:
+        #     p = andmeParser(open(os.path.join(self.basedir, 'test', 'test.vcf41.vcf'), 'r'))
+        #
+        # self.assertEqual(cm.exception.error_code, 'Header-lines seem invalid. `# rsid ...` does not exists.')
 
-        self.assertEqual(cm.exception.error_code, 'Header-lines seem invalid. `# rsid ...` does not exists.')
+        # py26
+        try:
+            p = andmeParser(open(os.path.join(self.basedir, 'test', 'test.vcf41.vcf'), 'r'))
+        except andmeParseError as e:
+            self.assertEqual(e.error_code, 'Header-lines seem invalid. `# rsid ...` does not exists.')
+        else:
+            self.fail('should have thrown andmeParseError')
 
     def test_invalid_header_1(self):
         """case: without whole header-lines"""
 
-        with self.assertRaises(andmeParseError) as cm:
+        try:
             p = andmeParser(open(os.path.join(self.basedir, 'test', 'test.23andme.invalid-header.1.txt'), 'r'))
+        except andmeParseError as e:
+            self.assertEqual(e.error_code, 'Header-lines seem invalid. `# rsid ...` does not exists.')
+        else:
+            self.fail('should have thrown andmeParseError')
 
-        self.assertEqual(cm.exception.error_code, 'Header-lines seem invalid. `# rsid ...` does not exists.')
+
 
     def test_invalid_header_2(self):
         """case: without reference genome informaion in header-lines"""
 
-        with self.assertRaises(andmeParseError) as cm:
+        try:
             p = andmeParser(open(os.path.join(self.basedir, 'test', 'test.23andme.invalid-header.2.txt'), 'r'))
+        except andmeParseError as e:
+            self.assertEqual(e.error_code, 'Could not determine reference-genome version from header-lines.')
+        else:
+            self.fail('should have thrown andmeParseError')
 
-        self.assertEqual(cm.exception.error_code, 'Could not determine reference-genome version from header-lines.')
 
 
 if __name__ == '__main__':
