@@ -26,7 +26,7 @@ _g_gene_id_map = {}      # { Entrez Gene ID => (Gene Symbol, OMIM Gene ID) }
 REVERSED_STATS = {'GMAF': 0, 'RV': 0}
 
 def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja, path_to_disease2wiki, path_to_interval_list_dir, path_to_reference_fasta, dbsnp_version,
-                   catalog_summary_cache_dir, mongo_port):
+                   mongo_port):
     c = pymongo.MongoClient(port=mongo_port)
 
     with open(path_to_mim2gene, 'rb') as fin:
@@ -176,7 +176,6 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja, path_t
     log.info('# of fields: {0}'.format(len(fields)))
 
     log.debug('Importing gwascatalog.txt...')
-    # catalog_summary = {}
     with open(path_to_gwascatalog, 'rb') as fin:
         for i,record in enumerate(csv.DictReader(fin, delimiter='\t')):  # , quotechar="'"):
             # some traits contains `spaces` at the end of it, e.g., "Airflow obstruction "...
