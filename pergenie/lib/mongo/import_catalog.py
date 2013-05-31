@@ -242,7 +242,7 @@ def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja, path_t
         catalog.create_index('population')
         catalog_stats.create_index('field')
 
-    log.info('# of documents in catalog (after): {}'.format(catalog.count()))
+    log.info('# of documents in catalog (after): {0}'.format(catalog.count()))
     log.info('REVERSED_STATS: {0}'.format(pformat(REVERSED_STATS)))
 
     # Add `is_in_truseq`, `is_in_andme` flags
@@ -629,9 +629,9 @@ def _risk_allele(data, dbsnp=None, strand_db=None):
     #                 strand_record  = strand_db[vender].find_one({'rs': rs})
 
     #             if strand_record:
-    #                 log.info('in strand_db {}'.format(strand_record))
+    #                 log.info('in strand_db {0}'.format(strand_record))
     #                 if strand_record['strand'] == '-':
-    #                     log.warn('RVed allele {}'.format(data))
+    #                     log.warn('RVed allele {0}'.format(data))
     #                     risk_allele = RV[risk_allele]
 
     # dbSNP check (if dbsnp is available)
@@ -736,7 +736,7 @@ def _float(text):
             return float(text)
 
         except ValueError:
-#             msg = '[WARNING] Failed to convert to float, Text: {}'
+#             msg = '[WARNING] Failed to convert to float, Text: {0}'
 #             print >>sys.stderr, msg.format(text)
 
             match = re.match('\d*\.\d+', text)
@@ -805,7 +805,7 @@ def _genes_from_symbols(text):
                 result.append(_gene(gene_symbol, entrez_gene_id, omim_gene_id))
 
             else:
-#                 msg = '[WARNING] Failed to find gene from mim2gene, GeneSymbol: {}'
+#                 msg = '[WARNING] Failed to find gene from mim2gene, GeneSymbol: {0}'
 #                 print >>sys.stderr, msg.format(gene_symbol)
 
                 result.append(_gene(gene_symbol, None, None))
@@ -825,7 +825,7 @@ def _gene_from_id(text):
             return _gene(gene_symbol, entrez_gene_id, omim_gene_id)
 
         else:
-#             msg = '[WARNING] Failed to find gene from mim2gene, EntrezGeneID: {}'
+#             msg = '[WARNING] Failed to find gene from mim2gene, EntrezGeneID: {0}'
 #             print >>sys.stderr, msg.format(entrez_gene_id)
 
             return _gene(None, entrez_gene_id, None)
