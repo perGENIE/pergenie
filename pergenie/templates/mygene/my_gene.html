@@ -62,8 +62,12 @@
                   <p>TODO: known reported mutaion associate with disease的なものを表示する？</p>
                   <p>TODO: dbNSFPをからめる．</p>
                   <hr>
-                  <table>
 
+                  <button class="btn btn-success" href="#" onclick="hideIntronsAndUTRs();return false;">Hide Introns and UTRs</button>
+
+                  <hr>
+
+                  <table>
                     <tbody>
                       <tr>
                         <td>
@@ -96,8 +100,6 @@
                       </tbody>
                   </table>
 
-
-
                 </div>
               </div>
             </div>
@@ -112,8 +114,16 @@
 
 {% block js %}
 <script type="text/javascript">
-  $(document).ready(function () {
+  var hideIntronsAndUTRs = function () {
+	  var introns = $(".intron");
+      $.each(introns, function () {$(this).remove();});
 
+      var utrs = $(".utr");
+      $.each(utrs, function () {$(this).remove();});
+  };
+
+
+  $(document).ready(function () {
       var orig;
       $(".genome").children().hover(
           function () {
