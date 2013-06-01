@@ -55,6 +55,8 @@ urlpatterns = patterns('',
     url(r'^mygene/$', 'apps.mygene.views.index'),
     url(r'^mygene/(?P<gene>.*?)/$', 'apps.mygene.views.my_gene'),
 
+    url(r'^myprotain/$', 'apps.myprotain.views.index'),
+
     url(r'^traits/$', 'apps.traits.views.index'),
 
     url(r'^population/$', 'apps.population.views.index'),
