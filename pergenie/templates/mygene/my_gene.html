@@ -8,23 +8,13 @@
 <div id="main_container" class="span14">
   <section id="main">
 
-    <!-- Breadcrumb -->
-    <div class="row-fluid">
-      <div class="span12">
-        <ul class="breadcrumb">
-          <li><a href="{% url apps.mygene.views.index %}">MyGene</a><span class="divider">/</span></li>
-        <li class="active">{{ gene_info.gene }}</li>
-        </ul>
-      </div>
-    </div>
-
     <div class="container">
 
       <div class="row-fluid">
         <div class="span12">
           <div class="content-box transparent">
             <div class="padded10">
-              <h2>{{ gene_info.gene }}</h2>
+              <h4>{{ gene_info.gene }}</h4>
             </div>
           </div>
         </div>
