@@ -38,7 +38,10 @@ def get_my_gene(gene):
         seq = m.generate_seq(records, offset=[gene_info[u'chrom'],
                                               gene_info[u'txStart'],
                                               gene_info[u'txEnd']])
+        classed_seq = m.generate_classed_seq(records, offset=[gene_info[u'chrom'],
+                                                              gene_info[u'txStart'],
+                                                              gene_info[u'txEnd']])
 
-        gene_info.update({'seq': seq})
+        gene_info.update({'seq': seq, 'classed_seq': classed_seq})
 
         return gene_info

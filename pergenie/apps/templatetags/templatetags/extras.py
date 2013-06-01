@@ -110,3 +110,8 @@ def demouser_format(s):
         s = settings.DEMO_USER_ID
 
     return s
+
+# @stringfilter
+# @register.filter
+# def rm_newlines(s):
+#     return ''.join(s.splitlines())

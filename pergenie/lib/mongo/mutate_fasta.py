@@ -47,6 +47,29 @@ class MutateFasta(object):
 
         return seq
 
+    def generate_contexted_seq(self, r):
+        cons = []
+
+        chrom = r['chrom']
+
+        # 5'UTR + 1st Exon
+        cons.append([r['txStart'], r['cdsStart'] - 1], 'utr')
+        cons.append([r['cdsStart'], r['exonEnds'][0], 'exon'])
+        cons.append([r['exonEnds'][0] + 1, r['exonStarts'][1] - 1, 'intron'])
+
+        # Exons
+        for i,con in enumerate(r['exonStarts']):
+            if i == 0 or i+1 == r['exonCount']: continue
+
+            cons.append([r['exonStarts'][i], r['exonEnds'][i], 'exon'])
+            cons.append([r['exonEnds'][i] + 1, r['exonStarts'][i+1] -1, 'intron'])
+
+        # last Exon + 3'UTR
+        cons.append([r['exonStarts'][r['exonCount']-1], r['cdsEnd'], 'exon'])
+        cons.append([r['cdsEnd'] + 1, r['txEnd'], 'utr'])
+
+        return result
+
     def _slice_fasta(self, chrom, start, stop):
         return self.fasta.sequence({'chr': str(chrom), 'start': int(start), 'stop': int(stop)}, one_based=True)
 

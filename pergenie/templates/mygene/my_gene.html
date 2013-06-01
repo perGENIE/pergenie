@@ -73,11 +73,19 @@
                           {{ k }}:
                         </td>
                         <td>
-                          {% ifequal k 'seq' %}
-                          <pre>{{ v }}</pre>
+                          {% if k == 'classed_seq' %}
+                          {% spaceless %}
+                          <pre class="genome">
+                            {% for sub_seq in v %}
+                            <span class="{{ sub_seq.1 }}">{{ sub_seq.0 }}</span>
+                            {% endfor %}
+                          </pre>
+                          {% endspaceless %}
+                          {% elif k == 'seq' %}
+
                           {% else %}
                           {{ v }}
-                          {% endifequal %}
+                          {% endif %}
                         </td>
                       </tr>
                       {% endfor %}
