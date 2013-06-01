@@ -58,8 +58,6 @@
                   <p>TODO: chrom上のだいたいのpositonがわかるような染色体の図を入れる．</p>
                   <p>TODO: SNV・INSは赤系の色にする．</p>
                   <p>TODO: DELはグレーの赤にする．</p>
-                  <p>TODO: exon領域は太字とか，intoron/exonで変える？</p>
-                  <p>TODO: それぞれmutationはホバーでrs情報などを出す．</p>
                   <p>TODO: SNV, INS, DELのサマリー（まずはカウント）を表示する．</p>
                   <p>TODO: known reported mutaion associate with disease的なものを表示する？</p>
                   <p>TODO: dbNSFPをからめる．</p>
@@ -67,6 +65,12 @@
                   <table>
 
                     <tbody>
+                      <tr>
+                        <td>
+                        <a href="//www.ncbi.nlm.nih.gov/gene?term={{ gene_info.gene_id }}" target="_blank">{{ gene_info.gene }}</a>
+                        </td>
+                      </tr>
+
                       {% for k,v in gene_info.items %}
                       <tr>
                         <td>
@@ -107,4 +111,22 @@
 {% endblock %}
 
 {% block js %}
+<script type="text/javascript">
+  $(document).ready(function () {
+
+      var orig;
+      $(".genome").children().hover(
+          function () {
+              orig = $(this).css("color");
+              $(this).css("color", "red");
+          },
+          function () {
+              $(this).css("color", orig);
+          }
+      );
+
+      //
+      $(".genome").children().tooltip({title: "hello"});
+  });
+</script>
 {% endblock %}

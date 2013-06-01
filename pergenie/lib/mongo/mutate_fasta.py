@@ -49,26 +49,32 @@ class MutateFasta(object):
 
     def generate_contexted_seq(self, r):
         cons = []
-
         chrom = r['chrom']
 
+        # TODO: support - strand genes. (currently only supports + strand genes...)
+
+        # NOTE: refFlat is stored in 0-based coordinate
+
         # 5'UTR + 1st Exon
-        cons.append([r['txStart'], r['cdsStart'] - 1], 'utr')
-        cons.append([r['cdsStart'], r['exonEnds'][0], 'exon'])
-        cons.append([r['exonEnds'][0] + 1, r['exonStarts'][1] - 1, 'intron'])
+        cons.append([self._slice_fasta(chrom, r['txStart'] + 1, r['cdsStart']), 'utr'])
+        cons.append([self._slice_fasta(chrom, r['cdsStart'] + 1, r['exonEnds'][0]), 'exon'])
 
-        # Exons
-        for i,con in enumerate(r['exonStarts']):
-            if i == 0 or i+1 == r['exonCount']: continue
+        if r['exonCount'] > 1:
+            cons.append([self._slice_fasta(chrom, r['exonEnds'][0] + 1, r['exonStarts'][1]), 'intron'])
 
-            cons.append([r['exonStarts'][i], r['exonEnds'][i], 'exon'])
-            cons.append([r['exonEnds'][i] + 1, r['exonStarts'][i+1] -1, 'intron'])
+            # Exons
+            for i,con in enumerate(r['exonStarts']):
+                if i == 0 or i+1 == r['exonCount']: continue
 
-        # last Exon + 3'UTR
-        cons.append([r['exonStarts'][r['exonCount']-1], r['cdsEnd'], 'exon'])
-        cons.append([r['cdsEnd'] + 1, r['txEnd'], 'utr'])
+                cons.append([self._slice_fasta(chrom, r['exonStarts'][i] + 1, r['exonEnds'][i]), 'exon'])
+                cons.append([self._slice_fasta(chrom, r['exonEnds'][i] + 1, r['exonStarts'][i+1]), 'intron'])
 
-        return result
+            # last Exon + 3'UTR
+            cons.append([self._slice_fasta(chrom, r['exonStarts'][r['exonCount']-1] + 1, r['cdsEnd']), 'exon'])
+
+        cons.append([self._slice_fasta(chrom, r['cdsEnd'] + 1, r['txEnd']), 'utr'])
+
+        return cons
 
     def _slice_fasta(self, chrom, start, stop):
         return self.fasta.sequence({'chr': str(chrom), 'start': int(start), 'stop': int(stop)}, one_based=True)
