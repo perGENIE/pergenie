@@ -4,29 +4,28 @@
 
 ###Getting Started with perGENIE on OS X
 
-1. Install requirements
+1\. Install requirements
 
 ```
 # MongoDB
 $ sudo port install mongodb
-$ mongod --dbpath=/path/to/elsewhere
+$ sudo port load mongodb
 
 # RabbitMQ
 $ sudo port install rabbitmq-server
-$ sudo rabbitmqctl start
+$ sudo port load rabbitmq-server
 
 # Python modules
 $ sudo pip install -r requirements.txt
 ```
 
-2. Settings
+2\. Settings
 
 ```
-# Fill setings
-$ vi ./pergenie/settings/develop.py
+$ vi pergenie/pergenie/settings/develop.py
 ```
 
-3. Initialize
+3\. Initialize
 
 ```
 # Initialize database
@@ -39,13 +38,13 @@ $ mkdir -p /tmp/uploaded
 $ chmod 777 /tmp/uploaded
 ```
 
-4. Tests
+4\. Tests
 
 ```
 #
 ```
 
-5. Run
+5\. Run
 
 ```
 $ python manage.py celeryd_detach
