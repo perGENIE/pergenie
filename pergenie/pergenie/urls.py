@@ -53,7 +53,9 @@ urlpatterns = patterns('',
     url(r'^riskreport/(?P<trait>[^/]*)/(?P<study>[^/]*)/$', 'apps.riskreport.views.study'),
 
     url(r'^mygene/$', 'apps.mygene.views.index'),
+    url(r'^mygene/mydys/$', 'apps.mygene.views.my_dys'),
     url(r'^mygene/(?P<gene>.*?)/$', 'apps.mygene.views.my_gene'),
+
 
     url(r'^myprotain/$', 'apps.myprotain.views.index'),
 

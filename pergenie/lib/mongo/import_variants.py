@@ -90,8 +90,9 @@ def import_variants(file_path, population, file_format, user_id,
                         if tmp_status % 10 == 0:
                             print '[INFO] status: {0}, db.collection.count(): {1}'.format(tmp_status, users_variants.count())
 
-                print >>sys.stderr,'[INFO] ensure_index ...'
-                users_variants.ensure_index('rs', unique=True)  # ok?
+                print >>sys.stderr,'[INFO] create_index ...'
+                users_variants.create_index('rs')# , unique=True)
+                users_variants.create_index([('chrom', pymongo.ASCENDING), ('pos', pymongo.ASCENDING)])
 
                 data_info.update({'user_id': user_id, 'name': file_name_cleaned},
                                  {"$set": {'status': 100}})

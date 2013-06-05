@@ -5,8 +5,9 @@ from pprint import pformat
 from pymongo import MongoClient, ASCENDING, DESCENDING
 from django.conf import settings
 
-from lib.mongo.mutate_fasta import MutateFasta
+from pyfasta import Fasta
 
+from lib.mongo.mutate_fasta import MutateFasta
 from utils import clogging
 log = clogging.getColorLogger(__name__)
 
@@ -43,3 +44,15 @@ def get_my_gene(gene):
         gene_info.update({'seq': seq, 'classed_seq': classed_seq})
 
         return gene_info
+
+
+def get_dys():
+    records = []
+    fa = Fasta(settings.PATH_TO_REFERENCE_FASTA, key_fn=lambda key: key.split()[0])
+
+    start = 4330942
+    stop = 4331090
+    seq = fa.sequence({'chr': 'Y', 'start': start, 'stop': stop}, one_based=True)
+    records.append(seq)
+
+    return records

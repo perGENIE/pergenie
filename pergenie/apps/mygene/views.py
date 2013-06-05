@@ -42,3 +42,13 @@ def my_gene(request, gene):
 
     return direct_to_template(request, 'mygene/my_gene.html',
                               dict(gene_info=gene_info))
+
+@login_required
+def my_dys(request):
+    user_id = request.user.username
+    msg, err = '', ''
+
+    dys = get_dys()
+
+    return direct_to_template(request, 'mygene/my_dys.html',
+                              dict(dys=dys))
