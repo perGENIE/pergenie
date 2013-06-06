@@ -23,6 +23,7 @@ from lib.mongo.clean_catalog import clean_catalog
 from lib.mongo.import_catalog import import_catalog
 from lib.mongo.import_dbsnp import import_dbsnp
 from lib.mongo.import_strand_db import import_strand_db
+from lib.mongo.import_refFlat import import_refFlat
 
 
 def date2datetime(d):
@@ -54,6 +55,12 @@ class Command(BaseCommand):
             action="store_true",
             dest="strand_db",
             help=colored("Import strand_db into database", "green")
+        ),
+        make_option(
+            "--refflat",
+            action="store_true",
+            dest="refflat",
+            help=colored("Import refFlat into database", "green")
         ),
     )
 
@@ -236,6 +243,10 @@ class Command(BaseCommand):
         elif options["strand_db"]:
             log.info('Try to import strand_db localhost:{0}/strand_db ...'.format(settings.MONGO_PORT))
             import_strand_db(settings.STRAND_DB_DIR, settings.MONGO_PORT)
+
+        elif options["refflat"]:
+            log.info('Try to import refflat {0}/refFlat ...'.format(settings.MONGO_URI))
+            import_refFlat(settings.PATH_TO_REFFLAT, settings.MONGO_URI)
 
         else:
             self.print_help("import", "help")

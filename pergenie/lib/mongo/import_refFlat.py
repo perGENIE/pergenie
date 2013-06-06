@@ -4,10 +4,7 @@
 import sys
 import pymongo
 
-path_to_refFlat = '/Users/numa/Dropbox/py/perGENIE/pergenie/data/large_dbs/ucsc_refFlat/refFlat.txt'  # FIX to path of yours.
-
-
-def import_refFlat():
+def import_refFlat(path_to_refFlat, MONGO_URI="mongodb://localhost:27017"):
     """
     refFlat:
 
@@ -26,7 +23,7 @@ def import_refFlat():
 
     print >>sys.stderr, 'Importing refFlat...'
 
-    with pymongo.MongoClient() as c:
+    with pymongo.MongoClient(host=MONGO_URI) as c:
         db = c['pergenie']
         refFlat = db['refFlat']
 
@@ -89,4 +86,10 @@ def _strand(s):
 
 
 if __name__ == '__main__':
-    import_refFlat()
+    if len(sys.argv) != 2:
+        print >>sys.stderr, """USAGE: {0} /path/to/refFlat.txt
+
+        refFlat.txt for hg19 is available at:
+        http://hgdownload.cse.ucsc.edu/goldenPath/hg19/database/refFlat.txt.gz""".format(sys.argv[0])
+        sys.exit()
+    import_refFlat(sys.argv[1])
