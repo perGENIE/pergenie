@@ -58,6 +58,7 @@ urlpatterns = patterns('',
 
 
     url(r'^myprotain/$', 'apps.myprotain.views.index'),
+    url(r'^myprotain/pdb/(?P<pdb_id>[a-zA-Z0-9]{4}?)/$', 'apps.myprotain.views.my_pdb'),
 
     url(r'^traits/$', 'apps.traits.views.index'),
 
