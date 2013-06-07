@@ -35,13 +35,7 @@ urlpatterns = patterns('',
     url(r'^trydemo/$', 'apps.frontend.views.trydemo'),
 
     url(r'^register/$', 'apps.frontend.views.register'),
-    url(r'^activation/(?P<activation_key>\w+)/$', 'apps.frontend.views.activation'),
-    # or [a-fA-F0-9]{40}
-
-
-    url(r'^accounts/', include('registration.backends.default.urls')),
-    # registration.backends.default.urls or registration.urls
-    # TODO: revise registration settings
+    url(r'^activation/(?P<activation_key>\w{40}})/$', 'apps.frontend.views.activation'),
 
     # contents
     url(r'^dashboard/$', 'apps.dashboard.views.index'),

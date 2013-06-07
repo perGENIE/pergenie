@@ -256,16 +256,13 @@ def activation(request, activation_key):
         challenging_user_info = user_info.find_one({'activation_key': activation_key})
 
         while True:
-            if activation_key == '':  # no need?
-                raise Http404
-
             if not challenging_user_info:
                 # invalid activation_key
                 raise Http404
 
             challenging_user = User.objects.get(username__exact=challenging_user_info['user_id'])
 
-            if challenging_user.is_active:  # no need?
+            if challenging_user.is_active:
                 # already activated
                 raise Http404
 
