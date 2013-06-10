@@ -34,6 +34,7 @@ nosetests.xml
 # Secret settings
 pergenie/settings/develop.py
 pergenie/settings/staging.py
+pergenie/lib/fabfiles/etc/
 
 # Temporary file
 pergenie/tmp
