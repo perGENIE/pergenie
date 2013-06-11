@@ -1,19 +1,26 @@
+#!/usr/bin/env python2.7
+# -*- coding: utf-8 -*-
+
 import sys
 import re
 import subprocess
 from collections import defaultdict
+import urllib
+import socket
+socket.setdefaulttimeout(30)  # timeout for urlretrieve
+import json
+import time
 import pymongo
 
 class OMIMParser(object):
     """
-    TODO: parse `AV (Allelic variants)`
-    TODO: can i get mutation information? need to parse like `LYS97TER`
-
-    TODO: omim.txt does not contain the information of dbSNP in `Table View` of `Allelic Variants`
-          so, we need to get this using API.
+    The OMIM (Online Mendelian Inheritance in Man, http://omim.org/)
+    provides bulk download at http://omim.org/downloads
     """
-    def __init__(self, fin):
+    def __init__(self, fin, apikey):
         self.fin = fin
+        self.apikey = apikey
+        self.dbname = 'pergenie'
 
     def get_all_records(self, func):
         record = {}
@@ -43,7 +50,12 @@ class OMIMParser(object):
                 if field_name == 'NO':
                     record[field_name] = int(line)
 
-                # elif field_name == 'AV':
+                elif field_name == 'AV':
+                    if not record['NO'] in self.AVs:
+                        self.omim_av.insert(self.fetch_AllelicVariants(record['NO']))
+                        self.AVs.update([record['NO']])
+                        record[field_name]['lines'].append(line)
+
                 #     _no = re.findall('\.(\d+)$', line); _no = _no[0] if _no else None
                 #     record[field_name]['no']
                 #     {'no': _no, }
@@ -54,37 +66,89 @@ class OMIMParser(object):
 
     def insert_to_mongo(self, host="mongodb://localhost:27017"):
         with pymongo.MongoClient(host=host) as c:
-            omim = c['pergenie']['omim']
-            if omim.count(): c['pergenie'].drop_collection(omim)
+            db = c[self.dbname]
+            omim = db['omim']
+            omim_av = db['omim_av']
+            if omim.count(): db.drop_collection(omim)
+            if omim_av.count(): db.drop_collection(omim_av)
+            self.omim_av = omim_av
+            self.AVs = set()
 
             self.get_all_records(omim.insert)
             omim.create_index('NO')
+            omim_av.create_index('mimNumber')
+            omim_av.create_index('dbSnps')
+            omim_av.create_index('rs')
+            print >>sys.stderr, 'Total inserted AVs (mongo)', omim_av.count()
 
             self.count = omim.count()
-            print 'count (mongo)', self.count
+            print >>sys.stderr, 'count (mongo)', self.count
 
-    # def insert_to_mysql(self, record):
+    # def output_as_csv(self, fout):
     #     pass
 
-    # def output_as_csv(self, record):
+    # def insert_to_mysql(self):
     #     pass
+
+
+    def fetch_AllelicVariants(self, number):
+        """
+        The main data `omim.txt` does not contain whole information of OMIM.
+        About `Allelic Variants`, for example of #Mim Number: 102565,
+        the `Table View` for this record is as following:
+
+        http://omim.org/allelicVariant/102565
+
+        --------------------------------------------------------------------------------------------
+        102565
+        --------------------------------------------------------------------------------------------
+        FILAMIN C; FLNC
+        --------------------------------------------------------------------------------------------
+        Allelic Variants (Selected Examples):
+
+        Number | Phenotype                                 | Mutation                | dbSNP
+        .0001  | MYOPATHY, MYOFIBRILLAR, FILAMIN C-RELATED | FLNC, TRP2710TER        | [rs121909518]
+        .0002  | MYOPATHY, MYOFIBRILLAR, FILAMIN C-RELATED | FLNC, 12-BP DEL, NT2997 | -
+        .0003  | MYOPATHY, DISTAL, 4                       | FLNC, MET251THR         | -
+        .0004  | MYOPATHY, DISTAL, 4                       | FLNC, ALA193THR         | -
+        --------------------------------------------------------------------------------------------
+
+        Here, column `dbSNP` exists, but `omim.txt` does not contain `dbSNP`.
+        So, by using OMIM API, following script fetch `Allelic Variants` records form OMIM,
+        then import them into MongoDB.
+        """
+        url = 'http://api.omim.org/api/entry/allelicVariantList?mimNumber={number}&apiKey={apikey}&format=json'.format(number=number, apikey=self.apikey)
+        content = ''.join(urllib.urlopen(url).readlines())
+        data = json.loads(content)
+        AVs = [x['allelicVariant'] for x in data['omim']['allelicVariantLists'][0]['allelicVariantList']]
+        time.sleep(1)
+
+        # Add rsid, like `{"rs": 671}` from `{"dbSnps": "rs671"}`
+        for AV in AVs:
+            if AV.has_key('dbSnps'):
+                rs = [int(n) for n in re.split(',', AV['dbSnps'].replace('rs', ''))]
+                AV.update({'rs': rs})
+
+        print >>sys.stderr, 'mimNumber:', number, 'AVs:', len(AVs)
+
+        return AVs
 
     def check(self):
         """Count by grep."""
         com1 = subprocess.Popen(['grep', '\*RECORD\*', sys.argv[1]], stdout=subprocess.PIPE)
         com2 = subprocess.Popen(['wc', '-l'], stdin=com1.stdout, stdout=subprocess.PIPE)
         out = int(com2.stdout.readline().strip())
-        print 'count (grep)', out
+        print >>sys.stderr, 'count (grep)', out
         assert self.count == out, 'self.check() failed. self.count does not mutch count by grep'
 
 
 if __name__ == '__main__':
     if len(sys.argv) != 2:
-        print >>sys.stderr, "USAGE: {0} /path/to/omim.txt".format(sys.argv[0])
+        print >>sys.stderr, "USAGE: {0} /path/to/omim.txt OMIM_APIKEY".format(sys.argv[0])
         sys.exit()
 
-    p = OMIMParser(sys.argv[1])
+    p = OMIMParser(sys.argv[1], sys.argv[2])
     p.insert_to_mongo()
-    print 'done'
+    print >>sys.stderr, 'done'
     p.check()
-    print 'ok'
+    print >>sys.stderr, 'ok'
