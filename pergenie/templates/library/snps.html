@@ -2,7 +2,7 @@
 {% load i18n %}
 {% load extras %}}
 {% load staticfiles %}
-{% block title %}{{ rs }}{% endblock %}
+{% block title %}rs{{ rs }}{% endblock %}
 {% block description %}library of SNPs{% endblock %}
 
 {% block main_container %}
@@ -13,7 +13,7 @@
       <div class="span12">
         <div class="content-box transparent">
           <div class="padded10">
-            <h4>rs{{ rs }}</h4>
+            <h4>rs{{ rs }}<span class="badge badge-yellow" title="browse in dbSNP"><a href="//www.ncbi.nlm.nih.gov/projects/SNP/snp_ref.cgi?rs={{ rs }}" target="_blank">dbSNP</a></span></h4>
           </div>
         </div>
       </div>
@@ -24,46 +24,114 @@
         <div class="content-box">
           <div class="padded">
 
-            <span class="badge badge-yellow" title="Go to the OMIM website"><a href="////omim.org/allelicVariant/{{ mimNumber }}" target="_blank">OMIM</a></span>
-
-            {{ catalog_record }}
-
             {{ err }}
-            <table class="table table-striped">
+
+            <div class="muted" align="right">
+              Human Genome Assembly: {{ refgenome_version }}, dbSNP Build: {{ dbsnp_version }}
+            </div>
+
+            <table class="table table-bordered">
               <thead>
                 <tr>
-                  <th>rs</th>
-                  <th>chrom</th>
-                  <th>position</th>
-                  <th>ref</th>
-                  <th>alt</th>
-                  <th>context</th>
-                  {% for file_name, variant in variants.items %}
-                  <th>{{ file_name }}</th>
-                  {% endfor %}
+                  <th>Chrom</th>
+                  <th>Position</th>
+                  <th>Ref</th>
+                  <th>Alt</th>
+                  <th>Context</th>
                 </tr>
               </thead>
 
               <tbody>
                 <tr>
-                  <td>{{ rs }}</td>
                   <td>{{ catalog_record.chr_id }}</td>
                   <td>{{ catalog_record.chr_pos }}</td>
                   <td>{{ catalog_record.ref }}</td>
                   <td>{{ catalog_record.risk_allele }}</td>
                   <td>{{ catalog_record.context }}</td>
-                  {% for file_name, variant in variants.items %}
-                  <td>{{ variant }}</td>
-                  {% endfor %}
                 </tr>
               </tbody>
             </table>
-            <div id="container" style="min-width: 150px; height: 150px; margin: 0 auto"></div>
 
-            {{ catalog_record.allele1 }}
-            {{ catalog_record.allele1_freq }}
-            {{ catalog_record.allele2 }}
-            {{ catalog_record.allele2_freq }}
+            <hr>
+            <h5>Related Information</h5>
+
+            {% if catalog_records %}
+            <ul><li>GWAS Catalog</li></ul>
+            <table class="table table-bordered table-striped">
+              <thead>
+                <tr>
+                  <td>Trait&#47;Disease</td>
+                  <td>Study</td>
+                  <td>Population</td>
+                  <td></td>
+                </tr>
+              </thead>
+              <tbody>
+                {% for catalog_rec in catalog_records %}
+                <tr>
+                  <td>{{ catalog_rec.trait }}</td>
+                  <td>{{ catalog_rec.first_author }}, et al., &#34{{ catalog_rec.study }}&#34, {{ catalog_rec.jornal }} &#40;{{ catalog_rec.date|date:"Y" }}&#41;</td>
+                  <td>{% for population in catalog_rec.population %}
+                    <span class="badge badge-green">{{ population }}</span>
+                    {% endfor %}
+                  </td>
+                  <td><span class="badge badge-yellow" title="browse in PubMed"><a href="{{ catalog_rec.pubmed_link }}" target="_blank">Pubmed</a></span></td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            {% endif %}
+
+            {% if omim_av_records %}
+            <br>
+            <ul><li>OMIM AllelicVariant</li></ul>
+            <table class="table table-bordered table-striped">
+              <thead>
+                <tr>
+                  <td>Name</td>
+                  <td>Mutations</td>
+                  <td>MimNumber</td>
+                  <td></td>
+                </tr>
+              </thead>
+              <tbody>
+                {% for omim_rec in omim_av_records %}
+                <tr>
+                  <td>{{ omim_rec.name }}</td>
+                  <td>{{ omim_rec.mutations }}</td>
+                  <td>{{ omim_rec.mimNumber }}</td>
+                  <td><span class="badge badge-yellow" title="browse in OMIM website"><a href="////omim.org/allelicVariant/{{ omim_rec.mimNumber }}" target="_blank">OMIM AllelicVariant</a></span></td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            {% endif %}
+
+            <hr>
+            <h5>Genotypes</h5>
+
+            <div id="container" style="min-width: 200px; height: 200px; margin: 0 auto"></div>
+
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Your genotypes</th>
+                </tr>
+                <tr>
+                  <td>Genotype</td>
+                  <td>File name</td>
+                </tr>
+              </thead>
+
+              <tbody>
+                {% for file_name, variant in variants.items %}
+                <tr>
+                  <td>{{ variant }}</td>
+                  <td>{{ file_name }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
 
           </div>
         </div>
@@ -86,33 +154,30 @@ $(function () {
                 plotShadow: false
             },
             title: {
-                text: 'allele frequency'
+                text: 'Allele Frequency'
             },
             tooltip: {
-                formatter: function() {
-                    return '<b>'+ this.point.name +'</b>: '+ this.percentage +' %';
-                }
+                pointFormat: '{series.name}: <b>{point.percentage}%</b>',
+                percentageDecimals: 1
             },
             plotOptions: {
                 pie: {
-                    allowPointSelect: true,
-                    cursor: 'pointer',
                     dataLabels: {
-                        enabled: true,
-                        color: '#000000',
-                        connectorColor: '#000000',
-                        formatter: function() {
-                            return '<b>'+ this.point.name +'</b>: '+ this.percentage +' %';
-                        }
-                    }
+                        enabled: false
+                    },
+                    showInLegend: true
                 }
             },
             credits: {
                 enabled: false
             },
+            exporting: {
+                enabled: false
+            },
+
             series: [{
                 type: 'pie',
-                name: 'allele frequency',
+                name: 'Allele Frequency',
                 data: [
                       [ "{{ catalog_record.allele1 }}",   {{ catalog_record.allele1_freq }} ],
                       [ "{{ catalog_record.allele2 }}",   {{ catalog_record.allele2_freq }} ]
@@ -149,4 +214,5 @@ $(document).ready(function(){
 });
 </script>
 
+<script type="text/javascript">$('span.badge').tooltip();</script>
 {% endblock %}

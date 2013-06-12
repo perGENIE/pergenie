@@ -134,7 +134,7 @@ class OMIMParser(object):
 
     def check(self):
         """Count by grep."""
-        com1 = subprocess.Popen(['grep', '\*RECORD\*', sys.argv[1]], stdout=subprocess.PIPE)
+        com1 = subprocess.Popen(['grep', '\*RECORD\*', self.fin], stdout=subprocess.PIPE)
         com2 = subprocess.Popen(['wc', '-l'], stdin=com1.stdout, stdout=subprocess.PIPE)
         out = int(com2.stdout.readline().strip())
         print >>sys.stderr, 'count (grep)', out

@@ -5,7 +5,7 @@
 {% block description %}library index of SNPs{% endblock %}
 
 {% block main_container %}
-<div id="main_container" class="span14">
+<div id="main_container" class="span12">
   <section id="main">
 
     <div class="row-fluid">
@@ -27,6 +27,8 @@
               <thead>
                 <tr>
                   <th>rsID</th>
+                  <th></th>
+                  <th></th>
                 </tr>
               </thead>
 
@@ -34,6 +36,8 @@
                 {% for snp_name in uniq_snps_list %}
                 <tr>
                   <td><a href="{% url apps.library.views.snps rs=snp_name %}">{{ snp_name }}</a></td>
+                  <td></td>
+                  <td></td>
                 </tr>
                 {% endfor %}
               </tbody>
@@ -52,16 +56,17 @@
 <script type="text/javascript">
 $(document).ready(function(){
   $('#library_table').dataTable({
+    "bSort": false,
     "bJQueryUI": true,
     "sPaginationType": "full_numbers",
-    "iDisplayLength": 30,
+    "iDisplayLength": 20,
     "oLanguage": {
             "sZeroRecords": "Nothing found - sorry",
             "sInfo": "Showing _START_ to _END_ of _TOTAL_ records",
             "sInfoEmpty": "Showing 0 to 0 of 0 records",
             "sInfoFiltered": "(filtered from _MAX_ total records)"
     },
-    "sDom": '<"top"if>t<"bottom"p><"clear">'
+    "sDom": '<"top"if>t<"bottom"p><"clear">',
   });
 });
 </script>

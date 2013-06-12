@@ -131,7 +131,7 @@ def snps(request, rs):
         pass
 
     user_id = request.user.username
-    err = ''
+    msg, err = '', ''
 
     with pymongo.MongoClient(host=settings.MONGO_URI) as c:
         db = c['pergenie']
@@ -155,7 +155,9 @@ def snps(request, rs):
         # * LD data(r^2)
 
     # data from gwascatalog
-    catalog_records = list(search_catalog.search_catalog_by_query('rs{0}'.format(rs)))
+    catalog_records = get_catalog_records(rs)
+
+    # TODO: replace bellow to info from dbSNP
     if len(catalog_records) > 0:
         catalog_record = catalog_records[0]
         if catalog_record['risk_allele_frequency']:
@@ -172,10 +174,15 @@ def snps(request, rs):
     else:
         catalog_record = None
 
-    return direct_to_template(request,
-                              'library/snps.html',
-                              {'err': err,
-                               'rs': rs,
-                               'dbsnp_record': dbsnp_record,
-                               'catalog_record': catalog_record,
-                               'variants': variants})
+    omim_av_records = get_omim_av_records(rs)
+    print omim_av_records
+
+    return direct_to_template(request, 'library/snps.html',
+                              dict(err=err, rs=rs,
+                                   dbsnp_record=dbsnp_record,
+                                   catalog_record=catalog_record,
+                                   catalog_records=catalog_records,
+                                   omim_av_records=omim_av_records,
+                                   variants=variants,
+                                   dbsnp_version=settings.DBSNP_VERSION,
+                                   refgenome_version=settings.REFGENOME_VERSION))

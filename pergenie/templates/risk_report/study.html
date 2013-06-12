@@ -16,7 +16,7 @@
           <div class="content-box transparent">
             <div class="padded10">
               <h4>{{ trait }}{% if is_ja %} ({{ trait_eng }}){% endif %}
-                {% if wiki_url_en %}<span class="badge badge-yellow"><a href="{{ wiki_url_en }}" target="_blank">Wikipedia</a></span>{% endif %}
+                {% if wiki_url_en %}<span class="badge badge-yellow" title="browse in Wikipedia"><a href="{{ wiki_url_en }}" target="_blank">Wikipedia</a></span>{% endif %}
               </h4>
             </div>
           </div>
@@ -47,7 +47,7 @@
               <tbody>
                 <tr>
                   <td>Study name</td>
-                  <td>{{ study }} <span class="badge badge-yellow"><a href="{{ record.catalog_info.pubmed_link }}" target="_blank">Pubmed</a></span></td>
+                  <td>{{ study }} <span class="badge badge-yellow" title="browse in PubMed"><a href="{{ record.catalog_info.pubmed_link }}" target="_blank">Pubmed</a></span></td>
                 </tr>
                 <tr>
                   <td>Population</td>
@@ -135,7 +135,7 @@
                 <tbody>
                   {% for snp_record in snp_records %}
                   <tr>
-                    <td class="center"><span class="dbsnp" title="browse in dbSNP"><a href="http://www.ncbi.nlm.nih.gov/projects/SNP/snp_ref.cgi?rs={{ snp_record.snp }}" target="_blank">rs{{ snp_record.snp }}</a></span></td>
+                    <td class="center"><a href="{% url apps.library.views.snps rs=snp_record.snp %}">rs{{ snp_record.snp }}</a></td>
                     <td class="center">{{ snp_record.catalog_info.chr_id }}</td>
                     <td class="center">{{ snp_record.catalog_info.chr_pos }}</td>
                     {% ifequal info.file_format 'vcf_exome_truseq' %}
@@ -254,6 +254,6 @@ $(document).ready(function(){
   });
 });
 </script>
-<script type="text/javascript">$('span.dbsnp').tooltip();</script>
 <script type="text/javascript">$('span.entrez').tooltip();</script>
+<script type="text/javascript">$('span.badge').tooltip();</script>
 {% endblock %}
