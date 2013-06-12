@@ -31,25 +31,17 @@ nosetests.xml
 # Log
 *.log
 
-# Secret settings
+# settings
 pergenie/settings/develop.py
 pergenie/settings/staging.py
 pergenie/lib/fabfiles/etc/
 
-# Temporary file
-pergenie/tmp
-pergenie/uploaded
-
 #
-data/gwascatalog*
+data/gwascatalog.20*
 data/large_dbs/
 data/summary/
 static/vendor
 _static/
-wood-admin/
 misc
 
 celeryd.pid
-
-# ?
-# config

@@ -24,7 +24,7 @@ from lib.mongo.import_catalog import import_catalog
 from lib.mongo.import_dbsnp import import_dbsnp
 from lib.mongo.import_strand_db import import_strand_db
 from lib.mongo.import_refFlat import import_refFlat
-
+from lib.mongo.import_OMIM import OMIMParser
 
 def date2datetime(d):
     return datetime.datetime.combine(d, datetime.time())
@@ -61,6 +61,12 @@ class Command(BaseCommand):
             action="store_true",
             dest="refflat",
             help=colored("Import refFlat into database", "green")
+        ),
+        make_option(
+            "--omim",
+            action="store_true",
+            dest="omim",
+            help=colored("Import OMIM into database", "green")
         ),
     )
 
@@ -237,16 +243,22 @@ class Command(BaseCommand):
                                         user_id=settings.DEMO_USER_ID)
 
         elif options["dbsnp"]:
-            log.info('Try to import dbsnp to localhost:{0}/dbsnp.{1} ...'.format(settings.MONGO_PORT, settings.DBSNP_VERSION))
+            log.info('Try to import dbsnp ...')
             import_dbsnp(settings.PATH_TO_DBSNP, 'dbsnp', settings.DBSNP_VERSION, is_snp_only=True, port=settings.MONGO_PORT)
 
         elif options["strand_db"]:
-            log.info('Try to import strand_db localhost:{0}/strand_db ...'.format(settings.MONGO_PORT))
+            log.info('Try to import strand_db ...')
             import_strand_db(settings.STRAND_DB_DIR, settings.MONGO_PORT)
 
         elif options["refflat"]:
-            log.info('Try to import refflat {0}/refFlat ...'.format(settings.MONGO_URI))
+            log.info('Try to import refflat ...')
             import_refFlat(settings.PATH_TO_REFFLAT, settings.MONGO_URI)
+
+        elif options["omim"]:
+            log.info('Try to import omim ...')
+            omim_parser = OMIMParser(settings.PATH_TO_OMIMTXT, settings.OMIM_APIKEY)
+            omim_parser.insert_to_mongo(host=settings.MONGO_URI, dbname='pergenie')
+            omim_parser.check()
 
         else:
             self.print_help("import", "help")

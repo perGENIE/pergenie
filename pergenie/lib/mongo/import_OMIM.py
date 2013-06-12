@@ -20,7 +20,6 @@ class OMIMParser(object):
     def __init__(self, fin, apikey):
         self.fin = fin
         self.apikey = apikey
-        self.dbname = 'pergenie'
 
     def get_all_records(self, func):
         record = {}
@@ -64,9 +63,9 @@ class OMIMParser(object):
                     # TODO: write parser for each FIELD
                     record[field_name]['lines'].append(line)
 
-    def insert_to_mongo(self, host="mongodb://localhost:27017"):
+    def insert_to_mongo(self, host="mongodb://localhost:27017", dbname="pergenie"):
         with pymongo.MongoClient(host=host) as c:
-            db = c[self.dbname]
+            db = c[dbname]
             omim = db['omim']
             omim_av = db['omim_av']
             if omim.count(): db.drop_collection(omim)

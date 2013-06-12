@@ -32,3 +32,8 @@ def get_libarary_and_variatns_of_a_trait(trait, user_id):
     library_list = [library_map[found_id] for found_id in library_map]
 
     return library_list, variants_maps
+
+def get_uniq_snps_list():
+    with MongoClient(host=settings.MONGO_URI) as c:
+        catalog_stats = c['pergenie']['catalog_stats']
+        return list(set([rec['value'] for rec in list(catalog_stats.find({'field': 'snps'}))]))

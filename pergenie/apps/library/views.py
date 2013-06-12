@@ -107,13 +107,10 @@ def trait(request, trait):
                                    variants_maps=variants_maps))
 
 
-# TODO: table view for snps
 @login_required
 def snps_index(request):
-    err = ''
-
-    catalog_summary = pickle_load_obj(os.path.join(settings.CATALOG_SUMMARY_CACHE_DIR, 'catalog_summary.p'))
-    uniq_snps_list = list(catalog_summary['snps'])
+    msg, err = '', ''
+    uniq_snps_list = get_uniq_snps_list()
 
     return direct_to_template(request,
                               'library/snps_index.html',

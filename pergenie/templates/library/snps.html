@@ -1,31 +1,30 @@
 {% extends "layout.html" %}
-{% block title %}Library {{ rs }}{% endblock %}
-{% block description %}library of risk SNPs{% endblock %}
-{% block cookie_id %}library_record{% endblock %}
-{% load staticfiles %}
+{% load i18n %}
 {% load extras %}}
+{% load staticfiles %}
+{% block title %}{{ rs }}{% endblock %}
+{% block description %}library of SNPs{% endblock %}
 
 {% block main_container %}
-<div id="main_container" class="span10">
-  <!-- Breadcrumb -->
-  <div class="row-fluid">
-    <div class="span12">
-      <ul class="breadcrumb">
-        <li><a href="{% url apps.library.views.index %}">Library</a><span class="divider">/</span></li>
-        <li class="active">snps<span class="divider">/</span></li>
-        <li class="active">rs{{ rs }}</li>
-      </ul>
-    </div><!--/span-->
-  </div>
+<div id="main_container" class="span12">
+  <section id="main">
 
-  <!-- Content start -->
-  <!-- Draggable Widgets start -->
-  <div class="row-fluid">
-    <div class="span12">
-      <div class="box grad_colour_dark_blue" id="box_1">
-        <h2 class="box_head round_top">{{ rs }}</h2>
-        <div class="toggle_container">
-          <div class="block box_content round_bottom padding_20">
+    <div class="row-fluid">
+      <div class="span12">
+        <div class="content-box transparent">
+          <div class="padded10">
+            <h4>rs{{ rs }}</h4>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row-fluid">
+      <div class="span12">
+        <div class="content-box">
+          <div class="padded">
+
+            <span class="badge badge-yellow" title="Go to the OMIM website"><a href="////omim.org/allelicVariant/{{ mimNumber }}" target="_blank">OMIM</a></span>
 
             {{ catalog_record }}
 
@@ -51,7 +50,7 @@
                   <td>{{ catalog_record.chr_id }}</td>
                   <td>{{ catalog_record.chr_pos }}</td>
                   <td>{{ catalog_record.ref }}</td>
-                  <td>{{ catalog_record.risk_allele }}</td>  
+                  <td>{{ catalog_record.risk_allele }}</td>
                   <td>{{ catalog_record.context }}</td>
                   {% for file_name, variant in variants.items %}
                   <td>{{ variant }}</td>
@@ -70,7 +69,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </section>
 </div>
 {% endblock %}
 
@@ -121,7 +120,7 @@ $(function () {
             }]
         });
     });
-    
+
 });
 </script>
 
@@ -144,7 +143,7 @@ $(document).ready(function(){
             "sInfo": "Showing _TOTAL_ records",
             "sInfoEmpty": "Showing 0 record",
             "sInfoFiltered": "(filtered from _MAX_ total records)"
-   },       
+   },
    "sDom": '<"top"if>t<"bottom"lp><"clear">'
   });
 });
