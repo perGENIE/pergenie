@@ -26,6 +26,12 @@
 
             {{ err }}
 
+            {% for x in bq_allele_freqs %}
+            {{ x }}
+            {% endfor %}
+
+            <hr>
+
             <div class="muted" align="right">
               Human Genome Assembly: {{ refgenome_version }}, dbSNP Build: {{ dbsnp_version }}
             </div>
