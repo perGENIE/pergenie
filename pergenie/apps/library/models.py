@@ -57,10 +57,14 @@ def get_bq_allele_freqs(rs):
 
     allele_freqs = {'Asian':{}, 'European':{}, 'African':{}, 'Japanese': {}}
 
-    # TODO: consider allele strands
+    # Consider allele strands
+    rev = {'A': 'T', 'T': 'A', 'G': 'C', 'C': 'G'}
+    for row in rows:
+        if row['top_or_bot_strand'] == 'B':
+            row.update({'allele': rev.get(row['allele']),
+                        'top_or_bot_strand': 'T'})
 
     # TODO: write more simply...
-
     # First scan
     for row in rows:
         if row['loc_pop_id'] == 'HapMap-CEU':
