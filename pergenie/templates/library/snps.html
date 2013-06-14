@@ -45,7 +45,7 @@
                 <tr>
                   <td>{{ bq_snp_summary.unique_chr }}</td>
                   <td>{{ bq_snp_summary.unique_pos_bp }}</td>
-                  <td><span class="muted2">{{ seq|slice:"0:19" }}</span>[{{ catalog_record.ref }}/{{ catalog_record.risk_allele }}]<span class="muted2">{{ seq|slice:"20:40" }}</span></td>
+                  <td><span class="muted2">{{ seq|slice:"0:19" }}</span>&#91;{{ ref }}{% for alt in alts %}&#47;{{ alt }}{% endfor %}&#93;<span class="muted2">{{ seq|slice:"20:40" }}</span></td>
                   <td>{{ context }}</td>
                   <td>
                       {% for gene in gene_symbol %}

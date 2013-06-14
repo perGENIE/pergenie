@@ -1,3 +1,4 @@
+
 from pymongo import MongoClient, ASCENDING, DESCENDING
 from lib.mongo.get_latest_catalog import get_latest_catalog
 from django.conf import settings
@@ -56,6 +57,8 @@ def get_bq_allele_freqs(rs):
 
     allele_freqs = {'Asian':{}, 'European':{}, 'African':{}, 'Japanese': {}}
 
+    # TODO: consider allele strands
+
     # TODO: write more simply...
 
     # First scan
@@ -95,7 +98,12 @@ def get_bq_allele_freqs(rs):
 
     # # Third scan...?
 
-    return allele_freqs
+    # Uniq alleles
+    alleles = set()
+    for pop, allele_freq in allele_freqs.items():
+        alleles.update([allele for allele in allele_freq.keys()])
+
+    return allele_freqs, alleles
 
 def get_bq_snp_summary(rs):
     bq = Bioq(settings.DATABASES['bioq']['HOST'],

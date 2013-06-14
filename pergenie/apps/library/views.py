@@ -175,8 +175,11 @@ def snps(request, rs):
         catalog_record = None
 
     omim_av_records = get_omim_av_records(rs)
-    bq_allele_freqs = get_bq_allele_freqs(rs)
+    bq_allele_freqs, alleles = get_bq_allele_freqs(rs)
     bq_snp_summary = get_bq_snp_summary(rs)
+    ref = bq_snp_summary['ancestral_alleles']
+    alleles.remove(ref)
+    alts = list(alleles)
     seq = get_seq(bq_snp_summary['unique_chr'], bq_snp_summary['unique_pos_bp'])
 
     # Context
@@ -196,7 +199,7 @@ def snps(request, rs):
             gene_symbol = ''
 
     return direct_to_template(request, 'library/snps.html',
-                              dict(err=err, rs=rs,
+                              dict(err=err, rs=rs, ref=ref, alts=alts,
                                    seq=seq, context=context, gene_symbol=gene_symbol,
                                    bq_allele_freqs=bq_allele_freqs,
                                    bq_snp_summary=bq_snp_summary,
