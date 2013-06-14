@@ -19,22 +19,13 @@
       </div>
     </div>
 
+    {{ err }}
+
+    {% if not err %}
     <div class="row-fluid">
       <div class="span12">
         <div class="content-box">
           <div class="padded">
-
-            {{ err }}
-
-            {% for x in bq_allele_freqs %}
-            {% for k,v in x.items %}
-            {{ k }}: {{ v }}<br>
-            {% endfor %}
-            <hr>
-            {% endfor %}
-
-            <hr>
-
             <div class="muted" align="right">
               Human Genome Assembly: {{ refgenome_version }}, dbSNP Build: {{ dbsnp_version }}
             </div>
@@ -126,14 +117,20 @@
 
             <hr>
             <h5>Genotypes</h5>
-
-            <div id="container" style="min-width: 200px; height: 200px; margin: 0 auto"></div>
-
-            <table class="table table-striped">
-              <thead>
+            <ul><li>Allele Frequency</li></ul>
+            <table>
+              <tbody>
                 <tr>
-                  <th>Your genotypes</th>
+                  <td><div id="pie1" style="min-width: 200px; height: 160px"></div></td>
+                  <td><div id="pie2" style="min-width: 200px; height: 160px"></div></td>
+                  <td><div id="pie3" style="min-width: 200px; height: 160px"></div></td>
                 </tr>
+              </tbody>
+            </table>
+
+            <ul><li>Your genotypes</li></ul>
+            <table class="table table-bordered table-striped">
+              <thead>
                 <tr>
                   <td>Genotype</td>
                   <td>File name</td>
@@ -154,6 +151,8 @@
         </div>
       </div>
     </div>
+    {% endif %}
+
   </section>
 </div>
 {% endblock %}
@@ -161,17 +160,17 @@
 {% block js %}
 <script type="text/javascript">
 $(function () {
-    var chart;
-    $(document).ready(function() {
-        chart = new Highcharts.Chart({
+    var chart1;
+    $(document).ready(function () {
+        chart1 = new Highcharts.Chart({
             chart: {
-                renderTo: 'container',
+                renderTo: 'pie1',
                 plotBackgroundColor: null,
                 plotBorderWidth: null,
                 plotShadow: false
             },
             title: {
-                text: 'Allele Frequency'
+                text: "Asian<br>({{ bq_allele_freqs.Asian|dict_index:0|keyvalue:'loc_pop_id' }})"
             },
             tooltip: {
                 pointFormat: '{series.name}: <b>{point.percentage}%</b>',
@@ -196,13 +195,99 @@ $(function () {
                 type: 'pie',
                 name: 'Allele Frequency',
                 data: [
-                      [ "{{ catalog_record.allele1 }}",   {{ catalog_record.allele1_freq }} ],
-                      [ "{{ catalog_record.allele2 }}",   {{ catalog_record.allele2_freq }} ]
+                    {% for v in bq_allele_freqs.Asian.values %}
+                    ["{{ v.allele}}", {{ v.freq }}],
+                    {% endfor %}
                 ]
             }]
         });
     });
 
+    var chart2;
+    $(document).ready(function () {
+        chart2 = new Highcharts.Chart({
+            chart: {
+                renderTo: 'pie2',
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false
+            },
+            title: {
+                text: "European<br>({{ bq_allele_freqs.European|dict_index:0|keyvalue:'loc_pop_id' }})"
+            },
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.percentage}%</b>',
+                percentageDecimals: 1
+            },
+            plotOptions: {
+                pie: {
+                    dataLabels: {
+                        enabled: false
+                    },
+                    showInLegend: true
+                }
+            },
+            credits: {
+                enabled: false
+            },
+            exporting: {
+                enabled: false
+            },
+
+            series: [{
+                type: 'pie',
+                name: 'Allele Frequency',
+                data: [
+                    {% for v in bq_allele_freqs.European.values %}
+                    ["{{ v.allele}}", {{ v.freq }}],
+                    {% endfor %}
+                ]
+            }]
+        });
+    });
+
+    var chart3;
+    $(document).ready(function () {
+        chart3 = new Highcharts.Chart({
+            chart: {
+                renderTo: 'pie3',
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false
+            },
+            title: {
+                text: "African<br>({{ bq_allele_freqs.African|dict_index:0|keyvalue:'loc_pop_id' }})"
+            },
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.percentage}%</b>',
+                percentageDecimals: 1
+            },
+            plotOptions: {
+                pie: {
+                    dataLabels: {
+                        enabled: false
+                    },
+                    showInLegend: true
+                }
+            },
+            credits: {
+                enabled: false
+            },
+            exporting: {
+                enabled: false
+            },
+
+            series: [{
+                type: 'pie',
+                name: 'Allele Frequency',
+                data: [
+                    {% for v in bq_allele_freqs.African.values %}
+                    ["{{ v.allele}}", {{ v.freq }}],
+                    {% endfor %}
+                ]
+            }]
+        });
+    });
 });
 </script>
 

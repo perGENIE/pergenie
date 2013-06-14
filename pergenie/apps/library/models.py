@@ -52,7 +52,50 @@ def get_bq_allele_freqs(rs):
               settings.DATABASES['bioq']['USER'],
               settings.DATABASES['bioq']['PASSWORD'],
               settings.DATABASES['bioq']['NAME'])
-    return bq.allele_freqs(rs)
+    rows = bq.allele_freqs(rs)
+
+    allele_freqs = {'Asian':{}, 'European':{}, 'African':{}, 'Japanese': {}}
+
+    # TODO: write more simply...
+
+    # First scan
+    for row in rows:
+        if row['loc_pop_id'] == 'HapMap-CEU':
+            allele_freqs['European'][row['allele']] = row
+
+        elif row['loc_pop_id'] == 'HapMap-JPT':
+            allele_freqs['Japanese'][row['allele']] = row
+
+        # ok?
+        elif row['loc_pop_id'] in ('HapMap-HCB', 'HapMap-CHB', 'HapMap-JPT'):
+            allele_freqs['Asian'][row['allele']] = row
+
+        # ok?
+        elif row['loc_pop_id'] == 'HapMap-YRI':
+            allele_freqs['African'][row['allele']] = row
+
+        else:
+            pass
+
+    # Second scan
+    for row in rows:
+        if not allele_freqs['European']:
+            if row['loc_pop_id'] == 'pilot_1_CEU_low_coverage_panel':
+                allele_freqs['European'][row['allele']] = row
+
+        if not allele_freqs['Asian']:
+            if row['loc_pop_id'] == 'pilot_1_CHB+JPT_low_coverage_panel':
+                allele_freqs['Asian'][row['allele']] = row
+
+        if not allele_freqs['African']:
+            if row['loc_pop_id'] == 'pilot_1_YRI_low_coverage_panel':
+                allele_freqs['African'][row['allele']] = row
+        else:
+            pass
+
+    # # Third scan...?
+
+    return allele_freqs
 
 def get_bq_snp_summary(rs):
     bq = Bioq(settings.DATABASES['bioq']['HOST'],

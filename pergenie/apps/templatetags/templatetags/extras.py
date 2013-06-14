@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-To use filters bellow, put `{% load extras %}}` in templates.
+To use filters bellow, put `{% load extras %}` in templates.
 """
 
 from django import template
@@ -115,3 +115,10 @@ def demouser_format(s):
 # @register.filter
 # def rm_newlines(s):
 #     return ''.join(s.splitlines())
+
+# @register.filter
+# def one_value(dict):
+#     return dict.get(dict.keys()[0])
+@register.filter
+def dict_index(dict, index):
+    return dict.get(dict.keys()[index])
