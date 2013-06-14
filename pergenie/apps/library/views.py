@@ -14,7 +14,6 @@ import pymongo
 
 from lib.mongo import search_catalog
 from lib.mongo.get_traits_infos import get_traits_infos
-from lib.mysql.bioq import Bioq
 from lib.utils.io import pickle_load_obj
 from lib.utils.clogging import getColorLogger
 log = getColorLogger(__name__)
@@ -176,17 +175,17 @@ def snps(request, rs):
         catalog_record = None
 
     omim_av_records = get_omim_av_records(rs)
-    print omim_av_records
+    bq_allele_freqs = get_bq_allele_freqs(rs)
 
-    #
-    bq = Bioq(settings.DATABASES['bioq']['HOST'],
-              settings.DATABASES['bioq']['USER'],
-              settings.DATABASES['bioq']['PASSWORD'],
-              settings.DATABASES['bioq']['NAME'])
-    bq_allele_freqs = bq.allele_freqs(rs)
+    # TODO: replace to dbSNP
+    chrom = catalog_record['chr_id']
+    pos = catalog_record['chr_pos']
+
+    seq = get_seq(chrom, pos)
 
     return direct_to_template(request, 'library/snps.html',
                               dict(err=err, rs=rs,
+                                   seq=seq,
                                    dbsnp_record=dbsnp_record,
                                    bq_allele_freqs=bq_allele_freqs,
                                    catalog_record=catalog_record,

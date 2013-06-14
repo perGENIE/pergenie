@@ -27,7 +27,10 @@
             {{ err }}
 
             {% for x in bq_allele_freqs %}
-            {{ x }}
+            {% for k,v in x.items %}
+            {{ k }}: {{ v }}<br>
+            {% endfor %}
+            <hr>
             {% endfor %}
 
             <hr>
@@ -41,8 +44,7 @@
                 <tr>
                   <th>Chrom</th>
                   <th>Position</th>
-                  <th>Ref</th>
-                  <th>Alt</th>
+                  <th>Sequence</th>
                   <th>Context</th>
                 </tr>
               </thead>
@@ -51,8 +53,7 @@
                 <tr>
                   <td>{{ catalog_record.chr_id }}</td>
                   <td>{{ catalog_record.chr_pos }}</td>
-                  <td>{{ catalog_record.ref }}</td>
-                  <td>{{ catalog_record.risk_allele }}</td>
+                  <td><span class="muted2">{{ seq|slice:"0:19" }}</span>[{{ catalog_record.ref }}/{{ catalog_record.risk_allele }}]<span class="muted2">{{ seq|slice:"20:40" }}</span></td>
                   <td>{{ catalog_record.context }}</td>
                 </tr>
               </tbody>

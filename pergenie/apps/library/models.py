@@ -2,7 +2,8 @@ from pymongo import MongoClient, ASCENDING, DESCENDING
 from lib.mongo.get_latest_catalog import get_latest_catalog
 from django.conf import settings
 from lib.mongo import search_variants
-
+from lib.mysql.bioq import Bioq
+from lib.mongo.mutate_fasta import MutateFasta
 
 def get_latest_catalog_date():
     with MongoClient(host=settings.MONGO_URI) as c:
@@ -45,3 +46,15 @@ def get_omim_av_records(rs):
 def get_catalog_records(rs):
     catalog = get_latest_catalog(port=settings.MONGO_PORT)
     return list(catalog.find({'snps': rs}).sort('date', DESCENDING))
+
+def get_bq_allele_freqs(rs):
+    bq = Bioq(settings.DATABASES['bioq']['HOST'],
+              settings.DATABASES['bioq']['USER'],
+              settings.DATABASES['bioq']['PASSWORD'],
+              settings.DATABASES['bioq']['NAME'])
+    return bq.allele_freqs(rs)
+
+def get_seq(chrom, pos):
+    m = MutateFasta(settings.PATH_TO_REFERENCE_FASTA)
+    seq = m.generate_seq([], offset=[chrom, pos-20 , pos+20])
+    return seq
