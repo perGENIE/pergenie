@@ -54,6 +54,13 @@ def get_bq_allele_freqs(rs):
               settings.DATABASES['bioq']['NAME'])
     return bq.allele_freqs(rs)
 
+def get_bq_snp_summary(rs):
+    bq = Bioq(settings.DATABASES['bioq']['HOST'],
+              settings.DATABASES['bioq']['USER'],
+              settings.DATABASES['bioq']['PASSWORD'],
+              settings.DATABASES['bioq']['NAME'])
+    return bq.snp_summary(rs)
+
 def get_seq(chrom, pos):
     m = MutateFasta(settings.PATH_TO_REFERENCE_FASTA)
     seq = m.generate_seq([], offset=[chrom, pos-20 , pos+20])

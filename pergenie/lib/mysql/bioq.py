@@ -21,3 +21,8 @@ class Bioq(object):
     def allele_freqs(self, rs):
         rows = self._sql("select * from _loc_allele_freqs where snp_id = '%s'" % rs)
         return rows
+
+    def snp_summary(self, rs):
+        rows = self._sql("select * from _loc_snp_summary where snp_id = '%s'" % rs)
+        row = rows[0]
+        return row

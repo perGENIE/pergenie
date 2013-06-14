@@ -176,18 +176,30 @@ def snps(request, rs):
 
     omim_av_records = get_omim_av_records(rs)
     bq_allele_freqs = get_bq_allele_freqs(rs)
+    bq_snp_summary = get_bq_snp_summary(rs)
+    seq = get_seq(bq_snp_summary['unique_chr'], bq_snp_summary['unique_pos_bp'])
 
-    # TODO: replace to dbSNP
-    chrom = catalog_record['chr_id']
-    pos = catalog_record['chr_pos']
-
-    seq = get_seq(chrom, pos)
+    # Context
+    # is in a gene
+    if bq_snp_summary['rep_function']:
+        context = bq_snp_summary['rep_function']
+        gene_symbol = bq_snp_summary['rep_gene_symbol']
+    # is in a intergenic region
+    else:
+        # TODO: create function/table which returns a context of each genomic positions.
+        #       currently, using contexts in GWAS Catalog, for intergenic snps.
+        if catalog_record:
+            context = catalog_record['context']
+            gene_symbol = catalog_record['mapped_genes']
+        else:
+            context = 'Intergenic'
+            gene_symbol = ''
 
     return direct_to_template(request, 'library/snps.html',
                               dict(err=err, rs=rs,
-                                   seq=seq,
-                                   dbsnp_record=dbsnp_record,
+                                   seq=seq, context=context, gene_symbol=gene_symbol,
                                    bq_allele_freqs=bq_allele_freqs,
+                                   bq_snp_summary=bq_snp_summary,
                                    catalog_record=catalog_record,
                                    catalog_records=catalog_records,
                                    omim_av_records=omim_av_records,

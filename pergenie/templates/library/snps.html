@@ -46,15 +46,25 @@
                   <th>Position</th>
                   <th>Sequence</th>
                   <th>Context</th>
+                  <th>Gene</th>
                 </tr>
               </thead>
 
               <tbody>
                 <tr>
-                  <td>{{ catalog_record.chr_id }}</td>
-                  <td>{{ catalog_record.chr_pos }}</td>
+                  <td>{{ bq_snp_summary.unique_chr }}</td>
+                  <td>{{ bq_snp_summary.unique_pos_bp }}</td>
                   <td><span class="muted2">{{ seq|slice:"0:19" }}</span>[{{ catalog_record.ref }}/{{ catalog_record.risk_allele }}]<span class="muted2">{{ seq|slice:"20:40" }}</span></td>
-                  <td>{{ catalog_record.context }}</td>
+                  <td>{{ context }}</td>
+                  <td>
+                      {% for gene in gene_symbol %}
+                      {% if forloop.counter0|add:1 > 1 %}-{% endif %}
+
+                      {% if gene.entrez_gene_id %}<span class="entrez" title="browse in NCBI Gene"><a href="http://www.ncbi.nlm.nih.gov/gene/?term={{ gene.entrez_gene_id }}" target="_blank">{% endif %}
+                        {{ gene.gene_symbol }}
+                      {% if gene.entrez_gene_id %}</a></span>{% endif %}
+                      {% endfor %}
+                  </td>
                 </tr>
               </tbody>
             </table>
