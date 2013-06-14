@@ -72,43 +72,47 @@
         </div>
       </div>
 
-      <!-- <div class="row-fluid"> -->
-      <!--   <div class="span12"> -->
-      <!--     <div class="padded"> -->
 
-      <!--       <div class="content-box"> -->
-      <!--         <div class="content-box-header"> -->
-      <!--           <icon class="icon-exclamation-sign"></icon> Notifications -->
-      <!--         </div> -->
+      {% if msg or err %}
+      <div class="row-fluid">
+        <div class="span12 padded">
 
-              {% if msg %}
+          <div class="content-box">
+            <div class="content-box-header">
+              <icon class="icon-exclamation-sign"></icon> Notifications
+            </div>
+
+            {% if msg %}
+            <div class="padded">
               <div class="alert alert-info">
                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                 <strong>Information:</strong> {{ msg }}
               </div>
-              {% endif %}
+            </div>
+            {% endif %}
 
-              {% if msgs %}
-              {% for m in msgs %}
-              <div class="alert alert-info">
-                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                <strong>Information:</strong> {{ m }}
-              </div>
-              {% endfor %}
-              {% endif %}
+            <!-- {% if msgs %} -->
+            <!-- {% for m in msgs %} -->
+            <!-- <div class="alert alert-info"> -->
+            <!--   <button type="button" class="close" data-dismiss="alert">&times;</button> -->
+            <!--   <strong>Information:</strong> {{ m }} -->
+            <!-- </div> -->
+            <!-- {% endfor %} -->
+            <!-- {% endif %} -->
 
-              {% if err %}
+            {% if err %}
+            <div class="padded">
               <div class="alert alert-error">
                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                 <strong>Error!</strong> {{ err }}
               </div>
-              {% endif %}
+            </div>
+            {% endif %}
 
-      <!--       </div> -->
-
-      <!--     </div> -->
-      <!--   </div> -->
-      <!-- </div> -->
+          </div>
+        </div>
+      </div>
+      {% endif %}
 
       <div class="row-fluid">
         <div class="span6">

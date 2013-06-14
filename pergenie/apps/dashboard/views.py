@@ -50,7 +50,8 @@ def index(request):
                     intro_type = []
 
                     if risk_report_latest_date.date() < catalog_latest_new_records_data:
-                        msgs.append('Risk report outdated, so re-calculate riskreport: {0}'.format(info['raw_name']))
+                        # msgs.append('Risk report outdated, so re-calculate riskreport: {0}'.format(info['raw_name']))
+                        msg = 'Some risk-reports are outdated, so re-calculate risk-report.'
                         n_out_dated_riskreports += 1
 
                 elif info['status'] == 100:
