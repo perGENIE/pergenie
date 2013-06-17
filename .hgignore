@@ -34,7 +34,8 @@ nosetests.xml
 # settings
 pergenie/settings/develop.py
 pergenie/settings/staging.py
-pergenie/lib/fabfiles/etc/
+pergenie/fabfiles/etc/
+pergenie/fabfiles/passwd/
 
 #
 data/gwascatalog.20*
