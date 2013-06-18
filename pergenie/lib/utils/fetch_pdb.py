@@ -15,9 +15,11 @@ class SelectChains(PDB.Select):
         self.chain_letters = chain_letters
 
     def accept_chain(self, chain):
+        print 'chain', chain
+        print 'chain.get_id()', chain.get_id()
         return (chain.get_id() in self.chain_letters)
 
-def fetch_pdb(pdb_id, chain_letters="ATOM"):
+def fetch_pdb(pdb_id)# , chain_letters=None):
     pdb_id = pdb_id.lower()
 
     if not re.match('^[a-zA-Z0-9]{4}$', pdb_id):
@@ -28,9 +30,9 @@ def fetch_pdb(pdb_id, chain_letters="ATOM"):
     if not os.path.exists(dst_dir): os.mkdir(dst_dir)
 
     with cd(dst_dir):
-        dst = 'pdb' + pdb_id + '.' + chain_letters.lower()
-        if os.path.exists(dst):
-            return
+        dst = 'pdb' + pdb_id # + '.' + chain_letters.lower()
+        # if os.path.exists(dst):
+        #     return
 
         pdbl = PDB.PDBList()
         pdbl.retrieve_pdb_file(pdb_id.upper(), pdir=os.getcwd())
@@ -41,7 +43,7 @@ def fetch_pdb(pdb_id, chain_letters="ATOM"):
 
         writer = PDB.PDBIO()
         writer.set_structure(structure)
-        writer.save(dst, select=SelectChains(chain_letters))
+        writer.save(dst)# , select=SelectChains(chain_letters))
 
 
 if __name__ == '__main__':
