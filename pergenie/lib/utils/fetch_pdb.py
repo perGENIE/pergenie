@@ -19,7 +19,7 @@ class SelectChains(PDB.Select):
         print 'chain.get_id()', chain.get_id()
         return (chain.get_id() in self.chain_letters)
 
-def fetch_pdb(pdb_id)# , chain_letters=None):
+def fetch_pdb(pdb_id):# , chain_letters=None):
     pdb_id = pdb_id.lower()
 
     if not re.match('^[a-zA-Z0-9]{4}$', pdb_id):
