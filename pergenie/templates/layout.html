@@ -144,14 +144,6 @@ _8
                     </a>
                     <ul class="dropdown-menu secondary ">
 
-                      {% ifnotequal user.username|demouser_format "demo@pergenie.org" %}
-                      <li class="">
-                        <a href="{% url apps.settings.views.user_settings %}">
-                          <i class="icon-cog"></i> Account settings
-                        </a>
-                      </li>
-                      {% endifnotequal %}
-
                       {% ifequal user.username|demouser_format "demo@pergenie.org" %}
                       <li class="">
                         <a href="{% url apps.frontend.views.register %}">

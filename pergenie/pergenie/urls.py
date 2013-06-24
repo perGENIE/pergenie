@@ -35,11 +35,11 @@ urlpatterns = patterns('',
     url(r'^trydemo/$', 'apps.frontend.views.trydemo'),
 
     url(r'^register/$', 'apps.frontend.views.register'),
-    url(r'^activation/(?P<activation_key>\w{40}})/$', 'apps.frontend.views.activation'),
+    url(r'^activation/(?P<activation_key>\w{40})/$', 'apps.frontend.views.activation'),
 
     # contents
     url(r'^dashboard/$', 'apps.dashboard.views.index'),
-    url(r'^user_settings/$', 'apps.settings.views.user_settings'),
+    # url(r'^user_settings/$', 'apps.settings.views.user_settings'),
 
     url(r'^riskreport/$', 'apps.riskreport.views.index'),
     url(r'^riskreport/show_all/$', 'apps.riskreport.views.show_all'),

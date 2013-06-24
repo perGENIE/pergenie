@@ -206,14 +206,14 @@ def register(request):
                 activation_url += os.path.sep
             email_body = """Welcome to perGENIE!
 
-To complete your registration, please visit this URL:
+To complete your registration, please visit following URL:
 
 %(activation_url)s
 
 If you have problems with signing up, please contact us at %(support_email)s
 
 
-perGENIE teams
+- perGENIE teams
 
 --
 This email address is SEND ONLY, NO-REPLY.
@@ -226,7 +226,7 @@ This email address is SEND ONLY, NO-REPLY.
                 log.debug('mail sent')
                 log.debug(params)
                 params.update(dict(user_id=user_id))
-                return direct_to_template(request, 'frontend/registration_completed.html')
+                return direct_to_template(request, 'frontend/registration_completed.html', params)
             except:  # SMTPException:
                 params['err'] = _('Invalid mail address assumed.')
                 log.debug('mail failed')
@@ -277,11 +277,12 @@ def activation(request, activation_key):
             # send user a mail notification that 'your account has been activated.'
             try:
                 challenging_user.email_user(subject='Your account has been activated',
-                                            message="""Your account has been activated!
+                                            message="""Your perGENIE account has been activated!
 
-If this account activation is not intended by you, ....
+If this account activation is not intended by you, please contact us at %(support_email)s
 
-perGENIE teams
+
+- perGENIE teams
 
 --
 This email address is SEND ONLY, NO-REPLY.

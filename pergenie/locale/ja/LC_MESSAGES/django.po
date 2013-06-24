@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-24 20:01+0900\n"
+"POT-Creation-Date: 2013-06-24 20:28+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -148,11 +148,11 @@ msgstr ""
 
 #: templates/frontend/activation_completed.html:21
 msgid "Thanks for signing up! Now you can "
-msgstr "ご登録ありがとうございます!"
+msgstr "ご登録ありがとうございます! こちらよりログインして下さい: "
 
 #: templates/frontend/activation_completed.html:21
 msgid " and enjoy perGENIE!"
-msgstr "より，perGENIEをお楽しみください!"
+msgstr " それではperGENIEをお楽しみください!"
 
 #: templates/frontend/login.html:42
 msgid "Create an account."
@@ -162,18 +162,18 @@ msgstr "新規アカウント登録"
 msgid "If you already have accounts,"
 msgstr "アカウントをお持ちの方はこちらから:"
 
-#: templates/frontend/registration_completed.html:19
+#: templates/frontend/registration_completed.html:18
 msgid "Registeration completed"
 msgstr "登録が完了しました．"
 
-#: templates/frontend/registration_completed.html:21
+#: templates/frontend/registration_completed.html:20
 msgid ""
 "Registration completed. An activation link has been sent to the email "
 "address you supplied "
 msgstr ""
 "登録は以上で完了です．アカウントを有効にするために，登録したEmailアドレス"
 
-#: templates/frontend/registration_completed.html:23
+#: templates/frontend/registration_completed.html:22
 msgid ""
 " Check the email and follow the instructions for activating your account!"
 msgstr "宛に送られる，perGENIEからのメールをご確認ください．"
