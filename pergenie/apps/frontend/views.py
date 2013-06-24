@@ -286,7 +286,7 @@ If this account activation is not intended by you, please contact us at %(suppor
 
 --
 This email address is SEND ONLY, NO-REPLY.
-""")
+"""  % {'support_email': settings.SUPPORT_EMAIL})
             except:  # smtplib.SMTPException
                 err = 'Activation successful, but failed to send you notification email...'
                 log.error('Failed to send notification. {0}'.format(challenging_user_info['user_id']))
