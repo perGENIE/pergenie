@@ -46,25 +46,25 @@ urlpatterns = patterns('',
     url(r'^riskreport/(?P<trait>[^/]*)/$', 'apps.riskreport.views.trait'),
     url(r'^riskreport/(?P<trait>[^/]*)/(?P<study>[^/]*)/$', 'apps.riskreport.views.study'),
 
-    url(r'^mygene/$', 'apps.mygene.views.index'),
-    url(r'^mygene/mydys/$', 'apps.mygene.views.my_dys'),
-    url(r'^mygene/(?P<gene>.*?)/$', 'apps.mygene.views.my_gene'),
+    # url(r'^mygene/$', 'apps.mygene.views.index'),
+    # url(r'^mygene/mydys/$', 'apps.mygene.views.my_dys'),
+    # url(r'^mygene/(?P<gene>.*?)/$', 'apps.mygene.views.my_gene'),
 
 
-    url(r'^myprotain/$', 'apps.myprotain.views.index'),
-    url(r'^myprotain/pdb/(?P<pdb_id>[a-zA-Z0-9]{4}?)/$', 'apps.myprotain.views.my_pdb'),
+    # url(r'^myprotain/$', 'apps.myprotain.views.index'),
+    # url(r'^myprotain/pdb/(?P<pdb_id>[a-zA-Z0-9]{4}?)/$', 'apps.myprotain.views.my_pdb'),
 
-    url(r'^traits/$', 'apps.traits.views.index'),
+    # url(r'^traits/$', 'apps.traits.views.index'),
 
-    url(r'^population/$', 'apps.population.views.index'),
+    # url(r'^population/$', 'apps.population.views.index'),
 
     url(r'^library/$', 'apps.library.views.index'),
     url(r'^library/trait/$', 'apps.library.views.trait_index'),
     url(r'^library/trait/(?P<trait>.*?)/$', 'apps.library.views.trait'),
-    url(r'^library/snps/$', 'apps.library.views.snps_index'),
-    url(r'^library/snps/rs/(?P<rs>.*?)/$', 'apps.library.views.snps'),
-    url(r'^library/summary/$', 'apps.library.views.summary_index'),
-    url(r'^library/summary/(?P<field_name>.*?)/$', 'apps.library.views.summary'),
+    # url(r'^library/snps/$', 'apps.library.views.snps_index'),
+    # url(r'^library/snps/rs/(?P<rs>.*?)/$', 'apps.library.views.snps'),
+    # url(r'^library/summary/$', 'apps.library.views.summary_index'),
+    # url(r'^library/summary/(?P<field_name>.*?)/$', 'apps.library.views.summary'),
 
     url(r'^upload/$', 'apps.upload.views.index'),
     url(r'^upload/delete', 'apps.upload.views.delete'),

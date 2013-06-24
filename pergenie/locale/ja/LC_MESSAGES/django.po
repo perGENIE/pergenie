@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-05-15 22:02+0900\n"
+"POT-Creation-Date: 2013-06-24 20:01+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,29 +18,20 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0\n"
 
-#. Translators: This message appears on the home page only
-#: apps/dashboard/views.py:54
-msgid "First, upload your genome file!"
-msgstr "まずは，genome fileをアップロードしましょう!"
-
-#: apps/dashboard/views.py:55
-msgid "Next, ...."
-msgstr "次に，...."
-
-#: apps/frontend/views.py:54 apps/frontend/views.py:98
-#: apps/riskreport/views.py:50 apps/riskreport/views.py:172
+#: apps/frontend/views.py:71 apps/frontend/views.py:118
+#: apps/riskreport/views.py:74 apps/riskreport/views.py:246
 msgid "Invalid request."
 msgstr "不正なリクエストです．"
 
-#: apps/frontend/views.py:67 apps/frontend/views.py:72
+#: apps/frontend/views.py:84 apps/frontend/views.py:89
 msgid "invalid mail address or password"
 msgstr "メールアドレスかパスワードが正しくありません．"
 
-#: apps/frontend/views.py:108
+#: apps/frontend/views.py:128
 msgid "Passwords do not match."
 msgstr "パスワードが一致していません．"
 
-#: apps/frontend/views.py:112
+#: apps/frontend/views.py:132
 #, python-format
 msgid ""
 "Passwords too short (passwords should be longer than %(min_password_length)s "
@@ -49,85 +40,95 @@ msgstr ""
 "短すぎるパスワードです．%(min_password_length)s 文字以上のパスワードを設定し"
 "て下さい．"
 
-#: apps/frontend/views.py:116 apps/frontend/views.py:210
+#: apps/frontend/views.py:136 apps/frontend/views.py:231
 msgid "Invalid mail address assumed."
 msgstr "不正なメールアドレスです．"
 
-#: apps/frontend/views.py:120 apps/frontend/views.py:130
+#: apps/frontend/views.py:140 apps/frontend/views.py:150
+#: apps/frontend/views.py:242
 msgid "Already registered."
 msgstr "すでに登録済みです．"
 
-#: apps/frontend/views.py:135
+#: apps/frontend/views.py:155
 msgid "Unexpected error"
 msgstr "予期しないエラーが発生しました．"
 
-#: apps/riskreport/views.py:40 apps/riskreport/views.py:161
+#: apps/riskreport/views.py:39 apps/riskreport/views.py:223
 msgid "no data uploaded"
 msgstr "データがアップロードされていません．"
 
-#: apps/riskreport/views.py:57 apps/riskreport/views.py:72
-#: apps/riskreport/views.py:182 apps/riskreport/views.py:199
+#: apps/riskreport/views.py:64
+#, fuzzy
+msgid "Your files are in importing, please wait for seconds..."
+msgstr "%(file_name)s は現在読み込み中です．しばらくお待ちください..."
+
+#: apps/riskreport/views.py:87 apps/riskreport/views.py:254
 #, python-format
 msgid "%(file_name)s is in importing, please wait for seconds..."
 msgstr "%(file_name)s は現在読み込み中です．しばらくお待ちください..."
 
-#: apps/riskreport/views.py:64 apps/riskreport/views.py:105
-#: apps/riskreport/views.py:189
+#: apps/riskreport/views.py:93 apps/riskreport/views.py:166
+#: apps/riskreport/views.py:261
 #, python-format
 msgid "no such file %(file_name)s"
 msgstr "そのようなファイルはありません．%(file_name)s"
 
-#: apps/riskreport/views.py:99
+#: apps/riskreport/views.py:144
 msgid "trait not found"
 msgstr "そのようなTraitはありません"
 
-#: apps/upload/views.py:45
+#: apps/upload/views.py:48
 msgid "Invalid request"
 msgstr "不正なリクエストです．"
 
-#: apps/upload/views.py:57
+#: apps/upload/views.py:58
 msgid "Select data file."
 msgstr "ファイルを選択して下さい．"
 
-#: apps/upload/views.py:61
+#: apps/upload/views.py:62
 msgid "Select population."
 msgstr "Populationを選択して下さい．"
 
-#: apps/upload/views.py:69
+#: apps/upload/views.py:70
 msgid "Select file format."
 msgstr "File Formatを選択して下さい．"
 
-#: apps/upload/views.py:75
+#: apps/upload/views.py:74 apps/upload/views.py:78
+msgid "Too many files."
+msgstr ""
+
+#: apps/upload/views.py:84
 msgid "too large file size"
 msgstr "ファイルサイズが制限を超えています．"
 
-#: apps/upload/views.py:81
-msgid "file extension not allowdn"
+#: apps/upload/views.py:90
+#, fuzzy
+msgid "file extension not allowed"
 msgstr "許可されいてない拡張子のファイルです．"
 
-#: apps/upload/views.py:89
+#: apps/upload/views.py:100
 msgid "file type not allowed"
 msgstr "許可されていないファイルタイプです．"
 
-#: apps/upload/views.py:94
+#: apps/upload/views.py:106
 msgid ""
 "Same file name exists. If you want to overwrite it, please delete old one."
 msgstr ""
 "同じファイル名のファイルがアップロードされています．上書きしたい場合，アップ"
 "ロード済みのファイルを削除して下さい．"
 
-#: apps/upload/views.py:110
+#: apps/upload/views.py:123
 msgid "file type not allowed, or encoding not allowed"
 msgstr ""
 "許可されていないファイルタイプ，あるいは許可されていないエンコーディングで"
 "す．"
 
-#: apps/upload/views.py:119
+#: apps/upload/views.py:131
 #, python-format
 msgid "%(file_name)s uploaded."
 msgstr "%(file_name)s がアップロードされました．"
 
-#: apps/upload/views.py:143
+#: apps/upload/views.py:155
 msgid ", and now importing..."
 msgstr "現在，読み込んでいます..."
 
@@ -153,13 +154,17 @@ msgstr "ご登録ありがとうございます!"
 msgid " and enjoy perGENIE!"
 msgstr "より，perGENIEをお楽しみください!"
 
-#: templates/frontend/login.html:58
+#: templates/frontend/login.html:42
 msgid "Create an account."
 msgstr "新規アカウント登録"
 
+#: templates/frontend/register.html:53
+msgid "If you already have accounts,"
+msgstr "アカウントをお持ちの方はこちらから:"
+
 #: templates/frontend/registration_completed.html:19
 msgid "Registeration completed"
-msgstr ""
+msgstr "登録が完了しました．"
 
 #: templates/frontend/registration_completed.html:21
 msgid ""
@@ -172,6 +177,12 @@ msgstr ""
 msgid ""
 " Check the email and follow the instructions for activating your account!"
 msgstr "宛に送られる，perGENIEからのメールをご確認ください．"
+
+#~ msgid "First, upload your genome file!"
+#~ msgstr "まずは，genome fileをアップロードしましょう!"
+
+#~ msgid "Next, ...."
+#~ msgstr "次に，...."
 
 #~ msgid "Select sex."
 #~ msgstr "Sexを選択して下さい．"

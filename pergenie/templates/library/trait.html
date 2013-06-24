@@ -1,7 +1,6 @@
 {% extends "layout.html" %}
 {% block title %}Library {{ trait_name }}{% endblock %}
 {% block description %}library of risk SNPs{% endblock %}
-{% block cookie_id %}library_record{% endblock %}
 {% load extras %}}
 
 {% block main_container %}
@@ -84,8 +83,9 @@
                       {% set rs = library.rs %}
                       <tr>
                         <td>
-                          {% ifnotequal rs 'na' %}<a href="{% url apps.library.views.snps rs=rs %}">{{ rs }}</a>
-                          {% else %}{{ rs }}{% endifnotequal %}
+                          {% ifnotequal rs 'na' %}rs{{ rs }}
+                          {% else %}{{ rs }}
+                          {% endifnotequal %}
                         </td>
                         <td class="center">{{ library.trait }}</td>
                         <td class="center">

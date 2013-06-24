@@ -1,7 +1,6 @@
 {% extends "layout.html" %}
 {% block title %}Risk report - {{ study_name }}{% endblock %}
 {% block description %}risk report detail{% endblock %}
-<!-- {% block cookie_id %}risk_report_detail{% endblock %} -->
 {% load staticfiles %}
 {% load extras %}
 
@@ -135,7 +134,7 @@
                 <tbody>
                   {% for snp_record in snp_records %}
                   <tr>
-                    <td class="center"><a href="{% url apps.library.views.snps rs=snp_record.snp %}">rs{{ snp_record.snp }}</a></td>
+                    <td class="center"><span class="dbsnp" title="browse in dbSNP"><a href="//www.ncbi.nlm.nih.gov/projects/SNP/snp_ref.cgi?rs={{ snp_record.snp }}" target="_blank">rs{{ snp_record.snp }}</a></span></td>
                     <td class="center">{{ snp_record.catalog_info.chr_id }}</td>
                     <td class="center">{{ snp_record.catalog_info.chr_pos }}</td>
                     {% ifequal info.file_format 'vcf_exome_truseq' %}
@@ -146,8 +145,8 @@
                       {% for gene in snp_record.catalog_info.mapped_genes %}
                       {% if forloop.counter0|add:1 > 1 %}-{% endif %}
 
-                      {% if gene.entrez_gene_id %}<span class="entrez" title="browse in NCBI Gene"><a href="http://www.ncbi.nlm.nih.gov/gene/?term={{ gene.entrez_gene_id }}" target="_blank">{% endif %}
-                        {{ gene.gene_symbol }}
+                      {% if gene.entrez_gene_id %}<span class="entrez" title="browse in NCBI Gene"><a href="//www.ncbi.nlm.nih.gov/gene/?term={{ gene.entrez_gene_id }}" target="_blank">{% endif %}
+                          {{ gene.gene_symbol }}
                       {% if gene.entrez_gene_id %}</a></span>{% endif %}
                       <!-- {% if gene.omim_gene_id %}<span class="badge badge-yellow"><a href="{{ gene.omim_gene_id }}" target="_blank">OMIM</a></span>{% endif %} -->
                       <!-- {% if gene.entrez_gene_id %}<span class="badge badge-yellow"><a href="{{ gene.entrez_gene_id }}" target="_blank">E</a></span>{% endif %} -->
@@ -254,6 +253,7 @@ $(document).ready(function(){
   });
 });
 </script>
+<script type="text/javascript">$('span.dbsnp').tooltip();</script>
 <script type="text/javascript">$('span.entrez').tooltip();</script>
 <script type="text/javascript">$('span.badge').tooltip();</script>
 {% endblock %}

@@ -58,7 +58,6 @@ _8
 
 
   <body onload="prettyPrint()" id="body">
-  <!-- <body id="{% block cookie_id %}{% endblock %}"><\!-- This id is used for the cookies -\-> -->
     <div class="navbar navbar-fixed-top navbar-inverse top-nav" {% ifequal intro_type.0 'invitation' %}data-step="1" data-intro="{{ intros.0 }}" {% endifequal %}>
       <div class="navbar-inner">
 
@@ -100,30 +99,6 @@ _8
                         </a>
                       </li>
 
-                      <li>
-                        <a href="{% url apps.mygene.views.index %}">
-                          <i class="icon-beaker"></i> MyGene
-                        </a>
-                      </li>
-
-                      <li>
-                        <a href="{% url apps.myprotain.views.index %}">
-                          <i class="icon-beaker"></i> MyProtain
-                        </a>
-                      </li>
-
-                      <li>
-                        <a href="{% url apps.traits.views.index %}">
-                          <i class="icon-user"></i> Traits
-                        </a>
-                      </li>
-
-                      <li>
-                        <a href="{% url apps.population.views.index %}">
-                          <i class="icon-globe"></i> Population
-                        </a>
-                      </li>
-
                       <li class="divider"></li>
                       {% ifnotequal user.username|demouser_format "demo@pergenie.org" %}
                       <li class="">
@@ -140,10 +115,7 @@ _8
                         <a href="{% url apps.library.views.index %}">
                           <i class="icon-book"></i> Library
                         </a>
-                        <!-- <li><a href="{% url apps.library.views.index %}">Index</a></li> -->
-                        <!-- <li><a href="{% url apps.library.views.trait_index %}">- Traits</a></li> -->
-                        <!-- <li><a href="{% url apps.library.views.snps_index %}">- SNPs</a></li> -->
-                        <!-- <li><a href="{% url apps.library.views.summary_index %}">Summary</a></li> -->
+                      </li>
 
                       <li>
                         <a href="{% url apps.faq.views.index %}">

@@ -29,12 +29,12 @@ _8
   <link href="{% static 'css/bootstrap-responsive.css' %}" rel="stylesheet">
   <link href="{% static 'css/index.css' %}" rel="stylesheet">
 
-  <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,700,600" rel="stylesheet">
-  <link href="http://fonts.googleapis.com/css?family=Open+Sans+Condensed:700,300" rel="stylesheet" type="text/css">
-  <link href="http://fonts.googleapis.com/css?family=Delius+Swash+Caps" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,700,600" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:700,300" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Delius+Swash+Caps" rel="stylesheet" type="text/css">
   <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
   <!--[if lt IE 9]>
-    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <script src="https://html5shim.googlecode.com/svn/trunk/html5.js"></script>
   <![endif]-->
 </head>
 
@@ -48,7 +48,6 @@ _8
           <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
 
           <ul class="nav">
-            <!-- <li class="active"><a href="#"></a></li> -->
             <li><a href="{% url apps.frontend.views.trydemo %}">Try demo</a></li>
             <li><a href="{% url apps.frontend.views.register %}">Sign up</a></li>
             <li><a href="{% url apps.frontend.views.login %}">Login</a></li>
@@ -69,14 +68,13 @@ _8
       <div class="row">
         <div class="span12 center graded">
           <a href="{% url apps.frontend.views.trydemo %}" class="signup">Try demo</a>
-          <a href="{% url apps.frontend.views.register %}" class="signup">Sign up for free</a>
+          <a href="{% url apps.frontend.views.register %}" class="signup">Sign up for FREE</a>
         </div>
       </div>
     </div>
 
   <div class="container">
     <h2>Features.</h2>
-    <!-- <h3 class="subheader"></h3> -->
     <div class="row">
       <div class="span12 box drop-shadow">
 
@@ -85,7 +83,7 @@ _8
             <h3>Disease risk calculation</h3>
             <p>Based on the results of genotype-phenotype association studies, i.e., GWAS (Genome Wide Association Studies), perGENIE calculates your genetic risks for diseases.
             </p>
-            <p>As a database of GWAS, we use <a href="http://www.genome.gov/gwastudies/" target="_blank">NHGRI GWAS Catalog</a>.</p>
+            <p>As a database of GWAS, we use <a href="//www.genome.gov/gwastudies/" target="_blank">NHGRI GWAS Catalog</a>.</p>
           </article>
           <div class="span4">
             <img src="{% static 'images/snaps/snap1.png' %}" alt="placeholder" />
@@ -98,18 +96,18 @@ _8
           </div>
           <article class="span6">
             <h3>Comparison of two genomes</h3>
-            <p>
+            <p>You can also compare your disease risks with another person, e.g., father and mathor, parents and their children, etc.
               </p>
           </article>
         </div>
 
         <div class="row">
           <article class="span6 offset1">
-            <h3>Working with 23andMe & VCF</h3>
+            <h3>Working with VCF & 23andMe</h3>
             <p>Suppoted input file formats are:</p>
             <ul>
-              <li>SNP array data from <a href="https://www.23andme.com/" target="_blank">23andMe</a>, a common direct-to-consumer genetic testing service.</li>
-              <li><a href="http://www.1000genomes.org/wiki/Analysis/Variant%20Call%20Format/vcf-variant-call-format-version-41" target="_blank">VCF (Variant Call Format)</a>, a typical data format for DNA sequencing data from NGS.</li>
+              <li><a href="//www.1000genomes.org/wiki/Analysis/Variant%20Call%20Format/vcf-variant-call-format-version-41" target="_blank">VCF (Variant Call Format)</a>, a standard data format for DNA sequencing data from NGS.</li>
+              <li>SNP array data from <a href="//www.23andme.com/" target="_blank">23andMe</a>, a common direct-to-consumer genetic testing service.</li>
             </ul>
           </article>
           <div class="span4">
@@ -119,22 +117,6 @@ _8
 
         <div class="row">
           <article class="span6 offset1">
-            <h3>Up-to-date reference databases</h3>
-            <p>Reference databases are updated nightly everyday, to follow the rappidly increasing genotype-phenotype association studies, so that perGENIE can provide up-to-date disease risk calculation.
-            </p>
-          </article>
-        </div>
-
-        <div class="row">
-          <article class="span6 offset1">
-            <h3>Friendly to Japanese</h3>
-            <p>perGENIE speaks English and Japanse!
-            </p>
-          </article>
-        </div>
-
-        <div class="row">
-          <article class="span6 offset3">
             <h3 class="subheader">More features are under developping...</h3>
           </article>
         </div>
@@ -164,16 +146,15 @@ _8
     </div>
   </div>
 
-  <!-- <div class="row footer"> -->
-  <!--   <div class="span12"> -->
-  <!--     <ul class="links"> -->
-  <!--       <\!-- <li><a href="https://twitter.com/per_GENIE" target="_blank"><img src="{% static 'images/icons/twitter.png' %}" alt="twitter" /></a></li> -\-> -->
-  <!--       <\!-- <li>&copy; 2012-2013 perGENIE Team.</li> -\-> -->
-  <!--       <\!-- <li><a href="#">Terms</a></li> -\-> -->
-  <!--       <\!-- <li><a href="#">License</a></li> -\-> -->
-  <!--     </ul> -->
-  <!--   </div> -->
-  <!-- </div> -->
+  <div class="row footer">
+    <div class="span12">
+      <ul class="links">
+        <li>&copy; 2012-2013 perGENIE Team.</li>
+        <!-- <li><a href="#">Terms</a></li> -->
+        <!-- <li><a href="#">License</a></li> -->
+      </ul>
+    </div>
+  </div>
 
 </body>
 

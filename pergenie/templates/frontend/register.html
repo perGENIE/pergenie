@@ -6,78 +6,68 @@
 {% load extras %}
 
 {% block main_container %}
-  <body id="body">
+<section id="main">
+  <div class="container">
 
-    <section id="main">
-      <div class="container">
+    <div class="row-fluid">
+      <div class="span12">
+        <div class="login-container center">
+          <div class="title"><a href="{% url apps.frontend.views.index %}"><img class="login_logo" src="{% static 'images/logo.png' %}"></a></div>
 
-        <div class="row-fluid">
-          <div class="span12">
-            <div class="login-container center">
-              <div class="title"><a href="{% url apps.frontend.views.index %}"><img class="login_logo" src="{% static 'images/logo.png' %}"></a></div>
+          <form class="login-form" action="{% url apps.frontend.views.register %}" method="POST" id="password-form">
+	        {% csrf_token %}
+            <ul class="fields-list">
+              <li>
+                <i class="icon-envelope-alt" style="float: left;"></i>
+                <input autocomplete="off" id="email" name="user_id" placeholder="email" type="text">
+              </li>
+              <li>
+                <i class="icon-key"></i>
+                <input autocomplete="off" id="password1" name="password1" placeholder="password" type="password">
+              </li>
+              <li>
+                <i class="icon-key"></i>
+                <input autocomplete="off" id="password2" name="password2" placeholder="confirm password" type="password">
+              </li>
+            </ul>
 
-              <form class="login-form" action="{% url apps.frontend.views.register %}" method="POST" id="password-form">
-	            {% csrf_token %}
-                <ul class="fields-list">
-                  <li>
-                    <i class="icon-envelope-alt" style="float: left;"></i>
-                    <input autocomplete="off" id="email" name="user_id" placeholder="email" type="text">
-                  </li>
-                  <li>
-                    <i class="icon-key"></i>
-                    <input autocomplete="off" id="password1" name="password1" placeholder="password" type="password">
-                  </li>
-                  <li>
-                    <i class="icon-key"></i>
-                    <input autocomplete="off" id="password2" name="password2" placeholder="confirm password" type="password">
-                  </li>
-                </ul>
-
-                <div class="actions clearfix">
-                  <input class="btn btn-green btn-large login-btn" name="commit" type="submit" value="Register">
-
-                  <a href="{% url apps.login_with_23andme.views.view %}" class="btn btn-facebook btn-block">or Login with 23andMe <img src="{% static 'images/apidemo/favicon.ico' %}"/></a>
-
-                </div>
-
-              </form>
-
-              {% trans "If you already have accounts, " %}<a href="{% url apps.frontend.views.login %}">Login</a>.
-	          <!-- {% if is_succeeded %} -->
-	          <!-- <div class="alert alert-">{% autoescape off %}{{ message }}{% endautoescape %}</div> -->
-	          <!-- {% endif %} -->
-
-
-              {% if msg %}
-              <div class="alert alert-info">
-                <strong>Information:</strong> {{ msg }}
-              </div>
-              {% endif %}
-
-              {% if err %}
-              <div class="alert alert-error">
-                <strong>Error!</strong> {{ err }}
-                {% if is_already %}<b><a href="/login/"> Login</a></b>{% endif %}
-              </div>
-              {% endif %}
-
+            <div class="actions clearfix">
+              <input class="btn btn-green btn-large login-btn" name="commit" type="submit" value="Register">
             </div>
-          </div>
-        </div>
-      </div>
 
-    </section>
+          </form>
 
-    <div class="container">
-      <div class="row-fluid">
-        <div class="span12">
-          <div class="footer">
-            <h5 class="transparent-text center">
-              <div>&copy; 2012-2013 perGENIE Team</div>
-            </h5>
+          {% if msg %}
+          <div class="alert alert-info">
+            <strong>Information:</strong> {{ msg }}
           </div>
+          {% endif %}
+
+          {% if err %}
+          <div class="alert alert-error">
+            <strong>Error!</strong> {{ err }}
+            {% if is_already %}<b><a href="/login/"> Login</a></b>{% endif %}
+          </div>
+          {% endif %}
+
+          {% trans "If you already have accounts," %}<a href="{% url apps.frontend.views.login %}"> Login</a>.
+
         </div>
       </div>
     </div>
-  </body>
-  {% endblock %}
+  </div>
+
+</section>
+
+<div class="container">
+  <div class="row-fluid">
+    <div class="span12">
+      <div class="footer">
+        <h5 class="transparent-text center">
+          <div>&copy; 2012-2013 perGENIE Team</div>
+        </h5>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

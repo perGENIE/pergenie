@@ -20,8 +20,12 @@ def get_libarary_and_variatns_of_a_trait(trait, user_id):
         # founds = catalog.find({'trait': trait})
 
         data_info = c['pergenie']['data_info']
+        if user_id.startswith(settings.DEMO_USER_ID): user_id = settings.DEMO_USER_ID
 
         uploadeds = list(data_info.find({'user_id': user_id}))
+        print user_id
+        print uploadeds
+
         file_names = [uploaded['name'] for uploaded in uploadeds]
         file_formats = [uploaded['file_format'] for uploaded in uploadeds]
 
