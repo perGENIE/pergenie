@@ -1,7 +1,8 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import sys
+import argparse
 import re
 import subprocess
 from collections import defaultdict
@@ -11,15 +12,31 @@ socket.setdefaulttimeout(30)  # timeout for urlretrieve
 import json
 import time
 import pymongo
+import datetime
+
+#
+sys.path.insert(0, '../mysql/')
+from bioq import Bioq
+sys.path.insert(0, '../../pergenie/settings/')
+import develop as settings
+bq = Bioq(settings.DATABASES['bioq']['HOST'],
+          settings.DATABASES['bioq']['USER'],
+          settings.DATABASES['bioq']['PASSWORD'],
+          settings.DATABASES['bioq']['NAME'])
 
 class OMIMParser(object):
     """
     The OMIM (Online Mendelian Inheritance in Man, http://omim.org/)
     provides bulk download at http://omim.org/downloads
     """
-    def __init__(self, fin, apikey):
+    def __init__(self, fin, apikey, stdout=False):
         self.fin = fin
         self.apikey = apikey
+        self.stdout = stdout
+        if self.stdout:
+            print '# created:', datetime.date.today()
+            print '# reference genome version: GRCh37/hg19'
+            print '\t'.join(['rs', 'chrom', 'pos', 'mim_number', 'AV_number', 'phenotype', 'mutationts', 'status'])# , 'text'])
 
     def get_all_records(self, func):
         record = {}
@@ -90,7 +107,7 @@ class OMIMParser(object):
     #     pass
 
 
-    def fetch_AllelicVariants(self, number):
+    def fetch_AllelicVariants(self, number, stdout=False):
         """
         The main data `omim.txt` does not contain whole information of OMIM.
         About `Allelic Variants`, for example of #Mim Number: 102565,
@@ -130,6 +147,27 @@ class OMIMParser(object):
 
         print >>sys.stderr, 'mimNumber:', number, 'AVs:', len(AVs)
 
+        #
+        if self.stdout:
+            for AV in AVs:
+                for x in AV:
+                    if type(x) == str and '\t' in x: raise 'tab in record'
+
+                if AV.has_key('rs'):
+                    snp_summary = bq.get_snp_summary(AV['rs'][0])
+                    if snp_summary:
+                        chrom = snp_summary['unique_chr']
+                        pos = snp_summary['unique_pos_bp']
+                    else:
+                        chrom = '-'
+                        pos = '-'
+                else:
+                    chrom = '-'
+                    pos = '-'
+
+                print '\t'.join([AV.get('dbSnps', '-'), str(chrom), str(pos), str(AV['mimNumber']), str(AV['number']),
+                                 str(AV['name']), AV.get('mutations', '-'), str(AV['status'])])  # , AV.get('text', '-')])
+
         return AVs
 
     def check(self):
@@ -142,11 +180,13 @@ class OMIMParser(object):
 
 
 if __name__ == '__main__':
-    if len(sys.argv) != 2:
-        print >>sys.stderr, "USAGE: {0} /path/to/omim.txt OMIM_APIKEY".format(sys.argv[0])
-        sys.exit()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('omim_txt', help='path to omim.txt')
+    parser.add_argument('omim_APIKEY', help='OMIM APIKEY')
+    parser.add_argument('--stdout', action='store_true', help='stdout `OMIM AV` as csv')
+    args = parser.parse_args()
 
-    p = OMIMParser(sys.argv[1], sys.argv[2])
+    p = OMIMParser(args.omim_txt, args.omim_APIKEY, args.stdout)
     p.insert_to_mongo()
     print >>sys.stderr, 'done'
     p.check()

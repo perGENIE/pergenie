@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
+from pprint import pprint
 
 from django.contrib.auth.decorators import login_required
 # from django.views.decorators.http import require_http_methods
@@ -132,6 +133,10 @@ def snps(request, rs):
 
     user_id = request.user.username
     msg, err = '', ''
+    bq = Bioq(settings.DATABASES['bioq']['HOST'],
+              settings.DATABASES['bioq']['USER'],
+              settings.DATABASES['bioq']['PASSWORD'],
+              settings.DATABASES['bioq']['NAME'])
 
     with pymongo.MongoClient(host=settings.MONGO_URI) as c:
         db = c['pergenie']
@@ -175,9 +180,14 @@ def snps(request, rs):
         catalog_record = None
 
     omim_av_records = get_omim_av_records(rs)
-    bq_allele_freqs, alleles = get_bq_allele_freqs(rs)
-    bq_snp_summary = get_bq_snp_summary(rs)
+    bq_allele_freqs, alleles = bq.get_allele_freqs(rs)
+
+    pprint(bq_allele_freqs)
+
+    bq_snp_summary = bq.get_snp_summary(rs)
     ref = bq_snp_summary['ancestral_alleles']
+
+    # This may be buggy, when allele freq is not available...
     alleles.remove(ref)
     alts = list(alleles)
     seq = get_seq(bq_snp_summary['unique_chr'], bq_snp_summary['unique_pos_bp'])

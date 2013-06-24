@@ -18,6 +18,7 @@ from utils.date import today_date, today_str
 from utils import clogging
 log = clogging.getColorLogger(__name__)
 from utils.io import get_url_content
+# from utils.retrive import download_file
 
 from lib.mongo.clean_catalog import clean_catalog
 from lib.mongo.import_catalog import import_catalog
@@ -87,6 +88,7 @@ class Command(BaseCommand):
 
                 try:
                     get_url_content(url=settings.GWASCATALOG_URL, dst=latest_catalog)
+                    # download_file(url=settings.GWASCATALOG_URL, dst=latest_catalog)
                 except IOError:
                     log.error('Could not get latest gwascatalog.')
                     log.error('Proceed importing gwascatalog with local gwascatalog? (may not latest)')
@@ -123,14 +125,7 @@ class Command(BaseCommand):
                 log.info('Cleaning latest gwascatalog...')
                 clean_catalog(latest_catalog, latest_catalog_cleaned)
 
-            import_catalog(path_to_gwascatalog=latest_catalog_cleaned,
-                           path_to_mim2gene=settings.PATH_TO_MIM2GENE,
-                           path_to_eng2ja=settings.PATH_TO_ENG2JA,
-                           path_to_disease2wiki=settings.PATH_TO_DISEASE2WIKI,
-                           path_to_interval_list_dir=settings.PATH_TO_INTERVAL_LIST_DIR,
-                           path_to_reference_fasta=settings.PATH_TO_REFERENCE_FASTA,
-                           dbsnp_version=settings.DBSNP_VERSION,
-                           mongo_port=settings.MONGO_PORT)
+            import_catalog(path_to_gwascatalog=latest_catalog_cleaned, settings=settings)
 
             # TODO: get latest information of gwascatalog (dbSNP version & refgenome version)
             # form .pdf -> x

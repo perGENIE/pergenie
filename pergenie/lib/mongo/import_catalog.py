@@ -16,6 +16,7 @@ from xml.sax.saxutils import *
 
 from extract_region import extract_region
 from get_reference_seq import MyFasta
+from lib.mysql.bioq import Bioq
 
 from utils import clogging
 log = clogging.getColorLogger(__name__)
@@ -25,9 +26,20 @@ _g_gene_id_map = {}      # { Entrez Gene ID => (Gene Symbol, OMIM Gene ID) }
 
 REVERSED_STATS = {'GMAF': 0, 'RV': 0}
 
-def import_catalog(path_to_gwascatalog, path_to_mim2gene, path_to_eng2ja, path_to_disease2wiki, path_to_interval_list_dir, path_to_reference_fasta, dbsnp_version,
-                   mongo_port):
+def import_catalog(path_to_gwascatalog, settings):
+    path_to_mim2gene = settings.PATH_TO_MIM2GENE
+    path_to_eng2ja = settings.PATH_TO_ENG2JA
+    path_to_disease2wiki = settings.PATH_TO_DISEASE2WIKI
+    path_to_interval_list_dir = settings.PATH_TO_INTERVAL_LIST_DIR
+    path_to_reference_fasta = settings.PATH_TO_REFERENCE_FASTA
+    dbsnp_version = settings.DBSNP_VERSION
+    mongo_port = settings.MONGO_PORT
+
     c = pymongo.MongoClient(port=mongo_port)
+    bq = Bioq(settings.DATABASES['bioq']['HOST'],
+              settings.DATABASES['bioq']['USER'],
+              settings.DATABASES['bioq']['PASSWORD'],
+              settings.DATABASES['bioq']['NAME'])
 
     with open(path_to_mim2gene, 'rb') as fin:
         for record in csv.DictReader(fin, delimiter='\t'):
@@ -589,17 +601,11 @@ def _risk_allele(data, dbsnp=None, strand_db=None):
     * Consistency check based on allele frequency.
 
     """
-
-    chrom = data['chr_id']
-    pos = data['chr_pos']
-    platform = _platform(data['platform'])
-
-    if not data['strongest_snp_risk_allele']:
-        return None
-
     # Parse `strongest_snp_risk_allele`
-    regexp_risk_allele = re.compile('rs(\d+)\-(\S+)')
+    if not data['strongest_snp_risk_allele']:
+        return None, None
 
+    regexp_risk_allele = re.compile('rs(\d+)\-(\S+)')
     try:
         rs, risk_allele = regexp_risk_allele.findall(data['strongest_snp_risk_allele'])[0]
     except (ValueError, IndexError):
@@ -607,16 +613,20 @@ def _risk_allele(data, dbsnp=None, strand_db=None):
         return None, None
 
     if risk_allele == '?':
-        # log.warn('allele is "?". pubmed_id:{0}'.format(data['pubmed_id']))
         return int(rs), risk_allele
 
     if not risk_allele in ('A', 'T', 'G', 'C'):
         log.warn('allele is not in (A,T,G,C): {0}'.format(data))
         return int(rs), None
 
+    # Strand checks
     RV = {'A': 'T', 'T': 'A', 'G': 'C', 'C': 'G'}
+    chrom = data['chr_id']
+    pos = data['chr_pos']
+    population = data['population']
+    platform = _platform(data['platform'])
+    rs = int(rs)
 
-    # Strand check by strand_db (if strand_db is available)
     # if strand_db:
     #     if platform:
     #         for vender in platform:
@@ -634,66 +644,52 @@ def _risk_allele(data, dbsnp=None, strand_db=None):
     #                     log.warn('RVed allele {0}'.format(data))
     #                     risk_allele = RV[risk_allele]
 
-    # dbSNP check (if dbsnp is available)
-    # * Strand check based on allele frequency.
-    # *
     if dbsnp:
-        # Check if record is in dbSNP
-        found = dbsnp.find_one({'rs': int(rs)})
-        if not found:
+        dbsnp_vcf = dbsnp.find_one({'rs': rs})
+        snp_summary = bq.get_snp_summary(rs)
+        ref = bq_snp_summary['ancestral_alleles']
+        allele_freqs, _ = bq.get_allele_freqs(rs)
+
+        if not snp_summary:
             log.warn('rs{0} is not in dbSNP ...'.format(rs))
             return int(rs), risk_allele + '?'
 
-        ref, alt = found['ref'], found['alt']
-        refs = ref.split(',')
-        alts = alt.split(',')
-        assert len(refs) == 1, 'len(ref) is not 1 {0}'.format(found)
+        # Get maf & minor allele
+        # TODO: what sholud we do, when allele freq is not available ?
+        m_freq = 1.0
+        m_allele = ''
+        for allele, freq in allele_freqs[population].items():
+            if freq['freq'] < m_freq:
+                m_freq =  freq['freq']
+                m_allele = allele
 
-        # Check if record is in REF or ALT
-        if not risk_allele in ref + alt:
-            log.warn('risk_allele is not in ref + alt...')
+        # # Get GMAF
+        # gmaf = dbsnp_vcf('info')
 
-        # TODO:
-        ref = refs[0]
-        alt = alts[0]
+        # Get RV?
 
-        # Allele frequency check based on GMAF
-        # TODO: instead of GMAF, use allele frequency database for each population...
+        # check rs [964184, 10762058, 9319321]
 
-        # TODO: in import_dbsnp, add {'GMAF': ...} instead of {'info': ['GMAF=...']}
-        # TODO: in import_dbsnp, add {'RV': True} instead of {'info': ['RV']}
-        gmaf = None
-        is_RV = None
-        for info in found['info']:
-            if info.startswith('GMAF='):
-                gmaf = float(info.replace('GMAF=', ''))
-            if info == 'RV':
-                is_RV = True
+        if m_allele:
+            if data['risk_allele_frequency'] <= 0.5 and m_freq <= 0.5:
 
-        # TODO: remove this, after bug fixed.
-        if int(rs) in [964184, 10762058, 9319321]:
-            log.warn('=======================================================')
-            log.warn(data)
-            log.warn('=======================================================')
+            # if not gmaf <= 0.5:
+            #     log.debug('GMAF > 0.5...')
 
-        if not int(rs) in [964184, 10762058, 9319321]:  # TODO: remove this, after bug fixed.
-            # FIXME: this is buggy, if reference allele is minor allele...
-            if gmaf:
-                if not gmaf <= 0.5:
-                    log.debug('GMAF > 0.5...')
+            # Suspicious case
+            # ref_freq = 1.0 - gmaf
+            # if ref == risk_allele and alt == RV[risk_allele]:
+                # if ref_freq > 0.5 and data['risk_allele_frequency'] <= 0.5:
+                #     log.warn('=======================================================')
+                #     log.warn('Suspicious case in Allele frequency check, based on GMAF.')
+                #     log.warn('risk_allele_frequency is not consistent with GMAF.')
+                #     log.warn('Maybe risk_allele is reverse stranded, so reverse it.')
+                #     log.warn(data)
+                #     log.warn('=======================================================')
+                #     REVERSED_STATS['GMAF'] += 1
+                #     return int(rs), RV[risk_allele]
 
-                # Suspicious case
-                ref_freq = 1.0 - gmaf
-                if ref == risk_allele and alt == RV[risk_allele]:
-                    if ref_freq > 0.5 and data['risk_allele_frequency'] <= 0.5:
-                        log.warn('=======================================================')
-                        log.warn('Suspicious case in Allele frequency check, based on GMAF.')
-                        log.warn('risk_allele_frequency is not consistent with GMAF.')
-                        log.warn('Maybe risk_allele is reverse stranded, so reverse it.')
-                        log.warn(data)
-                        log.warn('=======================================================')
-                        REVERSED_STATS['GMAF'] += 1
-                        return int(rs), RV[risk_allele]
+
 
         # Strand check based on `RV` tag.
         if is_RV:

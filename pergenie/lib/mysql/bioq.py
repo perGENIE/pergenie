@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import MySQLdb as mdb
+import sys
 
 class Bioq(object):
     def __init__(self, host, username, password, dbname):
@@ -9,6 +10,7 @@ class Bioq(object):
         self.username = username
         self.password = password
         self.dbname = dbname
+        self.merged = {121909559: 121909548}
 
     def _sql(self, sql):
         con = mdb.connect(self.host, self.username, self.password, self.dbname)
@@ -18,11 +20,77 @@ class Bioq(object):
             rows = cur.fetchall()
             return rows
 
-    def allele_freqs(self, rs):
+    def _allele_freqs(self, rs):
+        rs = self.merged.get(rs, rs)
         rows = self._sql("select * from _loc_allele_freqs where snp_id = '%s'" % rs)
         return rows
 
-    def snp_summary(self, rs):
+    def _snp_summary(self, rs):
+        rs = self.merged.get(rs, rs)
         rows = self._sql("select * from _loc_snp_summary where snp_id = '%s'" % rs)
-        row = rows[0]
-        return row
+        if rows:
+            return rows[0]
+        else:
+            print >>sys.stderr, '{0} not found'.format(rs)
+            return None
+
+    def get_allele_freqs(self, rs):
+        rows = self._allele_freqs(rs)
+
+        allele_freqs = {'Asian':{}, 'European':{}, 'African':{}, 'Japanese': {}}
+
+        # Consider allele strands
+        rev = {'A': 'T', 'T': 'A', 'G': 'C', 'C': 'G'}
+        for row in rows:
+            if row['top_or_bot_strand'] == 'B':
+                row.update({'allele': rev.get(row['allele']),
+                            'top_or_bot_strand': 'T'})
+
+        # TODO: write more simply...
+        # First scan
+        for row in rows:
+            if row['loc_pop_id'] == 'HapMap-CEU':
+                allele_freqs['European'][row['allele']] = row
+
+            elif row['loc_pop_id'] == 'HapMap-JPT':
+                allele_freqs['Japanese'][row['allele']] = row
+
+            # ok?
+            elif row['loc_pop_id'] in ('HapMap-HCB', 'HapMap-CHB', 'HapMap-JPT'):
+                allele_freqs['Asian'][row['allele']] = row
+
+            # ok?
+            elif row['loc_pop_id'] == 'HapMap-YRI':
+                allele_freqs['African'][row['allele']] = row
+
+            else:
+                pass
+
+        # Second scan
+        for row in rows:
+            if not allele_freqs['European']:
+                if row['loc_pop_id'] == 'pilot_1_CEU_low_coverage_panel':
+                    allele_freqs['European'][row['allele']] = row
+
+            if not allele_freqs['Asian']:
+                if row['loc_pop_id'] == 'pilot_1_CHB+JPT_low_coverage_panel':
+                    allele_freqs['Asian'][row['allele']] = row
+
+            if not allele_freqs['African']:
+                if row['loc_pop_id'] == 'pilot_1_YRI_low_coverage_panel':
+                    allele_freqs['African'][row['allele']] = row
+            else:
+                pass
+
+        # # Third scan...?
+
+        # Uniq alleles
+        alleles = set()
+        for pop, allele_freq in allele_freqs.items():
+            alleles.update([allele for allele in allele_freq.keys()])
+
+        return allele_freqs, alleles
+
+    def get_snp_summary(self, rs):
+        # TODO:
+        return self._snp_summary(rs)
