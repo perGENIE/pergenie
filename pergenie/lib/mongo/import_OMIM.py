@@ -14,15 +14,15 @@ import time
 import pymongo
 import datetime
 
-#
-sys.path.insert(0, '../mysql/')
-from bioq import Bioq
-sys.path.insert(0, '../../pergenie/settings/')
-import develop as settings
-bq = Bioq(settings.DATABASES['bioq']['HOST'],
-          settings.DATABASES['bioq']['USER'],
-          settings.DATABASES['bioq']['PASSWORD'],
-          settings.DATABASES['bioq']['NAME'])
+# #
+# sys.path.insert(0, '../mysql/')
+# from bioq import Bioq
+# sys.path.insert(0, '../../pergenie/settings/')
+# import develop as settings
+# bq = Bioq(settings.DATABASES['bioq']['HOST'],
+#           settings.DATABASES['bioq']['USER'],
+#           settings.DATABASES['bioq']['PASSWORD'],
+#           settings.DATABASES['bioq']['NAME'])
 
 class OMIMParser(object):
     """
@@ -147,26 +147,26 @@ class OMIMParser(object):
 
         print >>sys.stderr, 'mimNumber:', number, 'AVs:', len(AVs)
 
-        #
-        if self.stdout:
-            for AV in AVs:
-                for x in AV:
-                    if type(x) == str and '\t' in x: raise 'tab in record'
+        # #
+        # if self.stdout:
+        #     for AV in AVs:
+        #         for x in AV:
+        #             if type(x) == str and '\t' in x: raise 'tab in record'
 
-                if AV.has_key('rs'):
-                    snp_summary = bq.get_snp_summary(AV['rs'][0])
-                    if snp_summary:
-                        chrom = snp_summary['unique_chr']
-                        pos = snp_summary['unique_pos_bp']
-                    else:
-                        chrom = '-'
-                        pos = '-'
-                else:
-                    chrom = '-'
-                    pos = '-'
+        #         if AV.has_key('rs'):
+        #             snp_summary = bq.get_snp_summary(AV['rs'][0])
+        #             if snp_summary:
+        #                 chrom = snp_summary['unique_chr']
+        #                 pos = snp_summary['unique_pos_bp']
+        #             else:
+        #                 chrom = '-'
+        #                 pos = '-'
+        #         else:
+        #             chrom = '-'
+        #             pos = '-'
 
-                print '\t'.join([AV.get('dbSnps', '-'), str(chrom), str(pos), str(AV['mimNumber']), str(AV['number']),
-                                 str(AV['name']), AV.get('mutations', '-'), str(AV['status'])])  # , AV.get('text', '-')])
+        #         print '\t'.join([AV.get('dbSnps', '-'), str(chrom), str(pos), str(AV['mimNumber']), str(AV['number']),
+        #                          str(AV['name']), AV.get('mutations', '-'), str(AV['status'])])  # , AV.get('text', '-')])
 
         return AVs
 

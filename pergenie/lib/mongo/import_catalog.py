@@ -688,7 +688,7 @@ def _risk_allele(data, dbsnp=None, strand_db=None):
                 #     log.warn('=======================================================')
                 #     REVERSED_STATS['GMAF'] += 1
                 #     return int(rs), RV[risk_allele]
-
+                pass
 
 
         # Strand check based on `RV` tag.
