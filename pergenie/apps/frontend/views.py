@@ -21,6 +21,7 @@ from pymongo import MongoClient
 import lepl.apps.rfc3696
 email_validator = lepl.apps.rfc3696.Email()
 from uuid import uuid4
+import socket
 
 from utils import clogging
 log = clogging.getColorLogger(__name__)
@@ -195,12 +196,8 @@ def register(request):
             # Send a mail with activation_key to user
             email_title = "Welcome to perGENIE"
 
-            if os.environ['DJANGO_SETTINGS_MODULE'] == 'pergenie.settings.develop':
-                activation_url_base = 'http://localhost:8080/'
-            elif os.environ['DJANGO_SETTINGS_MODULE'] == 'pergenie.settings.staging':
-                activation_url_base = 'http://http://172.16.2.100/'
-                # activation_url_base = str(Site.objects.get_current())
-
+            hostname = socket.gethostname()
+            activation_url_base = 'http://' + hostname
             activation_url = os.path.join(activation_url_base, 'activation', activation_key)
             if not activation_url.endswith(os.path.sep):
                 activation_url += os.path.sep

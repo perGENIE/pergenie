@@ -26,6 +26,7 @@ from lib.mongo.import_dbsnp import import_dbsnp
 from lib.mongo.import_strand_db import import_strand_db
 from lib.mongo.import_refFlat import import_refFlat
 from lib.mongo.import_OMIM import OMIMParser
+from lib.mysql.import_bioq import import_bioq
 
 def date2datetime(d):
     return datetime.datetime.combine(d, datetime.time())
@@ -248,16 +249,13 @@ class Command(BaseCommand):
             import_dbsnp(settings.PATH_TO_DBSNP, 'dbsnp', settings.DBSNP_VERSION, is_snp_only=True, port=settings.MONGO_PORT)
         elif options["bioq"]:
             log.info('Try to import bioq ...')
-            # TODO: add functions to import BioQ
-
+            import_bioq(settings)
         elif options["strand_db"]:
             log.info('Try to import strand_db ...')
             import_strand_db(settings.STRAND_DB_DIR, settings.MONGO_PORT)
-
         elif options["refflat"]:
             log.info('Try to import refflat ...')
             import_refFlat(settings.PATH_TO_REFFLAT, settings.MONGO_URI)
-
         elif options["omim"]:
             log.info('Try to import omim ...')
             omim_parser = OMIMParser(settings.PATH_TO_OMIMTXT, settings.OMIM_APIKEY)
