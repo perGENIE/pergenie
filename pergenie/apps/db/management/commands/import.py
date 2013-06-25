@@ -52,6 +52,12 @@ class Command(BaseCommand):
             help=colored("Import dbSNP into database", "green")
         ),
         make_option(
+            "--bioq",
+            action="store_true",
+            dest="bioq",
+            help=colored("Import BioQ into database", "green")
+        ),
+        make_option(
             "--strand_db",
             action="store_true",
             dest="strand_db",
@@ -240,6 +246,9 @@ class Command(BaseCommand):
         elif options["dbsnp"]:
             log.info('Try to import dbsnp ...')
             import_dbsnp(settings.PATH_TO_DBSNP, 'dbsnp', settings.DBSNP_VERSION, is_snp_only=True, port=settings.MONGO_PORT)
+        elif options["bioq"]:
+            log.info('Try to import bioq ...')
+            # TODO: add functions to import BioQ
 
         elif options["strand_db"]:
             log.info('Try to import strand_db ...')

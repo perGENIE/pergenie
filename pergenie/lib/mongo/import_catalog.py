@@ -36,10 +36,12 @@ def import_catalog(path_to_gwascatalog, settings):
     mongo_port = settings.MONGO_PORT
 
     c = pymongo.MongoClient(port=mongo_port)
-    bq = Bioq(settings.DATABASES['bioq']['HOST'],
-              settings.DATABASES['bioq']['USER'],
-              settings.DATABASES['bioq']['PASSWORD'],
-              settings.DATABASES['bioq']['NAME'])
+
+    global bq
+    bq= Bioq(settings.DATABASES['bioq']['HOST'],
+             settings.DATABASES['bioq']['USER'],
+             settings.DATABASES['bioq']['PASSWORD'],
+             settings.DATABASES['bioq']['NAME'])
 
     with open(path_to_mim2gene, 'rb') as fin:
         for record in csv.DictReader(fin, delimiter='\t'):
@@ -128,9 +130,9 @@ def import_catalog(path_to_gwascatalog, settings):
         log.warn('========================================')
         dbsnp = None
 
-    if path_to_reference_fasta:
+    try:
         fa = MyFasta(path_to_reference_fasta)
-    else:
+    except Exception:
         log.warn('========================================')
         log.warn('Reference Genome FASTA does not exist...')
         log.warn('so `ref` for rs will not be added')
@@ -189,7 +191,7 @@ def import_catalog(path_to_gwascatalog, settings):
 
     log.debug('Importing gwascatalog.txt...')
     with open(path_to_gwascatalog, 'rb') as fin:
-        for i,record in enumerate(csv.DictReader(fin, delimiter='\t')):  # , quotechar="'"):
+        for i,record in enumerate(csv.DictReader(fin, delimiter='\t')):
             # some traits contains `spaces` at the end of it, e.g., "Airflow obstruction "...
             record['Disease/Trait'] = record['Disease/Trait'].rstrip()
 
@@ -207,7 +209,7 @@ def import_catalog(path_to_gwascatalog, settings):
             data['is_in_andme'] = False
             data['population'] = _population(data['initial_sample_size'])
 
-            if data['chr_id'] and data['chr_pos']:
+            if data['chr_id'] and data['chr_pos'] and fa:
                 data['ref'] = fa.get_seq({23: 'X', 24: 'Y', 25: 'M'}.get(data['chr_id'], data['chr_id']), data['chr_pos'], 1)
             else:
                 data['ref'] = ''
@@ -835,13 +837,13 @@ def _genes_from_ids(text):
         result = []
 
         for entrez_gene_id in map(int, text.split(';')):
-            if str(entrez_gene_id) in _g_gene_id_map:
-                gene_symbol, omim_gene_id = _g_gene_id_map[entrez_gene_id]
-                result.append(_gene(gene_symbol, entrez_gene_id, omim_gene_id))
-
+            row = bq.get_gene_symbol(entrez_gene_id)
+            if row:
+                gene_symbol = row.get('gene_symbol')
             else:
-                log.warn('Failed to get gene_id2gene_symbol EntrezGeneID: {0}'.format(entrez_gene_id))
+                gene_symbol = 'LOC' + str(entrez_gene_id)
+                log.warn('Faild to find gene_symbol from gene_id {0}'.format(entrez_gene_id))
 
-                result.append(_gene(None, entrez_gene_id, None))
+            result.append(_gene(gene_symbol, entrez_gene_id, None))
 
         return result

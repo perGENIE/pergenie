@@ -10,7 +10,7 @@ class Bioq(object):
         self.username = username
         self.password = password
         self.dbname = dbname
-        self.merged = {121909559: 121909548}
+        # self.merged = {121909559: 121909548}
 
     def _sql(self, sql):
         con = mdb.connect(self.host, self.username, self.password, self.dbname)
@@ -21,18 +21,17 @@ class Bioq(object):
             return rows
 
     def _allele_freqs(self, rs):
-        rs = self.merged.get(rs, rs)
+        # rs = self.merged.get(rs, rs)
         rows = self._sql("select * from _loc_allele_freqs where snp_id = '%s'" % rs)
         return rows
 
     def _snp_summary(self, rs):
-        rs = self.merged.get(rs, rs)
-        rows = self._sql("select * from _loc_snp_summary where snp_id = '%s'" % rs)
-        if rows:
-            return rows[0]
-        else:
+        # rs = self.merged.get(rs, rs)
+        row = self._sql("select * from _loc_snp_summary where snp_id = '%s' limit 1" % rs)
+        if not row:
             print >>sys.stderr, '{0} not found'.format(rs)
-            return None
+
+        return row[0] if row else None
 
     def get_allele_freqs(self, rs):
         rows = self._allele_freqs(rs)
@@ -94,3 +93,11 @@ class Bioq(object):
     def get_snp_summary(self, rs):
         # TODO:
         return self._snp_summary(rs)
+
+    def get_gene_symbol(self, gene_id):
+        row = self._sql("select * from GeneIdToName where gene_id = '%s' limit 1" % gene_id)
+        return row[0] if row else None
+
+    def get_gene_id(self, gene_symbol):
+        # TODO:
+        pass
