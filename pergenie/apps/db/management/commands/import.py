@@ -217,8 +217,8 @@ class Command(BaseCommand):
 
                 # Import new data
                 targets = [settings.DEMO_23ANDME_GENOME_EU_M,
-                           settings.DEMO_23ANDME_GENOME_EU_F]  # ,
-                           # settings.TOMITA_GENOME]
+                           settings.DEMO_23ANDME_GENOME_EU_F,
+                           settings.TOMITA_GENOME]
 
                 for target in targets:
                     if os.path.exists(target['name']):
