@@ -8,7 +8,7 @@ import time
 import json
 # from collections import Counter  # py27
 from utils.Counter import Counter  # py26 (//code.activestate.com/recipes/576611/)
-from pprint import pformat
+from pprint import pformat, pprint
 import pymongo
 import HTMLParser
 h = HTMLParser.HTMLParser()
@@ -593,23 +593,16 @@ def _risk_allele(data, dbsnp=None, strand_db=None):
 
     Following checks will be done if available.
 
-    * Strand check: If strand of snp is `-` in strand_db, convert it to reverse complement,
-                    so that all the snp are in `+` oriented.
-
-    * dbSNP check:
-
-    TODO:
-
-    * Consistency check based on allele frequency.
+    * Consistency check based on allele frequency in BioQ (dbSNP).
 
     """
     # Parse `strongest_snp_risk_allele`
     if not data['strongest_snp_risk_allele']:
         return None, None
 
-    regexp_risk_allele = re.compile('rs(\d+)\-(\S+)')
+    _risk_allele = re.compile('rs(\d+)\-(\S+)')
     try:
-        rs, risk_allele = regexp_risk_allele.findall(data['strongest_snp_risk_allele'])[0]
+        rs, risk_allele = _risk_allele.findall(data['strongest_snp_risk_allele'])[0]
     except (ValueError, IndexError):
         log.warn('failed to parse "strongest_snp_risk_allele": {0}'.format(data))
         return None, None
@@ -621,94 +614,39 @@ def _risk_allele(data, dbsnp=None, strand_db=None):
         log.warn('allele is not in (A,T,G,C): {0}'.format(data))
         return int(rs), None
 
-    # Strand checks
-    RV = {'A': 'T', 'T': 'A', 'G': 'C', 'C': 'G'}
-    chrom = data['chr_id']
-    pos = data['chr_pos']
-    population = data['population']
-    platform = _platform(data['platform'])
-    rs = int(rs)
-
-    # if strand_db:
-    #     if platform:
-    #         for vender in platform:
-    #             print chrom, pos
-    #             strand_record  = strand_db[vender].find_one({'chrom': chrom, 'pos': pos})
-    #             log.debug(strand_record)
-
-    #             # For Affymetrix, retry with rsid.
-    #             if vender == 'Affymetrix' and not strand_record:
-    #                 strand_record  = strand_db[vender].find_one({'rs': rs})
-
-    #             if strand_record:
-    #                 log.info('in strand_db {0}'.format(strand_record))
-    #                 if strand_record['strand'] == '-':
-    #                     log.warn('RVed allele {0}'.format(data))
-    #                     risk_allele = RV[risk_allele]
-
-    # if dbsnp:
-    #     dbsnp_vcf = dbsnp.find_one({'rs': rs})
-    #     # # Get GMAF
-    #     # gmaf = dbsnp_vcf('info')
-
-    snp_summary = bq.get_snp_summary(rs)
-    ref = bq_snp_summary['ancestral_alleles']
-    allele_freqs, _ = bq.get_allele_freqs(rs)
-
-    if not snp_summary:
-        log.warn('rs{0} is not in dbSNP ...'.format(rs))
+    if not data['risk_allele_frequency']:
+        log.warn('GWAS Catalog freq not found')
         return int(rs), risk_allele + '?'
 
-    # Get maf & minor allele
-    # TODO: what sholud we do, when allele freq is not available ?
-    m_freq = 1.0
-    m_allele = ''
-    for allele, freq in allele_freqs[population].items():
-        if freq['freq'] < m_freq:
-            m_freq =  freq['freq']
-            m_allele = allele
+    # Strand checks
+    RV = {'A': 'T', 'T': 'A', 'G': 'C', 'C': 'G'}
+    population = data['population'][0] if data['population'] else 'European'
+    rs = int(rs)
+    # snp_summary = bq.get_snp_summary(rs)
+    # ref = snp_summary['ancestral_alleles']
+    allele_freqs, _ = bq.get_allele_freqs(rs)
+    freqs = allele_freqs[population]
+    freq = freqs.get(risk_allele)
 
+    if freq:
+        if abs(freq['freq'] - data['risk_allele_frequency']) > 0.5:
+            log.warn('Inconsistence between GWAS Catalog and BioQ')
+            log.debug('Catalog:{0} BioQ:{1}'.format(freq['freq'], data['risk_allele_frequency']))
 
-    # Get RV?
+            # Re-try with reversed allele
+            freq = freqs.get(RV[risk_allele])
+            if not freq:
+                log.warn('BioQ freq not found')
+                log.debug(pformat(data))
+                return int(rs), risk_allele + '?'
 
-    # check rs [964184, 10762058, 9319321]
+            if abs(freq['freq'] - data['risk_allele_frequency']) > 0.5:
+                log.warn('Could not solve inconsistence')
+                log.debug(pformat(data))
+                return int(rs), risk_allele + '?'
 
-    if m_allele:
-        if data['risk_allele_frequency'] <= 0.5 and m_freq <= 0.5:
-
-        # if not gmaf <= 0.5:
-        #     log.debug('GMAF > 0.5...')
-
-        # Suspicious case
-        # ref_freq = 1.0 - gmaf
-        # if ref == risk_allele and alt == RV[risk_allele]:
-            # if ref_freq > 0.5 and data['risk_allele_frequency'] <= 0.5:
-            #     log.warn('=======================================================')
-            #     log.warn('Suspicious case in Allele frequency check, based on GMAF.')
-            #     log.warn('risk_allele_frequency is not consistent with GMAF.')
-            #     log.warn('Maybe risk_allele is reverse stranded, so reverse it.')
-            #     log.warn(data)
-            #     log.warn('=======================================================')
-            #     REVERSED_STATS['GMAF'] += 1
-            #     return int(rs), RV[risk_allele]
-            pass
-
-
-    # Strand check based on `RV` tag.
-    if is_RV:
-        log.debug('is RV...')
-
-        # Suspicious case
-        if not risk_allele in [ref] + alts:
-            if RV[risk_allele] in [ref] + alts:
-                log.warn('=================================================================')
-                log.warn('Suspicious case in Allele frequency check, based RV tag.')
-                log.warn('risk_allele is not in ref + alts, but RV[risk_allele] is in them.')
-                log.warn('Maybe risk_allele is reverse stranded, so reverse it.')
-                log.warn(data)
-                log.warn('=================================================================')
-                REVERSED_STATS['RV'] += 1
-                return int(rs), RV[risk_allele]
+            log.info('Inconsistence solved with reversed allele')
+            return int(rs), RV[risk_allele]
 
     return int(rs), risk_allele
 
