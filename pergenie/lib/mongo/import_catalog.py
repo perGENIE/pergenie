@@ -16,7 +16,11 @@ from xml.sax.saxutils import *
 
 from extract_region import extract_region
 from get_reference_seq import MyFasta
-from lib.mysql.bioq import Bioq
+try:
+    from lib.mysql.bioq import Bioq
+except ImportError:
+    sys.path.insert(0, '../../')
+    from mysql.bioq import Bioq
 
 from utils import clogging
 log = clogging.getColorLogger(__name__)

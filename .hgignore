@@ -46,3 +46,6 @@ _static/
 misc
 
 celeryd.pid
+
+# pyfasta
+*.gdx
