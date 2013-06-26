@@ -122,3 +122,8 @@ def demouser_format(s):
 @register.filter
 def dict_index(dict, index):
     return dict.get(dict.keys()[index])
+
+@register.filter
+@stringfilter
+def hide_None(s):
+    return s.replace('None', '')
