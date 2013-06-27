@@ -33,6 +33,14 @@ class Bioq(object):
 
         return row[0] if row else None
 
+    def _SNPContigLoc(self, rs):
+        row = self._sql("select * from b137_SNPContigLoc where snp_type = 'rs' && snp_id = %s limit 1" % rs)
+        if not row:
+            print >>sys.stderr, '{0} not found'.format(rs)
+
+        return row[0] if row else None
+
+
     def get_allele_freqs(self, rs):
         rows = self._allele_freqs(rs)
 
@@ -41,9 +49,11 @@ class Bioq(object):
         # Consider allele strands
         rev = {'A': 'T', 'T': 'A', 'G': 'C', 'C': 'G'}
         for row in rows:
-            if row['top_or_bot_strand'] == 'B':
-                row.update({'allele': rev.get(row['allele']),
-                            'top_or_bot_strand': 'T'})
+            _snp_contig = self._SNPContigLoc(rs)
+            if not _snp_contig:
+                return dict(), set()
+            if _snp_contig['orientation'] == 1:
+                row.update({'allele': rev.get(row['allele'])})
 
         # TODO: write more simply...
         # First scan
