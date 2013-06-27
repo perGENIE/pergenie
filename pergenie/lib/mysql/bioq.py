@@ -40,7 +40,6 @@ class Bioq(object):
 
         return row[0] if row else None
 
-
     def get_allele_freqs(self, rs):
         rows = self._allele_freqs(rs)
 
@@ -111,3 +110,16 @@ class Bioq(object):
     def get_gene_id(self, gene_symbol):
         # TODO:
         pass
+
+    def get_rs(self, chrom, pos):
+        _chr2num = {'X': '23', 'Y': '24', 'MT': '25', 'M': '25'}
+        chrpos = _chr2num.get(chrom, chrom).zfill(2) + str(pos).zfill(9)
+
+        row = self._sql("select * from _loc_snp_summary where pos_global = %s limit 1" % chrpos)
+        # if not row:
+        #     print >>sys.stderr, 'pos_global {0} not found'.format(chrpos)
+
+        if row:
+            return int(row[0]['snp_id'])
+        else:
+            return None

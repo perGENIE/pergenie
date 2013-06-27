@@ -41,7 +41,7 @@ class VCFParser(object):
                                      fieldnames=self.fieldnames,
                                      delimiter=self.delimiter):
 
-            data['chrom'] = _string(record['CHROM'])
+            data['chrom'] = _chrom(record['CHROM'])
             data['pos'] = _integer(record['POS'])
             data['ID'] = _string(record['ID'])
             data['rs'] = _rsid(record['ID'])
@@ -73,6 +73,13 @@ def _integer(text):
 def _string(text):
     return text
 
+def _chrom(text):
+    if text.startswith('chr'): text.replace('chr', '')
+
+    if text in [str(i+1) for i in range(22)] + ['X', 'Y', 'MT', 'M']:
+        return text
+    else:
+        return None
 
 def _alt(text):
     """

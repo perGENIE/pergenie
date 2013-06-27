@@ -15,8 +15,15 @@ from common import clean_file_name
 from parser.VCFParser import VCFParser, VCFParseError
 from parser.andmeParser import andmeParser, andmeParseError
 
+# FIXME:
+try:
+    from lib.mysql.bioq import Bioq
+except ImportError:
+    sys.path.insert(0, '../../')
+    from mysql.bioq import Bioq
 
-def import_variants(file_path, population, file_format, user_id,
+
+def import_variants(file_path, population, file_format, user_id, settings,
                     mongo_port=27017):
     """Import variants (genotypes) file, into MongoDB.
 
@@ -26,6 +33,12 @@ def import_variants(file_path, population, file_format, user_id,
       * SNP array data from 23andMe
       * VCF (Variant Call Format)
     """
+
+    global bq
+    bq= Bioq(settings.DATABASES['bioq']['HOST'],
+             settings.DATABASES['bioq']['USER'],
+             settings.DATABASES['bioq']['PASSWORD'],
+             settings.DATABASES['bioq']['NAME'])
 
     file_name = os.path.basename(file_path)
     file_name_cleaned = clean_file_name(file_name)
@@ -75,6 +88,12 @@ def import_variants(file_path, population, file_format, user_id,
                         # currently, choose first sample from multi-sample .vcf
                         tmp_genotypes = data['genotype']
                         data['genotype'] = tmp_genotypes[p.sample_names[0]]
+
+                    print data
+                    if not data['rs']:
+                        # TODO: try to get rsid from chrom & pos
+                        data['rs'] = bq.get_rs(data['chrom'], data['pos'])
+                    print data['rs']
 
                     if data['rs']:
                         # sub_data = {k: data[k] for k in ('chrom', 'pos', 'rs', 'genotype')}  # py27
