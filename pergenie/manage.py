@@ -5,10 +5,10 @@ import socket
 
 if __name__ == "__main__":
     who_am_i = getpass.getuser()
-    print 'i am', who_am_i
+    print >>sys.stderr, 'i am', who_am_i
 
     host = socket.gethostname()
-    print 'host: ', host
+    print >>sys.stderr, 'host: ', host
 
     if host.endswith('.local'):
         os.environ.setdefault("DJANGO_SETTINGS_MODULE", "pergenie.settings.develop")
