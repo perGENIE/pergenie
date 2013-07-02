@@ -19,8 +19,8 @@ def import_dbsnp(path_to_dbsnp, db_name, collection_name, is_snp_only=False, por
       * This function is independent from Django.
     """
 
-    SNP_tag = 'VC=' + {'B132': 'SNP',
-                       'B137': 'SNV'}[collection_name]
+    SNP_tag = {'B132': 'SNP',
+               'B137': 'SNV'}[collection_name]
 
     with MongoClient(port=port) as c:
         dbsnp = c[db_name][collection_name]
@@ -32,14 +32,14 @@ def import_dbsnp(path_to_dbsnp, db_name, collection_name, is_snp_only=False, por
         assert dbsnp.count() == 0
 
         print 'Counting input lines ...',
-        file_lines = int(subprocess.check_output(['wc', '-l', path_to_dbsnp]).split()[0])
+        file_lines = int(subprocess.Popen(['wc', '-l', path_to_dbsnp], stdout=subprocess.PIPE).communicate()[0].split()[0])
         print 'done. # of lines:', file_lines
 
         fields = [('chrom', '#CHROM', _string),
                   ('pos', 'POS', _integer),
                   ('rs', 'ID', _rsid),
                   ('ref', 'REF', _string),
-                  ('alt', 'ALT', _string),
+                  ('alt', 'ALT', _alt),
                   ('info', 'INFO', _info)]
 
         record_count = 0
@@ -60,7 +60,7 @@ def import_dbsnp(path_to_dbsnp, db_name, collection_name, is_snp_only=False, por
                     data[dict_name] = converter(record[record_name])
 
                 if is_snp_only:
-                    if not SNP_tag in data['info']:
+                    if data['info'].get('VC') != SNP_tag:
                         continue
 
                 dbsnp.insert(data)
@@ -74,7 +74,7 @@ def import_dbsnp(path_to_dbsnp, db_name, collection_name, is_snp_only=False, por
         print 'Creating index for rsid ...',
         dbsnp.create_index([('chrom', ASCENDING), ('pos', ASCENDING)])
         dbsnp.create_index([('rs', ASCENDING)])
-
+        dbsnp.create_index([('info', ASCENDING)])
         print 'done.'
 
 
@@ -83,6 +83,9 @@ def _integer(text):
 
 def _string(text):
     return text
+
+def _alt(text):
+    return text.split(',')[0]
 
 def _rsid(text):
     try:
@@ -94,7 +97,20 @@ def _rsid(text):
             return int(first_rs.replace('rs',''))
 
 def _info(text):
-    return [info_tag for info_tag in text.split(';')]
+    infos = dict()
+
+    for info in text.split(';'):
+        tmp = info.split('=')
+
+        if len(tmp) == 1:
+            infos.update({tmp[0]: True})
+        else:
+            try:
+                infos.update({tmp[0]: float(tmp[1])})
+            except ValueError:
+                infos.update({tmp[0]: tmp[1]})
+
+    return infos
 
 
 def _main():
