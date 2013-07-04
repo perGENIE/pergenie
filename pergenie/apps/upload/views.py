@@ -106,11 +106,13 @@ def index(request):
                         errs.append(_('Same file name exists. If you want to overwrite it, please delete old one.') + ': ' + call_file.name)
                         continue
 
-                    if not os.path.exists(os.path.join(settings.UPLOAD_DIR, user_id)):
-                        os.makedirs(os.path.join(settings.UPLOAD_DIR, user_id))
+                    # Ensure upload dir exists
+                    tmp_upload_dir = os.path.join(settings.UPLOAD_DIR, user_id, file_format)
+                    if not os.path.exists(tmp_upload_dir):
+                        os.makedirs(tmp_upload_dir)
 
                     # Convert UploadedFile object to a file
-                    uploaded_file_path = os.path.join(settings.UPLOAD_DIR, user_id, call_file.name)
+                    uploaded_file_path = os.path.join(tmp_upload_dir, call_file.name)
                     with open(uploaded_file_path, 'wb') as fout:
                         for chunk in call_file.chunks():
                             fout.write(chunk)
@@ -170,7 +172,8 @@ def index(request):
     return direct_to_template(request, 'upload/index.html',
                               dict(msg=msg, err=err, msgs=msgs, errs=errs, uploadeds=uploadeds,
                                    do_intro=do_intro,
-                                   allowed_upload_genomefile_count=settings.UPLOAD_GENOMEFILE_COUNT))
+                                   allowed_upload_genomefile_count=settings.UPLOAD_GENOMEFILE_COUNT,
+                                   is_uploadable=settings.IS_UPLOADABLE))
 
 
 @login_required
@@ -193,9 +196,12 @@ def delete(request):
         log.debug('target is in db {0}'.format(target_collection in db.collection_names()))
 
         # delete `file`
-        if data_info.find_one({'user_id': user_id, 'name': name}):
-            filepath = os.path.join(settings.UPLOAD_DIR, user_id, data_info.find_one({'user_id': user_id, 'name': name})['raw_name'])
-
+        tmp_data_info = data_info.find_one({'user_id': user_id, 'name': name})
+        if tmp_data_info:
+            filepath = os.path.join(settings.UPLOAD_DIR,
+                                    user_id,
+                                    tmp_data_info['file_format'],
+                                    tmp_data_info['raw_name'])
             if os.path.exists(filepath):
                 os.remove(filepath)
 

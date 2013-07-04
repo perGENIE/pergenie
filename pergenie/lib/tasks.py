@@ -23,7 +23,10 @@ def qimport_variants(data_info):
     logger.info('qimporting ...')
     logger.info(pformat(data_info))
 
-    file_path = os.path.join(settings.UPLOAD_DIR, data_info['user_id'], data_info['raw_name'])
+    file_path = os.path.join(settings.UPLOAD_DIR,
+                             data_info['user_id'],
+                             data_info['file_format'],
+                             data_info['raw_name'])
     import_error_state = import_variants(file_path,
                                          data_info['population'],
                                          data_info['file_format'],

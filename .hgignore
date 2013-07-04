@@ -33,6 +33,7 @@ nosetests.xml
 
 # settings
 pergenie/settings/develop.py
+pergenie/settings/develop.py.orig
 pergenie/settings/staging.py
 pergenie/fabfiles/etc/
 pergenie/fabfiles/passwd/

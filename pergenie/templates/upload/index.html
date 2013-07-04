@@ -21,6 +21,7 @@
         </div>
       </div>
 
+      {% if is_uploadable %}
       <!-- upload -->
       <div class="row-fluid">
         <div class="span12">
@@ -129,6 +130,7 @@
         </div>
       </div>
 
+
       <!-- upload help modal -->
       <div id="uploadModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel" aria-hidden="true">
         <div class="modal-header">
@@ -168,6 +170,7 @@
         </div>
       </div>
     </div>
+    {% endif %}
 
     <!-- uploadeds -->
     {% if uploadeds %}

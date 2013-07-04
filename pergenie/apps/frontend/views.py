@@ -157,6 +157,15 @@ def register(request):
                 log.error('Unexpected error: {0}'.format(e))
                 break
 
+            # FIXME: how do we deal directory ownership
+            for fileformat in settings.FILEFORMATS:
+                tmp_upload_dir = os.path.join(settings.UPLOAD_DIR,
+                                              user_id,
+                                              fileformat[0])
+                if not os.path.exists(tmp_upload_dir):
+                    os.makedirs(tmp_upload_dir)
+                    os.chmod(tmp_upload_dir, 777)
+
             params['is_succeeded'] = True
             # password = password1
             # _('You have successfully registered!')

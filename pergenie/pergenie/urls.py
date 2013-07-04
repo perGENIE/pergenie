@@ -78,6 +78,7 @@ if 'rosetta' in settings.INSTALLED_APPS:
         url(r'^rosetta/', include('rosetta.urls')),
     )
 
+
 """
 How Django processes a request
 3. Django runs through each URL pattern, in order, and stops at the first one that matches the requested URL.
