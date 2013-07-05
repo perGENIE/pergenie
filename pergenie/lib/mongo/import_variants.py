@@ -65,7 +65,6 @@ def import_variants(file_path, population, file_format, user_id, settings,
                 'raw_name': file_name,
                 'date': datetime.datetime.today(),
                 'population': population,
-                # 'sex': sex,
                 'file_format': file_format,
                 'status': float(1.0)}
 
@@ -89,11 +88,8 @@ def import_variants(file_path, population, file_format, user_id, settings,
                         tmp_genotypes = data['genotype']
                         data['genotype'] = tmp_genotypes[p.sample_names[0]]
 
-                    print data
                     if not data['rs']:
-                        # TODO: try to get rsid from chrom & pos
                         data['rs'] = bq.get_rs(data['chrom'], data['pos'])
-                    print data['rs']
 
                     if data['rs']:
                         # sub_data = {k: data[k] for k in ('chrom', 'pos', 'rs', 'genotype')}  # py27

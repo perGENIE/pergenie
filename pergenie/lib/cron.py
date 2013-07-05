@@ -4,6 +4,8 @@
 """
 This script will be used as cron job:
 
+$ python cron.py /path/to/datadir
+
 1.
 Suppose users put genome data on:
 /somewhere/pergenie/uploaded/username/fileformat/*.ext
@@ -20,10 +22,16 @@ import pymongo
 from common import clean_file_name
 from mongo.import_variants import import_variants
 
-MONGO_URI = "mongodb://localhost:27017"
-FILEFORMATS = [('vcf_whole_genome', '*.vcf'),
-               ('vcf_exome_truseq', '*.vcf'),
-               ('andme', '*.txt')]
+# FIXME:
+sys.path.insert(0, '../pergenie/')
+import socket
+if socket.gethostname().endswith('.local'):
+    from settings import develop as settings
+else:
+    from settings import staging as settings
+
+MONGO_URI = settings.MONGO_URI
+FILEFORMATS = settings.FILEFORMATS
 POPULATION = 'unknown'  # FIXME
 
 
@@ -53,15 +61,14 @@ def glob_import(datadir, host=MONGO_URI):
                             'status': float(0.0)}
 
                     db_info = db['data_info'].find_one({'user_id': username, 'raw_name': os.path.basename(filepath)})
-                    if db_info and last_modified == db_info['date']: continue
+                    if db_info and last_modified < db_info['date']: continue
 
-                    print 'Importing', filepath
+                    print 'Importing into DB:', filepath
                     print import_variants(filepath,
                                           info['population'],
                                           info['file_format'],
                                           info['user_id'],
                                           settings)
-
                     db['data_info'].insert(info)
 
             # Try to delete non exist files.
@@ -71,29 +78,11 @@ def glob_import(datadir, host=MONGO_URI):
             for user_data in user_datas:
                 db_filepath = os.path.join(datadir, username, user_data['file_format'], user_data['raw_name'])
                 if not os.path.exists(db_filepath):
-                    # TODO:
-                    # _delete()
-                    # user_id = info['user_id']
-                    # name = info['name']
-
-                    # # delete collection `variants.user_id.filename`
-                    # target_collection = 'variants.{0}.{1}'.format(user_id, name)
-                    # log.debug('target is in db {0}'.format(target_collection in db.collection_names()))
-                    # db.drop_collection(target_collection)
-                    # log.debug('target is in db {0}'.format(target_collection in db.collection_names()))
-
-                    # # delete `file`
-                    # if data_info.find_one({'user_id': user_id, 'name': name}):
-                    #     filepath = os.path.join(settings.UPLOAD_DIR, user_id, data_info.find_one({'user_id': user_id, 'name': name})['raw_name'])
-
-                    #     if os.path.exists(filepath):
-                    #         os.remove(filepath)
-
-                    # # delete document `data_info`
-                    # if data_info.find_one({'user_id': user_id, 'name': name}):
-                    #     data_info.remove({'user_id': user_id, 'name': name})
-
-                    print 'delete', db_filepath
+                    print 'Deleting from DB:', db_filepath,
+                    db.drop_collection('variants.{0}.{1}'.format(username, clean_file_name(user_data['raw_name'])))
+                    db.drop_collection('reports.{0}.{1}'.format(username, clean_file_name(user_data['raw_name'])))
+                    for r in db['data_info'].find({'user_id': username, 'raw_name': user_data['raw_name']}):
+                        db['data_info'].remove(r)
 
 
 def _main():
