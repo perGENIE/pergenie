@@ -1,40 +1,19 @@
-#!/usr/bin/env python2.7
-# -*- coding: utf-8 -*-
-
-import sys
-import os
+import sys, os
 import datetime
 import argparse
-# from subprocess import check_output  # py27
 import subprocess
 
-from termcolor import colored
 import pymongo
-
 from common import clean_file_name
 from parser.VCFParser import VCFParser, VCFParseError
 from parser.andmeParser import andmeParser, andmeParseError
+from django.conf import settings
+from lib.mysql.bioq import Bioq
 
-# FIXME:
-try:
-    from lib.mysql.bioq import Bioq
-except ImportError:
-    sys.path.insert(0, '../../')
-    from mysql.bioq import Bioq
-
-
-def import_variants(file_path, population, file_format, user_id, settings,
-                    mongo_port=27017):
+def import_variants(file_path, population, file_format, user_id):
     """Import variants (genotypes) file, into MongoDB.
-
-    * This function is independent from Django.
-
-    * Supported file formats are:
-      * SNP array data from 23andMe
-      * VCF (Variant Call Format)
     """
 
-    global bq
     bq= Bioq(settings.DATABASES['bioq']['HOST'],
              settings.DATABASES['bioq']['USER'],
              settings.DATABASES['bioq']['PASSWORD'],
@@ -43,14 +22,13 @@ def import_variants(file_path, population, file_format, user_id, settings,
     file_name = os.path.basename(file_path)
     file_name_cleaned = clean_file_name(file_name)
     print >>sys.stderr, '[INFO] Input file:', file_path
+    print >>sys.stderr, os.path.exists(file_path)
 
     print >>sys.stderr, '[INFO] counting lines...'
-    # Count input lines for calculating progress of import_variants
-    # file_lines = int(check_output(['wc', '-l', file_path]).split()[0])  # py27
     file_lines = int(subprocess.Popen(['wc', '-l', file_path], stdout=subprocess.PIPE).communicate()[0].split()[0])  # py26
     print >>sys.stderr, '[INFO] #lines:', file_lines
 
-    with pymongo.Connection(port=mongo_port) as con:
+    with pymongo.Connection(host=settings.MONGO_URI) as con:
         db = con['pergenie']
         users_variants = db['variants'][user_id][file_name_cleaned]
         data_info = db['data_info']
@@ -58,7 +36,7 @@ def import_variants(file_path, population, file_format, user_id, settings,
         # Ensure that this variants file has not been imported
         if users_variants.find_one():
             db.drop_collection(users_variants)
-            print >>sys.stderr, colored('[WARN] Dropped old collection of {0}'.format(file_name_cleaned), 'yellow')
+            print >>sys.stderr, '[WARN] Dropped old collection of {0}'.format(file_name_cleaned)
 
         info = {'user_id': user_id,
                 'name': file_name_cleaned,
@@ -123,21 +101,3 @@ def import_variants(file_path, population, file_format, user_id, settings,
                                  {"$set": {'status': -1}})
                 db.drop_collection(users_variants)
                 return e.error_code
-
-
-def _main():
-    parser = argparse.ArgumentParser(description='Import variants (genotypes) file, into MongoDB.')
-    parser.add_argument('--file-paths', metavar='filepath', nargs='+', required=True)
-    parser.add_argument('--population', required=True)
-    # parser.add_argument('--sex', required=True)
-    parser.add_argument('--file-format', required=True)
-    parser.add_argument('--user-id', required=True)
-    parser.add_argument('--mongo-port', default=27017)
-    args = parser.parse_args()
-
-    for file_path in args.file_paths:
-        import_variants(file_path, args.population, args.file_format, args.user_id, args.mongo_port)
-
-
-if __name__ == '__main__':
-    _main()

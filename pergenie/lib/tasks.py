@@ -1,11 +1,9 @@
+import sys, os
+from pprint import pformat
+
 from celery.task import Task
 from celery.decorators import task
 from mongo.import_variants import import_variants
-
-from pprint import pformat
-
-import os
-
 from django.conf import settings
 
 # ref: http://yuku-tech.hatenablog.com/entry/20101112/1289569700
@@ -30,8 +28,7 @@ def qimport_variants(data_info):
     import_error_state = import_variants(file_path,
                                          data_info['population'],
                                          data_info['file_format'],
-                                         data_info['user_id'],
-                                         settings)
+                                         data_info['user_id'])
 
     # if import_error_state:
     #     err = ', but import failed...' + import_error_state
