@@ -1,4 +1,8 @@
 # from django.db import models
+from django.conf import settings
+import pymongo
+
+import sys
 
 
 def get_pca_snps():
@@ -25,7 +29,11 @@ def project_new_person(genotyes, scale):
 def get_people(scale):
     """Get points of people in PCA coordinate.
 
-    args:
-    retval:
+    args: str(scale)
+    retval: list(list(), ...)
     """
-    pass
+    with pymongo.MongoClient(host=settings.MONGO_URI) as c:
+        db = c['pergenie']
+        col = db['population_pca'][scale]
+
+        return [(rec['loc'], rec['popcode']) for rec in col.find()]

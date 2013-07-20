@@ -53,16 +53,18 @@
                   <p>などを載せる予定です．</p>
 
 
+                  <hr>
                   <p>Scale: {{ scale }}</p>
 
-                  <p>{{ people }}</p>
+                  <hr>
+                  <p>People:</p>
+                  {% for one in people %}
+                  <p>{{ one }}</p>
+                  {% endfor %}
+
+                  <hr>
+                  <p>Person:</p>
                   <p>{{ person }}</p>
-
-
-
-
-
-
 
                 </div>
               </div>
