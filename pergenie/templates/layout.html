@@ -99,6 +99,12 @@ _8
                         </a>
                       </li>
 
+                      <li>
+                        <a href="{% url apps.population.views.index %}">
+                          <i class="icon-globe"></i> Population
+                        </a>
+                      </li>
+
                       <li class="divider"></li>
                       {% ifnotequal user.username|demouser_format "demo@pergenie.org" %}
                       <li class="">
