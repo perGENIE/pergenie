@@ -88,7 +88,7 @@
 {% block js %}
 <script type="text/javascript" src="{% static 'js/highcharts/highcharts.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/highcharts/highcharts-more.js' %}"></script>
-<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDHIY3O4PNfRsWEdFOxyqPJZntQByf5CZQ&sensor=true"></script>
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDHIY3O4PNfRsWEdFOxyqPJZntQByf5CZQ&sensor=true"></script><!-- TODO -->
 <script type="text/javascript">
 (function () {
 
@@ -99,10 +99,12 @@
   {% regroup people by 1 as people_groups %}
 
   var pcaData = {
-    "global": [
-      {% for pos, label in people %}{ position: [{{ pos.0 }}, {{ pos.1 }}], label: "{{ label }}" },
-      {% endfor %}
+    {% for key, records in people.items %}
+    "{{ key }}": [
+        {% for record in records %}{ position: [{{ record.position.0 }}, {{ record.position.1 }}], label: "{{ record.label }}" },
+        {% endfor %}
     ],
+    {% endfor %}
   }; // var pcaData
 
   var regionMap = {
@@ -227,31 +229,6 @@
     "CLM": "#EF6A39",
   }; // var colorMap
 
-  var categoryHierarchy = {
-    "EastAsia": {
-      "JPT": {},
-      "CHB": {},
-      "CHS": {},
-    },
-    "Europe": {
-      "CEU": {},
-      "IBS": {},
-      "GBR": {},
-      "FIN": {},
-      "TSI": {},
-    },
-    "Africa": {
-      "ASW": {},
-      "YRI": {},
-      "LWK": {},
-    },
-    "Americas": {
-      "MXL": {},
-      "PUR": {},
-      "CLM": {},
-    }
-  }; // var categoryHierarchy
-
 
   //
   // pca-chart
@@ -270,7 +247,7 @@
         click: function (e) {
           if (!isRoot) {
             isRoot = true;
-            focusTo(getKeys(categoryHierarchy));
+            showPcaData("global");
           }
         }
       }
@@ -341,7 +318,7 @@
           events: {          
             click: function (e) {
               isRoot = false;
-              focusTo(); // todo
+              showPcaData(category);
             },
             mouseOver: function (e) {
               highlightPcaMapCircles(category);
@@ -350,12 +327,15 @@
               unhighlightPcaMapCircles();
             },
           },
-          dataLabels: [],
+          marks: [],
         };
       }
 
       var pos = this.position;
       categorizedPcaData[category].data.push([pos[0], pos[1], 1]);
+
+      flag = categorizedPcaData[category].marks.indexOf(this.label) >= 0;
+      if (!flag) categorizedPcaData[category].marks.push(this.label);
     });
 
     //
@@ -372,8 +352,14 @@
   ///
   ///
 
-  var focusTo = function (targetPcaData) {
-    var categorizedPcaData = categorizePcaData(targetPcaData);
+  var showPcaData = function (targetPcaDataName) {
+    if (targetPcaDataName == null ||
+        !(targetPcaDataName in pcaData) ||
+        pcaData[targetPcaDataName].length <= 0) {
+      return;
+    }
+
+    var categorizedPcaData = categorizePcaData(pcaData[targetPcaDataName]);
 
     // pca chart
     var n = pcaChart.series.length;
@@ -384,74 +370,102 @@
     });
 
     // pca map
-    $.each(pcaMapCircles, function (key, circle) { circle.setMap(null); });
-    $.each(pcaMapMarkers, function (key, marker) { marker.setMap(null); });
-
-    $.each(dataLabels, function () {
-      var dataLabel = "" + this;
-      var region = regionMap[dataLabel];
-
-      var color = "#ff0000";      
-      var circle = new google.maps.Circle({
-        strokeColor: color,
-        strokeOpacity: 0.4,
-        strokeWeight: 1,
-        fillColor: color,
-        fillOpacity: 0.4,
-        map: pcaMap,
-        center: new google.maps.LatLng(region.center[0], region.center[1]),
-        radius: region.radius,
-      });
-
-      var marker = new google.maps.Marker({
-        position: new google.maps.LatLng(region.center[0], region.center[1]),
-        title: region.name,
-        map: pcaMap,
-      });
-
-      var infoWindow = new google.maps.InfoWindow({
-        content: "<b>" + dataLabel + "</b><br>" + region.name
-      });
-
-      // event listeners
-      google.maps.event.addListener(circle, "mouseover", function () {
-        infoWindow.open(pcaMap, marker);
-      });
-
-      google.maps.event.addListener(circle, "mouseout", function () {
-        infoWindow.close();
-      });
-
-      // google.maps.event.addListener(circle, "click", function () {
-      //
-      // });
-
-      // google.maps.event.addListener(marker, "click", function () {
-      //
-      // });
-
-      //
-      pcaMapCircles[dataLabel] = circle;
-      pcaMapMarkers[dataLabel] = marker;
+    $.each(pcaMapCircles, function (key, circles) {
+      $.each(circles, function () { this.setMap(null); })
     });
-  }; // focusTo
+    $.each(pcaMapMarkers, function (key, markers) {
+      $.each(markers, function () { this.setMap(null); })
+    });
+
+    $.each(categorizedPcaData, function () {
+      var name = this.name;
+      var color = colorMap[this.name];
+
+      var circles = [];
+      var markers = [];
+
+      // TODO
+      if (targetPcaDataName == "global") {
+        if (name in pcaData && pcaData[name].length > 0) {
+          var that = this;
+
+          $.each(pcaData[name], function () {
+            var flag = that.marks.indexOf(this.label) >= 0;
+            if (!flag) that.marks.push(this.label);
+          });
+        }
+      }
+
+      $.each(this.marks, function () {
+        var mark = "" + this;
+        var region = regionMap[mark];
+        if (region == undefined) return; // TODO
+
+        //
+        var circle = new google.maps.Circle({
+          strokeColor: color,
+          strokeOpacity: 0.4,
+          strokeWeight: 1,
+          fillColor: color,
+          fillOpacity: 0.4,
+          map: pcaMap,
+          center: new google.maps.LatLng(region.center[0], region.center[1]),
+          radius: region.radius,
+        });
+
+        var marker = new google.maps.Marker({
+          position: new google.maps.LatLng(region.center[0], region.center[1]),
+          title: region.name,
+          map: pcaMap,
+        });
+
+        var infoWindow = new google.maps.InfoWindow({
+          content: "<b>" + mark + "</b><br>" + region.name
+        });
+
+        //
+        google.maps.event.addListener(circle, "mouseover", function () {
+          infoWindow.open(pcaMap, marker);
+        });
+
+        google.maps.event.addListener(circle, "mouseout", function () {
+          infoWindow.close();
+        });
+
+        google.maps.event.addListener(marker, "mouseover", function () {
+          infoWindow.open(pcaMap, marker);
+        });
+
+        google.maps.event.addListener(marker, "mouseout", function () {
+          infoWindow.close();
+        });
+
+        //
+        circles.push(circle);
+        markers.push(marker);
+      });
+
+      pcaMapCircles[name] = circles;
+      pcaMapMarkers[name] = markers;
+    });
+  }; // var showPcaData
 
   var lastHightlightTimer = null;
 
-  var highlightPcaMapCircles = function (dataLabels) {
+  var highlightPcaMapCircles = function (label) {
     if (lastHightlightTimer != null) {
-      console.log("clearTimeout: " + lastHightlightTimer);
-
       clearTimeout(lastHightlightTimer);
       lastHightlightTimer = null;
     }
 
-    $.each(pcaMapCircles, function (label, circle) {
-      var opacity = dataLabels.indexOf("" + label) >= 0 ? 0.8 : 0.2;
+    $.each(pcaMapCircles, function (key, circles) {
+      var opacity = key == label ? 0.8 : 0.2;
 
-      circle.setOptions({
-        strokeOpacity: opacity,
-        fillOpacity: opacity,
+      $.each(circles, function () {
+        this.setOptions({
+          strokeOpacity: opacity,
+          fillOpacity: opacity
+        });
       });
     });
   }; // var highlightPcaMapCircles
@@ -461,16 +475,19 @@
       clearTimeout(lastHightlightTimer);
 
     lastHightlightTimer = setTimeout(function () {
-      lastHightlightTimer = null;
-
-      $.each(pcaMapCircles, function (label, circle) {
-        circle.setOptions({
-          strokeOpacity: 0.4,
-          fillOpacity: 0.4,
-        });
+      $.each(pcaMapCircles, function (key, circles) {
+        $.each(circles, function () {
+          this.setOptions({
+            strokeOpacity: 0.4,
+            fillOpacity: 0.4
+          });
+        })
       });
+
+      lastHightlightTimer = null;
     }, 1000);
   }; // // var highlightPcaMapCircles
+
 
   ///
   ///
@@ -481,7 +498,7 @@
     pcaMap = new google.maps.Map(document.getElementById("pca-map"), pcaMapOpts);
 
     isRoot = true;
-    focusTo(pcaData["global"]);
+    showPcaData("global");
   }); // $(document).ready
 })();
 </script>
