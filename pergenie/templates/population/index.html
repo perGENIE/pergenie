@@ -98,10 +98,12 @@
 
   {% regroup people by 1 as people_groups %}
 
-  var pcaData = [
-    {% for pos, label in people %}{ position: [{{ pos.0 }}, {{ pos.1 }}], label: "{{ label }}" },
-    {% endfor %}
-  ]; // var pcaData
+  var pcaData = {
+    "global": [
+      {% for pos, label in people %}{ position: [{{ pos.0 }}, {{ pos.1 }}], label: "{{ label }}" },
+      {% endfor %}
+    ],
+  }; // var pcaData
 
   var regionMap = {
     "JPT": {
@@ -338,7 +340,7 @@
     return null;
   }; // var resolveTargetCategory
 
-  var categorizePcaData = function (targetCategories) {
+  var categorizePcaData = function (targetCategories, targetPcaData) {
     var categorizedPcaData = {};
 
     //
@@ -364,7 +366,7 @@
     });
 
     //
-    $.each(pcaData, function () {
+    $.each(targetPcaData, function () {
       var belongingCategories = resolveBelongingCategory(this.label, categoryHierarchy);
       var targetCategory = resolveTargetCategory(belongingCategories, targetCategories);
       if (targetCategory == null) return;
@@ -421,7 +423,7 @@
     if (categories == null || categories.length == 0) return;
 
     // data
-    var categorizedPcaData = categorizePcaData(categories);
+    var categorizedPcaData = categorizePcaData(categories, pcaData["global"]);
     var dataLabels = getDataLabels(categorizedPcaData);
 
     if (categorizedPcaData == null || categorizedPcaData.length == 0) return;
