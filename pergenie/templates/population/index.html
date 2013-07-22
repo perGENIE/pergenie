@@ -322,72 +322,40 @@
   ///
   ///
 
-  var resolveBelongingCategory = function (label, rootCategories) {
-    if (label in rootCategories) return [label];
-
-    for (var x in rootCategories) {
-      var result = resolveBelongingCategory(label, rootCategories[x]);
-      if (result.length > 0) return result.concat([x]);
-    }
-
-    return [];
-  }; // var resolveBelongingCategory
-
-  var resolveTargetCategory = function (belongingCategories, targetCategories) {
-    for (var i = 0; i < belongingCategories.length; i++)
-      if (targetCategories.indexOf(belongingCategories[i]) >= 0)
-        return belongingCategories[i];
-
-    return null;
-  }; // var resolveTargetCategory
-
-  var categorizePcaData = function (targetCategories, targetPcaData) {
+  var categorizePcaData = function (targetPcaData) {
     var categorizedPcaData = {};
 
-    //
-    $.each(targetCategories, function () {
-      var name = "" + this;
-
-      categorizedPcaData[this] = {
-        name: name,
-        data: [],
-        marker: {
-          fillColor: colorMap[name],
-          lineColor: colorMap[name],
-          lineWidth: 0,
-        },
-        events: {          
-          click: function (e) {
-            isRoot = false;
-            focusTo(getChildCategories(name, categoryHierarchy));
-          },
-          mouseOver: function (e) {
-            var b = [name];
-            $.each(getChildCategories(name, categoryHierarchy), function () {  
-              b = b.concat(resolveBelongingCategory("" + this, categoryHierarchy));
-            });
-
-            highlightPcaMapCircles(b);
-          },
-          mouseOut: function (e) {
-            unhighlightPcaMapCircles();
-          },
-        },
-        dataLabels: [],
-      };
-    });
-
-    //
     $.each(targetPcaData, function () {
-      var belongingCategories = resolveBelongingCategory(this.label, categoryHierarchy);
-      var targetCategory = resolveTargetCategory(belongingCategories, targetCategories);
-      if (targetCategory == null) return;
+      var category = this.label;
+      var flag = category in categorizedPcaData;
+
+      if (!flag) {
+        categorizedPcaData[category] = {
+          name: category,
+          data: [],
+          marker: {
+            fillColor: colorMap[category],
+            lineColor: colorMap[category],
+            lineWidth: 0,
+          },
+          events: {          
+            click: function (e) {
+              isRoot = false;
+              focusTo(); // todo
+            },
+            mouseOver: function (e) {
+              highlightPcaMapCircles(category);
+            },
+            mouseOut: function (e) {
+              unhighlightPcaMapCircles();
+            },
+          },
+          dataLabels: [],
+        };
+      }
 
       var pos = this.position;
-      categorizedPcaData[targetCategory].data.push([pos[0], pos[1], 1]);
-
-      var flag = categorizedPcaData[targetCategory].dataLabels.indexOf(this.label) >= 0;
-      if (!flag) categorizedPcaData[targetCategory].dataLabels.push(this.label);
+      categorizedPcaData[category].data.push([pos[0], pos[1], 1]);
     });
 
     //
@@ -399,47 +367,13 @@
     return result;
   }; // var categorizedPcaData
 
-  var getDataLabels = function (categorizedPcaData) {
-    var result = [];
-
-    $.each(categorizedPcaData, function () {
-      result = result.concat(this.dataLabels);
-    });
-
-    return result;
-  }; // getDataLabels
-
-  var getKeys = function (targetHash) {
-    return $.map(targetHash, function (element, index) { return index; });
-  }; // var getKeys
-
-  var getChildCategories = function (parentCategoryName, rootCategories) {
-    for (var x in rootCategories) {
-      if (x == parentCategoryName) {
-        return getKeys(rootCategories[x]);
-      } else {
-        var result = getChildCategories(parentCategoryName, rootCategories[x]);
-        if (result.length > 0) return result;
-      }
-    }
-
-    return [];
-  }; // getChildCategories
-
 
   ///
   ///
   ///
 
-  var focusTo = function (categories) {
-    //
-    if (categories == null || categories.length == 0) return;
-
-    // data
-    var categorizedPcaData = categorizePcaData(categories, pcaData["global"]);
-    var dataLabels = getDataLabels(categorizedPcaData);
-
-    if (categorizedPcaData == null || categorizedPcaData.length == 0) return;
+  var focusTo = function (targetPcaData) {
+    var categorizedPcaData = categorizePcaData(targetPcaData);
 
     // pca chart
     var n = pcaChart.series.length;
@@ -457,10 +391,7 @@
       var dataLabel = "" + this;
       var region = regionMap[dataLabel];
 
-      var belongingCategories = resolveBelongingCategory(dataLabel, categoryHierarchy);
-      var targetCategory = resolveTargetCategory(belongingCategories, categories);
-      var color = colorMap[targetCategory];
-
+      var color = "#ff0000";      
       var circle = new google.maps.Circle({
         strokeColor: color,
         strokeOpacity: 0.4,
@@ -531,7 +462,7 @@
 
     lastHightlightTimer = setTimeout(function () {
       lastHightlightTimer = null;
-      
+
       $.each(pcaMapCircles, function (label, circle) {
         circle.setOptions({
           strokeOpacity: 0.4,
@@ -550,7 +481,7 @@
     pcaMap = new google.maps.Map(document.getElementById("pca-map"), pcaMapOpts);
 
     isRoot = true;
-    focusTo(getKeys(categoryHierarchy));
+    focusTo(pcaData["global"]);
   }); // $(document).ready
 })();
 </script>
