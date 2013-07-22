@@ -297,7 +297,7 @@
     },
     tooltip: {
       formatter: function () {
-        return "<b>" + this.series.name + "</b><br>" + this.x + ", " + this.y;
+        return "<b>" + this.series.name; //+ "</b><br>" + this.x + ", " + this.y;
       }
     },
   }; // var chartOpts
@@ -308,7 +308,8 @@
   ///
 
   var pcaMap = null;  
-  var pcaMapItems = [];
+  var pcaMapCircles = {};
+  var pcaMapMarkers = {};
 
   var pcaMapOpts = {
     center: new google.maps.LatLng(35.689544, 139.69171),
@@ -356,10 +357,21 @@
           lineWidth: 0,
         },
         events: {          
-          click: function () {
+          click: function (e) {
             isRoot = false;
             focusTo(getChildCategories(name, categoryHierarchy));
-          }
+          },
+          mouseOver: function (e) {
+            var b = [name];
+            $.each(getChildCategories(name, categoryHierarchy), function () {  
+              b = b.concat(resolveBelongingCategory("" + this, categoryHierarchy));
+            });
+
+            highlightPcaMapCircles(b);
+          },
+          mouseOut: function (e) {
+            unhighlightPcaMapCircles();
+          },
         },
         dataLabels: [],
       };
@@ -414,6 +426,7 @@
     return [];
   }; // getChildCategories
 
+
   ///
   ///
   ///
@@ -437,12 +450,11 @@
     });
 
     // pca map
-    $.each(pcaMapItems, function () {
-      this.setMap(null);
-    });
+    $.each(pcaMapCircles, function (key, circle) { circle.setMap(null); });
+    $.each(pcaMapMarkers, function (key, marker) { marker.setMap(null); });
 
     $.each(dataLabels, function () {
-      var dataLabel = this;
+      var dataLabel = "" + this;
       var region = regionMap[dataLabel];
 
       var belongingCategories = resolveBelongingCategory(dataLabel, categoryHierarchy);
@@ -479,20 +491,55 @@
         infoWindow.close();
       });
 
-      google.maps.event.addListener(circle, "click", function () {
+      // google.maps.event.addListener(circle, "click", function () {
+      //
+      // });
 
-      });
-
-      google.maps.event.addListener(marker, "click", function () {
-
-      });
+      // google.maps.event.addListener(marker, "click", function () {
+      //
+      // });
 
       //
-      pcaMapItems.push(circle);
-      pcaMapItems.push(marker);
+      pcaMapCircles[dataLabel] = circle;
+      pcaMapMarkers[dataLabel] = marker;
     });
   }; // focusTo
 
+  var lastHightlightTimer = null;
+
+  var highlightPcaMapCircles = function (dataLabels) {
+    if (lastHightlightTimer != null) {
+      console.log("clearTimeout: " + lastHightlightTimer);
+
+      clearTimeout(lastHightlightTimer);
+      lastHightlightTimer = null;
+    }
+
+    $.each(pcaMapCircles, function (label, circle) {
+      var opacity = dataLabels.indexOf("" + label) >= 0 ? 0.8 : 0.2;
+
+      circle.setOptions({
+        strokeOpacity: opacity,
+        fillOpacity: opacity,
+      });
+    });
+  }; // var highlightPcaMapCircles
+
+  var unhighlightPcaMapCircles = function () {
+    if (lastHightlightTimer != null)
+      clearTimeout(lastHightlightTimer);
+
+    lastHightlightTimer = setTimeout(function () {
+      lastHightlightTimer = null;
+      
+      $.each(pcaMapCircles, function (label, circle) {
+        circle.setOptions({
+          strokeOpacity: 0.4,
+          fillOpacity: 0.4,
+        });
+      });
+    }, 1000);
+  }; // // var highlightPcaMapCircles
 
   ///
   ///
