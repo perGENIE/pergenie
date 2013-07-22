@@ -127,12 +127,10 @@
   // ]; // var pcaData
 
 
-  var pcaData = {
-    "global": [
-      {% for pos, label in people %}{ position: [{{ pos.0 }}, {{ pos.1 }}], label: "{{ label }}" },
-      {% endfor %},
-    ],
-  };
+  var pcaData = [
+    {% for pos, label in people %}{ position: [{{ pos.0 }}, {{ pos.1 }}], label: "{{ label }}" },
+    {% endfor %}
+  ]; // var pcaData
 
   var regionMap = {
     "JPT": {
@@ -256,6 +254,31 @@
     "CLM": "#EF6A39",
   }; // var colorMap
 
+  var categoryHierarchy = {
+    "EastAsia": {
+      "JPT": {},
+      "CHB": {},
+      "CHS": {},
+    },
+    "Europe": {
+      "CEU": {},
+      "IBS": {},
+      "GBR": {},
+      "FIN": {},
+      "TSI": {},
+    },
+    "Africa": {
+      "ASW": {},
+      "YRI": {},
+      "LWK": {},
+    },
+    "Americas": {
+      "MXL": {},
+      "PUR": {},
+      "CLM": {},
+    }
+  }; // var categoryHierarchy
+
 
   //
   // pca-chart
@@ -347,56 +370,105 @@
   ///
   ///
 
-  var categorizedPcaData = {};
-  var regionColorMap = {};
+  var resolveBelongingCategory = function (label, rootCategories) {
+    if (label in rootCategories) return [label];
 
-  $.each(pcaData["global"], function () {
-    var region = regionMap[this.label];
-    if (region == undefined) return;
+    for (var x in rootCategories) {
+      var result = resolveBelongingCategory(label, rootCategories[x]);
+      if (result.length > 0) return result.concat([x]);
+    }
 
-    // categorizedPcaData
-    var category = region.category;
-    var flag = category in categorizedPcaData;
+    return [];
+  }; // var resolveBelongingCategory
 
-    if (!flag) {
-      categorizedPcaData[category] = {
-        name: category,
+  var resolveTargetCategory = function (belongingCategories, targetCategories) {
+    for (var i = 0; i < belongingCategories.length; i++)
+      if (targetCategories.indexOf(belongingCategories[i]) >= 0)
+        return belongingCategories[i];
+
+    return null;
+  }; // var resolveTargetCategory
+
+  var categorizePcaData = function (targetCategories) {
+    var categorizedPcaData = {};
+
+    //
+    $.each(targetCategories, function () {
+
+      categorizedPcaData[this] = {
+        name: "" + this,
         data: [],
         marker: {
-          fillColor: colorMap[category],
+          fillColor: colorMap["" + this]
         },
-        events: {
-          click: function (e) {
-            // TODO
-          }
-        }
+        dataLabels: [],
       };
-    }
+    });
 
-    var pos = this.position;
-    categorizedPcaData[category].data.push([pos[0], pos[1], 1]);
+    //
+    $.each(pcaData, function () {
+      var belongingCategories = resolveBelongingCategory(this.label, categoryHierarchy);
+      var targetCategory = resolveTargetCategory(belongingCategories, targetCategories);
+      if (targetCategory == null) return;
 
-    // regionColorMap
-    flag = this.label in regionColorMap;
-    if (!flag) {
-      regionColorMap[this.label] = colorMap[category];
-    }
-  });
+      var pos = this.position;
+      categorizedPcaData[targetCategory].data.push([pos[0], pos[1], 1]);
 
+      var flag = categorizedPcaData[targetCategory].dataLabels.indexOf(this.label) >= 0;
+      if (!flag) categorizedPcaData[targetCategory].dataLabels.push(this.label);
+    });
+
+    //
+    var result = [];
+    $.each(categorizedPcaData, function (key, data) {
+      if (data.data.length > 0) result.push(data);
+    });
+
+    return result;
+  }; // var categorizedPcaData
+
+  var getDataLabels = function (categorizedPcaData) {
+    var result = [];
+
+    $.each(categorizedPcaData, function () {
+      result = result.concat(this.dataLabels);
+    });
+
+    return result;
+  }; // getDataLabels
+
+  var getKeys = function (targetHash) {
+    return $.map(targetHash, function (element, index) { return index; });
+  }; // var getKeys
+
+
+  ///
+  ///
+  ///
 
   $(document).ready(function () {
+    //
+    var categories = getKeys(categoryHierarchy);
+    var categorizedPcaData = categorizePcaData(categories);
+    var dataLabels = getDataLabels(categorizedPcaData);
+
     // chart
     pcaChart = new Highcharts.Chart(pcaChartOpts);
 
-    $.each(categorizedPcaData, function (catrgory, data) {
-      pcaChart.addSeries(data);
+    $.each(categorizedPcaData, function () {
+      pcaChart.addSeries(this);
     });
 
     // map
     pcaMap = new google.maps.Map(document.getElementById("pca-map"), pcaMapOpts);
 
-    $.each(regionColorMap, function (category, color) {
-      var region = regionMap[category];
+    $.each(dataLabels, function () {
+      var dataLabel = this;
+      var region = regionMap[dataLabel];
+
+      var belongingCategories = resolveBelongingCategory(dataLabel, categoryHierarchy);
+      var targetCategory = resolveTargetCategory(belongingCategories, categories);
+      var color = colorMap[targetCategory];
 
       var circle = new google.maps.Circle({
         strokeColor: color,
@@ -416,7 +488,7 @@
       });
 
       var infoWindow = new google.maps.InfoWindow({
-        content: "<b>" + category + "</b><br>" + region.name
+        content: "<b>" + dataLabel + "</b><br>" + region.name
       });
 
       // event listeners
