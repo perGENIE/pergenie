@@ -24,6 +24,6 @@ def import_population_pca(settings, ):
                 for line in f:
                     num, pc1, pc2, popcode = line.rstrip().split(',')
                     if num == '': continue
-                    col.insert({'popcode': popcode, 'loc': [float(pc1), float(pc2)]})
+                    col.insert({'popcode': popcode, 'position': [float(pc1), float(pc2)]})
 
-                col.ensure_index([('loc', pymongo.GEO2D), ('popcode', pymongo.ASCENDING)])
+                col.ensure_index([('position', pymongo.GEO2D), ('popcode', pymongo.ASCENDING)])

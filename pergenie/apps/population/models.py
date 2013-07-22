@@ -36,4 +36,4 @@ def get_people(scale):
         db = c['pergenie']
         col = db['population_pca'][scale]
 
-        return [(rec['loc'], rec['popcode']) for rec in col.find()]
+        return [{'position': rec['position'], 'label': rec['popcode']} for rec in col.find()]
