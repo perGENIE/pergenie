@@ -358,7 +358,9 @@
   /// pca-map
   ///
 
-  var pcaMap = null;
+  var pcaMap = null;  
+  var pcaMapItems = [];
+
   var pcaMapOpts = {
     center: new google.maps.LatLng(35.689544, 139.69171),
     zoom: 2,
@@ -446,21 +448,23 @@
   ///
   ///
 
-  $(document).ready(function () {
-    //
-    var categories = getKeys(categoryHierarchy);
+  var focusTo = function (categories) {
+    // data
     var categorizedPcaData = categorizePcaData(categories);
     var dataLabels = getDataLabels(categorizedPcaData);
 
-    // chart
-    pcaChart = new Highcharts.Chart(pcaChartOpts);
+    // pca chart
+    var n = pcaChart.series.length;
+    for (var i = 0; i < n; i++) pcaChart.series[0].remove();
 
     $.each(categorizedPcaData, function () {
       pcaChart.addSeries(this);
     });
 
-    // map
-    pcaMap = new google.maps.Map(document.getElementById("pca-map"), pcaMapOpts);
+    // pca map
+    $.each(pcaMapItems, function () {
+      this.setMap(null);
+    });
 
     $.each(dataLabels, function () {
       var dataLabel = this;
@@ -507,7 +511,22 @@
       google.maps.event.addListener(marker, "click", function () {
 
       });
+
+      //
+      pcaMapItems.push(circle);
+      pcaMapItems.push(marker);
     });
+  }; // focusTo
+
+  ///
+  ///
+  ///
+
+  $(document).ready(function () {
+    pcaChart = new Highcharts.Chart(pcaChartOpts);
+    pcaMap = new google.maps.Map(document.getElementById("pca-map"), pcaMapOpts);
+
+    focusTo(getKeys(categoryHierarchy));
   }); // $(document).ready
 })();
 </script>
