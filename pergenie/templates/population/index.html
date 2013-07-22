@@ -67,6 +67,7 @@
                   <p>{{ person }}</p>
 
                   <div id="pca-chart" style="width: 500px; height: 500px;"></div>
+                  <div id="pca-map" style="height: 500px;"></div>
                 </div>
               </div>
             </div>
@@ -77,81 +78,187 @@
     </div>
   </section>
 </div>
+
+<style type="text/css">
+#pca-map label { width: auto; display: inline; }
+#pca-map img { max-width: none; }
+</style>
 {% endblock %}
 
 {% block js %}
 <script type="text/javascript" src="{% static 'js/highcharts/highcharts.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/highcharts/highcharts-more.js' %}"></script>
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDHIY3O4PNfRsWEdFOxyqPJZntQByf5CZQ&sensor=true"></script>
 <script type="text/javascript">
 (function () {
+
+  ///
+  /// pca data
+  ///
+
   {% regroup people by 1 as people_groups %}
 
-  var pcaData = [
-    {% for people_group in people_groups %}
-    {
-      name: "{{ people_group.grouper }}",
-      data: [
-          {% for pos, label in people_group.list %}[{{ pos.0 }}, {{ pos.1 }}, 1],
-          {% endfor %}
-      ],
-      parent: null,
-      events: {
-        click: function (e) {
-          var childData = findPcaDataByParent("{{ people_group.grouper }}");
-          if (childData.length > 0) {
-            savePcaData();
-            removePcaData();
-          }
-        }
-      }
+  var pcaData = {
+    "global": [
+      {% for pos, label in people %}{ position: [{{ pos.0 }}, {{ pos.1 }}], label: "{{ label }}" },
+      {% endfor %}
+    ],
+  }; // var pcaData
+
+  var regionMap = {
+    "JPT": {
+      name: "Japanese in Tokyo, Japan",
+      category: "EastAsia",
+      location: "Tokyo, Japan",
+      center: [35.689544, 139.69171],
+      radius: 200000 * 4
     },
-    {% endfor %}
-    {
-      name: "Person",
-      data: [
-          [{{ person.0 }}, {{ person.1 }}, 1]
-      ],
+    "CHB": {
+      name: "CHB Han Chinese in Beijing, China",
+      category: "EastAsia",
+      location: "Beijing, China",
+      center: [39.904018, 116.407535],
+      radius: 200000 * 4
+    },
+    "CHS": {
+      name: "Han Chinese South",
+      category: "EastAsia",
+      location: "Hu Nan and Fu Jian Province, China",
+      center: [28.115594, 112.986317],
+      radius: 200000 * 4
+    },
+    "CEU": {
+      name: "Utah residents with ancestry from northern and western Europe",
+      category: "Europe",
+      location: "Utah, USA",
+      center: [39.320986, -111.093727],
+      radius: 200000 * 4
+    },
+    "IBS": {
+      name: "Iberian Populations in Spain",
+      category: "Europe",
+      location: "Spain",
+      center: [40.416778, -3.703783],
+      radius: 200000 * 4
+    },
+    "GBR": {
+      name: "British from England and Scotland",
+      catrgory: "Europe",
+      location: "Great Britain",
+      center: [51.51124, -0.119765],
+      radius: 200000 * 4
+    },
+    "FIN": {
+      name: "Finnish in Finland",
+      category: "Europe",
+      location: "Finland",
+      center: [60.173346, 24.941048],
+      radius: 200000 * 4
+    },
+    "TSI": {
+      name: "Toscani in Italia",
+      category: "Europe",
+      location: "Italy",
+      center: [41.894611, 12.48358],
+      radius: 200000 * 4
+    },
+    "ASW": {
+      name: "African Ancestry in SW USA",
+      category: "Africa",
+      location: "Southwest, USA",
+      center: [36.999023, -109.045163],
+      radius: 200000 * 4
+    },
+    "YRI": {
+      name: "Yoruba in Ibadan",
+      category: "Africa",
+      location: "Webuye, Kenya",
+      center: [0.616939, 34.767013],
+      radius: 200000 * 4
+    },
+    "LWK": {
+      name: "Luhya in Webuye, Kenya",
+      category: "Africa",
+      location: "Ibadan, Nigeria",
+      center: [7.396451, 3.916702],
+      radius: 200000 * 4
+    },
+    "MXL": {
+      name: "Mexican Ancestry in Los Angeles, CA, USA",
+      category: "Americas",
+      location: "Los Angeles, USA",
+      center: [34.052237, -118.24368],
+      radius: 200000 * 4
+    },
+    "PUR": {
+      name: "Puerto Ricans in Puerto Rico",
+      category: "Americas",
+      location: "Puerto Rico",
+      center: [18.466482, -66.105691],
+      radius: 200000 * 4
+    },
+    "CLM": {
+      name: "Colombians in Medellín, Colombia",
+      category: "Americas",
+      location: "Medellin, Colombia",
+      center: [6.236125, -75.574769],
+      radius: 200000 * 4
     }
-  ]; // var pcaData
+  }; // var regionMap
 
+  var colorMap = {
+    "EastAsia": "#167833",
+    "Europe": "#2A3D93",
+    "Africa": "#773518",
+    "Americas":  "#E7311B",
+    "JPT": "#167833",
+    "CHB": "#A2C928",
+    "CHS": "#5BB335",
+    "CEU": "#2A3D93",
+    "IBS": "#597BBF",
+    "GBR": "#5EC3D5",
+    "FIN": "#24B2BC",
+    "TSI": "#1E1D68",
+    "ASW": "#773518",
+    "YRI": "#E8E699",
+    "LWK": "#BEA378",
+    "MXL": "#E7311B",
+    "PUR": "#F69216",
+    "CLM": "#EF6A39",
+  }; // var colorMap
+
+  var categoryHierarchy = {
+    "EastAsia": {
+      "JPT": {},
+      "CHB": {},
+      "CHS": {},
+    },
+    "Europe": {
+      "CEU": {},
+      "IBS": {},
+      "GBR": {},
+      "FIN": {},
+      "TSI": {},
+    },
+    "Africa": {
+      "ASW": {},
+      "YRI": {},
+      "LWK": {},
+    },
+    "Americas": {
+      "MXL": {},
+      "PUR": {},
+      "CLM": {},
+    }
+  }; // var categoryHierarchy
+
+
+  //
+  // pca-chart
+  //
+
+  var isRoot = true;
   var pcaChart = null;
-  var undoStack = [];
-
-  var findPcaDataByParent = function (name) {
-    var data = [];
-    $.each(pcaData, function () {
-      if (this.parent == name) data.push(this);
-    });
-
-    return data;
-  }; // var findPcaDataByParent
-
-  var removePcaData = function () {
-    var n = pcaChart.series.length;
-    for (var i = 0; i < n; i++) pcaChart.series[0].remove();
-  }; // var removePcaData
-
-  var savePcaData = function () {
-    var currentData = [];
-    $.each(pcaChart.series, function () {
-      currentData.push(this.name);
-    });
-
-    undoStack.push(currentData);
-  }; // var savePcaData
-
-  var restorePcaData = function () {
-    if (undoStack.length == 0) return;
-
-    removePcaData();
-
-    $.each(undoStack.pop(), function () {
-      var pcaDataName = this;
-      $.each(pcaData, function () {
-        if (this.name == pcaDataName) pcaChart.addSeries(this);
-      });
-    });
-  }; // var restorePcaData
 
   var pcaChartOpts = {
     chart: {
@@ -161,7 +268,10 @@
       zoomType: "xy",
       events: {
         click: function (e) {
-          restorePcaData();
+          if (!isRoot) {
+            isRoot = true;
+            focusTo(getKeys(categoryHierarchy));
+          }
         }
       }
     },
@@ -187,18 +297,192 @@
     },
     tooltip: {
       formatter: function () {
-        return "<b>" + this.series.name + "</b><br>" + this.x + ", " + this.y;
+        return "<b>" + this.series.name; //+ "</b><br>" + this.x + ", " + this.y;
       }
     },
   }; // var chartOpts
 
-  $(document).ready(function () {
-    pcaChart = new Highcharts.Chart(pcaChartOpts);
 
-    $.each(findPcaDataByParent(null), function () {
+  ///
+  /// pca-map
+  ///
+
+  var pcaMap = null;  
+  var pcaMapCircles = {};
+  var pcaMapMarkers = {};
+
+  var pcaMapOpts = {
+    center: new google.maps.LatLng(35.689544, 139.69171),
+    zoom: 2,
+    mapTypeId: google.maps.MapTypeId.ROADMAP,
+  };
+
+
+  ///
+  ///
+  ///
+
+  var categorizePcaData = function (targetPcaData) {
+    var categorizedPcaData = {};
+
+    $.each(targetPcaData, function () {
+      var category = this.label;
+      var flag = category in categorizedPcaData;
+
+      if (!flag) {
+        categorizedPcaData[category] = {
+          name: category,
+          data: [],
+          marker: {
+            fillColor: colorMap[category],
+            lineColor: colorMap[category],
+            lineWidth: 0,
+          },
+          events: {          
+            click: function (e) {
+              isRoot = false;
+              focusTo(); // todo
+            },
+            mouseOver: function (e) {
+              highlightPcaMapCircles(category);
+            },
+            mouseOut: function (e) {
+              unhighlightPcaMapCircles();
+            },
+          },
+          dataLabels: [],
+        };
+      }
+
+      var pos = this.position;
+      categorizedPcaData[category].data.push([pos[0], pos[1], 1]);
+    });
+
+    //
+    var result = [];
+    $.each(categorizedPcaData, function (key, data) {
+      if (data.data.length > 0) result.push(data);
+    });
+
+    return result;
+  }; // var categorizedPcaData
+
+
+  ///
+  ///
+  ///
+
+  var focusTo = function (targetPcaData) {
+    var categorizedPcaData = categorizePcaData(targetPcaData);
+
+    // pca chart
+    var n = pcaChart.series.length;
+    for (var i = 0; i < n; i++) pcaChart.series[0].remove();
+
+    $.each(categorizedPcaData, function () {
       pcaChart.addSeries(this);
     });
-  });
+
+    // pca map
+    $.each(pcaMapCircles, function (key, circle) { circle.setMap(null); });
+    $.each(pcaMapMarkers, function (key, marker) { marker.setMap(null); });
+
+    $.each(dataLabels, function () {
+      var dataLabel = "" + this;
+      var region = regionMap[dataLabel];
+
+      var color = "#ff0000";      
+      var circle = new google.maps.Circle({
+        strokeColor: color,
+        strokeOpacity: 0.4,
+        strokeWeight: 1,
+        fillColor: color,
+        fillOpacity: 0.4,
+        map: pcaMap,
+        center: new google.maps.LatLng(region.center[0], region.center[1]),
+        radius: region.radius,
+      });
+
+      var marker = new google.maps.Marker({
+        position: new google.maps.LatLng(region.center[0], region.center[1]),
+        title: region.name,
+        map: pcaMap,
+      });
+
+      var infoWindow = new google.maps.InfoWindow({
+        content: "<b>" + dataLabel + "</b><br>" + region.name
+      });
+
+      // event listeners
+      google.maps.event.addListener(circle, "mouseover", function () {
+        infoWindow.open(pcaMap, marker);
+      });
+
+      google.maps.event.addListener(circle, "mouseout", function () {
+        infoWindow.close();
+      });
+
+      // google.maps.event.addListener(circle, "click", function () {
+      //
+      // });
+
+      // google.maps.event.addListener(marker, "click", function () {
+      //
+      // });
+
+      //
+      pcaMapCircles[dataLabel] = circle;
+      pcaMapMarkers[dataLabel] = marker;
+    });
+  }; // focusTo
+
+  var lastHightlightTimer = null;
+
+  var highlightPcaMapCircles = function (dataLabels) {
+    if (lastHightlightTimer != null) {
+      console.log("clearTimeout: " + lastHightlightTimer);
+
+      clearTimeout(lastHightlightTimer);
+      lastHightlightTimer = null;
+    }
+
+    $.each(pcaMapCircles, function (label, circle) {
+      var opacity = dataLabels.indexOf("" + label) >= 0 ? 0.8 : 0.2;
+
+      circle.setOptions({
+        strokeOpacity: opacity,
+        fillOpacity: opacity,
+      });
+    });
+  }; // var highlightPcaMapCircles
+
+  var unhighlightPcaMapCircles = function () {
+    if (lastHightlightTimer != null)
+      clearTimeout(lastHightlightTimer);
+
+    lastHightlightTimer = setTimeout(function () {
+      lastHightlightTimer = null;
+
+      $.each(pcaMapCircles, function (label, circle) {
+        circle.setOptions({
+          strokeOpacity: 0.4,
+          fillOpacity: 0.4,
+        });
+      });
+    }, 1000);
+  }; // // var highlightPcaMapCircles
+
+  ///
+  ///
+  ///
+
+  $(document).ready(function () {
+    pcaChart = new Highcharts.Chart(pcaChartOpts);
+    pcaMap = new google.maps.Map(document.getElementById("pca-map"), pcaMapOpts);
+
+    isRoot = true;
+    focusTo(pcaData["global"]);
+  }); // $(document).ready
 })();
 </script>
 {% endblock %}
