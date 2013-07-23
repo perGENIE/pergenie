@@ -245,6 +245,13 @@
       zoomType: "xy",
       events: {
         click: function (e) {
+          try {
+            if (e.srcElement.firstChild.data == "Reset zoom") {
+              pcaChart.zoomOut();
+              return;
+            }
+          } catch (ex) {}
+
           if (!isRoot) {
             isRoot = true;
             showPcaData("global");
