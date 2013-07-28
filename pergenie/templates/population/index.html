@@ -285,6 +285,9 @@
         return "<b>" + this.series.name; //+ "</b><br>" + this.x + ", " + this.y;
       }
     },
+    credits: {
+      enabled: false
+    },
   }; // var chartOpts
 
 
@@ -292,7 +295,7 @@
   /// pca-map
   ///
 
-  var pcaMap = null;  
+  var pcaMap = null;
   var pcaMapCircles = {};
   var pcaMapMarkers = {};
 
@@ -323,7 +326,7 @@
             lineColor: colorMap[category],
             lineWidth: 0,
           },
-          events: {          
+          events: {
             click: function (e) {
               isRoot = false;
               showPcaData(category);
