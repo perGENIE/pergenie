@@ -32,8 +32,22 @@ def get_people(scale):
     args: str(scale)
     retval: list(list(), ...)
     """
+    popcode2global = {'CHB': 'EastAsia', 'JPT': 'EastAsia', 'CHS': 'EastAsia',
+                      'CEU': 'Europe', 'TSI': 'Europe', 'GBR': 'Europe', 'FIN': 'Europe', 'IBS': 'Europe',
+                      'YRI': 'Africa', 'LWK': 'Africa', 'ASW': 'Africa',
+                      'MXL': 'Americas', 'CLM': 'Americas', 'PUR': 'Americas'}
+
     with pymongo.MongoClient(host=settings.MONGO_URI) as c:
         db = c['pergenie']
         col = db['population_pca'][scale]
 
-        return [{'position': rec['position'], 'label': rec['popcode']} for rec in col.find()]
+        if scale == 'global':
+            records = [{'position': rec['position'],
+                        'label': popcode2global[rec['popcode']],
+                        'map_label': rec['popcode']} for rec in col.find()]
+        else:
+            records = [{'position': rec['position'],
+                        'label': rec['popcode'],
+                        'map_label': rec['popcode']} for rec in col.find()]
+
+        return records
