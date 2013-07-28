@@ -45,27 +45,6 @@
             <div class="padded">
               <div class="row-fluid">
                 <div class="span14">
-                  <p>PCAベースのAncestral Analysisをして，</p>
-                  <ul>
-                    <li>地図</li>
-                    <li>PCAの主成分空間の二次元・三次元上の民族クラスタにプロットした図</li>
-                  </ul>
-                  <p>などを載せる予定です．</p>
-
-
-                  <hr>
-                  <p>Scale: {{ scale }}</p>
-
-                  <hr>
-                  <p>People:</p>
-                  {% for one in people %}
-                  <p>{{ one }}</p>
-                  {% endfor %}
-
-                  <hr>
-                  <p>Person:</p>
-                  <p>{{ person }}</p>
-
                   <div id="pca-chart" style="width: 500px; height: 500px;"></div>
                   <div id="pca-map" style="height: 500px;"></div>
                 </div>
