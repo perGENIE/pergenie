@@ -26,7 +26,7 @@ def index(request):
     # person = project_new_person(genotyes, scale)
 
     people = dict()
-    for scale in ['global', ' EastAsia', 'Europe', 'Africa', 'Americas']:
+    for scale in ['global', 'EastAsia', 'Europe', 'Africa', 'Americas']:
         people[scale] = get_people(scale)
     person = [3,3]  # one point (PC1, PC2), which represetns one person in PCA coordinate.
 
