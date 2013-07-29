@@ -80,7 +80,7 @@
   var pcaData = {
     {% for key, records in people.items %}
     "{{ key }}": [
-        {% for record in records %}{ position: [{{ record.position.0 }}, {{ record.position.1 }}], label: "{{ record.label }}" },
+        {% for record in records %}{ position: [{{ record.position.0 }}, {{ record.position.1 }}], label: "{{ record.label }}", mapLabel: "{{ record.map_label }}" },
         {% endfor %}
     ],
     {% endfor %}
@@ -324,8 +324,8 @@
       var pos = this.position;
       categorizedPcaData[category].data.push([pos[0], pos[1], 1]);
 
-      flag = categorizedPcaData[category].marks.indexOf(this.label) >= 0;
-      if (!flag) categorizedPcaData[category].marks.push(this.label);
+      flag = categorizedPcaData[category].marks.indexOf(this.mapLabel) >= 0;
+      if (!flag) categorizedPcaData[category].marks.push(this.mapLabel);
     });
 
     //
@@ -373,18 +373,6 @@
 
       var circles = [];
       var markers = [];
-
-      // TODO
-      if (targetPcaDataName == "global") {
-        if (name in pcaData && pcaData[name].length > 0) {
-          var that = this;
-
-          $.each(pcaData[name], function () {
-            var flag = that.marks.indexOf(this.label) >= 0;
-            if (!flag) that.marks.push(this.label);
-          });
-        }
-      }
 
       $.each(this.marks, function () {
         var mark = "" + this;
