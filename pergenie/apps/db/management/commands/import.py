@@ -26,6 +26,7 @@ from lib.mongo.import_dbsnp import import_dbsnp
 from lib.mongo.import_strand_db import import_strand_db
 from lib.mongo.import_refFlat import import_refFlat
 from lib.mongo.import_OMIM import OMIMParser
+from lib.mongo.import_population_pca import import_population_pca
 from lib.mysql.import_bioq import import_bioq
 
 def date2datetime(d):
@@ -76,6 +77,13 @@ class Command(BaseCommand):
             dest="omim",
             help=colored("Import OMIM into database", "green")
         ),
+        make_option(
+            "--population_pca",
+            action="store_true",
+            dest="population_pca",
+            help=colored("Import Population PCA data into database", "green")
+        ),
+
     )
 
     def handle(self, *args, **options):
@@ -261,6 +269,9 @@ class Command(BaseCommand):
             omim_parser = OMIMParser(settings.PATH_TO_OMIMTXT, settings.OMIM_APIKEY)
             omim_parser.insert_to_mongo(host=settings.MONGO_URI, dbname='pergenie')
             omim_parser.check()
+        elif options["population_pca"]:
+            log.info('Try to import population_pca ...')
+            import_population_pca(settings)
 
         else:
             self.print_help("import", "help")

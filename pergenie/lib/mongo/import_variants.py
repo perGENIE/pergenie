@@ -88,7 +88,7 @@ def import_variants(file_path, population, file_format, user_id):
                 users_variants.create_index([('chrom', pymongo.ASCENDING), ('pos', pymongo.ASCENDING)])
 
                 data_info.update({'user_id': user_id, 'name': file_name_cleaned},
-                                 {"$set": {'status': 100}})
+                                 {"$set": {'status': 95}})
                 print >>sys.stderr, '[INFO] done!'
                 print >>sys.stderr, '[INFO] Added collection:', set(db.collection_names()) - set(prev_collections)
 

@@ -7,7 +7,7 @@ from django.conf import settings
 from apps.riskreport.forms import RiskReportForm
 
 import sys, os
-import pymongo
+from models import *
 
 from utils import clogging
 log = clogging.getColorLogger(__name__)
@@ -18,4 +18,18 @@ def index(request):
     # user_id = request.user.username
     # msg, err = '', ''
 
-    return direct_to_template(request, 'population/index.html', {})
+    # TODO: create funciton
+
+    # people = get_people(scale)
+    # snps = get_pca_snps(scale)
+    # genotyes = get_genotypes(snps)
+    # person = project_new_person(genotyes, scale)
+
+    people = dict()
+    for scale in ['global', 'EastAsia', 'Europe', 'Africa', 'Americas']:
+        people[scale] = get_people(scale)
+    person = [3,3]  # one point (PC1, PC2), which represetns one person in PCA coordinate.
+
+    return direct_to_template(request, 'population/index.html', dict(scale=scale,
+                                                                     people=people,
+                                                                     person=person))

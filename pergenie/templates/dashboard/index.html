@@ -16,6 +16,7 @@
         <div class="row-fluid">
           <div class="span12">
             <div class="padded">
+
               <a href="{% url apps.riskreport.views.index %}">
               <button class="button square" href="#"{% ifequal intro_type.0 'risk_report' %} data-step="1" data-intro="{{ intros.0 }}" {% endifequal %} {% ifequal intro_type.0 'welcome' %} data-step="3" data-intro="{{ intros.2 }}" {% endifequal %}>
                 <i class="icon-align-left icon-large"></i>
@@ -23,6 +24,12 @@
                 {% if n_out_dated_riskreports > 0 %}<span class="badge badge-blue">&nbsp;{{ n_out_dated_riskreports }}&nbsp;</span>{% endif %}
               </button>
               </a>
+
+              <a href="{% url apps.population.views.index %}">
+              <button class="button square" href="#">
+                <i class="icon-globe icon-large"></i>
+                <span class="button-text">Population</span>
+              </button></a>
 
               {% ifnotequal user.username|demouser_format "demo@pergenie.org" %}
               <a href="{% url apps.upload.views.index %}">
