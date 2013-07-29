@@ -134,7 +134,7 @@ _8
 
                   <li id="docs-trigger">
                     <button style="padding-left: 10px; margin-top: 14px" class="btn btn-inverse btn-mini" type="button" onclick="introJs().start()">
-                      <span id="dtrigger">Show navigation</span>
+                      <span id="dtrigger">{% trans "Show navigation" %}</span>
                     </button>
                   </li>
 
@@ -153,7 +153,7 @@ _8
                       {% ifequal user.username|demouser_format "demo@pergenie.org" %}
                       <li class="">
                         <a href="{% url apps.frontend.views.register %}">
-                          <i class="icon-cog"></i> Register your account, for free!
+                          <i class="icon-cog"></i> {% trans "Register your account, for free!" %}
                         </a>
                       </li>
                       {% endifequal %}
@@ -161,7 +161,7 @@ _8
                       <li class="divider"></li>
                       <li class="">
                         <a href="{% url apps.frontend.views.logout %}">
-                          <i class="icon-off"></i> Logout
+                          <i class="icon-off"></i> {% trans "Logout" %}
                         </a>
                       </li>
                     </ul>

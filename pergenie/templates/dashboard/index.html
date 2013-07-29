@@ -3,6 +3,7 @@
 {% load staticfiles %}
 {% block title %}Dashboard{% endblock %}
 {% block description %}perGENIE dashboard{% endblock %}
+{% load i18n %}
 
 {% block main_container %}
 <div id="main_container" class="span10">
@@ -101,7 +102,7 @@
         <div class="span6">
           <div class="content-box" {% ifequal intro_type.0 'welcome' %} data-step="2" data-intro="{{ intros.1 }}" {% endifequal %}  {% ifequal intro_type.0 'first' %}data-step="2" data-intro="{{ intros.1 }}" {% endifequal %}>
             <div class="content-box-header">
-              <icon class="icon-bar-chart"></icon> Genome Statistics
+              <icon class="icon-bar-chart"></icon> {% trans "Genome Statistics" %}
             </div>
 
             <div class="tabbable">
@@ -122,14 +123,14 @@
                 <div class="tab-pane{% ifequal forloop.counter0|add:1 1 %} active{% endifequal %}" id="tab{{ forloop.counter0|add:1 }}">
                   <div class="row-fluid">
                     <div class="span12 padded uploaded_file">
-                      <p><b>File name</b>: </p>
+                      <p><b>{% trans "File name" %}</b>: </p>
                       <p class="dataname" style="word-break: break-all">{{ info.raw_name }}</p>
                       <table class="table table-bordered">
                         <tbody>
 
                           <tr>
                             <td class="center">
-                              <p {% ifequal intro_type.0 'wait_upload' %}data-step="1" data-intro="{{ intros.0 }}" {% endifequal %}>Import status:</p>
+                              <p {% ifequal intro_type.0 'wait_upload' %}data-step="1" data-intro="{{ intros.0 }}" {% endifequal %}>{% trans "Import status:" %}</p>
                             </td>
                             <td class="center">
                               <div class="donut donut-big">
@@ -141,7 +142,7 @@
                           </tr>
                           <tr>
                             <td class="center">
-                              <p>What percentage does your genome file cover GWAS Cataog?</p>
+                              <p>{% trans "What percentage does your genome file cover GWAS Cataog?" %}</p>
                             </td>
                             <td class="center">
                               <div class="donut donut-big">
@@ -151,7 +152,7 @@
                           </tr>
                           <tr>
                             <td class="center">
-                              <p>What percentage does your genome file cover whole genome?</p>
+                              <p>{% trans "What percentage does your genome file cover whole genome?" %}</p>
                             </td>
                             <td class="center">
                               <div class="donut donut-big">
@@ -170,12 +171,12 @@
                 <div class="tab-pane active" id="tab1">
                   <div class="row-fluid">
                     <div class="span12 padded">
-                      <p><b>File name</b>:</p>
+                      <p><b>{% trans "File name" %}</b>:</p>
                       <table class="table table-bordered">
                         <tbody>
                           <tr>
                             <td class="center">
-                              <p>Import status:</p>
+                              <p>{% trans "Import status:" %}</p>
                             </td>
                             <td class="center">
                               <div class="donut donut-big">
@@ -198,7 +199,7 @@
         <div class="span6">
           <div class="content-box">
             <div class="content-box-header">
-              <i class="icon-retweet"></i> Recently Added Studies
+              <i class="icon-retweet"></i> {% trans "Recently Added Studies" %}
             </div>
 
             {% if recent_catalog_records %}
@@ -215,12 +216,12 @@
                           <tbody>
                             <tr>
                               <td>
-                                <b>Trait: </b><!-- <a href="{% url apps.library.views.trait trait=record.trait %}"> -->{{ record.trait }}<!-- </a> -->
+                                <b>{% trans "Trait: " %}</b><!-- <a href="{% url apps.library.views.trait trait=record.trait %}"> -->{{ record.trait }}<!-- </a> -->
                               </td>
                             </tr>
                             <tr>
                               <td>
-                                <b>Study: </b>{{ record.study }} <span class="badge badge-yellow"><a href="{{ record.pubmed_link }}" target="_blank">Pubmed</a></span></td>
+                                <b>{% trans "Study: " %}</b>{{ record.study }} <span class="badge badge-yellow"><a href="{{ record.pubmed_link }}" target="_blank">Pubmed</a></span></td>
                             </tr>
                           </tbody>
                         </table>

@@ -51,7 +51,7 @@ def index(request):
 
                     if risk_report_latest_date.date() < catalog_latest_new_records_data:
                         # msgs.append('Risk report outdated, so re-calculate riskreport: {0}'.format(info['raw_name']))
-                        msg = 'Some risk-reports are outdated, so re-calculate risk-report.'
+                        msg = _('Some risk-reports are outdated, so re-calculate risk-report.')
                         n_out_dated_riskreports += 1
 
                 elif info['status'] == 100:
@@ -64,20 +64,20 @@ def index(request):
 
     # Intro.js
     if intro_type == ['first']:
-        intros.append('Welcome to perGENIE!')
-        intros.append('You have no genome files uploaded.')
-        intros.append('So, first, upload your genome file!')
+        intros.append(_('Welcome to perGENIE!'))
+        intros.append(_('You have no genome files uploaded.'))
+        intros.append(_('So, first, upload your genome file!'))
     elif intro_type == ['wait_upload']:
-        intros.append('Please wait until your genome file uploaded...')
+        intros.append(_('Please wait until your genome file uploaded...'))
     elif intro_type == ['risk_report']:
-        intros.append('Browse your Risk Report!')
+        intros.append(_('Browse your Risk Report!'))
     elif intro_type == ['welcome']:
-        intros.append('Welcome to perGENIE!')
-        intros.append('Genome files are already uploaded for demo users.')
-        intros.append('So, you can check disease risk report, right now!')
+        intros.append(_('Welcome to perGENIE!'))
+        intros.append(_('Genome files are already uploaded for demo users.'))
+        intros.append(_('So, you can check disease risk report, right now!'))
     elif intro_type == ['invitation']:
-        intros.append('Did you have fun with perGENIE?')
-        intros.append('You can register account for free, at any time. Thanks for trying this demo!')
+        intros.append(_('Did you have fun with perGENIE?'))
+        intros.append(_('You can register account for free, at any time. Thanks for trying this demo!'))
     else:
         pass
 

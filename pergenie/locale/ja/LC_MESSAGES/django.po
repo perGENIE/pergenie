@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-29 20:07+0900\n"
+"POT-Creation-Date: 2013-07-29 20:35+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,47 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0\n"
+
+#: apps/dashboard/views.py:54
+msgid "Some risk-reports are outdated, so re-calculate risk-report."
+msgstr ""
+
+#: apps/dashboard/views.py:67 apps/dashboard/views.py:75
+msgid "Welcome to perGENIE!"
+msgstr "perGENIEへようこそ！"
+
+#: apps/dashboard/views.py:68
+msgid "You have no genome files uploaded."
+msgstr "ここからゲノムファイルを変えることができます。"
+
+#: apps/dashboard/views.py:69
+msgid "So, first, upload your genome file!"
+msgstr "まずは，genome fileをアップロードしましょう!"
+
+#: apps/dashboard/views.py:71
+msgid "Please wait until your genome file uploaded..."
+msgstr "ゲノムファイルがアップロードされるまでしばらくお待ちください..."
+
+#: apps/dashboard/views.py:73
+msgid "Browse your Risk Report!"
+msgstr "疾患リスクレポート"
+
+#: apps/dashboard/views.py:76
+msgid "Genome files are already uploaded for demo users."
+msgstr "デモ用にゲノムファイルが既にアップロードされています。"
+
+#: apps/dashboard/views.py:77
+msgid "So, you can check disease risk report, right now!"
+msgstr "まずは疾患リスクをチェックしてみましょう！"
+
+#: apps/dashboard/views.py:79
+msgid "Did you have fun with perGENIE?"
+msgstr "perGENIEをお楽しみいただけましたか？"
+
+#: apps/dashboard/views.py:80
+msgid ""
+"You can register account for free, at any time. Thanks for trying this demo!"
+msgstr "アカウントは無料で登録可能です。デモを試していただきありがとうございました！"
 
 #: apps/frontend/views.py:72 apps/frontend/views.py:119
 #: apps/riskreport/views.py:73 apps/riskreport/views.py:245
@@ -142,9 +183,54 @@ msgid ""
 "unable to complete your request."
 msgstr "サーバー内部でのエラーが起きました．"
 
+#: templates/layout.html:137
+msgid "Show navigation"
+msgstr "ナビゲーションを表示"
+
+#: templates/layout.html:156
+msgid "Register your account, for free!"
+msgstr "アカウントの新規登録"
+
+#: templates/layout.html:164
+msgid "Logout"
+msgstr "ログアウト"
+
+#: templates/dashboard/index.html:104
+msgid "Genome Statistics"
+msgstr "ゲノム統計データ"
+
+#: templates/dashboard/index.html:125 templates/dashboard/index.html.py:173
+#, fuzzy
+msgid "File name"
+msgstr "ファイルフォーマット"
+
+#: templates/dashboard/index.html:132 templates/dashboard/index.html.py:178
+msgid "Import status:"
+msgstr "インポート状況"
+
+#: templates/dashboard/index.html:144
+msgid "What percentage does your genome file cover GWAS Cataog?"
+msgstr "GWAS Catalogに対するゲノムデータのカバー率"
+
+#: templates/dashboard/index.html:154
+msgid "What percentage does your genome file cover whole genome?"
+msgstr "ゲノムデータのゲノムカバー率"
+
+#: templates/dashboard/index.html:201
+msgid "Recently Added Studies"
+msgstr "最近追加された研究論文"
+
+#: templates/dashboard/index.html:218
+msgid "Trait: "
+msgstr "形質: "
+
+#: templates/dashboard/index.html:223
+msgid "Study: "
+msgstr "論文: "
+
 #: templates/frontend/activation_completed.html:19
 msgid "Activation completed"
-msgstr ""
+msgstr "アカウントが有効になりました"
 
 #: templates/frontend/activation_completed.html:21
 msgid "Thanks for signing up! Now you can "
@@ -271,9 +357,6 @@ msgstr "アップロードされたデータのこれらの論文に対するカ
 #: templates/risk_report/index.html:193
 msgid "Risk relative to average population"
 msgstr "人種内平均に対する相対リスク"
-
-#~ msgid "First, upload your genome file!"
-#~ msgstr "まずは，genome fileをアップロードしましょう!"
 
 #~ msgid "Next, ...."
 #~ msgstr "次に，...."
