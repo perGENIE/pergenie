@@ -1,8 +1,9 @@
 {% extends "layout.html" %}
-{% block title %}Risk report - {{ study_name }}{% endblock %}
+{% block title %}Risk report {{ study_name }}{% endblock %}
 {% block description %}risk report detail{% endblock %}
 {% load staticfiles %}
 {% load extras %}
+{% load i18n %}
 
 {% block main_container %}
 <div id="main_container" class="span12">
@@ -27,7 +28,7 @@
           <div class="content-box">
 
             <div class="content-box-header">
-              <i class="icon-bar-chart"></i> Effects of SNPs
+              <i class="icon-bar-chart"></i> {% trans "Effects of SNPs" %}
             </div>
 
             <!-- <div id="container" style="max-width: 100px; height: 300px; margin: auto"></div> -->
@@ -39,17 +40,17 @@
         <div class="span10">
           <div class="content-box">
             <div class="content-box-header">
-              <i class="icon-book"></i> Information about reference study
+              <i class="icon-book"></i> {% trans "Information about reference study" %}
             </div>
 
             <table class="table table-hover">
               <tbody>
                 <tr>
-                  <td>Study name</td>
+                  <td>{% trans "Study name" %}</td>
                   <td>{{ study }} <span class="badge badge-yellow" title="browse in PubMed"><a href="{{ record.catalog_info.pubmed_link }}" target="_blank">Pubmed</a></span></td>
                 </tr>
                 <tr>
-                  <td>Population</td>
+                  <td>{% trans "Population" %}</td>
                   <td>
                     {% if record.catalog_info.population %}
                     {% for p in record.catalog_info.population %}
@@ -59,27 +60,27 @@
                   </td>
                 </tr>
                 <tr>
-                  <td>Initial sample size</td>
+                  <td>{% trans "Initial sample size" %}</td>
                   <td>{{ record.catalog_info.initial_sample_size }}</td>
                 </tr>
                 <tr>
-                  <td>Journal</td>
+                  <td>{% trans "Journal" %}</td>
                   <td>{{ record.catalog_info.jornal }}</td>
                 </tr>
                 <tr>
-                  <td>First author</td>
+                  <td>{% trans "First author" %}</td>
                   <td>{{ record.catalog_info.first_author }}</td>
                 </tr>
                 <tr>
-                  <td>Date</td>
+                  <td>{% trans "Date" %}</td>
                   <td>{{ record.catalog_info.date|date }}</td>
                 </tr>
                 <tr>
-                  <td>p-value</td>
+                  <td>{% trans "p-value" %}</td>
                   <td>{{ record.catalog_info.p_value }}</td>
                 </tr>
                 <tr>
-                  <td><a href="#">Reliability rank <i class="icon-question-sign"></i></a></td>
+                  <td><a href="#">{% trans "Reliability rank" %} <i class="icon-question-sign"></i></a></td>
                   <td>
                     {% for r in record.rank %}
                     {% ifequal r "m" %}<span class="label label-green">Meta</span>
@@ -107,7 +108,7 @@
           <div class="content-box">
 
             <div class="content-box-header">
-              <i class="icon-bar-chart"></i> Information about SNPs & Genotypes of "{{ file_name }}"
+              <i class="icon-bar-chart"></i> {% trans "Information about SNPs & Genotypes of" %} "{{ file_name }}"
             </div>
 
 
@@ -197,7 +198,7 @@ $(function () {
                 max: 10.0,
                 min: -10.0,
                 title: {
-                    text: 'Risk relative to average population'
+                    text: '{% trans "Risk relative to average population" %}'
                 }
             },
 

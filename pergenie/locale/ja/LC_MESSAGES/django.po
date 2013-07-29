@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-29 22:05+0900\n"
+"POT-Creation-Date: 2013-07-29 22:25+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -359,7 +359,7 @@ msgstr "このゲノムファイルに関する情報が表示されています
 msgid "Genome file"
 msgstr "ゲノムファイル"
 
-#: templates/risk_report/index.html:49
+#: templates/risk_report/index.html:49 templates/risk_report/study.html:53
 msgid "Population"
 msgstr "人種"
 
@@ -431,6 +431,8 @@ msgid "Coverage for these studies is "
 msgstr "アップロードされたデータのこれらの論文に対するカバー率: "
 
 #: templates/risk_report/index.html:193
+#: templates/risk_report/show_all.html:150
+#: templates/risk_report/study.html:201
 msgid "Risk relative to average population"
 msgstr "人種内平均に対する相対リスク"
 
@@ -475,6 +477,46 @@ msgstr ""
 
 #: templates/risk_report/show_all.html:166
 msgid "RR"
+msgstr ""
+
+#: templates/risk_report/study.html:31
+msgid "Effects of SNPs"
+msgstr "各SNPの効果"
+
+#: templates/risk_report/study.html:43
+msgid "Information about reference study"
+msgstr "参照元論文に関する情報"
+
+#: templates/risk_report/study.html:49
+msgid "Study name"
+msgstr "論文名"
+
+#: templates/risk_report/study.html:63
+msgid "Initial sample size"
+msgstr ""
+
+#: templates/risk_report/study.html:67
+msgid "Journal"
+msgstr ""
+
+#: templates/risk_report/study.html:71
+msgid "First author"
+msgstr ""
+
+#: templates/risk_report/study.html:75
+msgid "Date"
+msgstr ""
+
+#: templates/risk_report/study.html:79
+msgid "p-value"
+msgstr ""
+
+#: templates/risk_report/study.html:83
+msgid "Reliability rank"
+msgstr "信頼度ランク"
+
+#: templates/risk_report/study.html:111
+msgid "Information about SNPs & Genotypes of"
 msgstr ""
 
 #~ msgid "Next, ...."
