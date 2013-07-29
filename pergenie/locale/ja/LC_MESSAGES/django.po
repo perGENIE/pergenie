@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-29 21:45+0900\n"
+"POT-Creation-Date: 2013-07-29 22:05+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -270,6 +270,11 @@ msgstr ""
 "ゲノムと疾患の関連を調べる研究（GWASなど）に基づいて、あなたの疾患リスクを計"
 "算します。"
 
+#: templates/frontend/index.html:86
+#, fuzzy
+msgid "As a database of GWAS, we use "
+msgstr "使用するデータベース: "
+
 #: templates/frontend/index.html:98
 msgid "Comparison of two genomes"
 msgstr "2つのゲノムの比較"
@@ -366,7 +371,8 @@ msgstr "ファイルフォーマット"
 msgid "You can select and change genome files here."
 msgstr "ここからゲノムファイルを変えることができます。"
 
-#: templates/risk_report/index.html:60
+#: templates/risk_report/index.html:60 templates/risk_report/show_all.html:66
+#: templates/risk_report/show_all.html:77
 msgid "change genome file?"
 msgstr "ゲノムファイルを変えますか？"
 
@@ -428,8 +434,48 @@ msgstr "アップロードされたデータのこれらの論文に対するカ
 msgid "Risk relative to average population"
 msgstr "人種内平均に対する相対リスク"
 
-#~ msgid "As a database of GWAS, we use <a href="
-#~ msgstr "使用するデータベース: "
+#: templates/risk_report/show_all.html:38
+msgid "Show All and Comparison"
+msgstr "全疾患リスクの表示と比較"
+
+#: templates/risk_report/show_all.html:40
+msgid "What is RR (Relative Risk)?"
+msgstr "RR（相対リスク）とは何ですか？"
+
+#: templates/risk_report/show_all.html:41
+msgid "How are risk values calculated?"
+msgstr "疾患リスクはどのように計算されるのですか？"
+
+#: templates/risk_report/show_all.html:53
+msgid "All the disease risk values are listed in this chart."
+msgstr "すべての疾患リスクの値が表示されています。"
+
+#: templates/risk_report/show_all.html:54
+msgid "Disease Risk (Show All and Comparison)"
+msgstr "全疾患リスクと比較"
+
+#: templates/risk_report/show_all.html:64
+msgid "You can change genome files from here."
+msgstr "ここからゲノムファイルを変えることができます。"
+
+#: templates/risk_report/show_all.html:65
+msgid "Compare"
+msgstr ""
+
+#: templates/risk_report/show_all.html:76
+msgid "with"
+msgstr ""
+
+#: templates/risk_report/show_all.html:77
+msgid ""
+"And also you can compare the risk values with another genome file by "
+"selecting one from here."
+msgstr ""
+"もう1つのゲノムファイルを選択することで、疾患リスクを比較することができます。"
+
+#: templates/risk_report/show_all.html:166
+msgid "RR"
+msgstr ""
 
 #~ msgid "Next, ...."
 #~ msgstr "次に，...."

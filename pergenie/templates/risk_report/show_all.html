@@ -4,6 +4,7 @@
 {% load staticfiles %}
 {% load extras %}
 {% load add_get_parameter %}
+{% load i18n %}
 
 {% block main_container %}
 <div id="main_container" class="span14">
@@ -34,10 +35,10 @@
 
           <div class="content-box transparent">
             <div class="padded10">
-              <h4>Show All and Comparison</h4>
+              <h4>{% trans "Show All and Comparison" %}</h4>
               <ul>
-                <li><a href="{% url apps.faq.views.index %}">[FAQ] What is RR (Relative Risk)?</a></li>
-                <li><a href="{% url apps.faq.views.index %}">[FAQ] How are risk values calculated?</a></li>
+                <li><a href="{% url apps.faq.views.index %}">[FAQ] {% trans "What is RR (Relative Risk)?" %}</a></li>
+                <li><a href="{% url apps.faq.views.index %}">[FAQ] {% trans "How are risk values calculated?" %}</a></li>
               </ul>
 
             </div>
@@ -49,8 +50,8 @@
         <div class="span12">
           <div class="padded">
             <div class="content-box">
-              <div class="content-box-header" data-step="1" data-intro="All the disease risk values are listed in this chart." data-position='top'>
-                <icon class="icon-exclamation-sign"></icon>Disease Risk (Show All and Comparison)
+              <div class="content-box-header" data-step="1" data-intro="{% trans "All the disease risk values are listed in this chart." %}" data-position='top'>
+                <icon class="icon-exclamation-sign"></icon>{% trans "Disease Risk (Show All and Comparison)" %}
               </div>
 
               <div class="padded">
@@ -60,9 +61,9 @@
 
                     <form action="{% url apps.riskreport.views.show_all %}" method="post" enctype="multipart/form-data">
                       {% csrf_token %}
-		              <fieldset data-step="2" data-intro="You can change genome files from here.">
-                        <b>Compare</b>
-                        <select name="file_name" onchange="submit(this.form)" class="file_name" title="change genome file?" >
+		              <fieldset data-step="2" data-intro="{% trans "You can change genome files from here." %}">
+                        <b>{% trans "Compare" %}</b>
+                        <select name="file_name" onchange="submit(this.form)" class="file_name" title="{% trans "change genome file?" %}" >
                           {% for info in infos %}
                           {% if info == tmp_infos.0 %}
                           <option value="{{ info.name }}" selected>{{ info.name }}</option>
@@ -72,8 +73,8 @@
                           {% endfor%}
                         </select>
 
-                          <b>with </b>
-                        <select name="file_name2" onchange="submit(this.form)" class="file_name2" title="change genome file?" data-step="3" data-intro="And also you can compare the risk values with another genome file by selecting one from here.">
+                          <b>{% trans "with" %} </b>
+                        <select name="file_name2" onchange="submit(this.form)" class="file_name2" title="{% trans "change genome file?" %}" data-step="3" data-intro="{% trans "And also you can compare the risk values with another genome file by selecting one from here." %}">
                           <option value="-" selected>-</option>
                           {% for info in infos %}
                           {% if info == tmp_infos.1 %}
@@ -146,7 +147,7 @@ $(function () {
                 type: 'bar'
             },
             title: {
-                text: 'Risk relative to average population'
+                text: '{% trans "Risk relative to average population" %}'
             },
             xAxis: {
                 categories: [{% for trait in risk_traits %}
@@ -162,7 +163,7 @@ $(function () {
                 max: 10,
                 min: -10,
                 title: {
-                    text: '[RR]',
+                    text: '[{% trans "RR" %}]',
                     align: 'high'
                 }
             },
