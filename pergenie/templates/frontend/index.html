@@ -48,9 +48,9 @@ _8
           <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
 
           <ul class="nav">
-            <li><a href="{% url apps.frontend.views.trydemo %}">Try demo</a></li>
-            <li><a href="{% url apps.frontend.views.register %}">Sign up</a></li>
-            <li><a href="{% url apps.frontend.views.login %}">Login</a></li>
+            <li><a href="{% url apps.frontend.views.trydemo %}">{% trans "Try demo" %}</a></li>
+            <li><a href="{% url apps.frontend.views.register %}">{% trans "Sign up" %}</a></li>
+            <li><a href="{% url apps.frontend.views.login %}">{% trans "Login" %}</a></li>
           </ul>
         </div>
       </div>
@@ -67,8 +67,8 @@ _8
     <div class="container">
       <div class="row">
         <div class="span12 center graded">
-          <a href="{% url apps.frontend.views.trydemo %}" class="signup">Try demo</a>
-          <a href="{% url apps.frontend.views.register %}" class="signup">Sign up for FREE</a>
+          <a href="{% url apps.frontend.views.trydemo %}" class="signup">{% trans "Try demo" %}</a>
+          <a href="{% url apps.frontend.views.register %}" class="signup">{% trans "Sign up for FREE" %}</a>
         </div>
       </div>
     </div>
@@ -80,10 +80,10 @@ _8
 
         <div class="row">
           <article class="span6 offset1">
-            <h3>Disease risk calculation</h3>
-            <p>Based on the results of genotype-phenotype association studies, i.e., GWAS (Genome Wide Association Studies), perGENIE calculates your genetic risks for diseases.
+            <h3>{% trans "Disease risk calculation" %}</h3>
+            <p>{% trans "Based on the results of genotype-phenotype association studies, i.e., GWAS (Genome Wide Association Studies), perGENIE calculates your genetic risks for diseases." %}
             </p>
-            <p>As a database of GWAS, we use <a href="//www.genome.gov/gwastudies/" target="_blank">NHGRI GWAS Catalog</a>.</p>
+            <p>{% trans "As a database of GWAS, we use " %}<a href="//www.genome.gov/gwastudies/" target="_blank"> NHGRI GWAS Catalog</a>.</p>
           </article>
           <div class="span4">
             <img src="{% static 'images/snaps/snap1.png' %}" alt="placeholder" />
@@ -95,19 +95,19 @@ _8
             <img src="{% static 'images/snaps/snap2.png' %}" alt="placeholder" />
           </div>
           <article class="span6">
-            <h3>Comparison of two genomes</h3>
-            <p>You can also compare your disease risks with another person, e.g., father and mathor, parents and their children, etc.
+            <h3>{% trans "Comparison of two genomes" %}</h3>
+            <p>{% trans "You can also compare your disease risks with another person, e.g., father and mathor, parents and their children, etc." %}
               </p>
           </article>
         </div>
 
         <div class="row">
           <article class="span6 offset1">
-            <h3>Working with VCF & 23andMe</h3>
-            <p>Suppoted input file formats are:</p>
+            <h3>{% trans "Working with VCF & 23andMe" %}</h3>
+            <p>{% trans "Suppoted input file formats are:" %}</p>
             <ul>
-              <li><a href="//www.1000genomes.org/wiki/Analysis/Variant%20Call%20Format/vcf-variant-call-format-version-41" target="_blank">VCF (Variant Call Format)</a>, a standard data format for DNA sequencing data from NGS.</li>
-              <li>SNP array data from <a href="//www.23andme.com/" target="_blank">23andMe</a>, a common direct-to-consumer genetic testing service.</li>
+              <li><a href="//www.1000genomes.org/wiki/Analysis/Variant%20Call%20Format/vcf-variant-call-format-version-41" target="_blank">VCF (Variant Call Format)</a>{% trans ", a standard data format for DNA sequencing data from NGS." %}</li>
+              <li>{% trans "SNP array data from " %}<a href="//www.23andme.com/" target="_blank">23andMe</a>{% trans ", a common direct-to-consumer genetic testing service." %}</li>
             </ul>
           </article>
           <div class="span4">
@@ -117,7 +117,7 @@ _8
 
         <div class="row">
           <article class="span6 offset1">
-            <h3 class="subheader">More features are under developping...</h3>
+            <h3 class="subheader">{% trans "More features are under developping..." %}</h3>
           </article>
         </div>
 
@@ -140,7 +140,7 @@ _8
     <h3 class="subheader">Stay in touch.</h3>
     <div class="row">
         <div class="span12">
-          <h4>About us</h4>
+          <h4>{% trans "About us" %}</h4>
           <p>perGENIE is being developed and maintained by Kensuke NUMAKURA (<a href="https://twitter.com/knmkr" target="_blank">@knmkr</a>) and perGENIE Team (<a href="https://twitter.com/per_GENIE" target="_blank">@per_GENIE</a>).</p>
         </div>
     </div>
