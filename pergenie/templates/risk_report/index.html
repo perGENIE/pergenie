@@ -3,6 +3,7 @@
 {% block description %}risk report{% endblock %}
 {% load staticfiles %}
 {% load extras %}
+{% load i18n %}
 
 {% block main_container %}
 <div id="main_container" class="span14">
@@ -12,10 +13,10 @@
 
       <div class="row-fluid">
         <div class="span12">
-          <div class="content-box transparent" data-step="1" data-intro="Your disease risk report is shown bellow.">
+          <div class="content-box transparent" data-step="1" data-intro="{% trans "Your disease risk report is shown bellow." %}">
             <div class="padded">
-              <h2>Disease Risk Report</h2>
-                <a href="{% url apps.faq.views.index%}#how_risk_calclulated">[FAQ] How are the disease risk values calculated?</a>
+              <h2>{% trans "Disease Risk Report" %}</h2>
+                <a href="{% url apps.faq.views.index%}#how_risk_calclulated">[FAQ] {% trans "How are the disease risk values calculated?" %}</a>
             </div>
           </div>
         </div>
@@ -40,23 +41,23 @@
       {% if not err %}
       <div class="row-fluid">
         <div class="span12">
-          <div class="content-box" data-step="2" data-intro="Information about this genome file is here.">
+          <div class="content-box" data-step="2" data-intro="{% trans "Information about this genome file is here." %}">
               <table class="table table-bordered">
                 <thead>
                   <tr>
-                    <th><i class="icon-user"></i>Genome file</th>
-                    <th><i class="icon-globe"></i>Population</th>
-                    <th><i class="icon-file"></i>File Format</th>
+                    <th><i class="icon-user"></i>{% trans "Genome file" %}</th>
+                    <th><i class="icon-globe"></i>{% trans "Population" %}</th>
+                    <th><i class="icon-file"></i>{% trans "File Format" %}</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
                     <!-- Genome file -->
-                    <td class="center" data-step="3" data-intro="You can select and change genome files here.">
+                    <td class="center" data-step="3" data-intro="{% trans "You can select and change genome files here." %}">
                       <form action="{% url apps.riskreport.views.index %}" method="post" enctype="multipart/form-data">
                         {% csrf_token %}
 		                <fieldset>
-                          <select name="file_name" onchange="submit(this.form)" class="file_name" title="change genome file?">
+                          <select name="file_name" onchange="submit(this.form)" class="file_name" title="{% trans "change genome file?" %}">
                             {% for info in infos %}
                             <option value="{{ info.name }}" {% if info.name == tmp_info.name %}selected{% endif %}>{{ info.raw_name }}</option>
                             {% endfor %}
@@ -66,17 +67,17 @@
                     </td>
 
                     <!-- Population -->
-                    <td class="center" data-step="4" data-intro="Also, you can change population setting for this genome file.">
-                      <a data-toggle="modal" href="#changeModal"><span class="badge badge-green" title="change population?">{{ tmp_info.population }}</span></a>
+                    <td class="center" data-step="4" data-intro="{% trans "Also, you can change population setting for this genome file." %}">
+                      <a data-toggle="modal" href="#changeModal"><span class="badge badge-green" title="{% trans "change population?" %}">{{ tmp_info.population }}</span></a>
 
                       <div id="changeModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="changeModalLabel" aria-hidden="true">
                         <div class="modal-body">
                           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                          <h4 id="changeModalLabel">Change population to ...</h4>
+                          <h4 id="changeModalLabel">{% trans "Change population to ..." %}</h4>
                           <form action="{% url apps.riskreport.views.index %}" method="post" enctype="multipart/form-data">
                             {% csrf_token %}
 		                    <fieldset>
-                              <select name="population" onchange="submit(this.form)" class="population" title="change population?">
+                              <select name="population" onchange="submit(this.form)" class="population" title="{% trans "change population?" %}">
                                 <option value="unknown" {% ifequal tmp_info.population 'unknown' %}selected{% endifequal %}>Unknown</option>
                                 <option value="Asian" {% ifequal tmp_info.population 'Asian' %}selected{% endifequal %}>Asian</option>
                                 <option value="European" {% ifequal tmp_info.population 'European' %}selected{% endifequal %}>European</option>
@@ -105,9 +106,9 @@
       <div class="row-fluid">
 
         <div class="span6">
-          <div class="content-box"  data-step="5" data-intro="Your top 10 highest risks are listed here.">
+          <div class="content-box"  data-step="5" data-intro="{% trans "Your top 10 highest risks are listed here." %}">
             <div class="content-box-header">
-              <icon class="icon-align-left"></icon> Top 10 Highest
+              <icon class="icon-align-left"></icon> {% trans "Top 10 Highest" %}
             </div>
 
             <div class="padded">
@@ -116,10 +117,10 @@
                   {% if h_risk_traits %}
                   <div id="container_highest_risks"></div>
 
-                  <a href="{% url apps.riskreport.views.show_all %}"><button class="btn btn-green" title="view all the traits!" data-step="6" data-intro="To see all the disease risks and/or compare two genomes, click here!"><i class="icon-resize-full icon-white" style="margin-top: 1px;"></i> View more</button></a>
+                  <a href="{% url apps.riskreport.views.show_all %}"><button class="btn btn-green" title="{% trans "view all the traits!" %}" data-step="6" data-intro="{% trans "To see all the disease risks and/or compare two genomes, click here!" %}"><i class="icon-resize-full icon-white" style="margin-top: 1px;"></i> {% trans "View more" %}</button></a>
                   {% else %}
-                  <p>Sorry, you have no data for disease risk.</p>
-                  <p>Probably, uploaded data was too few to calculate risk.</p>
+                  <p>{% trans "Sorry, you have no data for disease risk." %}</p>
+                  <p>{% trans "Probably, uploaded data was too few to calculate risk." %}</p>
                   {% endif %}
                 </div>
               </div>
@@ -132,15 +133,16 @@
           <div class="padded">
             <div class="content-box">
               <div class="content-box-header">
-                <icon class="icon-ok-sign"></icon> Statistics
+                <icon class="icon-ok-sign"></icon> {% trans "Statistics" %}
               </div>
 
               <div class="padded">
                 <div class="row-fluid">
                   <div class="span12">
-                    Number of studies for this population
-                    is <b>{{ tmp_info.n_studies }}</b>.<br>
-                    Coverage for these studies is <b>{{ tmp_info.catalog_cover_rate_for_this_population }}</b> percent.
+                    {% trans "Number of studies for this population is " %}
+                    <b>{{ tmp_info.n_studies }}</b>.<br>
+                    {% trans "Coverage for these studies is " %}
+                    <b>{{ tmp_info.catalog_cover_rate_for_this_population }}</b> percent.
                     <div class="donut">
                       <div class="donut-arrow" data-percentage="{{ tmp_info.catalog_cover_rate_for_this_population }}"></div>
                     </div>
@@ -188,7 +190,7 @@ $(function () {
                 max: 10,
                 min: 1,
                 title: {
-                    text: '[Risk relative to average population]',
+                    text: '[{% trans "Risk relative to average population" %}]',
                     align: 'high'
                 }
             },

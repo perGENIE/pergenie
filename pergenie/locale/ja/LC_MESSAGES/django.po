@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-24 20:28+0900\n"
+"POT-Creation-Date: 2013-07-29 20:07+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,20 +18,20 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0\n"
 
-#: apps/frontend/views.py:71 apps/frontend/views.py:118
-#: apps/riskreport/views.py:74 apps/riskreport/views.py:246
+#: apps/frontend/views.py:72 apps/frontend/views.py:119
+#: apps/riskreport/views.py:73 apps/riskreport/views.py:245
 msgid "Invalid request."
 msgstr "不正なリクエストです．"
 
-#: apps/frontend/views.py:84 apps/frontend/views.py:89
+#: apps/frontend/views.py:85 apps/frontend/views.py:90
 msgid "invalid mail address or password"
 msgstr "メールアドレスかパスワードが正しくありません．"
 
-#: apps/frontend/views.py:128
+#: apps/frontend/views.py:129
 msgid "Passwords do not match."
 msgstr "パスワードが一致していません．"
 
-#: apps/frontend/views.py:132
+#: apps/frontend/views.py:133
 #, python-format
 msgid ""
 "Passwords too short (passwords should be longer than %(min_password_length)s "
@@ -40,40 +40,40 @@ msgstr ""
 "短すぎるパスワードです．%(min_password_length)s 文字以上のパスワードを設定し"
 "て下さい．"
 
-#: apps/frontend/views.py:136 apps/frontend/views.py:231
+#: apps/frontend/views.py:137 apps/frontend/views.py:237
 msgid "Invalid mail address assumed."
 msgstr "不正なメールアドレスです．"
 
-#: apps/frontend/views.py:140 apps/frontend/views.py:150
-#: apps/frontend/views.py:242
+#: apps/frontend/views.py:141 apps/frontend/views.py:151
+#: apps/frontend/views.py:248
 msgid "Already registered."
 msgstr "すでに登録済みです．"
 
-#: apps/frontend/views.py:155
+#: apps/frontend/views.py:156
 msgid "Unexpected error"
 msgstr "予期しないエラーが発生しました．"
 
-#: apps/riskreport/views.py:39 apps/riskreport/views.py:223
+#: apps/riskreport/views.py:39 apps/riskreport/views.py:222
 msgid "no data uploaded"
 msgstr "データがアップロードされていません．"
 
-#: apps/riskreport/views.py:64
+#: apps/riskreport/views.py:63
 #, fuzzy
 msgid "Your files are in importing, please wait for seconds..."
 msgstr "%(file_name)s は現在読み込み中です．しばらくお待ちください..."
 
-#: apps/riskreport/views.py:87 apps/riskreport/views.py:254
+#: apps/riskreport/views.py:86 apps/riskreport/views.py:253
 #, python-format
 msgid "%(file_name)s is in importing, please wait for seconds..."
 msgstr "%(file_name)s は現在読み込み中です．しばらくお待ちください..."
 
-#: apps/riskreport/views.py:93 apps/riskreport/views.py:166
-#: apps/riskreport/views.py:261
+#: apps/riskreport/views.py:92 apps/riskreport/views.py:165
+#: apps/riskreport/views.py:260
 #, python-format
 msgid "no such file %(file_name)s"
 msgstr "そのようなファイルはありません．%(file_name)s"
 
-#: apps/riskreport/views.py:144
+#: apps/riskreport/views.py:143
 msgid "trait not found"
 msgstr "そのようなTraitはありません"
 
@@ -117,18 +117,18 @@ msgstr ""
 "同じファイル名のファイルがアップロードされています．上書きしたい場合，アップ"
 "ロード済みのファイルを削除して下さい．"
 
-#: apps/upload/views.py:123
+#: apps/upload/views.py:125
 msgid "file type not allowed, or encoding not allowed"
 msgstr ""
 "許可されていないファイルタイプ，あるいは許可されていないエンコーディングで"
 "す．"
 
-#: apps/upload/views.py:131
+#: apps/upload/views.py:133
 #, python-format
 msgid "%(file_name)s uploaded."
 msgstr "%(file_name)s がアップロードされました．"
 
-#: apps/upload/views.py:155
+#: apps/upload/views.py:157
 msgid ", and now importing..."
 msgstr "現在，読み込んでいます..."
 
@@ -177,6 +177,100 @@ msgstr ""
 msgid ""
 " Check the email and follow the instructions for activating your account!"
 msgstr "宛に送られる，perGENIEからのメールをご確認ください．"
+
+#: templates/risk_report/index.html:16
+msgid "Your disease risk report is shown bellow."
+msgstr "あなたの疾患リスクが以下に表示されています。"
+
+#: templates/risk_report/index.html:18
+msgid "Disease Risk Report"
+msgstr "疾患リスクレポート"
+
+#: templates/risk_report/index.html:19
+msgid "How are the disease risk values calculated?"
+msgstr "疾患リスクはどのように計算されるのですか？"
+
+#: templates/risk_report/index.html:44
+msgid "Information about this genome file is here."
+msgstr "このゲノムファイルに関する情報が表示されています。"
+
+#: templates/risk_report/index.html:48
+msgid "Genome file"
+msgstr "ゲノムファイル"
+
+#: templates/risk_report/index.html:49
+msgid "Population"
+msgstr "人種"
+
+#: templates/risk_report/index.html:50
+msgid "File Format"
+msgstr "ファイルフォーマット"
+
+#: templates/risk_report/index.html:56
+msgid "You can select and change genome files here."
+msgstr "ここからゲノムファイルを変えることができます。"
+
+#: templates/risk_report/index.html:60
+msgid "change genome file?"
+msgstr "ゲノムファイルを変えますか？"
+
+#: templates/risk_report/index.html:70
+msgid "Also, you can change population setting for this genome file."
+msgstr "また、人種の設定を変えることもできます。"
+
+#: templates/risk_report/index.html:71 templates/risk_report/index.html:80
+msgid "change population?"
+msgstr "人種の設定を変えますか？"
+
+#: templates/risk_report/index.html:76
+msgid "Change population to ..."
+msgstr "人種の設定の変更"
+
+#: templates/risk_report/index.html:109
+msgid "Your top 10 highest risks are listed here."
+msgstr "高いリスクを持つ疾患トップ10です。"
+
+#: templates/risk_report/index.html:111
+msgid "Top 10 Highest"
+msgstr "高リスク疾患トップ10"
+
+#: templates/risk_report/index.html:120
+msgid "view all the traits!"
+msgstr "すべての疾患をみる"
+
+#: templates/risk_report/index.html:120
+msgid "To see all the disease risks and/or compare two genomes, click here!"
+msgstr "ここからすべての疾患をみることができます。"
+
+#: templates/risk_report/index.html:120
+msgid "View more"
+msgstr "さらに詳しく"
+
+#: templates/risk_report/index.html:122
+msgid "Sorry, you have no data for disease risk."
+msgstr "まだゲノムファイルがアップロードされていないようです..."
+
+#: templates/risk_report/index.html:123
+msgid "Probably, uploaded data was too few to calculate risk."
+msgstr ""
+"アップロードされたゲノムデータは、疾患リスクを計算するにはデータが少なすぎた"
+"ようです..."
+
+#: templates/risk_report/index.html:136
+msgid "Statistics"
+msgstr "統計データ"
+
+#: templates/risk_report/index.html:142
+msgid "Number of studies for this population is "
+msgstr "この人種での対象研究論文数: "
+
+#: templates/risk_report/index.html:144
+msgid "Coverage for these studies is "
+msgstr "アップロードされたデータのこれらの論文に対するカバー率: "
+
+#: templates/risk_report/index.html:193
+msgid "Risk relative to average population"
+msgstr "人種内平均に対する相対リスク"
 
 #~ msgid "First, upload your genome file!"
 #~ msgstr "まずは，genome fileをアップロードしましょう!"
