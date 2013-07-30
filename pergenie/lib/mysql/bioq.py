@@ -5,6 +5,18 @@ import MySQLdb as mdb
 import sys
 
 class Bioq(object):
+    """
+    dependancies:
+
+    import following tables first:
+
+    * GeneIdToName
+    * _loc_allele_freqs
+    * _loc_snp_summary
+    * b137_SNPContigLoc
+
+    """
+
     def __init__(self, host, username, password, dbname):
         self.host = host
         self.username = username
@@ -12,29 +24,29 @@ class Bioq(object):
         self.dbname = dbname
         # self.merged = {121909559: 121909548}
 
-    def _sql(self, sql):
+    def _sql(self, sql, param):
         con = mdb.connect(self.host, self.username, self.password, self.dbname)
         with con:
             cur = con.cursor(mdb.cursors.DictCursor)
-            cur.execute(sql)
+            cur.execute(sql, param)
             rows = cur.fetchall()
             return rows
 
     def _allele_freqs(self, rs):
         # rs = self.merged.get(rs, rs)
-        rows = self._sql("select * from _loc_allele_freqs where snp_id = '%s'" % rs)
+        rows = self._sql("select * from _loc_allele_freqs where snp_id = '%s'", rs)
         return rows
 
     def _snp_summary(self, rs):
         # rs = self.merged.get(rs, rs)
-        row = self._sql("select * from _loc_snp_summary where snp_id = '%s' limit 1" % rs)
+        row = self._sql("select * from _loc_snp_summary where snp_id = '%s' limit 1", rs)
         if not row:
             print >>sys.stderr, '{0} not found'.format(rs)
 
         return row[0] if row else None
 
     def _SNPContigLoc(self, rs):
-        row = self._sql("select * from b137_SNPContigLoc where snp_type = 'rs' && snp_id = %s limit 1" % rs)
+        row = self._sql("select * from b137_SNPContigLoc where snp_type = 'rs' && snp_id = %s limit 1", rs)
         if not row:
             print >>sys.stderr, '{0} not found'.format(rs)
 
@@ -104,7 +116,7 @@ class Bioq(object):
         return self._snp_summary(rs)
 
     def get_gene_symbol(self, gene_id):
-        row = self._sql("select * from GeneIdToName where gene_id = '%s' limit 1" % gene_id)
+        row = self._sql("select * from GeneIdToName where gene_id = '%s' limit 1", gene_id)
         return row[0] if row else None
 
     def get_gene_id(self, gene_symbol):
@@ -115,7 +127,7 @@ class Bioq(object):
         _chr2num = {'X': '23', 'Y': '24', 'MT': '25', 'M': '25'}
         chrpos = _chr2num.get(chrom, chrom).zfill(2) + str(pos).zfill(9)
 
-        row = self._sql("select * from _loc_snp_summary where pos_global = %s limit 1" % chrpos)
+        row = self._sql("select * from _loc_snp_summary where pos_global = %s limit 1", chrpos)
         # if not row:
         #     print >>sys.stderr, 'pos_global {0} not found'.format(chrpos)
 
