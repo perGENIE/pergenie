@@ -16,6 +16,9 @@ log = getColorLogger(__name__)
 
 @login_required
 def index(request):
+
+    log.debug(request.session.get_expiry_age())
+
     user_id = request.user.username
     msg, err, = '', ''
     msgs = []

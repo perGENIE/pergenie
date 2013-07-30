@@ -92,6 +92,14 @@ def login(request):
                 break
 
             auth_login(request, user)
+
+            # Remember Me
+            if not request.POST.get('remember_me', None):
+                request.session.set_expiry(0)
+                log.debug("Not Remember Me")
+
+            log.debug(request.session.get_expiry_age())
+
             return redirect('apps.dashboard.views.index')
 
     return direct_to_template(request, 'frontend/login.html', dict(err=err))
