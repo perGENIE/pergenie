@@ -50,3 +50,6 @@ celeryd.pid
 
 # pyfasta
 *.gdx
+
+# Population PCA
+*.obj

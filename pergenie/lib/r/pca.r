@@ -37,8 +37,8 @@ label <- as.factor(input[,length(input)])
 # legend("right", legend=unique(label))
 # dev.off()
 
-# Write out geometric points as .geo
-geofile <- sub(".csv$", ".geo", infile)
-geodata <- cbind(prcomp.obj$x[,1:2], as.character(label))
-colnames(geodata)[3] <- "popcode"
-write.csv(geodata, geofile, quote=FALSE)
+# # Write out geometric points as .geo
+# geofile <- sub(".csv$", ".geo", infile)
+# geodata <- cbind(prcomp.obj$x[,1:2], as.character(label))
+# colnames(geodata)[3] <- "popcode"
+# write.csv(geodata, geofile, quote=FALSE)

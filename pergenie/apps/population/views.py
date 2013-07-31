@@ -8,28 +8,21 @@ from apps.riskreport.forms import RiskReportForm
 
 import sys, os
 from models import *
-
+from lib.api.db import get_data_infos
 from utils import clogging
 log = clogging.getColorLogger(__name__)
 
 
 @login_required
 def index(request):
-    # user_id = request.user.username
-    # msg, err = '', ''
-
-    # TODO: create funciton
-
-    # people = get_people(scale)
-    # snps = get_pca_snps(scale)
-    # genotyes = get_genotypes(snps)
-    # person = project_new_person(genotyes, scale)
+    user_id = request.user.username
+    infos = get_data_infos(user_id)
 
     people = dict()
     for scale in ['global', 'EastAsia', 'Europe', 'Africa', 'Americas']:
         people[scale] = get_people(scale)
-    person = [3,3]  # one point (PC1, PC2), which represetns one person in PCA coordinate.
+        for info in infos:
+            people[scale].append(project_new_person(scale, info))
 
     return direct_to_template(request, 'population/index.html', dict(scale=scale,
-                                                                     people=people,
-                                                                     person=person))
+                                                                     people=people))

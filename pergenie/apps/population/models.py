@@ -1,29 +1,25 @@
-# from django.db import models
+from lib.r.r import projection
 from django.conf import settings
 import pymongo
 
-import sys
 
-
-def get_pca_snps():
-    """Get PCA SNPs of each scale.
-    """
-    pass
-
-
-def get_genotypes(snps):
-    """Get genotyes of username.filename.
-    """
-    pass
-
-
-def project_new_person(genotyes, scale):
+def project_new_person(scale, info):
     """Project new person onto PCA coordinate.
 
-    args:
-    retval:
+    args: str(scale)
+          data_info: {'user_id': '', 'name': '', ...}
+    retval: {'position': [x, y], 'label': '', 'map_label': ''}
     """
-    pass
+
+    # TODO: currently only for `global` scale
+    if scale in ('global'):
+        record = {'position': projection(scale, info),
+                  'label': info['name'],
+                  'map_label': ''}
+    else:
+        record = None
+
+    return record
 
 
 def get_people(scale):
