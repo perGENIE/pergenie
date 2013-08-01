@@ -1,14 +1,13 @@
-#!/usr/bin/env python2.7
 # -*- coding: utf-8 -*-
 
 import sys
 import subprocess
 import argparse
 import csv
-
 from pymongo import MongoClient, ASCENDING
 
-def import_dbsnp(path_to_dbsnp, db_name, collection_name, is_snp_only=False, port=27017):
+
+def import_dbsnp(settings):
     """Import VCF formatted dbSNP into MongoDB.
 
     * VCF formatted dbSNP file is available from Broad Institute's FTP site.
@@ -19,10 +18,15 @@ def import_dbsnp(path_to_dbsnp, db_name, collection_name, is_snp_only=False, por
       * This function is independent from Django.
     """
 
+    path_to_dbsnp = settings.PATH_TO_DBSNP
+    db_name = 'dbsnp'
+    collection_name = settings.DBSNP_VERSION
+    is_snp_only = False
+
     SNP_tag = {'B132': 'SNP',
                'B137': 'SNV'}[collection_name]
 
-    with MongoClient(port=port) as c:
+    with MongoClient(host=settings.MONGO_URI) as c:
         dbsnp = c[db_name][collection_name]
 
         # ensure old collections does not exist
@@ -111,18 +115,3 @@ def _info(text):
                 infos.update({tmp[0]: tmp[1]})
 
     return infos
-
-
-def _main():
-    parser = argparse.ArgumentParser(description='Import dbsnp.vcf to MongoDB')
-    parser.add_argument('path_to_dbsnp', help='path to dbsnp.vcf, e.g., dbsnp_132.b37.vcf')
-    parser.add_argument('db_name', help='db name, e.g., dbsnp')
-    parser.add_argument('collection_name', help='collection name, e.g., B132')
-    parser.add_argument('--snp_only', action='store_true', help='Import SNPs only (Do not import INDELs).')
-    parser.add_argument('--port', type=int)
-    args = parser.parse_args()
-
-    import_dbsnp(args.path_to_dbsnp, args.db_name, args.collection_name, args.snp_only, args.port)
-
-if __name__ == '__main__':
-    _main()

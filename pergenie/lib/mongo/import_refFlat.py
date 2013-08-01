@@ -1,10 +1,10 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import sys
 import pymongo
 
-def import_refFlat(path_to_refFlat, MONGO_URI="mongodb://localhost:27017"):
+
+def import_refFlat(settings):
     """
     refFlat:
 
@@ -20,6 +20,9 @@ def import_refFlat(path_to_refFlat, MONGO_URI="mongodb://localhost:27017"):
     uint[exonCount] exonStarts; "Exon start positions"
     uint[exonCount] exonEnds;   "Exon end positions"
     """
+
+    path_to_refFlat = settings.PATH_TO_REFFLAT
+    MONGO_URI = settings.MONGO_URI
 
     print >>sys.stderr, 'Importing refFlat...'
 
@@ -83,13 +86,3 @@ def _chrom(s):
 def _strand(s):
     assert s in ['+', '-']
     return s
-
-
-if __name__ == '__main__':
-    if len(sys.argv) != 2:
-        print >>sys.stderr, """USAGE: {0} /path/to/refFlat.txt
-
-        refFlat.txt for hg19 is available at:
-        http://hgdownload.cse.ucsc.edu/goldenPath/hg19/database/refFlat.txt.gz""".format(sys.argv[0])
-        sys.exit()
-    import_refFlat(sys.argv[1])

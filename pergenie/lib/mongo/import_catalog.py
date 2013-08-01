@@ -118,13 +118,14 @@ def import_catalog(path_to_gwascatalog, settings):
         if catalog_cover_rate.find_one(): c['pergenie'].drop_collection(catalog_cover_rate)
         assert catalog_cover_rate.count() == 0
 
-        strand_db = c['strand_db']
-        if not strand_db.collection_names():
-            log.warn('========================================')
-            log.warn('strand_db does not exist in mongodb ...')
-            log.warn('so strand check will be skipped')
-            log.warn('========================================')
-            strand_db = None
+        # TODO: make it deprecated
+        # strand_db = c['strand_db']
+        # if not strand_db.collection_names():
+        #     log.warn('========================================')
+        #     log.warn('strand_db does not exist in mongodb ...')
+        #     log.warn('so strand check will be skipped')
+        #     log.warn('========================================')
+        #     strand_db = None
 
         dbsnp = c['dbsnp'][dbsnp_version]
         if not dbsnp.find_one():

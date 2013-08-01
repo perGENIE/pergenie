@@ -60,12 +60,6 @@ class Command(BaseCommand):
             help=colored("Import BioQ into database", "green")
         ),
         make_option(
-            "--strand_db",
-            action="store_true",
-            dest="strand_db",
-            help=colored("Import strand_db into database", "green")
-        ),
-        make_option(
             "--refflat",
             action="store_true",
             dest="refflat",
@@ -254,16 +248,13 @@ class Command(BaseCommand):
 
         elif options["dbsnp"]:
             log.info('Try to import dbsnp ...')
-            import_dbsnp(settings.PATH_TO_DBSNP, 'dbsnp', settings.DBSNP_VERSION, is_snp_only=True, port=settings.MONGO_PORT)
+            import_dbsnp(settings)
         elif options["bioq"]:
             log.info('Try to import bioq ...')
             import_bioq(settings)
-        elif options["strand_db"]:
-            log.info('Try to import strand_db ...')
-            import_strand_db(settings.STRAND_DB_DIR, settings.MONGO_PORT)
         elif options["refflat"]:
             log.info('Try to import refflat ...')
-            import_refFlat(settings.PATH_TO_REFFLAT, settings.MONGO_URI)
+            import_refFlat(settings)
         elif options["omim"]:
             log.info('Try to import omim ...')
             omim_parser = OMIMParser(settings.PATH_TO_OMIMTXT, settings.OMIM_APIKEY)
