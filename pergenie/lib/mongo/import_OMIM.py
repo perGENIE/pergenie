@@ -14,15 +14,6 @@ import time
 import pymongo
 import datetime
 
-# #
-# sys.path.insert(0, '../mysql/')
-# from bioq import Bioq
-# sys.path.insert(0, '../../pergenie/settings/')
-# import develop as settings
-# bq = Bioq(settings.DATABASES['bioq']['HOST'],
-#           settings.DATABASES['bioq']['USER'],
-#           settings.DATABASES['bioq']['PASSWORD'],
-#           settings.DATABASES['bioq']['NAME'])
 
 class OMIMParser(object):
     """
