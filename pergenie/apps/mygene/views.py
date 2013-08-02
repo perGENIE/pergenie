@@ -24,6 +24,8 @@ def index(request):
     msg, err = '', ''
 
     genes = get_genes()
+    if genes:
+        genes = genes[0:100]  # FIXME
 
     return direct_to_template(request, 'mygene/index.html',
                               dict(genes=genes))
@@ -38,17 +40,19 @@ def my_gene(request, gene):
     if not gene in genes:
         raise Http404
 
+    # Gene
     gene_info = get_my_gene(gene)
 
+    # Protein
+    pdb_records = pdb2var(pdb_id)
+    pdb_name = pdb_id.upper()
+
+    return direct_to_template(request, 'myprotain/pdb.html',
+                              dict(pdb_records=pdb_records,
+                                   pdb_name=pdb_name))
+
+
     return direct_to_template(request, 'mygene/my_gene.html',
-                              dict(gene_info=gene_info))
-
-@login_required
-def my_dys(request):
-    user_id = request.user.username
-    msg, err = '', ''
-
-    dys = get_dys()
-
-    return direct_to_template(request, 'mygene/my_dys.html',
-                              dict(dys=dys))
+                              dict(gene_info=gene_info,
+                                   pdb_records=pdb_records,
+                                   pdb_name=pdb_name))

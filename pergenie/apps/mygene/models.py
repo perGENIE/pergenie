@@ -4,11 +4,10 @@ import sys, os
 from pprint import pformat
 from pymongo import MongoClient, ASCENDING, DESCENDING
 from django.conf import settings
-
 from pyfasta import Fasta
-
 from lib.mongo.mutate_fasta import MutateFasta
-from utils import clogging
+from lib.utils.fetch_pdb import fetch_pdb
+from lib.utils import clogging
 log = clogging.getColorLogger(__name__)
 
 
@@ -46,13 +45,36 @@ def get_my_gene(gene):
         return gene_info
 
 
-def get_dys():
-    records = []
-    fa = Fasta(settings.PATH_TO_REFERENCE_FASTA, key_fn=lambda key: key.split()[0])
+# def get_dys():
+#     records = []
+#     fa = Fasta(settings.PATH_TO_REFERENCE_FASTA, key_fn=lambda key: key.split()[0])
 
-    start = 4330942
-    stop = 4331090
-    seq = fa.sequence({'chr': 'Y', 'start': start, 'stop': stop}, one_based=True)
-    records.append(seq)
+#     start = 4330942
+#     stop = 4331090
+#     seq = fa.sequence({'chr': 'Y', 'start': start, 'stop': stop}, one_based=True)
+#     records.append(seq)
+
+#     return records
+
+def pdb2var(pdb_id):
+    records = []
+    record = ''
+
+    fetch_pdb(pdb_id)
+    fin_path = os.path.join('/tmp/atoms', 'pdb'+pdb_id.lower()+'.atom')
+
+    with open(fin_path, 'r') as fin:
+        for line in fin:
+            line = line[0:70]
+            line = line.strip('\n ')
+            assert not '\n' in line
+            assert not '"' in line
+            record += line + '\\n'
+
+            if len(record) > 1000:
+                records.append(record)
+                record = ''
+
+        records.append(record)
 
     return records
