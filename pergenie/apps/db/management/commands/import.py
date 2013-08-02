@@ -22,7 +22,6 @@ from utils.io import get_url_content
 
 from lib.mongo.clean_catalog import clean_catalog
 from lib.mongo.import_catalog import import_catalog
-# from lib.mongo.import_dbsnp import import_dbsnp
 from lib.mongo.import_strand_db import import_strand_db
 from lib.mongo.import_refFlat import import_refFlat
 from lib.mongo.import_OMIM import OMIMParser
@@ -47,12 +46,6 @@ class Command(BaseCommand):
             dest="demodata",
             help=colored("Import Demo data & Demo user (if not exists) into database", "green")
         ),
-        # make_option(
-        #     "--dbsnp",
-        #     action="store_true",
-        #     dest="dbsnp",
-        #     help=colored("Import dbSNP into database", "green")
-        # ),
         make_option(
             "--bioq",
             action="store_true",
@@ -246,9 +239,6 @@ class Command(BaseCommand):
                                         file_format=target['file_format'],
                                         user_id=settings.DEMO_USER_ID)
 
-        # elif options["dbsnp"]:
-        #     log.info('Try to import dbsnp ...')
-        #     import_dbsnp(settings)
         elif options["bioq"]:
             log.info('Try to import bioq ...')
             import_bioq(settings)
@@ -257,8 +247,8 @@ class Command(BaseCommand):
             import_refFlat(settings)
         elif options["omim"]:
             log.info('Try to import omim ...')
-            omim_parser = OMIMParser(settings.PATH_TO_OMIMTXT, settings.OMIM_APIKEY)
-            omim_parser.insert_to_mongo(host=settings.MONGO_URI, dbname='pergenie')
+            omim_parser = OMIMParser(settings)
+            omim_parser.insert_to_mongo()
             omim_parser.check()
         elif options["population_pca"]:
             log.info('Try to import population_pca ...')

@@ -20,9 +20,10 @@ class OMIMParser(object):
     The OMIM (Online Mendelian Inheritance in Man, http://omim.org/)
     provides bulk download at http://omim.org/downloads
     """
-    def __init__(self, fin, apikey, stdout=False):
-        self.fin = fin
-        self.apikey = apikey
+    def __init__(self, settings, stdout=False):
+        self.fin = settings.PATH_TO_OMIMTXT
+        self.apikey = settings.OMIM_APIKEY
+        self.mongo_uri = settings.MONGO_URI
         self.stdout = stdout
         if self.stdout:
             print '# created:', datetime.date.today()
@@ -71,9 +72,9 @@ class OMIMParser(object):
                     # TODO: write parser for each FIELD
                     record[field_name]['lines'].append(line)
 
-    def insert_to_mongo(self, host="mongodb://localhost:27017", dbname="pergenie"):
-        with pymongo.MongoClient(host=host) as c:
-            db = c[dbname]
+    def insert_to_mongo(self):
+        with pymongo.MongoClient(host=self.mongo_uri) as c:
+            db = c['pergenie']
             omim = db['omim']
             omim_av = db['omim_av']
             if omim.count(): db.drop_collection(omim)
@@ -168,17 +169,3 @@ class OMIMParser(object):
         out = int(com2.stdout.readline().strip())
         print >>sys.stderr, 'count (grep)', out
         assert self.count == out, 'self.check() failed. self.count does not mutch count by grep'
-
-
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('omim_txt', help='path to omim.txt')
-    parser.add_argument('omim_APIKEY', help='OMIM APIKEY')
-    parser.add_argument('--stdout', action='store_true', help='stdout `OMIM AV` as csv')
-    args = parser.parse_args()
-
-    p = OMIMParser(args.omim_txt, args.omim_APIKEY, args.stdout)
-    p.insert_to_mongo()
-    print >>sys.stderr, 'done'
-    p.check()
-    print >>sys.stderr, 'ok'
