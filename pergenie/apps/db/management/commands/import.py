@@ -1,33 +1,32 @@
 # -*- coding: utf-8 -*-
 
+import sys, os
+import re
+import glob
+import datetime
+import subprocess
+from optparse import make_option
+from termcolor import colored
+from pymongo import MongoClient
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
 from django.conf import settings
 
-import sys, os
-import re
-import datetime
-import glob
-from optparse import make_option
-from termcolor import colored
-from pymongo import MongoClient
+from lib.mysql.import_bioq import import_bioq
+from lib.mongo.import_refFlat import import_refFlat
+from lib.mongo.import_OMIM import OMIMParser
+from lib.mongo.clean_catalog import clean_catalog
+from lib.mongo.import_catalog import import_catalog
+from lib.mongo.import_population_pca import import_population_pca
+from lib.mongo.import_genomes import import_genomes
 
 from lib.common import clean_file_name
 from lib.mongo.import_variants import import_variants
-from utils.date import today_date, today_str
-from utils import clogging
+from lib.utils.date import today_date, today_str
+from lib.utils import clogging
 log = clogging.getColorLogger(__name__)
 from utils.io import get_url_content
-# from utils.retrive import download_file
 
-from lib.mongo.clean_catalog import clean_catalog
-from lib.mongo.import_catalog import import_catalog
-from lib.mongo.import_strand_db import import_strand_db
-from lib.mongo.import_refFlat import import_refFlat
-from lib.mongo.import_OMIM import OMIMParser
-from lib.mongo.import_population_pca import import_population_pca
-from lib.mongo.import_genomes import import_genomes
-from lib.mysql.import_bioq import import_bioq
 
 def date2datetime(d):
     return datetime.datetime.combine(d, datetime.time())
@@ -52,6 +51,12 @@ class Command(BaseCommand):
             action="store_true",
             dest="bioq",
             help=colored("Import BioQ into database", "green")
+        ),
+        make_option(
+            "--pdb",
+            action="store_true",
+            dest="pdb",
+            help=colored("Import PDB", "green")
         ),
         make_option(
             "--refflat",
@@ -249,6 +254,9 @@ class Command(BaseCommand):
         elif options["bioq"]:
             log.info('Try to import bioq ...')
             import_bioq(settings)
+        elif options["pdb"]:
+            p0 = subprocess.Popen(['rsync', '-avz', '--delete', 'ftp.pdbj.org::ftp_data/structures/divided/pdb/', settings.PATH_TO_PDB])
+            log.info(p0.communicate()[0])
         elif options["refflat"]:
             log.info('Try to import refflat ...')
             import_refFlat(settings)

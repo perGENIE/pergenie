@@ -53,6 +53,20 @@
                   <p>TODO: dbNSFPをからめる．</p>
                   <hr>
 
+                  {{ pdb_name }}
+
+                  <hr>
+                  <span class="badge badge-yellow"><a href="//www.rcsb.org/pdb/explore/explore.do?structureId={{ pdb_name }}" target="_blank">PDB</a></span>
+                  <hr>
+                  <p>3D structure:</p>
+                  <canvas class="ChemDoodleWebComponent" id="mg" width="256" height="256">This browser does not support HTML5/Canvas.</canvas>
+                  <p>TODO: If WebGL is no enabled, <a href="{% url apps.faq.views.index %}#safari_webgl">[FAQ] Safari: Enable WebGL in Safari.</a></p>
+                  <p>TODO: enable to highlight mutation</p>
+
+
+                  <hr>
+                  <span class="rcsb" title="Go to RCSB PDB-101"><a href="//www.rcsb.org/pdb/101/motm.do?momID=156" target="_blank"><button class="btn btn-info">Learn more about ABO Blood Type Glycosyltransferases</button></a></span>
+
                   <button class="btn btn-info" href="#" onclick="hideIntronsAndUTRs();return false;">Hide Introns and UTRs</button>
                   <button class="btn btn-success" href="#" onclick="location.reload();return false;">Refresh</button>
 
@@ -130,4 +144,27 @@
       $(".genome").children().tooltip({title: "hello"});
   });
 </script>
+
+<script type="text/javascript">$('.rcsb').tooltip();</script>
+
+<link rel="stylesheet" href="{% static 'css/ChemDoodleWeb.css' %}" type="text/css">
+<script type="text/javascript" src="{% static 'js/chemdoodle/ChemDoodleWeb-libs.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/chemdoodle/ChemDoodleWeb.js' %}"></script>
+
+
+<script>
+  var pdb_{{ pdb_name }}  = {% for r in pdb_records %}"{{ r }}" +
+                            {% endfor %}"END";
+
+  var mg = new ChemDoodle.TransformCanvas3D('mg', 256, 256);
+  mg.specs.set3DRepresentation('Stick');
+  mg.specs.atoms_display = false;
+  mg.specs.bonds_display = false;
+  mg.specs.ribbons_useShapelyColors = false;
+  mg.specs.ribbons_useAminoColors = false;
+  mg.specs.ribbons_cartoonize = true;
+  var struct = ChemDoodle.readPDB(pdb_{{ pdb_name }});
+  mg.loadMolecule(struct);
+</script>
+
 {% endblock %}
