@@ -37,7 +37,6 @@ def import_catalog(path_to_gwascatalog, settings):
     path_to_disease2wiki = settings.PATH_TO_DISEASE2WIKI
     path_to_interval_list_dir = settings.PATH_TO_INTERVAL_LIST_DIR
     path_to_reference_fasta = settings.PATH_TO_REFERENCE_FASTA
-    dbsnp_version = settings.DBSNP_VERSION
 
     with pymongo.MongoClient(host=settings.MONGO_URI) as c:
 
@@ -117,23 +116,6 @@ def import_catalog(path_to_gwascatalog, settings):
         assert catalog_stats.count() == 0
         if catalog_cover_rate.find_one(): c['pergenie'].drop_collection(catalog_cover_rate)
         assert catalog_cover_rate.count() == 0
-
-        # TODO: make it deprecated
-        # strand_db = c['strand_db']
-        # if not strand_db.collection_names():
-        #     log.warn('========================================')
-        #     log.warn('strand_db does not exist in mongodb ...')
-        #     log.warn('so strand check will be skipped')
-        #     log.warn('========================================')
-        #     strand_db = None
-
-        dbsnp = c['dbsnp'][dbsnp_version]
-        if not dbsnp.find_one():
-            log.warn('========================================')
-            log.warn('dbsnp.{0} does not exist in mongodb ...'.format(dbsnp_version))
-            log.warn('so dbSNP check will be skipped')
-            log.warn('========================================')
-            dbsnp = None
 
         try:
             fa = MyFasta(path_to_reference_fasta)
@@ -225,7 +207,7 @@ def import_catalog(path_to_gwascatalog, settings):
                     catalog.insert(data)
                     continue
 
-                rs, data['risk_allele'] = _risk_allele(data, dbsnp=dbsnp, strand_db=strand_db)
+                rs, data['risk_allele'] = _risk_allele(data)
                 if data['snps'] != rs:
                     log.warn('"snps" != "risk_allele": {0} != {1}'.format(data['snps'], rs))
                     catalog.insert(data)
@@ -593,7 +575,7 @@ def _platform(text):
 
     return sorted(list(result))
 
-def _risk_allele(data, dbsnp=None, strand_db=None):
+def _risk_allele(data):
     """Use strongest_snp_risk_allele in GWAS Catalog as risk allele, e.g., rs331615-T -> T
 
     Following checks will be done if available.
