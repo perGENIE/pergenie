@@ -21,10 +21,12 @@ def import_bioq(settings):
 
         log.info('Importing %s' % table)
         p1 = subprocess.Popen(["gunzip", "--to-stdout", sqlfile], stdout=subprocess.PIPE)
-        p2 = subprocess.Popen(["mysql",
-                               "-u", settings.DATABASES['bioq']['USER'],
-                               "--password=" + settings.DATABASES['bioq']['PASSWORD'],
-                               settings.DATABASES['bioq']['NAME']],
-                              stdin=p1.stdout, stdout=subprocess.PIPE)
+        cmd = ["mysql",
+               "-u", settings.DATABASES['bioq']['USER'],
+               "--password=" + settings.DATABASES['bioq']['PASSWORD'],
+               settings.DATABASES['bioq']['NAME']]
+        if settings.DATABASES['bioq']['HOST'].endswith('sock'):
+            cmd.append('--socket=%s' % settings.DATABASES['bioq']['HOST'])
+        p2 = subprocess.Popen(cmd, stdin=p1.stdout, stdout=subprocess.PIPE)
         p1.stdout.close()  # Allow p1 to receive a SIGPIPE if p2 exits.
         log.info('Status %s' % p2.communicate()[0])
