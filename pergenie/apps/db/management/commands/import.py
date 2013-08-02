@@ -26,6 +26,7 @@ from lib.mongo.import_strand_db import import_strand_db
 from lib.mongo.import_refFlat import import_refFlat
 from lib.mongo.import_OMIM import OMIMParser
 from lib.mongo.import_population_pca import import_population_pca
+from lib.mongo.import_genomes import import_genomes
 from lib.mysql.import_bioq import import_bioq
 
 def date2datetime(d):
@@ -69,6 +70,12 @@ class Command(BaseCommand):
             action="store_true",
             dest="population_pca",
             help=colored("Import Population PCA data into database", "green")
+        ),
+        make_option(
+            "--genomes",
+            action="store_true",
+            dest="genomes",
+            help=colored("Import genome data (to be used as cron job)", "green")
         ),
 
     )
@@ -253,6 +260,9 @@ class Command(BaseCommand):
         elif options["population_pca"]:
             log.info('Try to import population_pca ...')
             import_population_pca(settings)
+        elif options["genomes"]:
+            log.info('Try to import genomes (genome data) ...')
+            import_genomes(settings)
 
         else:
             self.print_help("import", "help")
