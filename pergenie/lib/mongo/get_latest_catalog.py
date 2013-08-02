@@ -5,7 +5,7 @@ from django.conf import settings
 
 
 def get_latest_catalog(port):
-    with MongoClient(port=port) as c:
+    with MongoClient(host=settings.MONGO_URI) as c:
         latest_document = c['pergenie']['catalog_info'].find_one({'status': 'latest'})  # -> {'date': datetime.datetime(2012, 12, 12, 0, 0),}
 
         if latest_document:
