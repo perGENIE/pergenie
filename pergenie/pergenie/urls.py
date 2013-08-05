@@ -33,9 +33,6 @@ urlpatterns = patterns('',
     url(r'^logout/$', 'apps.frontend.views.logout'),
     url(r'^trydemo/$', 'apps.frontend.views.trydemo'),
 
-    url(r'^register/$', 'apps.frontend.views.register'),
-    url(r'^activation/(?P<activation_key>\w{40})/$', 'apps.frontend.views.activation'),
-
     # contents
     url(r'^dashboard/$', 'apps.dashboard.views.index'),
     # url(r'^user_settings/$', 'apps.settings.views.user_settings'),
@@ -72,9 +69,11 @@ urlpatterns = patterns('',
     url(r'^faq/$', 'apps.faq.views.index'),
 )
 
-if 'rosetta' in settings.INSTALLED_APPS:
+if settings.IS_REGISTERABLE:
     urlpatterns += patterns('',
-        url(r'^rosetta/', include('rosetta.urls')),
+        url(r'^register/$', 'apps.frontend.views.register'),
+        url(r'^activation/(?P<activation_key>\w{40})/$', 'apps.frontend.views.activation'),
+
     )
 
 

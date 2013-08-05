@@ -88,6 +88,7 @@ def index(request):
                 catalog_latest_new_records_data=catalog_latest_new_records_data,
                 n_out_dated_riskreports=n_out_dated_riskreports,
                 recent_catalog_records=recent_catalog_records,
-                intros=intros, intro_type=intro_type, infos=infos)
+                intros=intros, intro_type=intro_type, infos=infos,
+                is_registerable=settings.IS_REGISTERABLE)
 
     return direct_to_template(request, 'dashboard/index.html', msgs)

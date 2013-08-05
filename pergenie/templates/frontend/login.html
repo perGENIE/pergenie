@@ -39,7 +39,9 @@
           </div>
           {% endif %}
 
+          {% if is_registerable %}
           <a href="{% url apps.frontend.views.register %}">{% trans "Create an account." %}</a>
+          {% endif %}
 
         </div>
       </div>

@@ -156,6 +156,7 @@ _8
                     </a>
                     <ul class="dropdown-menu secondary ">
 
+                      {% if is_registerable %}
                       {% ifequal user.username|demouser_format "demo@pergenie.org" %}
                       <li class="">
                         <a href="{% url apps.frontend.views.register %}">
@@ -163,6 +164,7 @@ _8
                         </a>
                       </li>
                       {% endifequal %}
+                      {% endif %}
 
                       <li class="divider"></li>
                       <li class="">

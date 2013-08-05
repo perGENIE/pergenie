@@ -28,7 +28,7 @@ log = clogging.getColorLogger(__name__)
 
 
 def index(request):
-    return direct_to_template(request, 'frontend/index.html')
+    return direct_to_template(request, 'frontend/index.html', dict(is_registerable=settings.IS_REGISTERABLE))
 
 
 def trydemo(request):
@@ -102,7 +102,8 @@ def login(request):
 
             return redirect('apps.dashboard.views.index')
 
-    return direct_to_template(request, 'frontend/login.html', dict(err=err))
+    return direct_to_template(request, 'frontend/login.html', dict(err=err,
+                                                                   is_registerable=settings.IS_REGISTERABLE))
 
 
 def logout(request):

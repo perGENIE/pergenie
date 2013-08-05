@@ -49,7 +49,7 @@ _8
 
           <ul class="nav">
             <li><a href="{% url apps.frontend.views.trydemo %}">{% trans "Try demo" %}</a></li>
-            <li><a href="{% url apps.frontend.views.register %}">{% trans "Sign up" %}</a></li>
+            {% if is_registerable %}<li><a href="{% url apps.frontend.views.register %}">{% trans "Sign up" %}</a></li>{% endif %}
             <li><a href="{% url apps.frontend.views.login %}">{% trans "Login" %}</a></li>
           </ul>
         </div>
@@ -68,7 +68,7 @@ _8
       <div class="row">
         <div class="span12 center graded">
           <a href="{% url apps.frontend.views.trydemo %}" class="signup">{% trans "Try demo" %}</a>
-          <a href="{% url apps.frontend.views.register %}" class="signup">{% trans "Sign up for FREE" %}</a>
+          {% if is_registerable %}<a href="{% url apps.frontend.views.register %}" class="signup">{% trans "Sign up for FREE" %}</a>{% endif %}
         </div>
       </div>
     </div>
