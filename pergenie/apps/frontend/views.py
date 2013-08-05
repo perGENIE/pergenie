@@ -78,7 +78,7 @@ def login(request):
             password = form.cleaned_data['password']
 
             for allowed_domain in settings.ALLOWED_EMAIL_DOMAINS:
-                if not user_id.endswith('allowed_domain'):
+                if not user_id.endswith('@' + allowed_domain):
                     err = _('invalid mail address or password')
                     log.warn('Attempt to login by not allowed email domain: %s' % user_id)
                     send_mail(subject='warn',
@@ -160,7 +160,7 @@ def register(request):
                 break
 
             for allowed_domain in settings.ALLOWED_EMAIL_DOMAINS:
-                if not user_id.endswith('allowed_domain'):
+                if not user_id.endswith('@' + allowed_domain):
                     params['err'] = _('Invalid mail address assumed.')
                     log.warn('Attempt to register by not allowed email domain: %s' % user_id)
                     send_mail(subject='warn',
