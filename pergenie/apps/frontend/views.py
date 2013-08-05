@@ -13,6 +13,8 @@ from django.utils.translation import ugettext as _
 from django.conf import settings
 from django.db import IntegrityError
 from django.http import Http404
+from django.core.mail import send_mail
+
 from apps.frontend.forms import LoginForm, RegisterForm
 
 import sys, os
@@ -74,6 +76,17 @@ def login(request):
 
             user_id = form.cleaned_data['user_id']
             password = form.cleaned_data['password']
+
+            for allowed_domain in settings.ALLOWED_EMAIL_DOMAINS:
+                if not user_id.endswith('allowed_domain'):
+                    err = _('invalid mail address or password')
+                    log.warn('Attempt to login by not allowed email domain: %s' % user_id)
+                    send_mail(subject='warn',
+                              message='Attempt to login by not allowed email domain: %s' % user_id,
+                              from_email=settings.EMAIL_HOST_USER,
+                              recipient_list=[settings.EMAIL_HOST_USER],
+                              fail_silently=False)
+                    break
 
             # if user_id in settings.RESERVED_USER_ID:
             #     err = _('invalid mail address or password')
@@ -145,6 +158,18 @@ def register(request):
             if not email_validator(user_id):
                 params['err'] = _('Invalid mail address assumed.')
                 break
+
+            for allowed_domain in settings.ALLOWED_EMAIL_DOMAINS:
+                if not user_id.endswith('allowed_domain'):
+                    params['err'] = _('Invalid mail address assumed.')
+                    log.warn('Attempt to register by not allowed email domain: %s' % user_id)
+                    send_mail(subject='warn',
+                              message='Attempt to register by not allowed email domain: %s' % user_id,
+                              from_email=settings.EMAIL_HOST_USER,
+                              recipient_list=[settings.EMAIL_HOST_USER],
+                              fail_silently=False)
+
+                    break
 
             if user_id in settings.RESERVED_USER_ID:
                 params['err'] = _('Already registered.')
