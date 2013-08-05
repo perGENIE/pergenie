@@ -26,17 +26,21 @@
               </button>
               </a>
 
+              {% if "population" in installed_my_apps %}
               <a href="{% url apps.population.views.index %}">
               <button class="button square" href="#">
                 <i class="icon-globe icon-large"></i>
                 <span class="button-text">Population</span><span class="badge badge-blue">&nbsp;&beta;&nbsp;</span>
               </button></a>
+              {% endif %}
 
+              {% if "mygene" in installed_my_apps %}
               <a href="{% url apps.mygene.views.index %}">
               <button class="button square" href="#">
                 <i class="icon-beaker icon-large"></i>
                 <span class="button-text">MyGene</span><span class="badge badge-blue">&nbsp;&beta;&nbsp;</span>
               </button></a>
+              {% endif %}
 
               {% ifnotequal user.username|demouser_format "demo@pergenie.org" %}
               <a href="{% url apps.upload.views.index %}">

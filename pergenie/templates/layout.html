@@ -99,17 +99,21 @@ _8
                         </a>
                       </li>
 
+                      {% if "population" in installed_my_apps %}
                       <li>
                         <a href="{% url apps.population.views.index %}">
                           <i class="icon-globe"></i> Population
                         </a>
                       </li>
+                      {% endif %}
 
+                      {% if "mygene" in installed_my_apps %}
                       <li>
                         <a href="{% url apps.mygene.views.index %}">
                           <i class="icon-beaker"></i> MyGene
                         </a>
                       </li>
+                      {% endif %}
 
                       <li class="divider"></li>
                       {% ifnotequal user.username|demouser_format "demo@pergenie.org" %}

@@ -42,18 +42,6 @@ urlpatterns = patterns('',
     url(r'^riskreport/(?P<trait>[^/]*)/$', 'apps.riskreport.views.trait'),
     url(r'^riskreport/(?P<trait>[^/]*)/(?P<study>[^/]*)/$', 'apps.riskreport.views.study'),
 
-    url(r'^mygene/$', 'apps.mygene.views.index'),
-    url(r'^mygene/(?P<gene>.*?)/$', 'apps.mygene.views.my_gene'),
-
-    # url(r'^myprotain/$', 'apps.myprotain.views.index'),
-    # url(r'^myprotain/pdb/(?P<pdb_id>[a-zA-Z0-9]{4}?)/$', 'apps.myprotain.views.my_pdb'),
-
-    # url(r'^mydys/$', 'apps.mygene.views.my_dys'),
-
-    # url(r'^traits/$', 'apps.traits.views.index'),
-
-    url(r'^population/$', 'apps.population.views.index'),
-
     url(r'^library/$', 'apps.library.views.index'),
     url(r'^library/trait/$', 'apps.library.views.trait_index'),
     url(r'^library/trait/(?P<trait>.*?)/$', 'apps.library.views.trait'),
@@ -78,6 +66,27 @@ if settings.IS_UPLOADABLE:
         url(r'^upload/delete', 'apps.upload.views.delete'),
         url(r'^upload/status', 'apps.upload.views.status'),
     )
+
+if 'apps.population' in settings.INSTALLED_APPS:
+    urlpatterns += patterns('',
+        url(r'^population/$', 'apps.population.views.index'),
+    )
+
+if 'apps.mygene' in settings.INSTALLED_APPS:
+    urlpatterns += patterns('',
+        url(r'^mygene/$', 'apps.mygene.views.index'),
+        url(r'^mygene/(?P<gene>.*?)/$', 'apps.mygene.views.my_gene'),
+    )
+
+
+    # url(r'^myprotain/$', 'apps.myprotain.views.index'),
+    # url(r'^myprotain/pdb/(?P<pdb_id>[a-zA-Z0-9]{4}?)/$', 'apps.myprotain.views.my_pdb'),
+
+    # url(r'^mydys/$', 'apps.mygene.views.my_dys'),
+
+    # url(r'^traits/$', 'apps.traits.views.index'),
+
+
 
 
 """

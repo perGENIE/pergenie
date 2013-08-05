@@ -84,11 +84,14 @@ def index(request):
     else:
         pass
 
+    installed_my_apps = [x[5:] for x in settings.INSTALLED_APPS if x.startswith('apps.')]
+
     msgs = dict(msg=msg, err=err, msgs=msgs, user_id=user_id, demo_user_id=settings.DEMO_USER_ID,
                 catalog_latest_new_records_data=catalog_latest_new_records_data,
                 n_out_dated_riskreports=n_out_dated_riskreports,
                 recent_catalog_records=recent_catalog_records,
                 intros=intros, intro_type=intro_type, infos=infos,
-                is_registerable=settings.IS_REGISTERABLE)
+                is_registerable=settings.IS_REGISTERABLE,
+                installed_my_apps=installed_my_apps)
 
     return direct_to_template(request, 'dashboard/index.html', msgs)
