@@ -62,10 +62,6 @@ urlpatterns = patterns('',
     # url(r'^library/summary/$', 'apps.library.views.summary_index'),
     # url(r'^library/summary/(?P<field_name>.*?)/$', 'apps.library.views.summary'),
 
-    url(r'^upload/$', 'apps.upload.views.index'),
-    url(r'^upload/delete', 'apps.upload.views.delete'),
-    url(r'^upload/status', 'apps.upload.views.status'),
-
     url(r'^faq/$', 'apps.faq.views.index'),
 )
 
@@ -74,6 +70,13 @@ if settings.IS_REGISTERABLE:
         url(r'^register/$', 'apps.frontend.views.register'),
         url(r'^activation/(?P<activation_key>\w{40})/$', 'apps.frontend.views.activation'),
 
+    )
+
+if settings.IS_UPLOADABLE:
+    urlpatterns += patterns('',
+        url(r'^upload/$', 'apps.upload.views.index'),
+        url(r'^upload/delete', 'apps.upload.views.delete'),
+        url(r'^upload/status', 'apps.upload.views.status'),
     )
 
 

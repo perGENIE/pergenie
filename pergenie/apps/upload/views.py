@@ -30,7 +30,10 @@ def index(request):
     msg, err, msgs, errs = '', '', [], []
     do_intro = False
 
-    if user_id == settings.DEMO_USER_ID:
+    if user_id.startswith(settings.DEMO_USER_ID):
+        raise Http404
+
+    if not settings.IS_UPLOADABLE:
         raise Http404
 
     with pymongo.MongoClient(host=settings.MONGO_URI) as connection:
@@ -172,8 +175,7 @@ def index(request):
     return direct_to_template(request, 'upload/index.html',
                               dict(msg=msg, err=err, msgs=msgs, errs=errs, uploadeds=uploadeds,
                                    do_intro=do_intro,
-                                   allowed_upload_genomefile_count=settings.UPLOAD_GENOMEFILE_COUNT,
-                                   is_uploadable=settings.IS_UPLOADABLE))
+                                   allowed_upload_genomefile_count=settings.UPLOAD_GENOMEFILE_COUNT))
 
 
 @login_required
