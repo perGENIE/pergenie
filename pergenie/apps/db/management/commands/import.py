@@ -278,7 +278,17 @@ class Command(BaseCommand):
             import_population_pca(settings)
         elif options["genomes"]:
             log.info('Try to import genomes (genome data) ...')
+
+            pidfile_path = os.path.join(settings.BASE_DIR, 'import_genomes.pid')
+            if os.path.exists(pidfile_path):
+                log.error('Previous process has not finished yet.')
+                return
+
+            with open(pidfile_path, 'w') as pidfile:
+                print >>pidfile, os.getpid()
+
             import_genomes(settings)
+            os.remove(pidfile_path)
 
         else:
             self.print_help("import", "help")

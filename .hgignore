@@ -45,7 +45,7 @@ static/vendor
 _static/
 misc
 
-celeryd.pid
+*.pid
 
 # pyfasta
 *.gdx
