@@ -72,12 +72,12 @@ def import_genomes(settings):
                         db_info = db['data_info'].find_one({'user_id': username, 'raw_name': os.path.basename(filepath)})
                         if db_info and last_modified < db_info['date']: continue
 
+                        db['data_info'].insert(info)
                         log.info('Importing into DB: %s' % filepath)
                         log.info(import_variants(filepath,
                                                  info['population'],
                                                  info['file_format'],
-                                                 info['user_id'],
-                                                 settings))
+                                                 info['user_id']))
                         # population PCA
                         person_xy = [0,0]  # FIXME: projection(info)
                         db['data_info'].update({'user_id': info['user_id'], 'raw_name': info['raw_name']},
@@ -85,7 +85,7 @@ def import_genomes(settings):
                                                                  'label': info['user_id'],
                                                                  'map_label': ''},
                                                          'status': 100}})
-                        db['data_info'].insert(info)
+
 
 
             # Try to delete non exist files.
