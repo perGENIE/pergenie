@@ -22,7 +22,6 @@
               <button class="button square" href="#"{% ifequal intro_type.0 'risk_report' %} data-step="1" data-intro="{{ intros.0 }}" {% endifequal %} {% ifequal intro_type.0 'welcome' %} data-step="3" data-intro="{{ intros.2 }}" {% endifequal %}>
                 <i class="icon-align-left icon-large"></i>
                 <span class="button-text">RiskReport</span>
-                {% if n_out_dated_riskreports > 0 %}<span class="badge badge-blue">&nbsp;{{ n_out_dated_riskreports }}&nbsp;</span>{% endif %}
               </button>
               </a>
 
@@ -92,15 +91,6 @@
               </div>
             </div>
             {% endif %}
-
-            <!-- {% if msgs %} -->
-            <!-- {% for m in msgs %} -->
-            <!-- <div class="alert alert-info"> -->
-            <!--   <button type="button" class="close" data-dismiss="alert">&times;</button> -->
-            <!--   <strong>Information:</strong> {{ m }} -->
-            <!-- </div> -->
-            <!-- {% endfor %} -->
-            <!-- {% endif %} -->
 
             {% if err %}
             <div class="padded">
