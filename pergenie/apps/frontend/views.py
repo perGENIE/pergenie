@@ -77,16 +77,15 @@ def login(request):
             user_id = form.cleaned_data['user_id']
             password = form.cleaned_data['password']
 
-            for allowed_domain in settings.ALLOWED_EMAIL_DOMAINS:
-                if not user_id.endswith('@' + allowed_domain):
-                    err = _('invalid mail address or password')
-                    log.warn('Attempt to login by not allowed email domain: %s' % user_id)
-                    send_mail(subject='warn',
-                              message='Attempt to login by not allowed email domain: %s' % user_id,
-                              from_email=settings.EMAIL_HOST_USER,
-                              recipient_list=[settings.EMAIL_HOST_USER],
-                              fail_silently=False)
-                    break
+            if settings.ALLOWED_EMAIL_DOMAINS and not user_id.split('@')[-1] in settings.ALLOWED_EMAIL_DOMAINS:
+                err = _('invalid mail address or password')
+                log.warn('Attempt to login by not allowed email domain: %s' % user_id)
+                send_mail(subject='warn',
+                          message='Attempt to login by not allowed email domain: %s' % user_id,
+                          from_email=settings.EMAIL_HOST_USER,
+                          recipient_list=[settings.EMAIL_HOST_USER],
+                          fail_silently=False)
+                break
 
             # if user_id in settings.RESERVED_USER_ID:
             #     err = _('invalid mail address or password')
@@ -159,17 +158,16 @@ def register(request):
                 params['err'] = _('Invalid mail address assumed.')
                 break
 
-            for allowed_domain in settings.ALLOWED_EMAIL_DOMAINS:
-                if not user_id.endswith('@' + allowed_domain):
-                    params['err'] = _('Invalid mail address assumed.')
-                    log.warn('Attempt to register by not allowed email domain: %s' % user_id)
-                    send_mail(subject='warn',
-                              message='Attempt to register by not allowed email domain: %s' % user_id,
-                              from_email=settings.EMAIL_HOST_USER,
-                              recipient_list=[settings.EMAIL_HOST_USER],
-                              fail_silently=False)
+            if settings.ALLOWED_EMAIL_DOMAINS and not user_id.split('@')[-1] in settings.ALLOWED_EMAIL_DOMAINS:
+                params['err'] = _('Invalid mail address assumed.')
+                log.warn('Attempt to register by not allowed email domain: %s' % user_id)
+                send_mail(subject='warn',
+                          message='Attempt to register by not allowed email domain: %s' % user_id,
+                          from_email=settings.EMAIL_HOST_USER,
+                          recipient_list=[settings.EMAIL_HOST_USER],
+                          fail_silently=False)
 
-                    break
+                break
 
             if user_id in settings.RESERVED_USER_ID:
                 params['err'] = _('Already registered.')
