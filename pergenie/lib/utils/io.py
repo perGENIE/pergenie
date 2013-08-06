@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-import os
+import sys, os
+import time
 import urllib
 import socket
 socket.setdefaulttimeout(30)  # timeout for urlretrieve
@@ -8,6 +9,9 @@ try:
     import cPickle as pickle
 except ImportError:
     import pickle
+from lib.utils import clogging
+log = clogging.getColorLogger(__name__)
+
 
 
 def pickle_dump_obj(obj, fout_name):
@@ -32,7 +36,27 @@ def get_url_content(url, dst):
     """Get content form url"""
 
     # TODO: error handling
-    urllib.urlretrieve(url, dst)
+    while True:
+        urllib.urlretrieve(url, dst, reporthook=reporthook)
+        if is_finished:
+            sys.stdout.write("\n")
+            break
+
+def reporthook(count, block_size, total_size):
+    global start_time
+    global is_finished
+    if count == 0:
+        start_time = time.time()
+        return
+    duration = time.time() - start_time
+    progress_size = int(count * block_size)
+    speed = int(progress_size / (1024 * duration))
+    percent = int(count * block_size * 100 / total_size)
+    sys.stdout.write("\r...%d%%, %d MB, %d KB/s, %d seconds passed" %
+                     (percent, progress_size / (1024 * 1024), speed, duration))
+    sys.stdout.flush()
+    is_finished = count * block_size >= total_size
+
 
 # try:
 #     import pyPdf

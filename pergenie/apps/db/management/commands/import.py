@@ -242,14 +242,22 @@ class Command(BaseCommand):
                                 'genome_cover_rate': catalog_cover_rate.find_one({'stats': 'genome_cover_rate'})['values'][target['file_format']],
                                 'status': float(0.0)}
 
-                        data_info = c['pergenie']['data_info']
-                        data_info.insert(info)
+                        db = c['pergenie']
+                        db['data_info'].insert(info)
 
                         log.debug('start importing ...')
                         import_variants(file_path=target['name'],
                                         population=target['population'],
                                         file_format=target['file_format'],
                                         user_id=settings.DEMO_USER_ID)
+
+                        # population PCA
+                        person_xy = [0,0]  # FIXME: projection(info)
+                        db['data_info'].update({'user_id': info['user_id'], 'raw_name': info['raw_name']},
+                                               {"$set": {'pca': {'position': person_xy,
+                                                                 'label': info['user_id'],
+                                                                 'map_label': ''},
+                                                         'status': 100}})
 
         elif options["bioq"]:
             log.info('Try to import bioq ...')

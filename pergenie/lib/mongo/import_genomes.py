@@ -48,14 +48,16 @@ def import_genomes(settings):
         usernames = set([user['user_id'] for user in users])
 
         for username in settings.CRON_DIRS.keys():
+            log.debug(username)
             # Try to import/update files
             # If timestamp is newer than one in DB, re-import.
             for datadir in settings.CRON_DIRS[username]:
                 for fileformat in settings.FILEFORMATS:
-                    glob_path = os.path.join(datadir, username, fileformat[0], fileformat[1])
+                    glob_path = os.path.join(datadir, fileformat[0], fileformat[1])
                     filepaths = glob.glob(glob_path)
 
                     for filepath in filepaths:
+                        log.debug(filepath)
                         last_modified = datetime.datetime.fromtimestamp(os.path.getmtime(filepath))
                         info = {'user_id': username,
                                 'name': clean_file_name(os.path.basename(filepath)),
@@ -76,14 +78,22 @@ def import_genomes(settings):
                                                  info['file_format'],
                                                  info['user_id'],
                                                  settings))
+                        # population PCA
+                        person_xy = [0,0]  # FIXME: projection(info)
+                        db['data_info'].update({'user_id': info['user_id'], 'raw_name': info['raw_name']},
+                                               {"$set": {'pca': {'position': person_xy,
+                                                                 'label': info['user_id'],
+                                                                 'map_label': ''},
+                                                         'status': 100}})
                         db['data_info'].insert(info)
+
 
             # Try to delete non exist files.
             # If file exists in DB, but does not exist,
             # delete data_info and variants from DB.
             user_datas = db['data_info'].find({'user_id': username})
             for user_data in user_datas:
-                db_filepath = os.path.join(datadir, username, user_data['file_format'], user_data['raw_name'])
+                db_filepath = os.path.join(datadir, user_data['file_format'], user_data['raw_name'])
                 if not os.path.exists(db_filepath):
                     log.warn('Deleting from DB: %s' % db_filepath)
                     db.drop_collection('variants.{0}.{1}'.format(username, clean_file_name(user_data['raw_name'])))

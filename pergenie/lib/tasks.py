@@ -1,13 +1,14 @@
 import sys, os
 from pprint import pformat
+from pymongo import MongoClient
 
 from celery.task import Task
 from celery.decorators import task
 from mongo.import_variants import import_variants
 from django.conf import settings
 from lib.r.r import projection
-
-from pymongo import MongoClient
+from utils import clogging
+log = clogging.getColorLogger(__name__)
 
 # ref: http://yuku-tech.hatenablog.com/entry/20101112/1289569700
 
@@ -28,10 +29,10 @@ def qimport_variants(info):
                              info['user_id'],
                              info['file_format'],
                              info['raw_name'])
-    import_error_state = import_variants(file_path,
-                                         info['population'],
-                                         info['file_format'],
-                                         info['user_id'])
+    log.info(import_variants(file_path,
+                             info['population'],
+                             info['file_format'],
+                             info['user_id']))
 
     # if import_error_state:
     #     err = ', but import failed...' + import_error_state
