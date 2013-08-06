@@ -90,7 +90,7 @@ class Command(BaseCommand):
             log.info('Try to import latest gwascatalog...')
 
             # check if gwascatalog.<today>.txt is exists
-            latest_catalog = os.path.join('data', 'gwascatalog.' + today_str + '.txt')
+            latest_catalog = os.path.join(settings.BASE_DIR, 'data', 'gwascatalog.' + today_str + '.txt')
             latest_date = today_date
 
             if os.path.exists(latest_catalog):
@@ -119,7 +119,7 @@ class Command(BaseCommand):
                                 if tmp_date > local_latest_date:
                                     local_latest_date = tmp_date
 
-                        latest_catalog = os.path.join('data', 'gwascatalog.' + str(local_latest_date).replace('-', '_') + '.txt')
+                        latest_catalog = os.path.join(settings.BASE_DIR, 'data', 'gwascatalog.' + str(local_latest_date).replace('-', '_') + '.txt')
                         latest_date = local_latest_date
 
                         log.warn('=======================================================')
