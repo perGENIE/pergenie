@@ -99,7 +99,7 @@ _8
                         </a>
                       </li>
 
-                      {% if "population" in installed_my_apps %}
+                      {% if "population"|is_in_installed_my_apps %}
                       <li>
                         <a href="{% url apps.population.views.index %}">
                           <i class="icon-globe"></i> Population
@@ -107,10 +107,18 @@ _8
                       </li>
                       {% endif %}
 
-                      {% if "mygene" in installed_my_apps %}
+                      {% if "mygene"|is_in_installed_my_apps %}
                       <li>
                         <a href="{% url apps.mygene.views.index %}">
                           <i class="icon-beaker"></i> MyGene
+                        </a>
+                      </li>
+                      {% endif %}
+
+                      {% if "mycatalog"|is_in_installed_my_apps %}
+                      <li>
+                        <a href="{% url apps.mycatalog.views.index %}">
+                          <i class="icon-beaker"></i> MyCatalog
                         </a>
                       </li>
                       {% endif %}

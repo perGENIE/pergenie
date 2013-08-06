@@ -26,7 +26,7 @@
               </button>
               </a>
 
-              {% if "population" in installed_my_apps %}
+              {% if "population"|is_in_installed_my_apps %}
               <a href="{% url apps.population.views.index %}">
               <button class="button square" href="#">
                 <i class="icon-globe icon-large"></i>
@@ -34,11 +34,19 @@
               </button></a>
               {% endif %}
 
-              {% if "mygene" in installed_my_apps %}
+              {% if "mygene"|is_in_installed_my_apps %}
               <a href="{% url apps.mygene.views.index %}">
               <button class="button square" href="#">
                 <i class="icon-beaker icon-large"></i>
                 <span class="button-text">MyGene</span><span class="badge badge-blue">&nbsp;&beta;&nbsp;</span>
+              </button></a>
+              {% endif %}
+
+              {% if "mycatalog"|is_in_installed_my_apps %}
+              <a href="{% url apps.mycatalog.views.index %}">
+              <button class="button square" href="#">
+                <i class="icon-beaker icon-large"></i>
+                <span class="button-text">MyCatalog</span><span class="badge badge-blue">&nbsp;&beta;&nbsp;</span>
               </button></a>
               {% endif %}
 

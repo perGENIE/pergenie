@@ -78,6 +78,12 @@ if 'apps.mygene' in settings.INSTALLED_APPS:
         url(r'^mygene/(?P<gene>.*?)/$', 'apps.mygene.views.my_gene'),
     )
 
+if 'apps.mycatalog' in settings.INSTALLED_APPS:
+    urlpatterns += patterns('',
+        url(r'^mycatalog/$', 'apps.mycatalog.views.index'),
+    )
+
+
 
     # url(r'^myprotain/$', 'apps.myprotain.views.index'),
     # url(r'^myprotain/pdb/(?P<pdb_id>[a-zA-Z0-9]{4}?)/$', 'apps.myprotain.views.my_pdb'),

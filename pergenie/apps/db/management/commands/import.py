@@ -19,6 +19,7 @@ from lib.mongo.clean_catalog import clean_catalog
 from lib.mongo.import_catalog import import_catalog
 from lib.mongo.import_population_pca import import_population_pca
 from lib.mongo.import_genomes import import_genomes
+from lib.mongo.import_mycatalog import import_mycatalog
 
 from lib.common import clean_file_name
 from lib.mongo.import_variants import import_variants
@@ -81,6 +82,11 @@ class Command(BaseCommand):
             action="store_true",
             dest="genomes",
             help=colored("Import genome data (to be used as cron job)", "green")
+        ),
+        make_option(
+            "--mycatalog",
+            dest="mycatalog",
+            help=colored("Import my catalog into database", "green")
         ),
 
     )
@@ -289,6 +295,9 @@ class Command(BaseCommand):
 
             import_genomes(settings)
             os.remove(pidfile_path)
+        elif options["mycatalog"]:
+            log.info('Try to import mycatalog ...')
+            import_mycatalog(options["mycatalog"])
 
         else:
             self.print_help("import", "help")

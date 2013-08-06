@@ -127,3 +127,9 @@ def dict_index(dict, index):
 @stringfilter
 def hide_None(s):
     return s.replace('None', '')
+
+@register.filter
+@stringfilter
+def is_in_installed_my_apps(s):
+    installed_my_apps = [x[5:] for x in settings.INSTALLED_APPS if x.startswith('apps.')]
+    return s in installed_my_apps
