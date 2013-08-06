@@ -1,5 +1,6 @@
 import MySQLdb as mdb
 import sys
+import string
 
 class Bioq(object):
     """
@@ -53,19 +54,25 @@ class Bioq(object):
 
         return row[0] if row else None
 
+    def get_ref(self, rs):
+        _snp_contig = self._SNPContigLoc(rs)
+        if _snp_contig['orientation'] == 1:
+            _snp_contig['allele'].translate(string.maketrans('ATGC', 'TACG'))
+        return _snp_contig['allele']
+
     def get_allele_freqs(self, rs):
         rows = self._allele_freqs(rs)
 
         allele_freqs = {'Asian':{}, 'European':{}, 'African':{}, 'Japanese': {}}
 
         # Consider allele strands
-        rev = {'A': 'T', 'T': 'A', 'G': 'C', 'C': 'G'}
         for row in rows:
             _snp_contig = self._SNPContigLoc(rs)
             if not _snp_contig:
                 return dict(), set()
             if _snp_contig['orientation'] == 1:
-                row.update({'allele': rev.get(row['allele'])})
+                rev = row['allele'].translate(string.maketrans('ATGC', 'TACG'))
+                row.update({'allele': rev})
 
         # TODO: write more simply...
         # First scan
