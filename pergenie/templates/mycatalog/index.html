@@ -27,15 +27,37 @@
         <div class="row-fluid">
           <div class="span12">
             <table class="table table-bordered">
-              <tbody>
+
+                <thead>
                 <tr>
-                  <td class="center"></td>
+                  <th>name</th>
+                  <th>rs id</th>
+                  <th>major allele</th>
+                  <th>risk allele</th>
+                  <th>gene symbol</th>
+                  <th>chrom.</th>
+                  <th>genotype freq.</th>
+                  <th>allele freq.</th>
                 </tr>
+                </thead>
+                <tbody>
+                {% for record in mycatalog %}
                 <tr>
-                  <td class="center"></td>
+                  <td>{{ record.name }}</td>
+                  <td>{{ record.rsid }}</td>
+                  <td>{{ record.major_allele }}</td>
+                  <td>{{ record.effective_allele }}</td>
+                  <td>{{ record.gene_symbol }}</td>
+                  <td>{{ record.chromosome }}</td>
+                  <td>{% for k,v in record.genotype_freq.items %}{{ k }}:{{ v }} {% endfor %}</td>
+                  <td>{% for k,v in record.allele_freq.items %}{{ k }}:{{ v }} {% endfor %}</td>
+
                 </tr>
+                {% endfor %}
               </tbody>
             </table>
+
+            注意: catalogのallele strandはすべてプラス鎖。exome seq.については未対応。
           </div>
         </div>
       </div>

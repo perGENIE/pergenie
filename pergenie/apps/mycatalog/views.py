@@ -14,8 +14,15 @@ log = getColorLogger(__name__)
 
 @login_required
 def index(request):
+    user_id = request.user.username
     msg, err = '', ''
+
+    mycatalog = get_mycatalog()
+    for record in mycatalog:
+        record['genotype_freq'], record['allele_freq'] = get_freq(record['rsid'],
+                                                                  user_id)
 
     return direct_to_template(request, 'mycatalog/index.html',
                               dict(msg=msg, err=err,
+                                   mycatalog=mycatalog
                                    ))
