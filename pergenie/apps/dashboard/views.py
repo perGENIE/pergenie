@@ -33,11 +33,9 @@ def index(request):
                 intro_type = ['first']
                 break
 
-            intro_type = ['wait_upload']
-
-            for info in infos:
-                if info['status'] == 100:  # there is at least one 100% uploaded file
-                    intro_type = ['risk_report']
+            # for info in infos:
+            #     if not info['status'] == 100:
+            #         intro_type = ['wait_upload']
 
         break
 
@@ -46,10 +44,10 @@ def index(request):
         intros.append(_('Welcome to perGENIE!'))
         intros.append(_('You have no genome files uploaded.'))
         intros.append(_('So, first, upload your genome file!'))
-    elif intro_type == ['wait_upload']:
-        intros.append(_('Please wait until your genome file uploaded...'))
-    elif intro_type == ['risk_report']:
-        intros.append(_('Browse your Risk Report!'))
+    # elif intro_type == ['wait_upload']:
+    #     intros.append(_('Please wait until your genome file uploaded...'))
+    # elif intro_type == ['risk_report']:
+    #     intros.append(_('Browse your Risk Report!'))
     elif intro_type == ['welcome']:
         intros.append(_('Welcome to perGENIE!'))
         intros.append(_('Genome files are already uploaded for demo users.'))
