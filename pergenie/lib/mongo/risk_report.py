@@ -163,7 +163,7 @@ def _relative_risk_to_general_population(freq, OR, zygosities):
 
 
 def risk_calculation(catalog_map, variants_map, population, user_id, file_name,
-                     is_LD_block_clustered, is_log):
+                     is_LD_block_clustered):
     risk_store = {}
     risk_report = {}
 
@@ -200,23 +200,8 @@ def risk_calculation(catalog_map, variants_map, population, user_id, file_name,
 #                 print colors.yellow("Error with float()"), record['OR_or_beta'], record['trait']
                 break
 
-
-            # --- previous ---
-#             # store records by trait
-#             if not record['trait'] in risk_store:
-#                 risk_store[record['trait']] = {rs: tmp_risk_data} # initial record
-
-#             else:
-#                 if not rs in risk_store[record['trait']]:
-#                     risk_store[record['trait']][rs] = tmp_risk_data # initial rs
-
-#                 else:
-#                     pass
-# #                     print >>sys.stderr, colors.green('same rs record for same trait. {0} {1}'.format(record['trait'], rs))
-
             # --- current ---
-            # TODO: store records by trait by study
-#             print record['trait'], record['study'], rs
+            # store records by trait by study
 
             if not record['trait'] in risk_store:
                 risk_store[record['trait']] = {record['study']: {rs: tmp_risk_data}} # initial record
@@ -250,36 +235,38 @@ def risk_calculation(catalog_map, variants_map, population, user_id, file_name,
                 risk_store[trait][study][rs]['zyg'] = _zyg(risk_store[trait][study][rs]['variant_map'],
                                                            risk_store[trait][study][rs]['catalog_map']['risk_allele'])
 
-                risk_store[trait][study][rs]['RR'], risk_store[trait][study][rs]['R'] = _relative_risk_to_general_population(risk_store[trait][study][rs]['catalog_map']['freq'],
+                RR, R = _relative_risk_to_general_population(risk_store[trait][study][rs]['catalog_map']['freq'],
                                                                                                                              risk_store[trait][study][rs]['catalog_map']['OR_or_beta'],
                                                                                                                              risk_store[trait][study][rs]['zyg'])
 
-                tmp_value = risk_store[trait][study][rs]['RR']
+                risk_store[trait][study][rs]['RR'] = RR
+                risk_store[trait][study][rs]['R'] = R
+                # tmp_value = risk_store[trait][study][rs]['RR']
 
                 #
-                if is_log:
-                    try:
-                        tmp_value = math.log10(risk_store[trait][study][rs]['RR'])
-                    except ValueError:
-                        log.error('ValueError {0}'.format(tmp_value))
-                        if tmp_value == 0.0:
-                            tmp_value = -2.0  # -inf
+                # if is_log:
+                #     try:
+                #         tmp_value = math.log10(risk_store[trait][study][rs]['RR'])
+                #     except ValueError:
+                #         log.error('ValueError {0}'.format(tmp_value))
+                #         if tmp_value == 0.0:
+                #             tmp_value = -2.0  # -inf
 
-                risk_store[trait][study][rs]['RR_real'] = risk_store[trait][study][rs]['RR']
-                risk_store[trait][study][rs]['RR'] = tmp_value
+                # risk_store[trait][study][rs]['RR_real'] = risk_store[trait][study][rs]['RR']
+                # risk_store[trait][study][rs]['RR'] = tmp_value
 
-                if tmp_value:
-                    if not trait in risk_report:
-                        risk_report[trait] = {study: tmp_value}  # initial
+                # if tmp_value:
+                if not trait in risk_report:
+                    risk_report[trait] = {study: RR}  # initial
+                else:
+                    if not study in risk_report[trait]:
+                        risk_report[trait][study] = RR  # after initial
                     else:
-                        if not study in risk_report[trait]:
-                            risk_report[trait][study] = tmp_value  # after initial
-                        else:
-                            #
-                            if is_log:
-                                risk_report[trait][study] += tmp_value
-                            else:
-                                risk_report[trait][study] *= tmp_value
+                        #
+                        # if is_log:
+                        #     risk_report[trait][study] += tmp_value
+                        # else:
+                        risk_report[trait][study] *= RR
 
     return risk_store, risk_report
 

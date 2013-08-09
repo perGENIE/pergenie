@@ -111,9 +111,9 @@ def _import_riskreport(tmp_info):
 
     # Calculate risk
     risk_store, risk_reports = risk_report.risk_calculation(catalog_map, variants_map, settings.POPULATION_MAP[tmp_info['population']],
-                                                            tmp_info['user_id'], tmp_info['name'], False, True)
+                                                            tmp_info['user_id'], tmp_info['name'], False)
+    print risk_store
 
-    # TODO: merge into import_catalog?
     # Set reliability rank
     tmp_risk_reports = dict()
     for trait,studies in risk_reports.items():
@@ -161,10 +161,10 @@ def _import_riskreport(tmp_info):
                                'n_studies': n_studies,
                                'catalog_cover_rate_for_this_population': catalog_cover_rate_for_this_population}}, upsert=True)
 
-def _log_to_signed_real(records):
+def _to_signed_real(records, is_log=False):
     """
     >>> records = [{'RR': -1.0}, {'RR': 0.0}, {'RR': 0.1}, {'RR': 1.0}]
-    >>> print _log_to_signed_real(records)
+    >>> print _to_signed_real(records)
     [{'RR': -10.0}, {'RR': 1.0}, {'RR': 1.3}, {'RR': 10.0}]
     """
     results = []
@@ -172,8 +172,9 @@ def _log_to_signed_real(records):
     for record in records:
         tmp_record = record
 
-        # Convert to real
-        tmp_record['RR'] = pow(10, record['RR'])
+        if is_log:
+            # Convert to real
+            tmp_record['RR'] = pow(10, record['RR'])
 
         # If RR is negative effects, i.e, 0.0 < RR < 1.0,
         # inverse it and minus sign
@@ -189,6 +190,7 @@ def _log_to_signed_real(records):
         results.append(tmp_record)
 
     return results
+
 
 def get_risk_values_for_indexpage(tmp_info, category=[], is_higher=False, is_lower=False, top=None):  # , is_log=True):
     c = MongoClient(host=settings.MONGO_URI)
@@ -211,7 +213,7 @@ def get_risk_values_for_indexpage(tmp_info, category=[], is_higher=False, is_low
     # in category (=disease)
     records = [record for record in founds if TRAITS2CATEGORY.get(record['trait'], 'NA') in category ]
 
-    records = _log_to_signed_real(records)
+    records = _to_signed_real(records)
 
     # filter for is_higher & is_lower as is_ok
     if is_higher:
@@ -250,7 +252,7 @@ def get_risk_infos_for_subpage(info, trait=None, study=None):
         for snp_record in snp_records:
             snp_record['catalog_info'] = catalog.find_one({'study': study,
                                                            'snps': snp_record['snp']})
-        snp_records = _log_to_signed_real(snp_records)
+        snp_records = _to_signed_real(snp_records)
 
         if get_language() == 'ja':
             trait = TRAITS2JA.get(trait, trait)
