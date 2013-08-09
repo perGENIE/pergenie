@@ -18,7 +18,8 @@ log = clogging.getColorLogger(__name__)
 
 
 def index(request):
-    return direct_to_template(request, 'frontend/index.html', dict(is_registerable=settings.IS_REGISTERABLE))
+    return direct_to_template(request, 'frontend/index.html', dict(is_registerable=settings.IS_REGISTERABLE,
+                                                                   set_tweet_button=settings.SET_TWEET_BUTTON))
 
 
 @require_http_methods(['GET', 'POST'])

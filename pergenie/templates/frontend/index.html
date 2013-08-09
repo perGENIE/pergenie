@@ -43,9 +43,11 @@ _8
     <nav class="navbar">
       <div class="navbar-inner">
         <div class="container">
-          <!-- <a href="#" class="brand"></a> -->
+
+          {% if set_tweet_button %}
           <a href="https://twitter.com/share" class="twitter-share-button" data-text="perGENIE - interprets your personal genome with publicly available databases & your genetic testing data. https://twitter.com/per_GENIE" >Tweet</a>
           <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+          {% endif %}
 
           <ul class="nav">
             <li><a href="{% url apps.frontend.views.trydemo %}">{% trans "Try demo" %}</a></li>
