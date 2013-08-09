@@ -132,6 +132,7 @@ class Bioq(object):
         pass
 
     def get_rs(self, chrom, pos):
+        chrom = chrom.replace('chr', '')
         _chr2num = {'X': '23', 'Y': '24', 'MT': '25', 'M': '25'}
         chrpos = _chr2num.get(chrom, chrom).zfill(2) + str(pos).zfill(9)
 

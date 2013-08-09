@@ -74,7 +74,8 @@ def _string(text):
     return text
 
 def _chrom(text):
-    if text.startswith('chr'): text.replace('chr', '')
+    if text.startswith('chr'):
+        text = text.replace('chr', '')
 
     if text in [str(i+1) for i in range(22)] + ['X', 'Y', 'MT', 'M']:
         return text
