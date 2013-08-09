@@ -125,14 +125,14 @@ _8
 
                       <li class="divider"></li>
                       {% ifnotequal user.username|demouser_format "demo@pergenie.org" %}
+                      {% if "upload"|is_in_installed_my_apps %}
                       <li class="">
                         <a href="{% url apps.upload.views.index %}">
                           <i class="icon-arrow-up"></i> Upload
                         </a>
                       </li>
                       <li class="divider"></li>
-                      {% else %}
-
+                      {% endif %}
                       {% endifnotequal %}
 
                       <li>

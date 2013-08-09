@@ -33,9 +33,6 @@ def index(request):
     if user_id.startswith(settings.DEMO_USER_ID):
         raise Http404
 
-    if not settings.IS_UPLOADABLE:
-        raise Http404
-
     with pymongo.MongoClient(host=settings.MONGO_URI) as connection:
         db = connection['pergenie']
         data_info = db['data_info']
@@ -185,9 +182,6 @@ def delete(request):
     if user_id.startswith(settings.DEMO_USER_ID):
         raise Http404
 
-    if not settings.IS_UPLOADABLE:
-        raise Http404
-
     name = request.POST.get('name')
 
     with pymongo.MongoClient(host=settings.MONGO_URI) as connection:
@@ -219,9 +213,6 @@ def delete(request):
 
 @login_required
 def status(request):
-    # if not settings.IS_UPLOADABLE:
-    #     raise Http404
-
     if not request.user or not request.user.username:
         result = {'status': 'error',
                   'error_message': 'login required',

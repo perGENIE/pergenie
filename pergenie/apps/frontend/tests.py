@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.test import TestCase
 from django.test.client import Client
 from django.conf import settings
+from django.utils.translation import ugettext as _
 
 
 class SimpleTestCase(TestCase):
@@ -29,10 +30,10 @@ class SimpleTestCase(TestCase):
     def test_login(self):
         # not activated
         self.assertFalse(self.user.is_active)
-
         response = self.client.post('/login/', {'user_id': self.test_user_id,
                                                 'password': self.test_user_password})
         self.assertTrue(bool(response.context['err'] == 'invalid mail address or password'))
+
         # activate user
         self.user.is_active = True
         self.user.save()
@@ -45,7 +46,7 @@ class SimpleTestCase(TestCase):
 
         # incorrect password
         response = self.client.post('/login/', {'user_id': self.test_user_id,
-                                                'password': self.test_user_password+'1'})
+                                                'password': self.test_user_password + '1'})
         self.assertTrue(bool(response.context['err'] == 'invalid mail address or password'))
 
         # success
@@ -76,7 +77,7 @@ class SimpleTestCase(TestCase):
         response = self.client.post('/register/', {'user_id': self.test_user_id,
                                                    'password1': '123',
                                                    'password2': '123'})
-        self.assertTrue('Passwords too short' in response.context['err'])
+        self.assertTrue(_('Passwords too short (passwords should be longer than %(min_password_length)s characters).' % {'min_password_length': settings.MIN_PASSWORD_LENGTH}) in response.context['err'])
 
         # invalid email address
         response = self.client.post('/register/', {'user_id': 'test_user_fail',
@@ -84,14 +85,21 @@ class SimpleTestCase(TestCase):
                                                    'password2': self.test_user_password})
         self.assertEqual(response.context['err'], 'Invalid mail address assumed.')
 
+        # invalid email address
+        for x in settings.INVALID_USER_ID_CHARACTERS:
+            response = self.client.post('/register/', {'user_id': x + self.test_user_id,
+                                                       'password1': self.test_user_password,
+                                                       'password2': self.test_user_password})
+            self.assertEqual(response.context['err'], 'Invalid mail address assumed.')
+
         # RESERVED_USER_ID
         response = self.client.post('/register/', {'user_id': self.test_user_id,
                                                    'password1': self.test_user_password,
                                                    'password2': self.test_user_password})
         self.assertTrue('Already registered.' in response.context['err'])
 
-        # success
-        response = self.client.post('/register/', {'user_id': 'test_user_success@pergenie.org',
-                                                   'password1': self.test_user_password,
-                                                   'password2': self.test_user_password}, follow=True)
-        self.assertTrue('<title>Registeration completed - perGENIE</title>' in response.content)
+        # # success
+        # response = self.client.post('/register/', {'user_id': 'test_user_success@pergenie.org',
+        #                                            'password1': self.test_user_password,
+        #                                            'password2': self.test_user_password}, follow=True)
+        # self.assertTrue('<title>Registeration completed - perGENIE</title>' in response.content)

@@ -1,30 +1,18 @@
-# -*- coding: utf-8 -*-
-
+import sys, os
+from pymongo import MongoClient
+from uuid import uuid4
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.models import User
-from django.contrib.sites.models import Site
-from django.shortcuts import redirect  # , render_to_response
-# from django.template import RequestContext
+from django.shortcuts import redirect
 from django.views.decorators.http import require_http_methods
-from django.core.urlresolvers import reverse
 from django.views.generic.simple import direct_to_template
-# from django.utils import translation
 from django.utils.translation import ugettext as _
 from django.conf import settings
 from django.db import IntegrityError
 from django.http import Http404
 from django.core.mail import send_mail
-
 from apps.frontend.forms import LoginForm, RegisterForm
-
-import sys, os
-from smtplib import SMTPRecipientsRefused
-from pymongo import MongoClient
-import lepl.apps.rfc3696
-email_validator = lepl.apps.rfc3696.Email()
-from uuid import uuid4
-import socket
-
+from lib.api.user import User as pergenie_User
 from utils import clogging
 log = clogging.getColorLogger(__name__)
 
@@ -33,33 +21,60 @@ def index(request):
     return direct_to_template(request, 'frontend/index.html', dict(is_registerable=settings.IS_REGISTERABLE))
 
 
-def trydemo(request):
-    """Login as DEMO USER (demo@pergenie.org)"""
+@require_http_methods(['GET', 'POST'])
+def register(request):
+    auth_logout(request)
+    err = ''
 
-    while True:
-        try:
-            demo_user_uid = settings.DEMO_USER_ID + '+' + str(uuid4())
-            user = User.objects.create_user(demo_user_uid, '', settings.DEMO_USER_ID)
-            user.save()
-            break
-        except IntegrityError, e:
-            pass
-        except:
-            return direct_to_template(request, 'frontend/index.html')
+    if request.method == 'POST':
+        while True:
+            form = RegisterForm(request.POST)
 
-    # create user_info
-    with MongoClient(host=settings.MONGO_URI) as c:
-        user_info = c['pergenie']['user_info']
+            if not form.is_valid():
+                err = _('Invalid request.')  # contains case for null input
+                break
 
-        user_info.insert({'user_id': demo_user_uid,
-                          'risk_report_show_level': 'show_all',
-                          'activation_key': ''})
+            user_id = form.cleaned_data['user_id']
+            password1 = form.cleaned_data['password1']
+            password2 = form.cleaned_data['password2']
 
-    user = authenticate(username=demo_user_uid,
-                        password=settings.DEMO_USER_ID)
-    auth_login(request, user)
+            if password1 != password2:
+                err = _('Passwords do not match.')
+                break
 
-    return redirect('apps.dashboard.views.index')
+            u = pergenie_User()
+            try:
+                u.create(user_id, password1)
+            except Exception, e:
+                err = str(e)
+                break
+
+            # Registration *without* mail verification
+            if not settings.ACCOUNT_ACTIVATION:
+                user = User.objects.filter(username=user_id)
+                auth_login(request, user)
+                return redirect('apps.dashboard.views.index')
+
+            try:
+                u.send_activation_email(user_id)
+            except Exception, e:
+                err = str(e)
+                break
+
+            return direct_to_template(request, 'frontend/registration_completed.html', dict(err=err, user_id=user_id))
+
+    return direct_to_template(request, 'frontend/register.html', dict(err=err))
+
+
+def activation(request, activation_key):
+    u = pergenie_User()
+    try:
+        u.activate(activation_key)
+    except Exception, e:
+        log.error(e)
+        raise Http404
+
+    return direct_to_template(request, 'frontend/activation_completed.html')
 
 
 @require_http_methods(['GET', 'POST'])
@@ -105,12 +120,12 @@ def login(request):
 
             auth_login(request, user)
 
-            # Remember Me
-            if not request.POST.get('remember_me', None):
-                request.session.set_expiry(0)
-                log.debug("Not Remember Me")
+            # # Remember Me
+            # if not request.POST.get('remember_me', None):
+            #     request.session.set_expiry(0)
+            #     log.debug("Not Remember Me")
 
-            log.debug(request.session.get_expiry_age())
+            # log.debug(request.session.get_expiry_age())
 
             return redirect('apps.dashboard.views.index')
 
@@ -123,212 +138,30 @@ def logout(request):
     return redirect('apps.frontend.views.login')
 
 
-@require_http_methods(['GET', 'POST'])
-def register(request):
-    #
-    auth_logout(request)
+def trydemo(request):
+    """Login as DEMO USER (demo@pergenie.org)
+    """
 
-    params = {'is_succeeded': False,
-              'err': '',
-              'login_url': ''}
-
-    if request.method == 'POST':
-        while True:
-            form = RegisterForm(request.POST)
-
-            if not form.is_valid():
-                params['err'] = _('Invalid request.')  # contains case for null input
-                break
-
-            user_id = form.cleaned_data['user_id']
-            password1 = form.cleaned_data['password1']
-            password2 = form.cleaned_data['password2']
-
-            # TODO: check if user_id is valid char. not ", ', \, ...
-
-            if password1 != password2:
-                params['err'] = _('Passwords do not match.')
-                break
-
-            if len(password1) < int(settings.MIN_PASSWORD_LENGTH):
-                params['err'] = _('Passwords too short (passwords should be longer than %(min_password_length)s characters).' % {'min_password_length': settings.MIN_PASSWORD_LENGTH})
-                break
-
-            if not email_validator(user_id):
-                params['err'] = _('Invalid mail address assumed.')
-                break
-
-            if settings.ALLOWED_EMAIL_DOMAINS and not user_id.split('@')[-1] in settings.ALLOWED_EMAIL_DOMAINS:
-                params['err'] = _('Invalid mail address assumed.')
-                log.warn('Attempt to register by not allowed email domain: %s' % user_id)
-                send_mail(subject='warn',
-                          message='Attempt to register by not allowed email domain: %s' % user_id,
-                          from_email=settings.EMAIL_HOST_USER,
-                          recipient_list=[settings.EMAIL_HOST_USER],
-                          fail_silently=False)
-
-                break
-
-            if user_id in settings.RESERVED_USER_ID:
-                params['err'] = _('Already registered.')
-                params['login_url'] = reverse('apps.frontend.views.login')
-                log.debug('Reserved user_id')
-                break
-
-            try:
-                user = User.objects.create_user(user_id, user_id, password1)
-                user.save()
-            except IntegrityError, e:
-                # if not unique user_id
-                params['err'] = _('Already registered.')
-                params['login_url'] = reverse('apps.frontend.views.login')
-                log.debug('IntegrityError')
-                break
-            except:
-                params['err'] = _('Unexpected error')
-                log.error('Unexpected error: {0}'.format(e))
-                break
-
-            # FIXME: how do we deal directory ownership
-            for fileformat in settings.FILEFORMATS:
-                tmp_upload_dir = os.path.join(settings.UPLOAD_DIR,
-                                              user_id,
-                                              fileformat[0])
-                if not os.path.exists(tmp_upload_dir):
-                    os.makedirs(tmp_upload_dir)
-                    os.chmod(tmp_upload_dir, 777)
-
-            params['is_succeeded'] = True
-            # password = password1
-            # _('You have successfully registered!')
-
-            """
-            Registration *without* mail verification
-            """
-            if not settings.ACCOUNT_ACTIVATION:
-                auth_login(request, user)
-                return redirect('apps.dashboard.views.index')
-
-            """
-            Registration *with* mail verification
-            """
-            with MongoClient(host=settings.MONGO_URI) as c:
-                user_info = c['pergenie']['user_info']
-
-                # Generate unique activation_key
-                while True:
-                    activation_key = User.objects.make_random_password(length=settings.ACCOUNT_ACTIVATION_KEY_LENGTH)
-                    if not user_info.find_one({'activation_key': activation_key}):
-                        break
-
-                # add activation_key info to mongodb.user_info
-                # TODO: verify this user_id is unique
-                user_info.update({'user_id': user_id},
-                                 {"$set": {'risk_report_show_level': 'show_all',
-                                           'activation_key': activation_key}},
-                                 upsert=True)
-
-                log.debug(list(user_info.find({'user_id': user_id})))
-
-            # Deactivate user activation
-            user.is_active = False
+    while True:
+        try:
+            demo_user_uid = settings.DEMO_USER_ID + '+' + str(uuid4())
+            user = User.objects.create_user(demo_user_uid, '', settings.DEMO_USER_ID)
             user.save()
-
-            # Send a mail with activation_key to user
-            email_title = "Welcome to perGENIE"
-
-            hostname = socket.gethostname()
-            activation_url_base = 'http://' + hostname
-            activation_url = os.path.join(activation_url_base, 'activation', activation_key)
-            if not activation_url.endswith(os.path.sep):
-                activation_url += os.path.sep
-            email_body = """Welcome to perGENIE!
-
-To complete your registration, please visit following URL:
-
-%(activation_url)s
-
-If you have problems with signing up, please contact us at %(support_email)s
-
-
-- perGENIE teams
-
---
-This email address is SEND ONLY, NO-REPLY.
-""" % {'activation_url': activation_url, 'support_email': settings.SUPPORT_EMAIL}
-
-            log.debug('try mail')
-            try:
-                user.email_user(subject=email_title,
-                                message=email_body)
-                log.debug('mail sent')
-                log.debug(params)
-                params.update(dict(user_id=user_id))
-                return direct_to_template(request, 'frontend/registration_completed.html', params)
-            except:  # SMTPException:
-                params['err'] = _('Invalid mail address assumed.')
-                log.debug('mail failed')
-
-                # send activation_key faild, so delete user
-                user_info.remove({'user_id': user_id})
-                user.delete()
-
-                break
-
             break
+        except IntegrityError, e:
+            pass
+        except:
+            return direct_to_template(request, 'frontend/index.html')
 
-    params['is_already'] = True if params['err'] == _('Already registered.') else False
-
-    log.debug(params)
-    return direct_to_template(request, 'frontend/register.html', params)
-
-
-def activation(request, activation_key):
-    """Activate user when accessed with correct activation key."""
-
-    err = ''
-
-    # find the user who has this activation key
+    # create user_info
     with MongoClient(host=settings.MONGO_URI) as c:
         user_info = c['pergenie']['user_info']
-        challenging_user_info = user_info.find_one({'activation_key': activation_key})
 
-        while True:
-            if not challenging_user_info:
-                # invalid activation_key
-                raise Http404
+        user_info.insert({'user_id': demo_user_uid,
+                          'risk_report_show_level': 'show_all',
+                          'activation_key': ''})
 
-            challenging_user = User.objects.get(username__exact=challenging_user_info['user_id'])
+    user = authenticate(username=demo_user_uid, password=settings.DEMO_USER_ID)
+    auth_login(request, user)
 
-            if challenging_user.is_active:
-                # already activated
-                raise Http404
-
-            # activate
-            challenging_user.is_active = True
-            challenging_user.save()
-
-            # delete activation_key in mongodb
-            user_info.update({'user_id': challenging_user_info['user_id']},
-                             {"$set": {'activation_key': ''}})
-
-            # send user a mail notification that 'your account has been activated.'
-            try:
-                challenging_user.email_user(subject='Your account has been activated',
-                                            message="""Your perGENIE account has been activated!
-
-If this account activation is not intended by you, please contact us at %(support_email)s
-
-
-- perGENIE teams
-
---
-This email address is SEND ONLY, NO-REPLY.
-"""  % {'support_email': settings.SUPPORT_EMAIL})
-            except:  # smtplib.SMTPException
-                err = 'Activation successful, but failed to send you notification email...'
-                log.error('Failed to send notification. {0}'.format(challenging_user_info['user_id']))
-
-            break
-
-    return direct_to_template(request, 'frontend/activation_completed.html', dict(err=err))
+    return redirect('apps.dashboard.views.index')

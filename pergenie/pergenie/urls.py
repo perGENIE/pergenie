@@ -62,7 +62,7 @@ if settings.IS_REGISTERABLE:
 
     )
 
-if settings.IS_UPLOADABLE:
+if 'apps.upload' in settings.INSTALLED_APPS:
     urlpatterns += patterns('',
         url(r'^upload/$', 'apps.upload.views.index'),
         url(r'^upload/delete', 'apps.upload.views.delete'),
