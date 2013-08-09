@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from pymongo import MongoClient
 from django.conf import settings
 
