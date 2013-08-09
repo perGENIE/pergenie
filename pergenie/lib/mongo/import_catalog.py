@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import sys, os
 import re
 import csv
@@ -16,13 +14,8 @@ from xml.sax.saxutils import *
 
 from extract_region import extract_region
 from get_reference_seq import MyFasta
-try:
-    from lib.mysql.bioq import Bioq
-except ImportError:
-    sys.path.insert(0, '../../')
-    from mysql.bioq import Bioq
-
-from utils import clogging
+from lib.mysql.bioq import Bioq
+from lib.utils import clogging
 log = clogging.getColorLogger(__name__)
 
 _g_gene_symbol_map = {}  # { Gene Symbol => (Entrez Gene ID, OMIM Gene ID) }
@@ -35,7 +28,6 @@ def import_catalog(path_to_gwascatalog, settings):
     path_to_mim2gene = settings.PATH_TO_MIM2GENE
     path_to_eng2ja = settings.PATH_TO_ENG2JA
     path_to_disease2wiki = settings.PATH_TO_DISEASE2WIKI
-    path_to_interval_list_dir = settings.PATH_TO_INTERVAL_LIST_DIR
     path_to_reference_fasta = settings.PATH_TO_REFERENCE_FASTA
 
     with pymongo.MongoClient(host=settings.MONGO_URI) as c:
@@ -194,6 +186,7 @@ def import_catalog(path_to_gwascatalog, settings):
                 data['dbsnp_link'] = 'http://www.ncbi.nlm.nih.gov/projects/SNP/snp_ref.cgi?rs=' + str(data['snps'])
                 data['is_in_truseq'] = False
                 data['is_in_andme'] = False
+                data['is_in_iontargetseq'] = False
                 data['population'] = _population(data['initial_sample_size'])
 
                 if data['chr_id'] and data['chr_pos'] and fa:
@@ -246,21 +239,22 @@ def import_catalog(path_to_gwascatalog, settings):
         log.info('# of documents in catalog (after): {0}'.format(catalog.count()))
         log.info('REVERSED_STATS: {0}'.format(pformat(REVERSED_STATS)))
 
-        # Add `is_in_truseq`, `is_in_andme` flags
-        n_records, n_truseq, n_andme = 0, 0, 0
-        for chrom in [i + 1 for i in range(24)]:
+        # Add region flags like: `is_in_truseq`
+        n_records, n_truseq, n_andme, n_iontargetseq = 0, 0, 0, 0
+        for chrom in [i + 1 for i in range(22)]:
             log.info('Addding flags... chrom: {0}'.format(chrom))
 
             # TODO: should be `uniq_` ?
             records = list(catalog.find({'chr_id': chrom}).sort('chr_pos', pymongo.ASCENDING))
-
             ok_records = [rec for rec in records if rec['snp_id_current']]
             n_records += len(ok_records)
             log.info('records:{0}'.format(n_records))
 
+            chrom = {23: 'X', 24:'Y'}.get(chrom, chrom)
+
             # `is_in_truseq`
-            region_file = os.path.join(path_to_interval_list_dir,
-                                       'TruSeq-Exome-Targeted-Regions-BED-file.{0}.interval_list'.format({23:'X', 24:'Y'}.get(chrom, chrom)))
+            region_file = os.path.join(settings.PATH_TO_INTERVAL_LIST_DIR,
+                                       'TruSeq-Exome-Targeted-Regions-BED-file.{0}.interval_list'.format(chrom))
             with open(region_file, 'r') as fin:
                 extracted = extract_region(region_file, ok_records)
                 n_truseq += len(extracted)
@@ -269,8 +263,8 @@ def import_catalog(path_to_gwascatalog, settings):
                     catalog.update(record, {"$set": {'is_in_truseq': True}})
 
             # `is_in_andme`
-            region_file = os.path.join(path_to_interval_list_dir,
-                                       'andme_region.{0}.interval_list'.format({23:'X', 24:'Y', 25:'MT'}.get(chrom, chrom)))
+            region_file = os.path.join(settings.PATH_TO_INTERVAL_LIST_DIR,
+                                       'andme_region.{0}.interval_list'.format(chrom))
             with open(region_file, 'r') as fin:
                 extracted = extract_region(region_file, ok_records)
                 n_andme += len(extracted)
@@ -278,17 +272,31 @@ def import_catalog(path_to_gwascatalog, settings):
                 for record in extracted:
                     catalog.update(record, {"$set": {'is_in_andme': True}})
 
+            # `is_in_iontargetseq`
+            region_file = os.path.join(settings.PATH_TO_INTERVAL_LIST_DIR,
+                                       'Ion-TargetSeq-Exome-50Mb-hg19.{0}.interval_list'.format(chrom))
+            with open(region_file, 'r') as fin:
+                extracted = extract_region(region_file, ok_records)
+                n_iontargetseq += len(extracted)
+                log.info('`is_in_iontargetseq` extracted:{0}'.format(n_iontargetseq))
+                for record in extracted:
+                    catalog.update(record, {"$set": {'is_in_iontargetseq': True}})
+
+
         len_genome = 2861327131  # number of bases (exclude `N`)
-        len_truseq = 62085286
+        len_truseq = 62085286  # FIXME: this region may contain N region, so it may not be fair
         len_andme = 1022124
+        len_iontargetseq = 47302058  # FIXME: this region may contain N region, so it may not be fair
         stats = [{'stats': 'catalog_cover_rate',
                   'values': {'vcf_whole_genome': 100,
                              'vcf_exome_truseq': int(round(100 * n_truseq / n_records)),
-                             'andme': int(round(100 * n_andme / n_records))}},
+                             'andme': int(round(100 * n_andme / n_records)),
+                             'vcf_exome_iontargetseq': int(round(100 * n_iontargetseq / n_records))}},
                  {'stats': 'genome_cover_rate',
                   'values': {'vcf_whole_genome': 100,
                              'vcf_exome_truseq': int(round(100 * len_truseq / len_genome)),
-                             'andme': int(round(100 * len_andme / len_genome))}}
+                             'andme': int(round(100 * len_andme / len_genome)),
+                             'vcf_exome_iontargetseq': int(round(100 * len_iontargetseq / len_genome))}}
                  ]
 
         log.info(stats)

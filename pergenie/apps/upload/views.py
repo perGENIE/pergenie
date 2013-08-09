@@ -62,11 +62,8 @@ def index(request):
                     err = _('Select population.')
                     break
 
-                # if not sex or sex not in ('unknown', 'male', 'female'):
-                #     err = _('Select sex.')
-                #     break
-
-                if not file_format or file_format not in ('andme', 'vcf_whole_genome', 'vcf_exome_truseq'):
+                fileformats = [x[0] for x in settings.FILEFORMATS]
+                if not file_format or file_format not in fileformats:
                     err = _('Select file format.')
                     break
 

@@ -98,6 +98,8 @@ def _import_riskreport(tmp_info):
 
             if tmp_info['file_format'] == 'vcf_exome_truseq' and record['is_in_truseq']:
                 n_available += 1
+            elif tmp_info['file_format'] == 'vcf_exome_iontargetseq' and record['is_in_iontargetseq']:
+                n_available += 1
             elif tmp_info['file_format'] == 'andme' and record['is_in_andme']:
                 n_available += 1
 
@@ -107,12 +109,12 @@ def _import_riskreport(tmp_info):
     if tmp_info['file_format'] == 'vcf_whole_genome':
         catalog_cover_rate_for_this_population = 100
     else:
-        catalog_cover_rate_for_this_population = int(round(100 * n_available / len(uniq_snps)))
+        catalog_cover_rate_for_this_population = round(100 * n_available / len(uniq_snps))
 
     # Calculate risk
     risk_store, risk_reports = risk_report.risk_calculation(catalog_map, variants_map, settings.POPULATION_MAP[tmp_info['population']],
                                                             tmp_info['user_id'], tmp_info['name'], False)
-    print risk_store
+    # print risk_store
 
     # Set reliability rank
     tmp_risk_reports = dict()
@@ -202,16 +204,11 @@ def get_risk_values_for_indexpage(tmp_info, category=[], is_higher=False, is_low
     _import_riskreport(tmp_info)
     users_reports = c['pergenie']['reports'][tmp_info['user_id']][tmp_info['name']]
 
-    log.debug(users_reports.count())
-
     # get traits, sorted by RR
     founds = list(users_reports.find().sort('RR', DESCENDING))
-    # log.info('===============')
-    # log.info(pformat(founds))
-    # log.info('===============')
 
     # in category (=disease)
-    records = [record for record in founds if TRAITS2CATEGORY.get(record['trait'], 'NA') in category ]
+    records = [record for record in founds if TRAITS2CATEGORY.get(record['trait'], 'NA') in category]
 
     records = _to_signed_real(records)
 

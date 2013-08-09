@@ -1,5 +1,4 @@
 import sys, os
-
 from django.contrib.auth.decorators import login_required
 from django.views.generic.simple import direct_to_template
 from django.utils.translation import ugettext as _
@@ -21,6 +20,7 @@ def index(request):
         infos = get_data_infos(user_id)
         recent_catalog_records = get_recent_catalog_records()
 
+        print user_id.startswith(settings.DEMO_USER_ID)
         if user_id.startswith(settings.DEMO_USER_ID):
             tmp_user_info = get_user_info(user_id)
             if not tmp_user_info.get('last_viewed_file'):

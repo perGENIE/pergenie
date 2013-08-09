@@ -42,6 +42,11 @@ def index(request):
         # Determine file_name & tmp_info
         tmp_user_info = get_user_info(user_id)
 
+        if not tmp_user_info:
+            # user does not exists in user_info...
+            err = _('invalid user')
+            break
+
         if not request.method == 'POST':
             while True:
                 # By default, browse `last_viewed_file` if exists.

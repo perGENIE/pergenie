@@ -97,11 +97,8 @@ def abs(s):
 @stringfilter
 @register.filter
 def file_format(s):
-    maps = {'andme': '23andMe',
-            'vcf_whole_genome': 'VCF (Whole Genome)',
-            'vcf_exome_truseq': 'VCF (TruSeq Exome)'}
-
-    return maps[s]
+    # e.g.: map `vcf_whole_genome` to `VCF (Whole Genome)`
+    return dict((x[0], x[2]) for x in settings.FILEFORMATS)[s]
 
 @stringfilter
 @register.filter

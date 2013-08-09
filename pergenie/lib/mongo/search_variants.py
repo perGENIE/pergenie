@@ -45,7 +45,6 @@ def search_variants(user_id, file_name, file_format, query, query_type=None, mon
         for found_id, catalog_map in tmp_catalog_map.items():
             rs = catalog_map['rs']
             ref = catalog_map['ref']
-            is_in_truseq = catalog_map['is_in_truseq']
 
             if rs and (not rs in tmp_variants_map):
                 if file_format == 'andme':
@@ -53,7 +52,12 @@ def search_variants(user_id, file_name, file_format, query, query_type=None, mon
                 elif file_format == 'vcf_whole_genome':
                     tmp_variants_map[rs] = ref * 2
                 elif file_format == 'vcf_exome_truseq':
-                    if is_in_truseq:
+                    if catalog_map['is_in_truseq']:
+                        tmp_variants_map[rs] = ref * 2
+                    else:
+                        tmp_variants_map[rs] = na
+                elif file_format == 'vcf_exome_iontargetseq':
+                    if catalog_map['is_in_iontargetseq']:
                         tmp_variants_map[rs] = ref * 2
                     else:
                         tmp_variants_map[rs] = na
