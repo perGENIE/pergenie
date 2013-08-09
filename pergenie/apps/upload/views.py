@@ -219,8 +219,8 @@ def delete(request):
 
 @login_required
 def status(request):
-    if not settings.IS_UPLOADABLE:
-        raise Http404
+    # if not settings.IS_UPLOADABLE:
+    #     raise Http404
 
     if not request.user or not request.user.username:
         result = {'status': 'error',

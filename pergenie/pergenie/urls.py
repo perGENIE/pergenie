@@ -37,6 +37,8 @@ urlpatterns = patterns('',
     url(r'^dashboard/$', 'apps.dashboard.views.index'),
     # url(r'^user_settings/$', 'apps.settings.views.user_settings'),
 
+    url(r'^upload/status', 'apps.upload.views.status'),
+
     url(r'^riskreport/$', 'apps.riskreport.views.index'),
     url(r'^riskreport/show_all/$', 'apps.riskreport.views.show_all'),
     url(r'^riskreport/(?P<trait>[^/]*)/$', 'apps.riskreport.views.trait'),
@@ -64,7 +66,6 @@ if settings.IS_UPLOADABLE:
     urlpatterns += patterns('',
         url(r'^upload/$', 'apps.upload.views.index'),
         url(r'^upload/delete', 'apps.upload.views.delete'),
-        url(r'^upload/status', 'apps.upload.views.status'),
     )
 
 if 'apps.population' in settings.INSTALLED_APPS:
