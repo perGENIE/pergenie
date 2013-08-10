@@ -1,8 +1,4 @@
-#perGENIE
-
-##Installation
-
-###Getting Started with perGENIE on OS X
+### Getting Started on OS X
 
 1\. Install requirements
 
@@ -22,26 +18,19 @@ $ sudo pip install -r requirements.txt
 2\. Settings
 
 ```
-$ vi pergenie/pergenie/settings/develop.py
+$ ${EDITOR} pergenie/pergenie/settings/develop.py
 ```
 
 3\. Initialize
 
 ```
-# Initialize database
-$ python manage.py syncdb
-$ python manage.py import --gwascatalog
-$ python manage.py import --demodata
-
-#
-$ mkdir -p /tmp/uploaded
-$ chmod 777 /tmp/uploaded
+# FIXME
 ```
 
 4\. Tests
 
 ```
-#
+# FIXME
 ```
 
 5\. Run
