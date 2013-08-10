@@ -1,12 +1,8 @@
-#!/usr/bin/env python2.7
-# -*- coding: utf-8 -*-
-
 import sys, os
 import argparse
 import math
 from pprint import pprint
 import doctest
-
 import pymongo
 
 from utils import clogging
@@ -14,97 +10,6 @@ log = clogging.getColorLogger(__name__)
 
 HAPMAP_PORT = 10002
 POPULATION_CODE = ['ASW', 'CEU', 'CHB', 'CHD', 'GIH', 'JPT', 'LWK', 'MEX', 'MKK', 'TSI', 'YRI']
-
-def LD_block_clustering(risk_store, population_code):
-    """
-    LD block (r^2) clustering
-    -------------------------
-
-    * to avoid duplication of ORs
-
-      * use r^2 from HapMap by populaitons
-
-    """
-
-    risk_store_LD_clustered = {}
-
-    uniq_rs1_set = set()
-    with open('/Volumes/Macintosh HD 2/HapMap/LD_data/rs1_uniq/ld_CEU.rs1.uniq') as uniq_rs1s:
-        for uniq_rs1 in uniq_rs1s:
-            uniq_rs1_set.update([int(uniq_rs1.replace('rs', ''))])
-    print 'uniq_rs1_set', len(uniq_rs1_set)
-
-    with pymongo.Connection(port=HAPMAP_PORT) as connection:
-        db = connection['hapmap']
-        ld_data = db['ld_data']
-        ld_data_by_population_map = dict(zip(POPULATION_CODE, [ld_data[code] for code in POPULATION_CODE]))
-
-        for trait,rss in risk_store.items():
-            rs_LD_block_map = {}
-            risk_store_LD_clustered[trait] = {}
-            print trait
-
-            trait_rss = set(rss)
-            # print colors.red('# before trait_rss'), len(trait_rss)
-            print trait_rss
-
-            if rss:
-                # print colors.yellow('# in ld_data (uniq_rs1)'), len(uniq_rs1_set.intersection(trait_rss))
-
-                # fetch LD datas from mongo.hapmap.ld_data.POPULATION_CODE
-                trait_ld_datas = ld_data_by_population_map[population_code].find( {'rs1': {'$in': list(trait_rss)} } )
-
-                # LD block clustering
-                if trait_ld_datas.count() > 0:
-                    for trait_ld_data in trait_ld_datas:
-
-                        # about rs1
-                        if not rs_LD_block_map:  # init
-                            rs_LD_block_map[trait_ld_data['rs1']] = 1
-
-                        elif not trait_ld_data['rs1'] in rs_LD_block_map:  # new block
-                            rs_LD_block_map[trait_ld_data['rs1']] = max(rs_LD_block_map.values()) + 1
-
-                        # about rs2
-                        if not trait_ld_data['rs2'] in rs_LD_block_map:
-                            if trait_ld_data['rs2'] in trait_rss:
-                                rs_LD_block_map[trait_ld_data['rs2']] = rs_LD_block_map[trait_ld_data['rs1']]
-
-#                         print trait_ld_data['rs1'], trait_ld_data['rs2'], rs_LD_block_map
-
-                    # print colors.yellow('# in ld_data where r^2 > 0.8 & clusterd'), max(rs_LD_block_map.values())
-                    print rs_LD_block_map
-
-                    for rs in trait_rss:
-                        if not rs in rs_LD_block_map:
-                            rs_LD_block_map[rs] = max(rs_LD_block_map.values()) + 1
-
-                    # print colors.blue('# after trait_rss'), max(rs_LD_block_map.values())
-        #             for k,v in sorted(rs_LD_block_map.items(), key=lambda x:x[1]):
-        #                 print k,v
-
-                    # get one rs from each blocks
-                    one_rs_index = [rs_LD_block_map.values().index(i+1) for i in range(max(rs_LD_block_map.values()))]
-                    LD_blocked_rss = [rs_LD_block_map.items()[index][0] for index in one_rs_index]
-
-                    # save risk records of LD block clusterd rss
-                    for rs, catalog_record in rss.items():
-#                         print rss
-                        if rs in LD_blocked_rss:
-                            risk_store_LD_clustered[trait][rs] = catalog_record
-#                         else:
-#                             print 'filterd out record', catalog_record
-
-                else:
-                    risk_store_LD_clustered[trait] = rss
-
-            else:
-                risk_store_LD_clustered[trait] = rss
-
-            print
-
-
-    return risk_store_LD_clustered
 
 
 def _zyg(genotype, risk_allele):
@@ -270,124 +175,9 @@ def risk_calculation(catalog_map, variants_map, population, user_id, file_name,
 
     return risk_store, risk_report
 
-
-# def _main():
-#     parser = argparse.ArgumentParser(description='e.g. risk_report.py -u demo -f 585.23andme.270.txt -p Europian')
-#     parser.add_argument('-u', '--user_id', required=True)
-#     parser.add_argument('-f', '--file_name', required=True)
-#     parser.add_argument('-p', '--population', required=True, choices=['Asian', 'Europian', 'African', 'Japanese', 'none']) ###
-#     parser.add_argument('--sex', choices=['male', 'female'])
-#     parser.add_argument('-L', '--LD_block_clustering', action='store_true')
-#     args = parser.parse_args()
-
-#     # TODO: population mapping
-#     # ------------------------
-#     population_map = {'African': ['African'],
-#                       'Europian': ['European', 'Caucasian'],
-#                       'Asian': ['Chinese', 'Japanese', 'Asian'],
-#                       'Japanese': ['Japanese', 'Asian'],
-#                       'none': ['']}
-#     population = 'population:{0}'.format('+'.join(population_map[args.population]))
-
-#     catalog_map, variants_map = search_variants.search_variants(args.user_id, args.file_name, population)
-
-
-#     population_code_map = {'Europian': 'CEU',
-#                            'Japanese': 'JPT',
-#                            'none': 'CEU'}
-#     print args.population, population_code_map[args.population]
-
-#     risk_store, risk_report = risk_calculation(catalog_map, variants_map, population_code_map[args.population], args.sex,
-#                                                args.user_id, args.file_name, args.LD_block_clustering, True,
-#                                                os.path.join(UPLOAD_DIR, args.user_id, '{0}_{1}.p'.format(args.user_id, args.file_name)))
-
-
-# #     pprint(risk_store)
-# #     pprint(risk_report
-
-#     # Show risk report (value by study)
-#     # ----------------
-#     print
-#     print 'Risk report:'
-
-#     eng2ja = weblio_eng2ja.WeblioEng2Ja('data/eng2ja.txt', 'data/eng2ja_plus.txt')
-
-#     for (k,v) in risk_report.items(): # sorted by values
-#         k_ja = eng2ja.try_get(k)
-
-#         for i, (study, value) in enumerate(sorted(v.items(), key=lambda(study,value):(value,study), reverse=True)):
-# #             if i == 0:  # show max
-#             value = round(value, 3)
-#             if value < 1:
-#                 print colors.blue('{0} {1} {2}'.format(k, k_ja, value))
-#             elif value == 1:
-#                 print colors.black('{0} {1} {2}'.format(k, k_ja, value))
-#             elif 1 <= value <= 2:
-#                 print colors.yellow('{0} {1} {2}'.format(k, k_ja, value))
-#             elif 2 < value:
-#                 print colors.red('{0} {1} {2}'.format(k, k_ja, value))
-
-
-
-# #     # Show risk report
-# #     # ----------------
-# #     print
-# #     print 'Risk report:'
-
-# #     eng2ja = weblio_eng2ja.WeblioEng2Ja('data/eng2ja.txt', 'data/eng2ja_plus.txt')
-
-# #     for (k,v) in sorted(risk_report.items(), key=lambda(k,v):(v,k), reverse=True): # sorted by values
-# #         k_ja = eng2ja.try_get(k)
-# #         v = round(v, 3)
-# #         if v < 1:
-# #             print colors.blue('{0} {1} {2}'.format(k, k_ja, v))
-# #         elif v == 1:
-# #             print colors.black('{0} {1} {2}'.format(k, k_ja, v))
-# #         elif 1 <= v <= 2:
-# #             print colors.yellow('{0} {1} {2}'.format(k, k_ja, v))
-# #         elif 2 < v:
-# #             print colors.red('{0} {1} {2}'.format(k, k_ja, v))
-
-
-# #     # Show more detail
-# #     # ----------------
-# #     while True:
-# #         try:
-# #             raw_query = raw_input('Trait> ')
-# #         except EOFError:
-# #             break
-
-# #         found_record = risk_store.get(raw_query)
-# #         if found_record:
-# #             for (k,v) in sorted(found_record.items(), key=lambda(k,v):(v['catalog_map']['OR_or_beta'],k), reverse=True): # sorted by OR
-# #                 data = (k,
-# #                         v['catalog_map']['OR_or_beta'],
-# #                         v['catalog_map']['freq'],
-# #                         v['catalog_map']['risk_allele'],
-# #                         v['variant_map'],
-# #                         v['zyg'],
-# #                         v['RR'],
-# #                         v['R'],
-# #                         v['catalog_map']['initial_sample_size'],
-# #                         v['catalog_map']['platform'])
-
-# #                 msg = 'rs:{0} OR:{1} freq:{2} risk-allele:{3} genotype:{4} zyg:{5} RR:{6} R:{7} sample:{8} platform:{9}'.format(*data)
-
-# #                 if v['variant_map'] == 'na':
-# #                     print colors.black(msg)
-# #                 elif v['zyg'] == 'RR':
-# #                     print colors.red(msg)
-# #                 elif v['zyg'] == 'R.':
-# #                     print colors.yellow(msg)
-# #                 elif v['zyg'] == '..':
-# #                     print colors.blue(msg)
-# #                 else:
-# #                     print 'something err...'
-
 def _test():
     import doctest, risk_report
     doctest.testmod()
 
 if __name__ == '__main__':
-    # _main()
     _test()

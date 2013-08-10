@@ -3,12 +3,12 @@ import datetime
 from pymongo import MongoClient, ASCENDING, DESCENDING
 from django.utils.translation import get_language
 from django.conf import settings
-
-from lib.mongo.get_latest_catalog import get_latest_catalog
 from lib.mongo.get_traits_infos import get_traits_infos
 from lib.mongo.reliability_rank import calc_reliability_rank, get_highest_priority_study
 import lib.mongo.search_variants as search_variants
 import lib.mongo.risk_report as risk_report
+from lib.api.gwascatalog import GWASCatalog
+gwascatalog = GWASCatalog()
 from utils import clogging
 log = clogging.getColorLogger(__name__)
 
@@ -49,7 +49,8 @@ def _import_riskreport(tmp_info):
     catalog_map, variants_map = search_variants.search_variants(user_id=tmp_info['user_id'],
                                                                 file_name=tmp_info['name'],
                                                                 file_format=tmp_info['file_format'],
-                                                                query=population)
+                                                                query=population,
+                                                                query_type=None)
     # Get number of uniq studies for this population
     # & Get cover rate of GWAS Catalog for this population
 
@@ -199,7 +200,7 @@ def get_risk_values_for_indexpage(tmp_info, category=[], is_higher=False, is_low
 
 def get_risk_infos_for_subpage(info, trait=None, study=None):
     c = MongoClient(host=settings.MONGO_URI)
-    catalog = get_latest_catalog(port=settings.MONGO_PORT)
+    catalog = gwascatalog.get_latest_catalog()
 
     if info['user_id'].startswith(settings.DEMO_USER_ID): info['user_id'] = settings.DEMO_USER_ID
 

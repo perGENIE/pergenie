@@ -4,7 +4,10 @@ from django.conf import settings
 from lib.mysql.bioq import Bioq
 from lib.mongo.mutate_fasta import MutateFasta
 m = MutateFasta(settings.PATH_TO_REFERENCE_FASTA)
-from lib.mongo.get_latest_catalog import get_latest_catalog
+from lib.api.gwascatalog import GWASCatalog
+gwascatalog = GWASCatalog()
+from utils import clogging
+log = clogging.getColorLogger(__name__)
 
 
 class Genomes(object):
@@ -51,7 +54,7 @@ class Genomes(object):
 
         return genotypes
 
-    def _ref_or_na(self, loc, loctype, file_format):
+    def _ref_or_na(self, loc, loctype, file_format, ref=None):
         """
         Determine if genotype is `reference` or `N/A`.
         Args:
@@ -68,38 +71,35 @@ class Genomes(object):
           >>> _ref_or_na(100, 'rs', 'vcf_whole_genome')
           'GG'  # reference genome is G
         """
+        assert loctype == 'rs'  # TODO: add `chrpos`
+
+        # If fileformat is SNP array, always `N/A`
         na = 'na'
         if file_format == 'andme':
             return na
 
-        if loctype == 'chrpos':
-            chrom, pos = self.bq._to_chrom_pos(loc)
-            ref = m._slice_fasta(chrom, pos, pos)
-        else:
-            ref = self.bq.get_ref(loc, loctype=loctype)
-            # FIXME: API for search catalog
+        rec = gwascatalog.search_catalog_by_query(loc)
+
+        # Try to get `ref`
+        if not ref:
+            ref = self.bq.get_ref(loc)
             if not ref:
-                catalog = get_latest_catalog()
-                rec = catalog.find_one({'rs': loc})
-                if rec:
-                    ref = rec['ref']
+                ref = rec['ref']
+                if not ref:
+                    ref = na
+                    log.warn('ref not found: loc:%s loctype%s' % (loc, loctype))
 
-        if ref:
-            ref = ref * 2
-        else:
-            ref = na
-            print >>sys.stderr, 'lib.utils.db.get_genotypes: _ref_or_na: %s %s not found' % (loctype, loc)
-
+        # Cases for each fileformat
         if file_format == 'vcf_whole_genome':
-            return ref
+            return ref * 2
         elif file_format == 'vcf_exome_truseq':
-            # FIXME:
-            catalog = get_latest_catalog()
-            rec = catalog.find_one({'rs': loc})
-            if not rec:
-                return na
             if rec['is_in_truseq']:
-                return ref
+                return ref * 2
+            else:
+                return na
+        elif file_format == 'vcf_exome_iontargetseq':
+            if rec['is_in_iontargetseq']:
+                return ref * 2
             else:
                 return na
 

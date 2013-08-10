@@ -1,12 +1,15 @@
 from pymongo import MongoClient
-from search_catalog import search_catalog_by_query
 from django.conf import settings
+from lib.api.gwascatalog import GWASCatalog
+gwascatalog = GWASCatalog()
+from lib.api.genomes import Genomes
+genomes = Genomes()
 
 
-def search_variants(user_id, file_name, file_format, query, query_type=None, mongo_port=27017):
+def search_variants(user_id, file_name, file_format, query, query_type):
     with MongoClient(host=settings.MONGO_URI) as c:
         variants = c['pergenie']['variants'][user_id][file_name]
-        catalog_records = search_catalog_by_query(query, query_type=query_type).sort('trait', 1)
+        catalog_records = gwascatalog.search_catalog_by_query(query, query_type).sort('trait', 1)
 
         tmp_catalog_map = {}
         found_id = 0
@@ -41,26 +44,12 @@ def search_variants(user_id, file_name, file_format, query, query_type=None, mon
             tmp_variants_map[record['rs']] = record['genotype']
 
         # in catalog, but not in variants. so genotype is homozygous of `ref` or `na`.
-        na = 'na'
         for found_id, catalog_map in tmp_catalog_map.items():
             rs = catalog_map['rs']
             ref = catalog_map['ref']
 
             if rs and (not rs in tmp_variants_map):
-                if file_format == 'andme':
-                    tmp_variants_map[rs] = na
-                elif file_format == 'vcf_whole_genome':
-                    tmp_variants_map[rs] = ref * 2
-                elif file_format == 'vcf_exome_truseq':
-                    if catalog_map['is_in_truseq']:
-                        tmp_variants_map[rs] = ref * 2
-                    else:
-                        tmp_variants_map[rs] = na
-                elif file_format == 'vcf_exome_iontargetseq':
-                    if catalog_map['is_in_iontargetseq']:
-                        tmp_variants_map[rs] = ref * 2
-                    else:
-                        tmp_variants_map[rs] = na
+                tmp_variants_map[rs] = genomes._ref_or_na(rs, 'rs', file_format, ref=ref)
 
     # print for debug
     for found_id, catalog_map in tmp_catalog_map.items():

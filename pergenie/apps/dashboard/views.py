@@ -3,12 +3,13 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic.simple import direct_to_template
 from django.utils.translation import ugettext as _
 from django.conf import settings
-from models import *
 
 from lib.api.user import User
 user = User()
 from lib.api.genomes import Genomes
 genomes = Genomes()
+from lib.api.gwascatalog import GWASCatalog
+gwascatalog = GWASCatalog()
 from utils.clogging import getColorLogger
 log = getColorLogger(__name__)
 
@@ -20,11 +21,11 @@ def index(request):
     intro_type, intros = [''], []
 
     while True:
-        catalog_latest_new_records_data = get_latest_added_date()
-        infos = genomes.get_data_infos(user_id)
-        recent_catalog_records = get_recent_catalog_records()
+        catalog_latest_new_records_data = gwascatalog.get_latest_added_date()
+        recent_catalog_records = gwascatalog.get_recent_catalog_records()
 
-        print user_id.startswith(settings.DEMO_USER_ID)
+        infos = genomes.get_data_infos(user_id)
+
         if user_id.startswith(settings.DEMO_USER_ID):
             tmp_user_info = user.get_user_info(user_id)
             if not tmp_user_info.get('last_viewed_file'):

@@ -1,21 +1,17 @@
-# -*- coding: utf-8 -*-
-import os
+import sys, os
 from pprint import pprint
-
+import pymongo
 from django.contrib.auth.decorators import login_required
-# from django.views.decorators.http import require_http_methods
 from django.views.generic.simple import direct_to_template
 from django.utils import translation
 from django.utils.translation import ugettext as _
 from django.conf import settings
-# from apps.library.forms import LibraryForm
 from models import *
 
-import pymongo
-
-from lib.mongo import search_catalog
 from lib.mongo.get_traits_infos import get_traits_infos
 from lib.utils.io import pickle_load_obj
+from lib.api.gwascatalog import GWASCatalog
+gwascatalog = GWASCatalog()
 from lib.utils.clogging import getColorLogger
 log = getColorLogger(__name__)
 
@@ -26,7 +22,7 @@ TRAITS, TRAITS_JA, TRAITS_CATEGORY, TRAITS_WIKI_URL_EN = get_traits_infos()
 def index(request):
     msg, err = '', ''
 
-    latest_catalog_date = get_latest_catalog_date()
+    latest_catalog_date = gwascatalog.get_latest_catalog_date()
 
     return direct_to_template(request, 'library/index.html',
                               dict(msg=msg, err=err,
@@ -111,7 +107,7 @@ def trait(request, trait):
 @login_required
 def snps_index(request):
     msg, err = '', ''
-    uniq_snps_list = get_uniq_snps_list()
+    uniq_snps_list = gwascatalog.get_uniq_snps_list()
 
     return direct_to_template(request,
                               'library/snps_index.html',
@@ -160,7 +156,7 @@ def snps(request, rs):
         # * LD data(r^2)
 
     # data from gwascatalog
-    catalog_records = get_catalog_records(rs)
+    catalog_records = gwascatalog.get_catalog_records(rs)
 
     # TODO: replace bellow to info from dbSNP
     if len(catalog_records) > 0:

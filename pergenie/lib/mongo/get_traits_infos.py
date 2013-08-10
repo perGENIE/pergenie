@@ -1,9 +1,7 @@
-# -*- coding: utf-8 -*-
-
 import pymongo
 from django.conf import settings
 
-
+# TODO: need to merge
 def get_traits_infos(as_dict=False):
     with pymongo.MongoClient(host=settings.MONGO_URI) as connection:
         trait_info = connection['pergenie']['trait_info']
