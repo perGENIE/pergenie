@@ -5,6 +5,8 @@ from django.utils.translation import ugettext as _
 from django.conf import settings
 from models import *
 
+from lib.api.user import User
+user = User()
 from utils.clogging import getColorLogger
 log = getColorLogger(__name__)
 
@@ -22,7 +24,7 @@ def index(request):
 
         print user_id.startswith(settings.DEMO_USER_ID)
         if user_id.startswith(settings.DEMO_USER_ID):
-            tmp_user_info = get_user_info(user_id)
+            tmp_user_info = user.get_user_info(user_id)
             if not tmp_user_info.get('last_viewed_file'):
                 intro_type = ['welcome']
             else:

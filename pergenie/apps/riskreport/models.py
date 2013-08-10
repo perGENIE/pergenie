@@ -1,10 +1,6 @@
-# -*- coding: utf-8 -*-
-
 import sys, os
 import datetime
-from pprint import pformat
 from pymongo import MongoClient, ASCENDING, DESCENDING
-
 from django.utils.translation import get_language
 from django.conf import settings
 
@@ -38,14 +34,6 @@ def get_user_file_info(user_id, file_name):
     if user_id.startswith(settings.DEMO_USER_ID): user_id = settings.DEMO_USER_ID
 
     info = data_info.find_one({'user_id': user_id, 'name': file_name})
-
-    return info
-
-
-def get_user_info(user_id):
-    c = MongoClient(host=settings.MONGO_URI)
-    user_info = c['pergenie']['user_info']
-    info = user_info.find_one({'user_id': user_id})
 
     return info
 

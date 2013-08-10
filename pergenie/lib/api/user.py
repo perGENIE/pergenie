@@ -14,6 +14,7 @@ log = clogging.getColorLogger(__name__)
 
 class User(object):
     def __init__(self):
+        # TODO: db select & settings
         pass
 
     def create(self, user_id, password=None, account_activation=settings.ACCOUNT_ACTIVATION):
@@ -183,3 +184,13 @@ This email address is SEND ONLY, NO-REPLY.
         # Delete genome data in upload directory
         # Delete mongo.variants
         # Delete mongo.riskreport
+
+    def get_user_info(self, user_id):
+        with MongoClient(host=settings.MONGO_URI) as c:
+            user_info = c['pergenie']['user_info']
+            info = user_info.find_one({'user_id': user_id})
+
+            return info
+
+    # def set_user_info(self, ):
+    #     pass

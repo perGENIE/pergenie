@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+import sys, os
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 from django.views.generic.simple import direct_to_template
@@ -10,8 +10,8 @@ from django.conf import settings
 from models import *
 from apps.riskreport.forms import RiskReportForm
 
-import sys, os
-
+from lib.api.user import User
+user = User()
 from utils import clogging
 log = clogging.getColorLogger(__name__)
 
@@ -40,7 +40,7 @@ def index(request):
             break
 
         # Determine file_name & tmp_info
-        tmp_user_info = get_user_info(user_id)
+        tmp_user_info = user.get_user_info(user_id)
 
         if not tmp_user_info:
             # user does not exists in user_info...
@@ -158,7 +158,7 @@ def study(request, trait, study):
 
         if not file_name:
             # By default, browse `last_viewed_file`
-            file_name = get_user_info(user_id).get('last_viewed_file')
+            file_name = user.get_user_info(user_id).get('last_viewed_file')
 
             # If you have no riskreports, but this time you try to browse details of reprort,
             if not file_name:
@@ -228,7 +228,7 @@ def show_all(request):
             break
 
         if not request.method == 'POST':
-            tmp_user_info = get_user_info(user_id)
+            tmp_user_info = user.get_user_info(user_id)
             file_name = tmp_user_info.get('last_viewed_file')
 
             # If you have no riskreports, but this time you try to browse details of reprort,

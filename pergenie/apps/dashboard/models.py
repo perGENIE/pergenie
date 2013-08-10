@@ -44,10 +44,3 @@ def get_recent_catalog_records():
         print record['added']
 
     return uniq_studies
-
-def get_user_info(user_id):
-    c = MongoClient(host=settings.MONGO_URI)
-    user_info = c['pergenie']['user_info']
-    info = user_info.find_one({'user_id': user_id})
-
-    return info
