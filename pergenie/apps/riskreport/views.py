@@ -12,6 +12,8 @@ from apps.riskreport.forms import RiskReportForm
 
 from lib.api.user import User
 user = User()
+from lib.api.genomes import Genomes
+genomes = Genomes()
 from utils import clogging
 log = clogging.getColorLogger(__name__)
 
@@ -33,7 +35,7 @@ def index(request):
     file_name = ''
 
     while True:
-        infos = get_user_data_infos(user_id)
+        infos = genomes.get_data_infos(user_id)
 
         if not infos:
             err = _('no data uploaded')
@@ -51,9 +53,9 @@ def index(request):
             while True:
                 # By default, browse `last_viewed_file` if exists.
                 if tmp_user_info.get('last_viewed_file'):
-                    if get_user_file_info(user_id, tmp_user_info['last_viewed_file']):
-                        if get_user_file_info(user_id, tmp_user_info['last_viewed_file'])['status'] == 100:
-                            tmp_info = get_user_file_info(user_id, tmp_user_info['last_viewed_file'])
+                    if genomes.get_data_info(user_id, tmp_user_info['last_viewed_file']):
+                        if genomes.get_data_info(user_id, tmp_user_info['last_viewed_file'])['status'] == 100:
+                            tmp_info = genomes.get_data_info(user_id, tmp_user_info['last_viewed_file'])
                             file_name = tmp_info['name']
                             break
 
@@ -110,7 +112,7 @@ def index(request):
             set_user_last_viewed_file(user_id, file_name)
 
             # reload
-            tmp_info = get_user_file_info(user_id, file_name)
+            tmp_info = genomes.get_data_info(user_id, file_name)
 
             # translate to Japanese
             if browser_language == 'ja':
@@ -164,7 +166,7 @@ def study(request, trait, study):
             if not file_name:
                 return redirect('apps.riskreport.views.index')
 
-        info = get_user_file_info(user_id, file_name)
+        info = genomes.get_data_info(user_id, file_name)
 
         if not info:
             err = _('no such file %(file_name)s') % {'file_name': file_name}
@@ -219,7 +221,7 @@ def show_all(request):
 
     while True:
         # determine file
-        infos = get_user_data_infos(user_id)
+        infos = genomes.get_data_infos(user_id)
         tmp_info = None
         tmp_infos = []
 
@@ -235,7 +237,7 @@ def show_all(request):
             if not file_name:
                 return redirect('apps.riskreport.views.index')
 
-            tmp_infos.append(get_user_file_info(user_id, file_name))
+            tmp_infos.append(genomes.get_data_info(user_id, file_name))
 
             # Intro.js
             if not tmp_user_info.get('viewed_riskreport_showall'):

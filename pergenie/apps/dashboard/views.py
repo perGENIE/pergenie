@@ -7,6 +7,8 @@ from models import *
 
 from lib.api.user import User
 user = User()
+from lib.api.genomes import Genomes
+genomes = Genomes()
 from utils.clogging import getColorLogger
 log = getColorLogger(__name__)
 
@@ -19,7 +21,7 @@ def index(request):
 
     while True:
         catalog_latest_new_records_data = get_latest_added_date()
-        infos = get_data_infos(user_id)
+        infos = genomes.get_data_infos(user_id)
         recent_catalog_records = get_recent_catalog_records()
 
         print user_id.startswith(settings.DEMO_USER_ID)

@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
 import sys, os
-
 from django.contrib.auth.decorators import login_required
 from django.views.generic.simple import direct_to_template
 from django.utils import translation

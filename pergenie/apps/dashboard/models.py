@@ -13,17 +13,6 @@ def get_latest_added_date():
     return latest_date
 
 
-def get_data_infos(user_id):
-    c = MongoClient(host=settings.MONGO_URI)
-    data_info = c['pergenie']['data_info']
-
-    if user_id.startswith(settings.DEMO_USER_ID): user_id = settings.DEMO_USER_ID
-
-    infos = list(data_info.find({'user_id': user_id}))
-
-    return infos
-
-
 def get_recent_catalog_records():
     catalog = get_latest_catalog(port=settings.MONGO_PORT)
 

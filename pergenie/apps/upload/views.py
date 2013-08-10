@@ -1,22 +1,17 @@
-# -*- coding: utf-8 -*-
-
+import sys, os
+import datetime
+import pymongo
+import magic
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, Http404
 from django.shortcuts import redirect
 from django.utils import simplejson
 from django.views.decorators.http import require_http_methods
 from django.views.generic.simple import direct_to_template
-from django.utils.translation import get_language
 from django.utils.translation import ugettext as _
 from django.conf import settings
 from apps.upload.forms import UploadForm
-from models import *
 
-import os
-import datetime
-
-import pymongo
-import magic
 from lib.common import clean_file_name
 from lib.tasks import qimport_variants
 from utils import clogging

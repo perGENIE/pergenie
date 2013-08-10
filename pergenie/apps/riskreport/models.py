@@ -16,28 +16,6 @@ TRAITS, TRAITS2JA, TRAITS2CATEGORY, TRAITS2WIKI_URL_EN = get_traits_infos(as_dic
 JA2TRAITS = dict([(v, k) for (k, v) in TRAITS2JA.items()])
 
 
-def get_user_data_infos(user_id):
-    c = MongoClient(host=settings.MONGO_URI)
-    data_info = c['pergenie']['data_info']
-
-    if user_id.startswith(settings.DEMO_USER_ID): user_id = settings.DEMO_USER_ID
-
-    infos = list(data_info.find({'user_id': user_id}))
-
-    return infos
-
-
-def get_user_file_info(user_id, file_name):
-    c = MongoClient(host=settings.MONGO_URI)
-    data_info = c['pergenie']['data_info']
-
-    if user_id.startswith(settings.DEMO_USER_ID): user_id = settings.DEMO_USER_ID
-
-    info = data_info.find_one({'user_id': user_id, 'name': file_name})
-
-    return info
-
-
 def set_user_last_viewed_file(user_id, file_name):
     c = MongoClient(host=settings.MONGO_URI)
     user_info = c['pergenie']['user_info']

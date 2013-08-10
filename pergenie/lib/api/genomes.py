@@ -2,80 +2,83 @@ import sys, os
 from pymongo import MongoClient
 from django.conf import settings
 from lib.mysql.bioq import Bioq
-bq = Bioq(settings.DATABASES['bioq']['HOST'],
-         settings.DATABASES['bioq']['USER'],
-         settings.DATABASES['bioq']['PASSWORD'],
-         settings.DATABASES['bioq']['NAME'])
 from lib.mongo.mutate_fasta import MutateFasta
 m = MutateFasta(settings.PATH_TO_REFERENCE_FASTA)
 from lib.mongo.get_latest_catalog import get_latest_catalog
 
-DB_TYPE = 'mongodb'
-
 
 class Genomes(object):
     def __init__(self):
-        # TODO: db select & settings
-        pass
+        self.db_select = settings.DB_SELECT['genomes']
+        self.bq = Bioq(settings.DATABASES['bioq']['HOST'],
+                       settings.DATABASES['bioq']['USER'],
+                       settings.DATABASES['bioq']['PASSWORD'],
+                       settings.DATABASES['bioq']['NAME'])
 
-    def get_data_infos(user_id):
-        if DB_TYPE == 'mongodb':
-            with MongoClient(host=settings.MONGO_URI) as c:
-                data_info = c['pergenie']['data_info']
-                if user_id.startswith(settings.DEMO_USER_ID): user_id = settings.DEMO_USER_ID
-                infos = list(data_info.find({'user_id': user_id}))
-
-        return infos
-
-
-    def get_genotypes(user_id, file_name, file_format, locs, loctype='rs'):
+    def get_genotypes(self, user_id, file_name, file_format, locs, loctype='rs'):
         """
-        API for getting genotypes, with specified backend dbs.
-
+        Get genotypes of a user's genome file.
         Args:
-        user_id:
-        file_name:
-        file_format:
-        locs: a list of locations. locations are chrpos(int) or rsid(int).
-        loctype: 'chrpos' or 'rs'
+          user_id:
+          file_name:
+          file_format:
+          locs: a list of locations. locations are chrpos(int) or rsid(int).
+          loctype: 'chrpos' or 'rs'
 
-        Retval:
-        a dict of {loctype: genotype}
+        Returns:
+          a dict: {loc: genotype}
+
+        Example:
+          >>> get_genotypes('knmkr@pergenie.org', 'genome_1.vcf', 'vcf_whole_genome', [100,200], 'rs')
+          {100: 'GG', 200: 'AT'}
         """
         assert loctype in ('rs', 'chrpos')
         genotypes = dict()
         locs = list(set(locs))
 
-        if DB_TYPE == 'mongodb':
+        if self.db_select == 'mongodb':
             with MongoClient(host=settings.MONGO_URI) as c:
                 variants = c['pergenie']['variants'][user_id][file_name]
                 records = variants.find({loctype: {'$in': locs}})
-                print 'list(records)', list(records)
 
-                if records:
-                    for record in records:
-                        genotypes.update({record[loctype]: record['genotype']})
+        if records:
+            for record in records:
+                genotypes.update({record[loctype]: record['genotype']})
 
-                for loc in locs:
-                    if not loc in genotypes:
-                        genotypes.update({loc: _ref_or_na(loc, loctype, file_format)})
+        for loc in locs:
+            if not loc in genotypes:
+                genotypes.update({loc: self._ref_or_na(loc, loctype, file_format)})
 
         return genotypes
 
+    def _ref_or_na(self, loc, loctype, file_format):
+        """
+        Determine if genotype is `reference` or `N/A`.
+        Args:
+          loc: genomic location
+          loctype: 'chrpos' or 'rs'
+          file_format:
 
-    def _ref_or_na(loc, loctype, file_format):
+        Returns:
+          genotype: 'XX'
+
+        Example:
+          >>> _ref_or_na(100, 'rs', 'andme')
+          'na'  # N/A in SNP array
+          >>> _ref_or_na(100, 'rs', 'vcf_whole_genome')
+          'GG'  # reference genome is G
+        """
         na = 'na'
         if file_format == 'andme':
             return na
 
-        # Try to get ref
         if loctype == 'chrpos':
-            chrom, pos = bq._to_chrom_pos(loc)
+            chrom, pos = self.bq._to_chrom_pos(loc)
             ref = m._slice_fasta(chrom, pos, pos)
         else:
-            ref = bq.get_ref(loc, loctype=loctype)
+            ref = self.bq.get_ref(loc, loctype=loctype)
+            # FIXME: API for search catalog
             if not ref:
-                # FIXME: API for search catalog
                 catalog = get_latest_catalog()
                 rec = catalog.find_one({'rs': loc})
                 if rec:
@@ -99,3 +102,23 @@ class Genomes(object):
                 return ref
             else:
                 return na
+
+    def get_data_infos(self, user_id):
+        if user_id.startswith(settings.DEMO_USER_ID): user_id = settings.DEMO_USER_ID
+
+        if self.db_select == 'mongodb':
+            with MongoClient(host=settings.MONGO_URI) as c:
+                data_info = c['pergenie']['data_info']
+                infos = list(data_info.find({'user_id': user_id}))
+
+        return infos
+
+    def get_data_info(self, user_id, file_name):
+        if user_id.startswith(settings.DEMO_USER_ID): user_id = settings.DEMO_USER_ID
+
+        if self.db_select == 'mongodb':
+            with MongoClient(host=settings.MONGO_URI) as c:
+                data_info = c['pergenie']['data_info']
+                info = data_info.find_one({'user_id': user_id, 'name': file_name})
+
+        return info
