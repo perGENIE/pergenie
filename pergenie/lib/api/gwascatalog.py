@@ -32,6 +32,7 @@ class GWASCatalog(object):
         """
 
         # parse & build query
+        raw_query = str(raw_query)
         sub_queries = []
         query_map = {'rs': 'snps',
                      'chr': 'chr_id',

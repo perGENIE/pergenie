@@ -28,17 +28,17 @@ class RiskReport(object):
             if record['snps'] != 'na':
                 snps_all.update([record['snps']])
 
-            found_id += 1
-            reported_genes = ', '.join([gene['gene_symbol'] for gene in record['reported_genes']])
-            mapped_genes = ', '.join([gene['gene_symbol'] for gene in record['mapped_genes']])
-            catalog_map[found_id] = record
-            catalog_map[found_id].update({'rs': record['snps'],
-                                          'reported_genes': reported_genes,
-                                          'mapped_genes': mapped_genes,
-                                          'chr': record['chr_id'],
-                                          'freq': record['risk_allele_frequency'],
-                                          'added': record['added'].date(),
-                                          'date': record['date'].date()})
+                found_id += 1
+                reported_genes = ', '.join([gene['gene_symbol'] for gene in record['reported_genes']])
+                mapped_genes = ', '.join([gene['gene_symbol'] for gene in record['mapped_genes']])
+                catalog_map[found_id] = record
+                catalog_map[found_id].update({'rs': record['snps'],
+                                              'reported_genes': reported_genes,
+                                              'mapped_genes': mapped_genes,
+                                              'chr': record['chr_id'],
+                                              'freq': record['risk_allele_frequency'],
+                                              'added': record['added'].date(),
+                                              'date': record['date'].date()})
 
         # Get genotypes for these GWAS Catalog records
         # Case1: in catalog & in variants
@@ -48,7 +48,7 @@ class RiskReport(object):
         for _id, _catalog in catalog_map.items():
             rs = _catalog['rs']
             ref = _catalog['ref']
-            if rs and (not rs in variants_map):
+            if rs and rs != 'na' and (not rs in variants_map):
                 variants_map[rs] = genomes._ref_or_na(rs, 'rs', info['file_format'], ref=ref)
 
         # Case3: TODO:

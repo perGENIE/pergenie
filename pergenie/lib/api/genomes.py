@@ -78,7 +78,12 @@ class Genomes(object):
         if file_format == 'andme':
             return na
 
-        rec = gwascatalog.search_catalog_by_query(loc)
+        rec = list(gwascatalog.search_catalog_by_query(loc, 'rs'))
+        if rec:
+            rec = rec[0]
+        else:
+            log.warn('gwascatalog record not found: loc:%s loctype%s' % (loc, loctype))
+            return na
 
         # Try to get `ref`
         if not ref:
