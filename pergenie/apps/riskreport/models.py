@@ -16,29 +16,6 @@ TRAITS, TRAITS2JA, TRAITS2CATEGORY, TRAITS2WIKI_URL_EN = get_traits_infos(as_dic
 JA2TRAITS = dict([(v, k) for (k, v) in TRAITS2JA.items()])
 
 
-def set_user_last_viewed_file(user_id, file_name):
-    c = MongoClient(host=settings.MONGO_URI)
-    user_info = c['pergenie']['user_info']
-    user_info.update({'user_id': user_id},
-                     {"$set": {'last_viewed_file': file_name}}, upsert=True)
-
-def set_user_data_population(user_id, file_name, population):
-    c = MongoClient(host=settings.MONGO_URI)
-    user_info = c['pergenie']['data_info']
-
-    if user_id.startswith(settings.DEMO_USER_ID): user_id = settings.DEMO_USER_ID
-
-    user_info.update({'user_id': user_id,
-                      'name': file_name},
-                     {"$set": {'population': population}})
-
-def set_user_viewed_riskreport_showall_done(user_id):
-    c = MongoClient(host=settings.MONGO_URI)
-    user_info = c['pergenie']['user_info']
-    user_info.update({'user_id': user_id},
-                     {"$set": {'viewed_riskreport_showall': True}}, upsert=True)
-
-
 def _import_riskreport(tmp_info):
     c = MongoClient(host=settings.MONGO_URI)
 

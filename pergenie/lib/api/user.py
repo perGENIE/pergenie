@@ -192,5 +192,22 @@ This email address is SEND ONLY, NO-REPLY.
 
             return info
 
-    # def set_user_info(self, ):
-    #     pass
+    def set_user_last_viewed_file(self, user_id, file_name):
+        with MongoClient(host=settings.MONGO_URI) as c:
+            user_info = c['pergenie']['user_info']
+            user_info.update({'user_id': user_id},
+                             {"$set": {'last_viewed_file': file_name}}, upsert=True)
+
+    def set_user_data_population(self, user_id, file_name, population):
+        if user_id.startswith(settings.DEMO_USER_ID): user_id = settings.DEMO_USER_ID
+        with MongoClient(host=settings.MONGO_URI) as c:
+            user_info = c['pergenie']['data_info']
+            user_info.update({'user_id': user_id,
+                              'name': file_name},
+                             {"$set": {'population': population}})
+
+    def set_user_viewed_riskreport_showall_done(self, user_id):
+        with MongoClient(host=settings.MONGO_URI) as c:
+            user_info = c['pergenie']['user_info']
+            user_info.update({'user_id': user_id},
+                             {"$set": {'viewed_riskreport_showall': True}}, upsert=True)

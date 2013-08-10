@@ -100,7 +100,7 @@ def index(request):
                 break
 
             if population in ['unknown', 'Asian', 'European', 'Japanese']:
-                set_user_data_population(user_id, file_name, population)
+                user.set_user_data_population(user_id, file_name, population)
                 tmp_info['population'] = population
 
         # Selected file_name exists & has been imported, so calculate risk.
@@ -109,7 +109,7 @@ def index(request):
             h_risk_traits, h_risk_values, h_risk_ranks, h_risk_studies = get_risk_values_for_indexpage(tmp_info, category=['Disease'], is_higher=True, top=10)
 
             # set `last_viewed_file`
-            set_user_last_viewed_file(user_id, file_name)
+            user.set_user_last_viewed_file(user_id, file_name)
 
             # reload
             tmp_info = genomes.get_data_info(user_id, file_name)
@@ -242,7 +242,7 @@ def show_all(request):
             # Intro.js
             if not tmp_user_info.get('viewed_riskreport_showall'):
                 log.debug(tmp_user_info.get('viewed_riskreport_showall'))
-                set_user_viewed_riskreport_showall_done(user_id)
+                user.set_user_viewed_riskreport_showall_done(user_id)
                 do_intro = True
 
         # If file_name is selected by user with Form,
