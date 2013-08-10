@@ -92,7 +92,7 @@ def trait(request, trait):
         err += 'trait not found'
 
     else:
-        library_list, variants_maps = get_libarary_and_variatns_of_a_trait(trait, user_id)
+        library_list = gwascatalog.search_catalog_by_query(trait, 'trait')
 
     log.error(err)
 

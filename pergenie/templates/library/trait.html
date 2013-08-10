@@ -65,7 +65,7 @@
 
                     <tbody>
                       {% for library in library_list %}
-                      {% set rs = library.rs %}
+                      {% set rs = library.snps %}
                       <tr>
                         <td>
                           {% ifnotequal rs 'na' %}<a href="//www.ncbi.nlm.nih.gov/projects/SNP/snp_ref.cgi?rs={{ rs }}" target="_blank">rs{{ rs }}</a>
