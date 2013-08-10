@@ -8,14 +8,13 @@ from django.utils.translation import ugettext as _
 from django.conf import settings
 from models import *
 
-from lib.mongo.get_traits_infos import get_traits_infos
 from lib.utils.io import pickle_load_obj
 from lib.api.gwascatalog import GWASCatalog
 gwascatalog = GWASCatalog()
 from lib.utils.clogging import getColorLogger
 log = getColorLogger(__name__)
 
-TRAITS, TRAITS_JA, TRAITS_CATEGORY, TRAITS_WIKI_URL_EN = get_traits_infos()
+TRAITS, TRAITS_JA, TRAITS_CATEGORY, TRAITS_WIKI_URL_EN = gwascatalog.get_traits_infos()
 
 
 @login_required

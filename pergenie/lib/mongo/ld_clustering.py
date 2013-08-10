@@ -1,3 +1,7 @@
+# HAPMAP_PORT = 10002
+# POPULATION_CODE = ['ASW', 'CEU', 'CHB', 'CHD', 'GIH', 'JPT', 'LWK', 'MEX', 'MKK', 'TSI', 'YRI']
+
+
 # def LD_block_clustering(risk_store, population_code):
 #     """
 #     LD block (r^2) clustering
