@@ -20,7 +20,12 @@ class RiskReport(object):
         """
         with MongoClient(host=settings.MONGO_URI) as c:
             db = c['pergenie']
-            last_riskreport_date = db['data_info'].find_one({'user_id': info['user_id'], 'name': info['name']})['riskreport']
+            user_data_info = db['data_info'].find_one({'user_id': info['user_id'], 'name': info['name']})
+            last_riskreport_date = user_data_info.get('riskreport')
+
+            if not last_riskreport_date:
+                return False
+
             latest_gwascatalog_date = db['catalog_info'].find_one({'status': 'latest'})['date']
             delta_days = (latest_gwascatalog_date - last_riskreport_date).days
 
