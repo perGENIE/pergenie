@@ -99,9 +99,17 @@ def import_genomes(settings):
             # delete data_info and variants from DB.
             user_datas = db['data_info'].find({'user_id': username})
             for user_data in user_datas:
-                db_filepath = os.path.join(datadir, user_data['file_format'], user_data['raw_name'])
-                if not os.path.exists(db_filepath):
-                    log.warn('Deleting from DB: %s' % db_filepath)
+
+                # Check if file exists
+                is_file_exists = False
+                for datadir in settings.CRON_DIRS[username]:
+                    db_filepath = os.path.join(datadir, user_data['file_format'], user_data['raw_name'])
+                    if os.path.exists(db_filepath):
+                        is_file_exists = True
+                        break
+
+                if not is_file_exists:
+                    log.warn('Deleting from DB: %s %s' % (user_data['file_format'], user_data['raw_name']))
                     db.drop_collection('variants.{0}.{1}'.format(username, clean_file_name(user_data['raw_name'])))
                     db.drop_collection('reports.{0}.{1}'.format(username, clean_file_name(user_data['raw_name'])))
                     for r in db['data_info'].find({'user_id': username, 'raw_name': user_data['raw_name']}):
