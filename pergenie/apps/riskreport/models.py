@@ -13,12 +13,12 @@ TRAITS, TRAITS2JA, TRAITS2CATEGORY, TRAITS2WIKI_URL_EN = gwascatalog.get_traits_
 JA2TRAITS = dict([(v, k) for (k, v) in TRAITS2JA.items()])
 
 
-def get_risk_values_for_indexpage(tmp_info, category=[], is_higher=False, is_lower=False, top=None):
+def get_risk_values_for_indexpage(tmp_info, category=[], is_higher=False, is_lower=False, top=None, force_uptade=False):
     if tmp_info['user_id'].startswith(settings.DEMO_USER_ID): tmp_info['user_id'] = settings.DEMO_USER_ID
 
     with MongoClient(host=settings.MONGO_URI) as c:
-        if not riskreport.is_uptodate(tmp_info):
-            log.info('riskreport is outdated, so update riskreport')
+        if not riskreport.is_uptodate(tmp_info) or force_uptade:
+            log.info('update riskreport')
             riskreport.import_riskreport(tmp_info)
 
         users_reports = c['pergenie']['reports'][tmp_info['user_id']][tmp_info['name']]

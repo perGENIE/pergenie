@@ -33,6 +33,7 @@ def index(request):
     tmp_info = None
     h_risk_traits, h_risk_values, h_risk_ranks, h_risk_studies = None, None, None, None
     file_name = ''
+    force_uptade = False
 
     while True:
         infos = genomes.get_data_infos(user_id)
@@ -100,13 +101,16 @@ def index(request):
                 break
 
             if population in ['unknown', 'Asian', 'European', 'Japanese']:
-                user.set_user_data_population(user_id, file_name, population)
-                tmp_info['population'] = population
+                # Change population
+                if tmp_info['population'] != population:
+                    force_uptade = True
+                    user.set_user_data_population(user_id, file_name, population)
+                    tmp_info['population'] = population
 
         # Selected file_name exists & has been imported, so calculate risk.
         if not err:
             # get top-10 highest & top-10 lowest
-            h_risk_traits, h_risk_values, h_risk_ranks, h_risk_studies = get_risk_values_for_indexpage(tmp_info, category=['Disease'], is_higher=True, top=10)
+            h_risk_traits, h_risk_values, h_risk_ranks, h_risk_studies = get_risk_values_for_indexpage(tmp_info, category=['Disease'], is_higher=True, top=10, force_uptade=force_uptade)
 
             # set `last_viewed_file`
             user.set_user_last_viewed_file(user_id, file_name)
