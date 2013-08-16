@@ -70,15 +70,14 @@ def import_catalog(path_to_gwascatalog, settings):
         with open(path_to_eng2ja, 'rb') as fin:
             for record in csv.DictReader(fin, delimiter='\t'):
                 if not record['eng'] == '#':  # ignore `#`
-                    # TODO: remove eng2ja & eng2category
-                    eng2ja[record['eng']] = unicode(record['ja'], 'utf-8') or record['eng']
-                    eng2category[record['eng']] = record['category'] or 'NA'
-
                     #
                     ja = unicode(record['ja'], 'utf-8') or record['eng']
                     category = record['category'] or 'NA'
                     is_drug_response = record['is_drug_response'] or 'NA'
                     wiki_url_en = disease2wiki.get(record['eng'], '')
+
+                    eng2ja[record['eng']] = ja
+                    eng2category[record['eng']] = category
 
                     clean_record = dict(eng=record['eng'], ja=ja,
                                         category=category,
@@ -87,7 +86,11 @@ def import_catalog(path_to_gwascatalog, settings):
 
                     trait_info.insert(clean_record, upsert=True)  # insert if not exist
 
+            assert eng2ja.values() == list(set(eng2ja.values())), "values not uniq in eng2ja"
+
             trait_info.ensure_index('eng', unique=True)
+
+
 
         # ==============
         # Import catalog
