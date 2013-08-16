@@ -368,7 +368,7 @@ Immune reponse to smallpox (secreted IL-2)	天然痘(ほうそう)への免疫�
 Immune reponse to smallpox (secreted TNF-alpha)	天然痘(ほうそう)への免疫応答 (secreted TNF-alpha)	Trait_med
 Immune response to anthrax vaccine 	炭疽ワクチンへの免疫応答	Trait_med
 Immune response to smallpox vaccine (IL-6)	天然痘(ほうそう)ワクチンへの免疫応答 (IL-6)	Trait_med
-Immunoglobulin A 	IgA(免疫グロブリンA)腎症	Disease
+Immunoglobulin A 	免疫グロブリンA	Trait_med
 Inattentive symptoms	注意欠陥障害	Disease
 Infantile hypertrophic pyloric stenosis	乳児肥厚性幽門狭窄症	Disease
 Inflammatory biomarkers	炎症のバイオマーカー	Trait_med
