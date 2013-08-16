@@ -18,7 +18,7 @@ class Genomes(object):
                        settings.DATABASES['bioq']['PASSWORD'],
                        settings.DATABASES['bioq']['NAME'])
 
-    def get_genotypes(self, user_id, file_name, file_format, locs, loctype='rs'):
+    def get_genotypes(self, user_id, file_name, file_format, locs, loctype='rs', check_ref_or_not=True):
         """
         Get genotypes of a user's genome file.
         Args:
@@ -48,13 +48,14 @@ class Genomes(object):
             for record in records:
                 genotypes.update({record[loctype]: record['genotype']})
 
-        for loc in locs:
-            if not loc in genotypes:
-                genotypes.update({loc: self._ref_or_na(loc, loctype, file_format)})
+        if check_ref_or_not:
+            for loc in locs:
+                if not loc in genotypes:
+                    genotypes.update({loc: self._ref_or_na(loc, loctype, file_format)})
 
         return genotypes
 
-    def _ref_or_na(self, loc, loctype, file_format, ref=None):
+    def _ref_or_na(self, loc, loctype, file_format, rec=None):
         """
         Determine if genotype is `reference` or `N/A`.
         Args:
@@ -73,26 +74,27 @@ class Genomes(object):
         """
         assert loctype == 'rs'  # TODO: add `chrpos`
 
-        # If fileformat is SNP array, always `N/A`
+        # If fileformat is SNP array, always `N/A`.
         na = 'na'
         if file_format == 'andme':
             return na
 
-        rec = list(gwascatalog.search_catalog_by_query('rs'+str(loc), None))
-        if rec:
-            rec = rec[0]
-        else:
-            log.warn('gwascatalog record not found: loc:%s loctype%s' % (loc, loctype))
-            return na
+        # If rec(gwascatalog record) is provided, use it. otherwise seach mongo.catalog.
+        if not rec:
+            rec = list(gwascatalog.search_catalog_by_query('rs%s' % loc, None))
+            if rec:
+                rec = rec[0]
+            else:
+                log.warn('gwascatalog record not found: loc:%s loctype: %s' % (loc, loctype))
+                return na
 
-        # Try to get `ref`
+        # Try to get ref(reference allele).
+        ref = rec['ref']
         if not ref:
             ref = self.bq.get_ref(loc)
             if not ref:
-                ref = rec['ref']
-                if not ref:
-                    ref = na
-                    log.warn('ref not found: loc:%s loctype%s' % (loc, loctype))
+                ref = na
+                log.warn('ref not found: loc:%s loctype: %s' % (loc, loctype))
 
         # Cases for each fileformat
         if file_format == 'vcf_whole_genome':

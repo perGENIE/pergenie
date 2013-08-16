@@ -58,14 +58,14 @@ class RiskReport(object):
 
         # Get genotypes for these GWAS Catalog records
         # Case1: in catalog & in variants
-        variants_map = genomes.get_genotypes(info['user_id'], info['name'], info['file_format'], list(snps_all), 'rs')
+        variants_map = genomes.get_genotypes(info['user_id'], info['name'], info['file_format'], list(snps_all), 'rs',
+                                             check_ref_or_not=False)
 
         # Case2: in catalog, but not in variants. so genotype is homozygous of `ref` or `na`.
         for _id, _catalog in catalog_map.items():
             rs = _catalog['rs']
-            ref = _catalog['ref']
             if rs and rs != 'na' and (not rs in variants_map):
-                variants_map[rs] = genomes._ref_or_na(rs, 'rs', info['file_format'], ref=ref)
+                variants_map[rs] = genomes._ref_or_na(rs, 'rs', info['file_format'], rec=_catalog)
 
         # Case3: TODO:
 
