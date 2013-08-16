@@ -15,6 +15,17 @@ class RiskReport(object):
     def __init__(self):
         pass
 
+    def is_uptodate(self, info):
+        """Check if user's risk report is up-to-date.
+        """
+        with MongoClient(host=settings.MONGO_URI) as c:
+            db = c['pergenie']
+            last_riskreport_date = db['data_info'].find_one({'user_id': info['user_id'], 'name': info['name']})['riskreport']
+            latest_gwascatalog_date = db['catalog_info'].find_one({'status': 'latest'})['date']
+            delta_days = (latest_gwascatalog_date - last_riskreport_date).days
+
+            return bool(delta_days < settings.UPDATE_SPAN)
+
     def import_riskreport(self, info):
         if info['user_id'].startswith(settings.DEMO_USER_ID): info['user_id'] = settings.DEMO_USER_ID
 

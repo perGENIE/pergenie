@@ -17,8 +17,10 @@ def get_risk_values_for_indexpage(tmp_info, category=[], is_higher=False, is_low
     if tmp_info['user_id'].startswith(settings.DEMO_USER_ID): tmp_info['user_id'] = settings.DEMO_USER_ID
 
     with MongoClient(host=settings.MONGO_URI) as c:
-        # FIXME: always upsert (for debug)
-        riskreport.import_riskreport(tmp_info)
+        if not riskreport.is_uptodate(tmp_info):
+            log.info('riskreport is outdated, so update riskreport')
+            riskreport.import_riskreport(tmp_info)
+
         users_reports = c['pergenie']['reports'][tmp_info['user_id']][tmp_info['name']]
 
         # get traits, sorted by RR
