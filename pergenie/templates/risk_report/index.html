@@ -138,10 +138,41 @@
 
               <div class="padded">
                 <div class="row-fluid">
-                  <div class="span12">
-                    {% trans "Number of studies for this population is " %}
-                    <b>{{ tmp_info.n_studies }}</b>.<br>
-                  </div>
+
+                  <table class="table table-bordered">
+                    <tbody>
+
+                      <tr>
+                        <td>
+                          {% trans "Number of studies for this population is " %}
+                          <b>{{ tmp_info.n_studies }}</b>.<br>
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td class="center">
+                          <p>{% trans "What percentage does your genome file cover SNPs of these studies?" %}</p>
+                        </td>
+                        <td class="center">
+                          <div class="donut donut-big">
+                            <div class="donut-arrow" data-percentage="{{ tmp_info.catalog_cover_rate }}"></div>
+                          </div>
+                        </td>
+                      </tr>
+
+                      <!-- <tr> -->
+                      <!--   <td class="center"> -->
+                      <!--     <p>{% trans "What percentage does your genome file cover whole genome?" %}</p> -->
+                      <!--   </td> -->
+                      <!--   <td class="center"> -->
+                      <!--     <div class="donut donut-big"> -->
+                      <!--       <div class="donut-arrow" data-percentage="{{ tmp_info.genome_cover_rate }}"></div> -->
+                      <!--     </div> -->
+                      <!--   </td> -->
+                      <!-- </tr> -->
+                    </tbody>
+                  </table>
+
                 </div>
               </div>
             </div>
