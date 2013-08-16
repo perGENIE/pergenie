@@ -21,8 +21,8 @@ bin
 .tox
 nosetests.xml
 
-# Translations
-*.mo
+# # Translations
+# *.mo
 
 # DB, pickle
 *.sqlite3
