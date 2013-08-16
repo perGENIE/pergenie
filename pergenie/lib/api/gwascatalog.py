@@ -3,7 +3,7 @@ import re
 import shlex
 from pymongo import MongoClient, DESCENDING
 from django.conf import settings
-from utils import clogging
+from lib.utils import clogging
 log = clogging.getColorLogger(__name__)
 
 OR_SYMBOL = '+'

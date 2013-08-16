@@ -78,7 +78,7 @@ class Genomes(object):
         if file_format == 'andme':
             return na
 
-        rec = list(gwascatalog.search_catalog_by_query(loc, 'rs'))
+        rec = list(gwascatalog.search_catalog_by_query('rs'+str(loc), None))
         if rec:
             rec = rec[0]
         else:

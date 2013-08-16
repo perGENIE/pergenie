@@ -6,6 +6,8 @@ import datetime
 import pymongo
 from lib.common import clean_file_name
 from lib.mongo.import_variants import import_variants
+from lib.api.riskreport import RiskReport
+riskreport = RiskReport()
 from utils import clogging
 log = clogging.getColorLogger(__name__)
 
@@ -78,6 +80,10 @@ def import_genomes(settings):
                                                  info['population'],
                                                  info['file_format'],
                                                  info['user_id']))
+
+                        # Riskreport
+                        riskreport.import_riskreport(info)
+
                         # population PCA
                         person_xy = [0,0]  # FIXME: projection(info)
                         db['data_info'].update({'user_id': info['user_id'], 'raw_name': info['raw_name']},

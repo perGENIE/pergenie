@@ -56,6 +56,8 @@ class Bioq(object):
 
     def get_ref(self, rs):
         _snp_contig = self._SNPContigLoc(rs)
+        if not _snp_contig: return None
+
         if _snp_contig['orientation'] == 1:
             _snp_contig['allele'].translate(string.maketrans('ATGC', 'TACG'))
         return _snp_contig['allele']
