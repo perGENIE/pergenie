@@ -30,7 +30,8 @@ def import_catalog(path_to_gwascatalog, settings):
     path_to_disease2wiki = settings.PATH_TO_DISEASE2WIKI
     path_to_reference_fasta = settings.PATH_TO_REFERENCE_FASTA
 
-    with pymongo.MongoClient(host=settings.MONGO_URI) as c:
+    with pymongo.MongoClient(host=settings.MONGO_URI) as con:
+        db = con['pergenie']
 
         global bq
         bq= Bioq(settings.DATABASES['bioq']['HOST'],
@@ -57,10 +58,10 @@ def import_catalog(path_to_gwascatalog, settings):
         disease2wiki = json.load(open(path_to_disease2wiki))
 
         # Create db for eng2ja, eng2category, ...
-        trait_info = c['pergenie']['trait_info']
+        trait_info = db['trait_info']
 
         if trait_info.find_one():
-            c['pergenie'].drop_collection(trait_info)
+            db.drop_collection(trait_info)
         assert trait_info.count() == 0
 
         # TODO: remove eng2ja, then use only db.trait_info
@@ -101,19 +102,18 @@ def import_catalog(path_to_gwascatalog, settings):
         catalog_date_raw = os.path.basename(path_to_gwascatalog).split('.')[1]
         # catalog_date = datetime.datetime.strptime(catalog_date_raw , '%Y_%m_%d')
 
-
-        catalog = c['pergenie']['catalog'][catalog_date_raw]
-        print catalog
-        catalog_stats = c['pergenie']['catalog_stats']
-        catalog_cover_rate = c['pergenie']['catalog_cover_rate']
+        print catalog_date_raw
+        catalog = db['catalog'][catalog_date_raw]
+        catalog_stats = db['catalog_stats']
+        catalog_cover_rate = db['catalog_cover_rate']
         counter = Counter()
 
         # ensure old collections does not exist
-        if catalog.find_one(): c['pergenie'].drop_collection(catalog)
+        if catalog.find_one(): db.drop_collection(catalog)
         assert catalog.count() == 0
-        if catalog_stats.find_one(): c['pergenie'].drop_collection(catalog_stats)
+        if catalog_stats.find_one(): db.drop_collection(catalog_stats)
         assert catalog_stats.count() == 0
-        if catalog_cover_rate.find_one(): c['pergenie'].drop_collection(catalog_cover_rate)
+        if catalog_cover_rate.find_one(): db.drop_collection(catalog_cover_rate)
         assert catalog_cover_rate.count() == 0
 
         try:
