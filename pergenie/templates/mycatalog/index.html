@@ -38,6 +38,7 @@
                   <th>chrom.</th>
                   <th>genotype freq.</th>
                   <th>allele freq.</th>
+                  <th>in IonExome</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -51,13 +52,12 @@
                   <td>{{ record.chromosome }}</td>
                   <td>{% for k,v in record.genotype_freq.items %}{{ k }}:{{ v }} {% endfor %}</td>
                   <td>{% for k,v in record.allele_freq.items %}{{ k }}:{{ v }} {% endfor %}</td>
-
+                  <td>{{ record.is_in_iontargetseq }}</td>
                 </tr>
                 {% endfor %}
               </tbody>
             </table>
 
-            注意: catalogのallele strandはすべてプラス鎖。exome seq.については未対応。
           </div>
         </div>
       </div>

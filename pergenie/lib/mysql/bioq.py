@@ -1,6 +1,7 @@
 import MySQLdb as mdb
 import sys
 import string
+from pprint import pprint as pp
 
 class Bioq(object):
     """
@@ -35,17 +36,23 @@ class Bioq(object):
             return rows
 
     def _allele_freqs(self, rs):
-        # rs = self.merged.get(rs, rs)
         rows = self._sql("select * from _loc_allele_freqs where snp_id = '%s'", rs)
         return rows
 
-    def _snp_summary(self, rs):
-        # rs = self.merged.get(rs, rs)
-        row = self._sql("select * from _loc_snp_summary where snp_id = '%s' limit 1", rs)
-        if not row:
-            print >>sys.stderr, '{0} not found'.format(rs)
+    def _snp_summary(self, rs, limit_1=True):
+        raw_query = "select * from _loc_snp_summary where snp_id in (%s)"
+        if type(rs) in (str, int):
+            rs = [rs]
+        _in = ','.join(list(map(lambda x: '%s', rs)))  # `%s,%s,%s ...`
+        raw_query = raw_query % _in  # `select * ... (%s,%s,%s)`
 
-        return row[0] if row else None
+        if limit_1:
+            raw_query += ' limit 1'
+            row = self._sql(raw_query, rs)
+            return row[0] if row else None
+        else:
+            row = self._sql(raw_query, rs)
+            return row
 
     def _SNPContigLoc(self, rs):
         row = self._sql("select * from b137_SNPContigLoc where snp_type = 'rs' && snp_id = %s limit 1", rs)
@@ -146,3 +153,8 @@ class Bioq(object):
             return int(row[0]['snp_id'])
         else:
             return None
+
+    def get_pos_global(self, rs):
+        records = self._snp_summary(rs, limit_1=False)
+        rs2pos_global = dict(('rs'+str(rec['snp_id']), str(rec['pos_global']).zfill(11)) for rec in records)
+        return rs2pos_global
