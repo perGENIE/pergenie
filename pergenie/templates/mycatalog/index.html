@@ -36,6 +36,7 @@
                   <th>chrom</th>
                   <th><span style="color : #81bfff">non-risk allele</span></th>
                   <th><span style="color : #ff81bf">risk allele</span></th>
+                  <th><span style="color : #b4b4b4">reference genome</span></th>
                   <th>allele freq.</th>
                   <th>genotype freq.</th>
                   {% for format in file_formats %}
@@ -57,14 +58,19 @@
                   <td><span style="color : #81bfff">{{ record.non_effective_allele }}</span></td>
                   <td><span style="color : #ff81bf">{{ record.effective_allele }}</span></td>
 
-                  <td>{% for k,v in record.allele_freq.items %}
+                  <!-- allele of reference genome -->
+                  <td>
+                    <span{% if record.ref in record.effective_allele %} style="color : #ff81bf"{% elif record.ref in record.non_effective_allele %} style="color : #81bfff"{% endif %}>{{ record.ref }}</span>
+                  </td>
+
+                  <td>
+                    {% for k,v in record.allele_freq.items %}
                     <span{% if k in record.effective_allele %} style="color : #ff81bf"{% elif k in record.non_effective_allele %} style="color : #81bfff"{% endif %}>{{ k }}:{{ v }}</span>
-
-                    {% endfor %}</td>
-
-                  <td>{% for k,v in record.genotype_freq.items %}
-                    {{ k }}:{{ v }}
                     {% endfor %}
+                  </td>
+
+                  <td>
+                    {% for k,v in record.genotype_freq.items %}{{ k }}:{{ v }}{% endfor %}
                   </td>
 
                   <!-- file format -->
@@ -84,9 +90,6 @@
               </tbody>
             </table>
 
-            <div>注意:
-              <li>23andMeのデータ場合、SNP arrayにいくつかのバージョンがあるため、regionに入っていてもgenotypeがnaということがあります。</li>
-            </div>
           </div>
         </div>
       </div>

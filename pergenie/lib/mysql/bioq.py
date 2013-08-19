@@ -89,13 +89,14 @@ class Bioq(object):
         if rec:
             chr_id, chr_pos = rec['chr_id'], rec['chr_pos']
         else:
+            print 'get_pos_global'
+            rs = int(rs.replace('rs', ''))
             pos_global = self.get_pos_global(rs)['rs' + str(rs)]
-            chr_id, chr_pos = int(pos_global[0:2]), int(pos_global[3:])
+            chr_id = int(pos_global[0:2])
+            chr_pos = int(pos_global[2:])
 
         m = MutateFasta(settings.PATH_TO_REFERENCE_FASTA)
         ref = m._slice_fasta({23:'X', 24:'Y', 25:'M'}.get(chr_id, str(chr_id)), chr_pos, chr_pos)
-
-        return ref
 
     def get_allele_freqs(self, rs):
         rows = self._allele_freqs(rs)
@@ -184,5 +185,6 @@ class Bioq(object):
 
     def get_pos_global(self, rs):
         records = self._snp_summary(rs, limit_1=False)
+        print records
         rs2pos_global = dict(('rs'+str(rec['snp_id']), str(rec['pos_global']).zfill(11)) for rec in records)
         return rs2pos_global

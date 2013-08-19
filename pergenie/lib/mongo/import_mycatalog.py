@@ -32,7 +32,9 @@ def import_mycatalog(path_to_mycatalog):
                     log.warn('not found in dbSNP %s' % rs)
 
                 record.update({'chr_id': str(int(rs2pos_global[rs][0:2])),
-                               'chr_pos': int(rs2pos_global[rs][2:])})
+                               'chr_pos': int(rs2pos_global[rs][2:]),
+                               'ref': bq.get_ref_genome(rs)
+                               })
                 assert record['chr_id'] == record['chromosome']
 
                 mycatalog.insert(record)
