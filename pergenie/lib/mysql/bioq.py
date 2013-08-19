@@ -89,7 +89,6 @@ class Bioq(object):
         if rec:
             chr_id, chr_pos = rec['chr_id'], rec['chr_pos']
         else:
-            print 'get_pos_global'
             rs = int(rs.replace('rs', ''))
             pos_global = self.get_pos_global(rs)['rs' + str(rs)]
             chr_id = int(pos_global[0:2])
@@ -185,6 +184,5 @@ class Bioq(object):
 
     def get_pos_global(self, rs):
         records = self._snp_summary(rs, limit_1=False)
-        print records
         rs2pos_global = dict(('rs'+str(rec['snp_id']), str(rec['pos_global']).zfill(11)) for rec in records)
         return rs2pos_global
