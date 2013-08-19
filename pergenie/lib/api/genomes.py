@@ -167,3 +167,26 @@ class Genomes(object):
                 info = data_info.find_one({'user_id': user_id, 'name': file_name})
 
         return info
+
+    def search_data_info(self, user_id, query):
+        """
+        Example:
+          query = {'rs': xxxx, 'genotype': 'XX'}
+
+        Returns:
+          # people who have genotypes of 'XX' for rs xxxx
+          ['personA', 'personC']
+
+        """
+        people = set()
+
+        if self.db_select == 'mongodb':
+            with MongoClient(host=settings.MONGO_URI) as c:
+                data_info = c['pergenie']['data_info']
+                infos = list(data_info.find({'user_id': user_id}))
+                for info in infos:
+                    variants = c['pergenie']['variants'][user_id][info['name']]
+                    records = list(variants.find(query))
+                    if records:
+                        people.update([info['name']])
+        return list(people)
