@@ -97,6 +97,8 @@ class Bioq(object):
         m = MutateFasta(settings.PATH_TO_REFERENCE_FASTA)
         ref = m._slice_fasta({23:'X', 24:'Y', 25:'M'}.get(chr_id, str(chr_id)), chr_pos, chr_pos)
 
+        return ref
+
     def get_allele_freqs(self, rs):
         rows = self._allele_freqs(rs)
 
