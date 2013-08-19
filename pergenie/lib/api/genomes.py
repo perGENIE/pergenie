@@ -1,4 +1,5 @@
 import sys, os
+from collections import defaultdict
 from pymongo import MongoClient
 from django.conf import settings
 from lib.mysql.bioq import Bioq
@@ -18,7 +19,38 @@ class Genomes(object):
                        settings.DATABASES['bioq']['PASSWORD'],
                        settings.DATABASES['bioq']['NAME'])
 
-    def get_genotypes(self, user_id, file_name, file_format, locs, loctype='rs', check_ref_or_not=True):
+    def get_freq(self, user_id, locs, loctype='rs', rec=None):
+        # Build query
+        if type(locs) in (str, unicode, int):  # FIXME
+            locs = [locs]
+        locs = [int(str(loc).replace('rs', '')) for loc in locs]
+
+        # Init frequency counter
+        genotype_freq, allele_freq = dict(), dict()
+        for loc in locs:
+            rs = 'rs' + str(loc)
+            genotype_freq[rs], allele_freq[rs] = defaultdict(int), defaultdict(int)
+
+        # Count frequency
+        for data in self.get_data_infos(user_id):
+            genotype = self.get_genotypes(user_id, data['name'], data['file_format'], locs, rec=rec)
+
+            for loc in locs:
+                rs = 'rs' + str(loc)
+                genotype_freq[rs][genotype[loc]] += 1
+
+                if not genotype[loc] == 'na':
+                    allele_freq[rs][genotype[loc][0]] += 1
+                    allele_freq[rs][genotype[loc][1]] += 1
+
+        # default dict to dict
+        for loc in locs:
+            rs = 'rs' + str(loc)
+            genotype_freq[rs], allele_freq[rs] = dict(genotype_freq[rs]), dict(allele_freq[rs])
+
+        return (genotype_freq, allele_freq)
+
+    def get_genotypes(self, user_id, file_name, file_format, locs, loctype='rs', rec=None, check_ref_or_not=True):
         """
         Get genotypes of a user's genome file.
         Args:
@@ -48,9 +80,13 @@ class Genomes(object):
             for record in records:
                 genotypes.update({record[loctype]: record['genotype']})
 
-        if check_ref_or_not:
-            for loc in locs:
-                if not loc in genotypes:
+        # Add ref or N/A
+        for loc in locs:
+            if not loc in genotypes:
+                if rec:
+                    genotypes.update({loc: self._ref_or_na(loc, loctype, file_format, rec=rec)})
+                elif check_ref_or_not:
+                    # FIXME:
                     genotypes.update({loc: self._ref_or_na(loc, loctype, file_format)})
 
         return genotypes
@@ -77,6 +113,7 @@ class Genomes(object):
         # If fileformat is SNP array, always `N/A`.
         na = 'na'
         if file_format == 'andme':
+            log.debug('in andme region, but genotype is na')
             return na
 
         # If rec(gwascatalog record) is provided, use it. otherwise seach mongo.catalog.
@@ -85,16 +122,17 @@ class Genomes(object):
             if rec:
                 rec = rec[0]
             else:
-                log.warn('gwascatalog record not found: loc:%s loctype: %s' % (loc, loctype))
+                log.warn('gwascatalog record not found: loc: %s loctype: %s' % (loc, loctype))
                 return na
 
         # Try to get ref(reference allele).
-        ref = rec['ref']
+        ref = rec.get('ref')
         if not ref:
-            ref = self.bq.get_ref(loc)
+            log.debug('try to get allele of reference genome')
+            ref = self.bq.get_ref_genome(loc, rec=rec)
             if not ref:
                 ref = na
-                log.warn('ref not found: loc:%s loctype: %s' % (loc, loctype))
+                log.warn('ref not found: loc: %s loctype: %s' % (loc, loctype))
 
         # Cases for each fileformat
         if file_format == 'vcf_whole_genome':

@@ -27,20 +27,24 @@ def import_mycatalog(path_to_mycatalog):
             for record in csv.DictReader(fin, delimiter=','):
                 record = dict((key.replace(' ', '_'), value) for (key, value) in record.items())
                 rs = record['rsid']
-                rs2pos_global = bq.get_pos_global(rs.replace('rs', ''))
+                rs2pos_global = bq.get_pos_global(int(rs.replace('rs', '')))
                 if not rs2pos_global:
                     log.warn('not found in dbSNP %s' % rs)
 
-                record.update({'chr_pos': int(rs2pos_global[rs][2:])})
+                record.update({'chr_id': str(int(rs2pos_global[rs][0:2])),
+                               'chr_pos': int(rs2pos_global[rs][2:])})
+                assert record['chr_id'] == record['chromosome']
+
                 mycatalog.insert(record)
 
+        # TODO: move to lib.api.*
         # Add region flags like: `is_in_truseq`
         catalog = mycatalog
         n_records, n_truseq, n_andme, n_iontargetseq = 0, 0, 0, 0
         for chrom in [i + 1 for i in range(22)]:
             log.info('Addding flags... chrom: {0}'.format(chrom))
 
-            records = list(catalog.find({'chromosome': str(chrom)}))
+            records = list(catalog.find({'chr_id': str(chrom)}))
             ok_records = [record for record in records if record.has_key('chr_pos')]
 
             chrom = {23: 'X', 24:'Y'}.get(chrom, chrom)
@@ -51,7 +55,6 @@ def import_mycatalog(path_to_mycatalog):
             with open(region_file, 'r') as fin:
                 extracted = extract_region(region_file, ok_records)
                 n_truseq += len(extracted)
-                log.info('`is_in_truseq` extracted:{0}'.format(n_truseq))
                 for record in extracted:
                     catalog.update(record, {"$set": {'is_in_truseq': True}})
 
@@ -61,7 +64,6 @@ def import_mycatalog(path_to_mycatalog):
             with open(region_file, 'r') as fin:
                 extracted = extract_region(region_file, ok_records)
                 n_andme += len(extracted)
-                log.info('`is_in_andme` extracted:{0}'.format(n_andme))
                 for record in extracted:
                     catalog.update(record, {"$set": {'is_in_andme': True}})
 
@@ -71,6 +73,9 @@ def import_mycatalog(path_to_mycatalog):
             with open(region_file, 'r') as fin:
                 extracted = extract_region(region_file, ok_records)
                 n_iontargetseq += len(extracted)
-                log.info('`is_in_iontargetseq` extracted:{0}'.format(n_iontargetseq))
                 for record in extracted:
                     catalog.update(record, {"$set": {'is_in_iontargetseq': True}})
+
+        log.info('`is_in_truseq` extracted:{0}'.format(n_truseq))
+        log.info('`is_in_andme` extracted:{0}'.format(n_andme))
+        log.info('`is_in_iontargetseq` extracted:{0}'.format(n_iontargetseq))

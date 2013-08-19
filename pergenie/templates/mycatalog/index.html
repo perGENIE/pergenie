@@ -32,32 +32,61 @@
                 <tr>
                   <th>name</th>
                   <th>rs id</th>
-                  <th>reference allele</th>
-                  <th>risk allele</th>
-                  <th>gene symbol</th>
-                  <th>chrom.</th>
-                  <th>genotype freq.</th>
+                  <th>gene</th>
+                  <th>chrom</th>
+                  <th><span style="color : #81bfff">non-risk allele</span></th>
+                  <th><span style="color : #ff81bf">risk allele</span></th>
                   <th>allele freq.</th>
-                  <th>in IonExome</th>
+                  <th>genotype freq.</th>
+                  {% for format in file_formats %}
+                  {% if format != "vcf_whole_genome" %}
+                  <th>in {{ format|file_format }} region</th>
+                  {% endif %}
+                  {% endfor %}
                 </tr>
                 </thead>
                 <tbody>
                 {% for record in mycatalog %}
                 <tr>
                   <td>{{ record.name }}</td>
-                  <td>{{ record.rsid }}</td>
-                  <td>{{ record.major_allele }}</td>
-                  <td>{{ record.effective_allele }}</td>
+                  <td>
+                    <a href="//www.ncbi.nlm.nih.gov/projects/SNP/snp_ref.cgi?rs={{ record.rsid }}" target="_blank">{{ record.rsid }}</a>
+                  </td>
                   <td>{{ record.gene_symbol }}</td>
                   <td>{{ record.chromosome }}</td>
-                  <td>{% for k,v in record.genotype_freq.items %}{{ k }}:{{ v }} {% endfor %}</td>
-                  <td>{% for k,v in record.allele_freq.items %}{{ k }}:{{ v }} {% endfor %}</td>
-                  <td>{{ record.is_in_iontargetseq }}</td>
+                  <td><span style="color : #81bfff">{{ record.non_effective_allele }}</span></td>
+                  <td><span style="color : #ff81bf">{{ record.effective_allele }}</span></td>
+
+                  <td>{% for k,v in record.allele_freq.items %}
+                    <span{% if k in record.effective_allele %} style="color : #ff81bf"{% elif k in record.non_effective_allele %} style="color : #81bfff"{% endif %}>{{ k }}:{{ v }}</span>
+
+                    {% endfor %}</td>
+
+                  <td>{% for k,v in record.genotype_freq.items %}
+                    {{ k }}:{{ v }}
+                    {% endfor %}
+                  </td>
+
+                  <!-- file format -->
+                  {% for format in file_formats %}
+                  {% if format == "vcf_exome_truseq" %}
+                  <td>{% if record.is_in_truseq %}&#10004;{% endif %}</td>
+                  {% elif format == "andme" %}
+                  <td>{% if record.is_in_andme %}&#10004;{% endif %}</td>
+                  {% elif format == "vcf_exome_iontargetseq" %}
+                  <td>{% if record.is_in_iontargetseq %}&#10004;{% endif %}</td>
+                  {% endif %}
+                  {% endfor %}
+
                 </tr>
+
                 {% endfor %}
               </tbody>
             </table>
 
+            <div>注意:
+              <li>23andMeのデータ場合、SNP arrayにいくつかのバージョンがあるため、regionに入っていてもgenotypeがnaということがあります。</li>
+            </div>
           </div>
         </div>
       </div>

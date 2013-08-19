@@ -2,6 +2,9 @@ import MySQLdb as mdb
 import sys
 import string
 from pprint import pprint as pp
+from django.conf import settings
+from lib.mongo.mutate_fasta import MutateFasta
+
 
 class Bioq(object):
     """
@@ -41,7 +44,7 @@ class Bioq(object):
 
     def _snp_summary(self, rs, limit_1=True):
         raw_query = "select * from _loc_snp_summary where snp_id in (%s)"
-        if type(rs) in (str, int):
+        if type(rs) in (str, unicode, int):
             rs = [rs]
         _in = ','.join(list(map(lambda x: '%s', rs)))  # `%s,%s,%s ...`
         raw_query = raw_query % _in  # `select * ... (%s,%s,%s)`
@@ -62,12 +65,37 @@ class Bioq(object):
         return row[0] if row else None
 
     def get_ref(self, rs):
+        """
+        NOTICE:
+          'allele' in `b137_SNPContigLoc` is `+ orientation` (TODO: confirm this)
+        """
         _snp_contig = self._SNPContigLoc(rs)
-        if not _snp_contig: return None
-
+        if not _snp_contig:
+            return None
+        # FIXME:
         if _snp_contig['orientation'] == 1:
-            _snp_contig['allele'].translate(string.maketrans('ATGC', 'TACG'))
+            _snp_contig['allele'] = _snp_contig['allele'].translate(string.maketrans('ATGC', 'TACG'))
         return _snp_contig['allele']
+
+    def get_ref_genome(self, rs, rec=None):
+        """
+        NOTICE:
+          `allele` in `b137_SNPContigLoc` is not always equal to allele of reference genome.
+          (reference genome may have SNPs!)
+          So, if you want to get allele of reference genome,
+          use this method. Do not use `.get_ref()`.
+        """
+
+        if rec:
+            chr_id, chr_pos = rec['chr_id'], rec['chr_pos']
+        else:
+            pos_global = self.get_pos_global(rs)['rs' + str(rs)]
+            chr_id, chr_pos = int(pos_global[0:2]), int(pos_global[3:])
+
+        m = MutateFasta(settings.PATH_TO_REFERENCE_FASTA)
+        ref = m._slice_fasta({23:'X', 24:'Y', 25:'M'}.get(chr_id, str(chr_id)), chr_pos, chr_pos)
+
+        return ref
 
     def get_allele_freqs(self, rs):
         rows = self._allele_freqs(rs)
