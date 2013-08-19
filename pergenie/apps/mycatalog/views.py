@@ -44,5 +44,5 @@ def index(request):
                               dict(msg=msg, err=err,
                                    mycatalog=records,
                                    file_formats=file_formats,
-                                   risk_report=risk_report
+                                   risk_report=dict(risk_report)
                                    ))

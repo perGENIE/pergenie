@@ -107,9 +107,7 @@
                 {% for person,risk_names in risk_report.items %}
                 <tr>
                   <td>{{ person }}</td>
-                  {% for risk_name in risk_names %}
-                  <td>{{ risk_name }}</td>
-                  {% endfor %}
+                  <td>{% for risk_name in risk_names %}{{ risk_name }} {% endfor %}</td>
                 </tr>
                 {% endfor %}
               </tbody>
