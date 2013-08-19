@@ -145,7 +145,7 @@ class Command(BaseCommand):
                 log.info('Cleaning latest gwascatalog...')
                 clean_catalog(latest_catalog, latest_catalog_cleaned)
 
-            import_catalog(path_to_gwascatalog=latest_catalog_cleaned, settings=settings)
+            import_catalog(latest_catalog_cleaned)
 
             # TODO: get latest information of gwascatalog (dbSNP version & refgenome version)
             # form .pdf -> x
