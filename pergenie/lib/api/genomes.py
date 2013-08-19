@@ -188,5 +188,6 @@ class Genomes(object):
                     variants = c['pergenie']['variants'][user_id][info['name']]
                     records = list(variants.find(query))
                     if records:
-                        people.update([info['name']])
+                        people.update([info['raw_name']])
+
         return list(people)
