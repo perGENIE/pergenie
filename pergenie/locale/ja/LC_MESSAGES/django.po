@@ -414,7 +414,7 @@ msgstr "この人種での対象研究論文数: "
 
 #: templates/risk_report/index.html:154
 msgid "What percentage does your genome file cover SNPs of these studies?"
-msgstr "このゲノムファイルが、これらの研修論文におけるSNPsをカバーする割合"
+msgstr "このゲノムファイルが、これらの研究論文におけるSNPsをカバーする割合"
 
 #: templates/risk_report/index.html:165
 msgid "What percentage does your genome file cover whole genome?"
