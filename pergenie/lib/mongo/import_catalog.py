@@ -101,7 +101,9 @@ def import_catalog(path_to_gwascatalog, settings):
         catalog_date_raw = os.path.basename(path_to_gwascatalog).split('.')[1]
         # catalog_date = datetime.datetime.strptime(catalog_date_raw , '%Y_%m_%d')
 
+
         catalog = c['pergenie']['catalog'][catalog_date_raw]
+        print catalog
         catalog_stats = c['pergenie']['catalog_stats']
         catalog_cover_rate = c['pergenie']['catalog_cover_rate']
         counter = Counter()
