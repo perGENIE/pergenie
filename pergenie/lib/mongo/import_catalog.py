@@ -106,7 +106,7 @@ def import_catalog(path_to_gwascatalog):
         assert catalog_stats.count() == 0
 
         try:
-            fa = MutateFastaFasta(settings.PATH_TO_REFERENCE_FASTA)
+            fa = MutateFasta(settings.PATH_TO_REFERENCE_FASTA)
         except Exception:
             log.warn('========================================')
             log.warn('Reference Genome FASTA does not exist...')
