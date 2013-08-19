@@ -86,7 +86,9 @@ def import_catalog(path_to_gwascatalog, settings):
 
                     trait_info.insert(clean_record, upsert=True)  # insert if not exist
 
-            assert eng2ja.values() == list(set(eng2ja.values())), "values not uniq in eng2ja"
+
+            duplicates = [x for x,c in Counter(eng2ja.values()).items() if c > 1]
+            assert len(duplicates)  == 0, "values not uniq in eng2ja: %s" % '\n'.join(duplicates)
 
             trait_info.ensure_index('eng', unique=True)
 

@@ -280,8 +280,8 @@ Folate pathway vitamin levels	葉酸パスウェイにおけるビタミン濃�
 Follicular lymphoma	濾胞性リンパ腫	Disease
 Formal thought disorder in schizophrenia	精神分裂病における思考障害	Disease
 Fracture-related traits	骨折関連形質	Trait_med
-Freckles	そばかす	Trait_easy
-Freckling	そばかす	Trait_easy
+Freckles	そばかす(Freckles)	Trait_easy
+Freckling	そばかす(Freckling)	Trait_easy
 Frontotemporal lobar degeneration	前頭側頭葉変性症	Disease
 Fuchs's corneal dystrophy	フックス角膜内皮変性症	Disease
 Functional MRI	機能的MRI(磁気共鳴画像法)	Trait_med
@@ -583,8 +583,8 @@ Reasoning	推論力	Trait_easy
 Recombination rate (females)	組換え率 (女性)	Trait_med
 Recombination rate (males)	組換え率 (男性)	Trait_med
 Red blood cell traits	赤血球の形質	Trait_med
-Red vs non-red hair color	赤毛と非赤毛	Trait_easy
-Red vs. non-red hair color	赤毛と非赤毛	Trait_easy
+Red vs non-red hair color	赤毛と非赤毛(Red vs non-red hair color)	Trait_easy
+Red vs. non-red hair color	赤毛と非赤毛(Red vs. non-red hair color)	Trait_easy
 Refractive error	屈折異常	Disease
 Renal cell carcinoma	腎細胞がん	Disease
 Renal function and chronic kidney disease	胃機能と慢性腎臓病	Disease
@@ -657,7 +657,7 @@ Skin pigmentation	皮膚色素沈着	Trait_med
 Skin sensitivity to sun	太陽への皮膚感受性	Trait_med
 Sleep duration	睡眠時間	Trait_easy
 Sleepiness	眠気	Trait_easy
-Small-cell lung cancer	非小細胞肺がん	Disease
+Small-cell lung cancer	小細胞肺がん	Disease
 Smoking behavior	喫煙行動	Trait_easy
 Smoking cessation	禁煙	Trait_easy
 Social and Non-Social Autistic-Like Traits	社会的・非社会的な自閉症様の形質	Disease
