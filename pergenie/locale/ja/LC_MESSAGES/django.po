@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-08-16 20:17+0900\n"
+"POT-Creation-Date: 2013-08-20 13:54+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -48,7 +48,7 @@ msgid ""
 msgstr ""
 "アカウントは無料で登録可能です。デモを試していただきありがとうございました！"
 
-#: apps/frontend/tests.py:80 lib/api/user.py:29
+#: apps/frontend/tests.py:80 lib/api/user.py:30
 #, python-format
 msgid ""
 "Passwords too short (passwords should be longer than %(min_password_length)s "
@@ -62,7 +62,7 @@ msgstr ""
 msgid "Invalid request."
 msgstr "不正なリクエストです．"
 
-#: apps/frontend/views.py:43 lib/api/user.py:25
+#: apps/frontend/views.py:43 lib/api/user.py:26
 msgid "Passwords do not match."
 msgstr "パスワードが一致していません．"
 
@@ -133,38 +133,39 @@ msgstr "許可されいてない拡張子のファイルです．"
 msgid "file type not allowed"
 msgstr "許可されていないファイルタイプです．"
 
-#: apps/upload/views.py:98
+#: apps/upload/views.py:100
 msgid ""
-"Same file name exists. If you want to overwrite it, please delete old one."
+"Same file name of same genome file format exists. If you want to overwrite "
+"it, please delete old one."
 msgstr ""
-"同じファイル名のファイルがアップロードされています．上書きしたい場合，アップ"
+"同名で同じゲノムファイルフォーマットのファイルが既にアップロードされています．上書きしたい場合，アップ"
 "ロード済みのファイルを削除して下さい．"
 
-#: apps/upload/views.py:117
+#: apps/upload/views.py:119
 msgid "file type not allowed, or encoding not allowed"
 msgstr ""
 "許可されていないファイルタイプ，あるいは許可されていないエンコーディングで"
 "す．"
 
-#: apps/upload/views.py:125
+#: apps/upload/views.py:127
 #, python-format
 msgid "%(file_name)s uploaded."
 msgstr "%(file_name)s がアップロードされました．"
 
-#: apps/upload/views.py:149
+#: apps/upload/views.py:151
 msgid ", and now importing..."
 msgstr "現在，読み込んでいます..."
 
-#: lib/api/user.py:32 lib/api/user.py:35 lib/api/user.py:38
-#: lib/api/user.py:132
+#: lib/api/user.py:33 lib/api/user.py:36 lib/api/user.py:39
+#: lib/api/user.py:133
 msgid "Invalid mail address assumed."
 msgstr "不正なメールアドレスです．"
 
-#: lib/api/user.py:47 lib/api/user.py:50
+#: lib/api/user.py:48 lib/api/user.py:51
 msgid "Already registered."
 msgstr "すでに登録済みです．"
 
-#: lib/api/user.py:97
+#: lib/api/user.py:98
 msgid "Such user does not exist."
 msgstr ""
 
