@@ -128,7 +128,7 @@ class Genomes(object):
         # Try to get ref(reference allele).
         ref = rec.get('ref')
         if not ref:
-            log.debug('try to get allele of reference genome')
+            # log.debug('try to get allele of reference genome')
             ref = self.bq.get_ref_genome(loc, rec=rec)
             if not ref:
                 ref = na

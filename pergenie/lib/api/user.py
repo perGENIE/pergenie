@@ -7,6 +7,7 @@ email_validator = lepl.apps.rfc3696.Email()
 from django.contrib.auth.models import User as django_User
 from django.utils.translation import ugettext as _
 from django.core.mail import send_mail
+from lib.common import clean_file_name
 from django.conf import settings
 from utils import clogging
 log = clogging.getColorLogger(__name__)

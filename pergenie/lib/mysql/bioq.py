@@ -4,6 +4,8 @@ import string
 from pprint import pprint as pp
 from django.conf import settings
 from lib.mongo.mutate_fasta import MutateFasta
+from utils import clogging
+log = clogging.getColorLogger(__name__)
 
 
 class Bioq(object):
@@ -60,7 +62,7 @@ class Bioq(object):
     def _SNPContigLoc(self, rs):
         row = self._sql("select * from b137_SNPContigLoc where snp_type = 'rs' && snp_id = %s limit 1", rs)
         if not row:
-            print >>sys.stderr, '{0} not found'.format(rs)
+            log.warn('{0} not found'.format(rs))
 
         return row[0] if row else None
 
@@ -86,11 +88,18 @@ class Bioq(object):
           use this method. Do not use `.get_ref()`.
         """
 
-        if rec:
-            chr_id, chr_pos = rec['chr_id'], rec['chr_pos']
-        else:
+        if type(rs) in (str, unicode):
             rs = int(rs.replace('rs', ''))
+
+        if rec:
+            chr_id = rec['chr_id']
+            chr_pos = rec['chr_pos']
+
+        if not rec or (chr_id is None) or (chr_pos is None):
             pos_global = self.get_pos_global(rs)['rs' + str(rs)]
+            if not pos_global:
+                return None
+
             chr_id = int(pos_global[0:2])
             chr_pos = int(pos_global[2:])
 
@@ -176,8 +185,6 @@ class Bioq(object):
         chrpos = _chr2num.get(chrom, chrom).zfill(2) + str(pos).zfill(9)
 
         row = self._sql("select * from _loc_snp_summary where pos_global = %s limit 1", chrpos)
-        # if not row:
-        #     print >>sys.stderr, 'pos_global {0} not found'.format(chrpos)
 
         if row:
             return int(row[0]['snp_id'])
@@ -186,5 +193,15 @@ class Bioq(object):
 
     def get_pos_global(self, rs):
         records = self._snp_summary(rs, limit_1=False)
-        rs2pos_global = dict(('rs'+str(rec['snp_id']), str(rec['pos_global']).zfill(11)) for rec in records)
+
+        rs2pos_global = {}
+        if not records:
+            rs2pos_global.update({'rs'+str(rs): None})
+        else:
+            for rec in records:
+                if rec['pos_global'] is not None:
+                    rs2pos_global.update({'rs'+str(rec['snp_id']): str(rec['pos_global']).zfill(11)})
+                else:
+                    rs2pos_global.update({'rs'+str(rec['snp_id']): None})
+
         return rs2pos_global

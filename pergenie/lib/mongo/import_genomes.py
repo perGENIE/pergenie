@@ -33,8 +33,7 @@ def import_genomes(settings):
 
     * Check time-stamps to determine update or not.
     * If file is multi sample vcf, only 1st sample will be imported.
-    * To identify files, `user_id`, `file_name`, and `file_format` will be used as:
-      * variants.user_id.file_name.file_format
+    * To identify files, `user_id`, `file_name`, and `file_format` will be used.
 
     """
 
@@ -42,33 +41,34 @@ def import_genomes(settings):
 
     with pymongo.Connection(host=settings.MONGO_URI) as connection:
         db = connection['pergenie']
-        users = db['user_info'].find()
-        usernames = set([user['user_id'] for user in users])
 
         for username in settings.CRON_DIRS.keys():
-            log.debug(username)
+            log.info('===============================')
+            log.info('Job for username: %s' % username)
             # Try to import/update files
             # If timestamp is newer than one in DB, re-import.
             for datadir in settings.CRON_DIRS[username]:
+                log.debug('datadir: %s' % datadir)
                 for fileformat in settings.FILEFORMATS:
-                    glob_path = os.path.join(datadir, fileformat[0], fileformat[1])
+                    glob_path = os.path.join(datadir, fileformat['name'], fileformat['extention'])
                     filepaths = glob.glob(glob_path)
 
                     for filepath in filepaths:
-                        log.debug(filepath)
+                        log.debug('filepath: %s' % filepath)
                         last_modified = datetime.datetime.fromtimestamp(os.path.getmtime(filepath))
                         info = {'user_id': username,
-                                'name': clean_file_name(os.path.basename(filepath)),
+                                'name': clean_file_name(os.path.basename(filepath), fileformat['name']),
                                 'raw_name': os.path.basename(filepath),
                                 'date': last_modified,
                                 'population': POPULATION,
                                 'file_format': fileformat['name'],
-                                'catalog_cover_rate': db['catalog_cover_rate'].find_one({'stats': 'catalog_cover_rate'})['values'][fileformat[0]],
-                                'genome_cover_rate': db['catalog_cover_rate'].find_one({'stats': 'genome_cover_rate'})['values'][fileformat[0]],
+                                'catalog_cover_rate': db['catalog_cover_rate'].find_one({'stats': 'catalog_cover_rate'})['values'][fileformat['name']],
+                                'genome_cover_rate': db['catalog_cover_rate'].find_one({'stats': 'genome_cover_rate'})['values'][fileformat['name']],
                                 'status': float(0.0)}
 
-                        db_info = db['data_info'].find_one({'user_id': username, 'raw_name': os.path.basename(filepath)})
-                        if db_info and last_modified < db_info['date']: continue
+                        db_info = db['data_info'].find_one({'user_id': username, 'name': info['name']})
+
+                        if db_info and (last_modified < db_info['date']): continue
 
                         db['data_info'].insert(info)
                         log.info('Importing into DB: %s' % filepath)
@@ -82,13 +82,12 @@ def import_genomes(settings):
 
                         # population PCA
                         person_xy = [0,0]  # FIXME: projection(info)
-                        db['data_info'].update({'user_id': info['user_id'], 'raw_name': info['raw_name']},
+                        db['data_info'].update({'user_id': username, 'name': info['name']},
                                                {"$set": {'pca': {'position': person_xy,
                                                                  'label': info['user_id'],
                                                                  'map_label': ''},
                                                          'status': 100}})
-
-
+            log.info('Import new files done.')
 
             # Try to delete non exist files.
             # If file exists in DB, but does not exist,
@@ -105,8 +104,11 @@ def import_genomes(settings):
                         break
 
                 if not is_file_exists:
-                    log.warn('Deleting from DB: %s %s' % (user_data['file_format'], user_data['raw_name']))
-                    db.drop_collection('variants.{0}.{1}'.format(username, clean_file_name(user_data['raw_name'])))
-                    db.drop_collection('reports.{0}.{1}'.format(username, clean_file_name(user_data['raw_name'])))
-                    for r in db['data_info'].find({'user_id': username, 'raw_name': user_data['raw_name']}):
+                    log.warn('Deleting from DB: %s %s %s' % (username, user_data['raw_name'], user_data['file_format']))
+                    db.drop_collection('variants.{0}.{1}'.format(username, user_data['name']))
+                    db.drop_collection('reports.{0}.{1}'.format(username, user_data['name']))
+                    for r in db['data_info'].find({'user_id': username, 'raw_name': user_data['name']}):
                         db['data_info'].remove(r)
+
+            log.info('Delete non exist files done.')
+        log.info('Finished!')

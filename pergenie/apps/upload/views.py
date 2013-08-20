@@ -94,8 +94,10 @@ def index(request):
 
                     # Still need to validate that the file contains the content that the content-type header claims -- "trust but verify."
 
-                    if data_info.find({'user_id': user_id, 'raw_name': call_file.name}).count() > 0:
-                        errs.append(_('Same file name exists. If you want to overwrite it, please delete old one.') + ': ' + call_file.name)
+                    if data_info.find({'user_id': user_id,
+                                       'raw_name': call_file.name,
+                                       'file_format': file_format}).count() > 0:
+                        errs.append(_('Same file name of same genome file format exists. If you want to overwrite it, please delete old one.') + ': ' + call_file.name)
                         continue
 
                     # Ensure upload dir exists
@@ -133,7 +135,7 @@ def index(request):
                     # ------------------------------------
 
                     info = {'user_id': user_id,
-                            'name': clean_file_name(call_file.name),
+                            'name': clean_file_name(call_file.name, file_format),
                             'raw_name': call_file.name,
                             'date': datetime.datetime.today(),
                             'population': population,
@@ -222,7 +224,7 @@ def status(request):
 
             uploaded_files = {}
             for record in data_info.find({'user_id': user_id}):
-                uploaded_files[record['raw_name']] = record['status']
+                uploaded_files[record['name']] = record['status']
 
         result = {'status': 'ok',
                   'error_message': None,

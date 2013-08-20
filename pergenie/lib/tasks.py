@@ -44,7 +44,7 @@ def qimport_variants(info):
     with MongoClient(host=settings.MONGO_URI) as connection:
         db = connection['pergenie']
         data_info = db['data_info']
-        data_info.update({'user_id': info['user_id'], 'raw_name': info['raw_name']},
+        data_info.update({'user_id': info['user_id'], 'name': info['name']},
                          {"$set": {'pca': {'position': person_xy,
                                            'label': info['user_id'],
                                            'map_label': ''},
