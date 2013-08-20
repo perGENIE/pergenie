@@ -49,7 +49,7 @@ urlpatterns = patterns('',
     url(r'^library/trait/(?P<trait>.*?)/$', 'apps.library.views.trait'),
     url(r'^library/snps/$', 'apps.library.views.snps_index'),
     url(r'^library/snps/rs/(?P<rs>.*?)/$', 'apps.library.views.snps'),
-    # url(r'^library/summary/$', 'apps.library.views.summary_index'),
+    url(r'^library/summary/$', 'apps.library.views.summary_index'),
     # url(r'^library/summary/(?P<field_name>.*?)/$', 'apps.library.views.summary'),
 
     url(r'^faq/$', 'apps.faq.views.index'),

@@ -1,7 +1,9 @@
 import sys, os
+from pprint import pprint as pp
+from collections import defaultdict
 import re
 import shlex
-from pymongo import MongoClient, DESCENDING
+from pymongo import MongoClient, DESCENDING, ASCENDING
 from django.conf import settings
 from lib.utils import clogging
 log = clogging.getColorLogger(__name__)
@@ -186,3 +188,27 @@ class GWASCatalog(object):
             with MongoClient(host=settings.MONGO_URI) as c:
                 catalog_stats = c['pergenie']['catalog_stats']
         return sorted(list(set([rec['value'] for rec in list(catalog_stats.find({'field': 'snps'}))])))
+
+    def get_summary(self):
+        if self.db_select == 'mongodb':
+            with MongoClient(host=settings.MONGO_URI) as c:
+                catalog_stats = c['pergenie']['catalog_stats']
+
+                # TODO: implement othres
+
+                # Field: Context
+                stats = defaultdict(float)
+                records = list(catalog_stats.find({'field': 'context'}).sort('count', DESCENDING))
+                for rec in records:
+                    index = re.split('(;|; | ; | ;)', str(rec['value']))[0]
+                    stats[index] += rec['count']
+
+                # As percentage
+                total_count = sum(stats.values())
+                for k,v in stats.items():
+                    stats[k] = round(100 * v / total_count)
+
+                # Sort
+                results = sorted(stats.items(), key=lambda x:x[1], reverse=True)
+
+                return results

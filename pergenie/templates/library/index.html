@@ -29,10 +29,8 @@
         <div class="row-fluid">
           <div class="span12">
             <div class="padded10">
-              <h3><a href="//www.genome.gov/gwastudies/" target="_blank">GWAS Catalog</a></h3>
-              <h4>Last update in perGENIE: {{ latest_catalog_date }}</h4>
-
-
+              <h3><a href="//www.genome.gov/gwastudies/" target="_blank">NHGRI GWAS Catalog</a></h3>
+              <h4>Last update in perGENIE: <b>{{ latest_catalog_date }}</b></h4>
 
               <table class="table table-bordered">
                 <thead>
@@ -61,6 +59,8 @@
                   <!-- </tr> -->
                 </tbody>
               </table>
+
+              <a href="{% url apps.library.views.summary_index %}"><button class="btn btn-green"><i class="icon-signal icon-white" style="margin-top: 1px;"></i> {% trans "View detailed statistics" %}</button></a>
             </div>
           </div>
         </div>
@@ -74,7 +74,7 @@
 
         <div class="row-fluid">
           <div class="span12">
-            <div class="padded">
+            <div class="padded10">
               <table class="table table-bordered">
                 <thead>
                   <tr>
@@ -99,7 +99,6 @@
       </div>
 
     </div>
-
   </section>
 </div>
 {% endblock %}

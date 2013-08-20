@@ -33,41 +33,30 @@ def index(request):
 def summary_index(request):
     err = ''
 
-    # TODO: error handling ?
-    catalog_summary = pickle_load_obj(os.path.join(settings.CATALOG_SUMMARY_CACHE_DIR, 'catalog_summary.p'))
-    field_names = pickle_load_obj(os.path.join(settings.CATALOG_SUMMARY_CACHE_DIR, 'field_names.p'))
-
-    catalog_uniqs_counts = {}
-
-    for field_name in field_names:
-        uniqs = catalog_summary.get(field_name[0])
-
-        if uniqs:
-            catalog_uniqs_counts[field_name] = len(uniqs)
-
-    log.debug('catalog_uniqs_counts', catalog_uniqs_counts)
+    stats = gwascatalog.get_summary()
 
     return direct_to_template(request, 'library/summary_index.html',
                               {'err': err,
-                               'catalog_uniqs_counts': catalog_uniqs_counts})
+                               'stats': stats
+                               })
 
 
-@login_required
-def summary(request, field_name):
-    err = ''
+# @login_required
+# def summary(request, field_name):
+#     err = ''
 
-    catalog_summary = pickle_load_obj(os.path.join(settings.CATALOG_SUMMARY_CACHE_DIR, 'catalog_summary.p'))
-    uniqs_counts = catalog_summary.get(field_name)
+#     catalog_summary = pickle_load_obj(os.path.join(settings.CATALOG_SUMMARY_CACHE_DIR, 'catalog_summary.p'))
+#     uniqs_counts = catalog_summary.get(field_name)
 
-    # TODO: 404?
-    if not uniqs_counts:
-        err = 'not found'
-        uniqs_counts = {}
+#     # TODO: 404?
+#     if not uniqs_counts:
+#         err = 'not found'
+#         uniqs_counts = {}
 
-    return direct_to_template(request, 'library/summary.html',
-                              {'err': err,
-                               'uniqs_counts': uniqs_counts,
-                               'field_name': field_name})
+#     return direct_to_template(request, 'library/summary.html',
+#                               {'err': err,
+#                                'uniqs_counts': uniqs_counts,
+#                                'field_name': field_name})
 
 
 @login_required
