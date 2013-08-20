@@ -33,12 +33,8 @@ def import_genomes(settings):
 
     * Check time-stamps to determine update or not.
     * If file is multi sample vcf, only 1st sample will be imported.
-
-
-    TODO
-    ----
-
-    * support multi sample vcf
+    * To identify files, `user_id`, `file_name`, and `file_format` will be used as:
+      * variants.user_id.file_name.file_format
 
     """
 
@@ -66,7 +62,7 @@ def import_genomes(settings):
                                 'raw_name': os.path.basename(filepath),
                                 'date': last_modified,
                                 'population': POPULATION,
-                                'file_format': fileformat[0],
+                                'file_format': fileformat['name'],
                                 'catalog_cover_rate': db['catalog_cover_rate'].find_one({'stats': 'catalog_cover_rate'})['values'][fileformat[0]],
                                 'genome_cover_rate': db['catalog_cover_rate'].find_one({'stats': 'genome_cover_rate'})['values'][fileformat[0]],
                                 'status': float(0.0)}

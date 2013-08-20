@@ -57,7 +57,7 @@ def index(request):
                     err = _('Select population.')
                     break
 
-                fileformats = [x[0] for x in settings.FILEFORMATS]
+                fileformats = [x['name'] for x in settings.FILEFORMATS]
                 if not file_format or file_format not in fileformats:
                     err = _('Select file format.')
                     break

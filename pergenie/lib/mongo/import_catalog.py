@@ -259,12 +259,12 @@ def import_catalog(path_to_gwascatalog):
 
             # Extract region
             for file_format in settings.FILEFORMATS:
-                if file_format[0] == 'vcf_whole_genome': continue
-                region_file = os.path.join(settings.PATH_TO_INTERVAL_LIST_DIR, file_format[4] + '.{0}.interval_list'.format(chrom))
+                if file_format['name'] == 'vcf_whole_genome': continue
+                region_file = os.path.join(settings.PATH_TO_INTERVAL_LIST_DIR, file_format['region_file'] + '.{0}.interval_list'.format(chrom))
                 extracted = extract_region(region_file, ok_records)
-                n_counter[file_format[3]] += len(extracted)
+                n_counter[file_format['short_name']] += len(extracted)
                 for record in extracted:
-                    catalog.update(record, {"$set": {'is_in_' + file_format[3]: True}})
+                    catalog.update(record, {"$set": {'is_in_' + file_format['short_name']: True}})
 
                 # Uniq records
                 ok_records_uniq = []
@@ -273,22 +273,22 @@ def import_catalog(path_to_gwascatalog):
                     if record['snp_id_current'] in uniq_snps:
                         ok_records_uniq.append(record)
                         uniq_snps.remove(record['snp_id_current'])
-                n_counter_uniq[file_format[3]] += len(extract_region(region_file, ok_records_uniq))
+                n_counter_uniq[file_format['short_name']] += len(extract_region(region_file, ok_records_uniq))
 
         log.info('records: %s' % n_counter['records'])
         log.info('records uniq: %s' % n_counter_uniq['records'])
         for file_format in settings.FILEFORMATS:
-            if file_format[0] == 'vcf_whole_genome': continue
-            log.info('`is_in_%s` extracted: %s' % (file_format[3], n_counter[file_format[3]]))
+            if file_format['name'] == 'vcf_whole_genome': continue
+            log.info('`is_in_%s` extracted: %s' % (file_format['short_name'], n_counter[file_format['short_name']]))
 
         # Cover rate for GWAS Catalog
         for _counter,_name in [(n_counter, ''), (n_counter_uniq, '_uniq')]:
             _stats = {}
             for file_format in settings.FILEFORMATS:
-                if file_format[0] == 'vcf_whole_genome':
+                if file_format['name'] == 'vcf_whole_genome':
                     _stats.update({'vcf_whole_genome': 100})
                 else:
-                    _stats.update({file_format[0]: round(100 * _counter[file_format[3]] / float(_counter['records']))})
+                    _stats.update({file_format['name']: round(100 * _counter[file_format['short_name']] / float(_counter['records']))})
             catalog_cover_rate.insert({'stats': 'catalog_cover_rate' + _name, 'values': _stats})
 
         # Cover rate for whole genome

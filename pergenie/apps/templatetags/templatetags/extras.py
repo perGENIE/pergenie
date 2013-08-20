@@ -98,7 +98,7 @@ def abs(s):
 @register.filter
 def file_format(s):
     # e.g.: map `vcf_whole_genome` to `VCF (Whole Genome)`
-    return dict((x[0], x[2]) for x in settings.FILEFORMATS)[s]
+    return dict((x['name'], x['long_name']) for x in settings.FILEFORMATS).get(s,s)
 
 @stringfilter
 @register.filter
