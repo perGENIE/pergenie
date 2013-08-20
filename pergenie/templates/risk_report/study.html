@@ -15,16 +15,16 @@
         <div class="span12">
           <div class="content-box transparent">
             <div class="padded10">
-              <h4>{{ trait }}{% if is_ja %} ({{ trait_eng }}){% endif %}
+              <h2>{{ trait }}{% if is_ja %} ({{ trait_eng }}){% endif %}
                 {% if wiki_url_en %}<span class="badge badge-yellow" title="browse in Wikipedia"><a href="{{ wiki_url_en }}" target="_blank">Wikipedia</a></span>{% endif %}
-              </h4>
+              </h2>
             </div>
           </div>
         </div>
       </div>
 
       <div class="row-fluid">
-        <div class="span2">
+        <div class="span4">
           <div class="content-box">
 
             <div class="content-box-header">
@@ -37,7 +37,7 @@
           </div>
         </div>
 
-        <div class="span10">
+        <div class="span8">
           <div class="content-box">
             <div class="content-box-header">
               <i class="icon-book"></i> {% trans "Information about reference study" %}
@@ -108,7 +108,7 @@
           <div class="content-box">
 
             <div class="content-box-header">
-              <i class="icon-bar-chart"></i> {% trans "Information about SNPs & Genotypes of" %} "{{ file_name }}"
+              <i class="icon-bar-chart"></i> {% trans "Information about SNPs & Genotypes" %}
             </div>
 
 

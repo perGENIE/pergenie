@@ -12,11 +12,11 @@
 
       <div class="content-box transparent" {% ifequal intro_type.0 'welcome' %} data-step="1" data-intro="{{ intros.0 }}" {% endifequal %} {% ifequal intro_type.0 'first' %} data-step="1" data-intro="{{ intros.0 }}" {% endifequal %}>
         <div class="content-box-header">
-          <i class="icon-magic"></i> Components
+          <i class="icon-magic"></i> {% trans "Components" %}
         </div>
         <div class="row-fluid">
           <div class="span12">
-            <div class="padded">
+            <div class="padded5">
 
               <a href="{% url apps.riskreport.views.index %}">
               <button class="button square" href="#"{% ifequal intro_type.0 'risk_report' %} data-step="1" data-intro="{{ intros.0 }}" {% endifequal %} {% ifequal intro_type.0 'welcome' %} data-step="3" data-intro="{{ intros.2 }}" {% endifequal %}>
@@ -112,7 +112,7 @@
         <div class="span6">
           <div class="content-box" {% ifequal intro_type.0 'welcome' %} data-step="2" data-intro="{{ intros.1 }}" {% endifequal %}  {% ifequal intro_type.0 'first' %}data-step="2" data-intro="{{ intros.1 }}" {% endifequal %}>
             <div class="content-box-header">
-              <icon class="icon-bar-chart"></icon> {% trans "Genome Statistics" %}
+              <icon class="icon-bar-chart"></icon> {% trans "About Your Genome Files" %}
             </div>
 
             <div class="tabbable">
@@ -133,8 +133,7 @@
                 <div class="tab-pane{% ifequal forloop.counter0|add:1 1 %} active{% endifequal %}" id="tab{{ forloop.counter0|add:1 }}">
                   <div class="row-fluid">
                     <div class="span12 padded uploaded_file">
-                      <p><b>{% trans "File name" %}</b>: </p>
-                      <p class="dataname" style="word-break: break-all">{{ info.raw_name }}</p>
+                      {% trans "File name" %}: {{ info.raw_name }}
                       <table class="table table-bordered">
                         <tbody>
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-08-20 13:54+0900\n"
+"POT-Creation-Date: 2013-08-20 15:35+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -138,8 +138,8 @@ msgid ""
 "Same file name of same genome file format exists. If you want to overwrite "
 "it, please delete old one."
 msgstr ""
-"同名で同じゲノムファイルフォーマットのファイルが既にアップロードされています．上書きしたい場合，アップ"
-"ロード済みのファイルを削除して下さい．"
+"同名で同じゲノムファイルフォーマットのファイルが既にアップロードされていま"
+"す．上書きしたい場合，アップロード済みのファイルを削除して下さい．"
 
 #: apps/upload/views.py:119
 msgid "file type not allowed, or encoding not allowed"
@@ -181,7 +181,7 @@ msgstr "サーバー内部でのエラーが起きました．"
 
 #: templates/layout.html:155
 msgid "Show navigation"
-msgstr "ナビゲーションを表示"
+msgstr "ナビゲーション"
 
 #: templates/layout.html:175
 msgid "Register your account, for free!"
@@ -192,13 +192,12 @@ msgid "Logout"
 msgstr "ログアウト"
 
 #: templates/dashboard/index.html:115
-msgid "Genome Statistics"
-msgstr "ゲノム統計データ"
+msgid "About Your Genome Files"
+msgstr "あなたのゲノムファイル"
 
 #: templates/dashboard/index.html:136 templates/dashboard/index.html.py:164
-#, fuzzy
 msgid "File name"
-msgstr "ファイルフォーマット"
+msgstr "ファイル名"
 
 #: templates/dashboard/index.html:143 templates/dashboard/index.html.py:169
 msgid "Import status:"
@@ -409,19 +408,19 @@ msgstr ""
 msgid "Statistics"
 msgstr "統計データ"
 
-#: templates/risk_report/index.html:147
+#: templates/risk_report/index.html:146
 msgid "Number of studies for this population is "
 msgstr "この人種での対象研究論文数: "
 
-#: templates/risk_report/index.html:154
+#: templates/risk_report/index.html:153
 msgid "What percentage does your genome file cover SNPs of these studies?"
 msgstr "このゲノムファイルが、これらの研究論文におけるSNPsをカバーする割合"
 
-#: templates/risk_report/index.html:165
+#: templates/risk_report/index.html:164
 msgid "What percentage does your genome file cover whole genome?"
 msgstr "ゲノムデータのゲノムカバー率"
 
-#: templates/risk_report/index.html:218
+#: templates/risk_report/index.html:216
 #: templates/risk_report/show_all.html:150
 #: templates/risk_report/study.html:201
 msgid "Risk relative to average population"
@@ -507,8 +506,12 @@ msgid "Reliability rank"
 msgstr "信頼度ランク"
 
 #: templates/risk_report/study.html:111
-msgid "Information about SNPs & Genotypes of"
-msgstr ""
+#, fuzzy
+msgid "Information about SNPs & Genotypes"
+msgstr "参照元論文に関する情報"
+
+#~ msgid "Genome Statistics"
+#~ msgstr "ゲノム統計データ"
 
 #~ msgid "Please wait until your genome file uploaded..."
 #~ msgstr "ゲノムファイルがアップロードされるまでしばらくお待ちください..."

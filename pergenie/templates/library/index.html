@@ -20,6 +20,53 @@
         </div>
       </div>
 
+      <!-- GWAS Catalog -->
+      <div class="content-box">
+
+        <!--   <i class="icon-book"></i> GWAS Catalog -->
+        <!-- </div> -->
+
+        <div class="row-fluid">
+          <div class="span12">
+            <div class="padded10">
+              <h3><a href="//www.genome.gov/gwastudies/" target="_blank">GWAS Catalog</a></h3>
+              <h4>Last update in perGENIE: {{ latest_catalog_date }}</h4>
+
+
+
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>Index</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="center"><a href="{% url apps.library.views.trait_index %}">Disease and Traits</a></td>
+                    <td class="center">used in RiskReports in perGENIE</td>
+                  </tr>
+
+                  <!-- <tr> -->
+                  <!--   <td class="center"><a href="{% url apps.library.views.snps_index %}">SNPs Index</a></td> -->
+                  <!--   <td class="center">Reference SNPs (rs) in perGENIE.</td> -->
+                  <!--   <td class="center"> -->
+                  <!--       <span class="badge badge-yellow" title="Go to the NHGRI GWAS Catalog website"><a href="//www.genome.gov/gwastudies/" target="_blank">GWAS Catalog</a></span> -->
+                  <!--       <span class="badge badge-yellow" title="Go to the NCBI dbSNP website"><a href="//www.ncbi.nlm.nih.gov/SNP/" target="_blank">dbSNP</a></span> -->
+                  <!--       <span class="badge badge-yellow" title="Go to the OMIM website"><a href="//omim.org/" target="_blank">OMIM</a></span> -->
+                  <!--   </td> -->
+                  <!--   <td class="center"> -->
+                  <!--     {{ latest_catalog_date }} -->
+                  <!--   </td> -->
+                  <!-- </tr> -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Versions of Reference Files -->
       <div class="content-box">
         <div class="content-box-header">
           <i class="icon-book"></i> Versions of Reference Files
@@ -27,65 +74,26 @@
 
         <div class="row-fluid">
           <div class="span12">
-            <table class="table table-bordered">
-              <tbody>
-                <tr>
-                  <td class="center">dbSNP Build</td>
-                  <td class="center">{{ dbsnp_version }}</td>
-                </tr>
-                <tr>
-                  <td class="center">Human Genome Assembly</td>
-                  <td class="center">{{ refgenome_version }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-
-      <div class="content-box">
-        <div class="content-box-header">
-          <icon class="icon-search"></icon> Library Indexes - You can seach detailed information from databases
-        </div>
-
-        <div class="row-fluid">
-          <div class="span12">
-            <table class="table table-bordered">
-              <thead>
-                <tr>
-                  <th></th>
-                  <th>Description</th>
-                  <th>Source</th>
-                  <th>Last update in perGENIE</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td class="center"><a href="{% url apps.library.views.trait_index %}">Traits Index</a></td>
-                  <td class="center">Diseases and traits in perGENIE.</td>
-                  <td class="center">
-                    <span class="badge badge-yellow" title="Go to the NHGRI GWAS Catalog website"><a href="//www.genome.gov/gwastudies/" target="_blank">GWAS Catalog</a></span>
-                  </td>
-                  <td class="center">
-                    {{ latest_catalog_date }}
-                  </td>
-                </tr>
-
-                <!-- <tr> -->
-                <!--   <td class="center"><a href="{% url apps.library.views.snps_index %}">SNPs Index</a></td> -->
-                <!--   <td class="center">Reference SNPs (rs) in perGENIE.</td> -->
-                <!--   <td class="center"> -->
-                <!--       <span class="badge badge-yellow" title="Go to the NHGRI GWAS Catalog website"><a href="//www.genome.gov/gwastudies/" target="_blank">GWAS Catalog</a></span> -->
-                <!--       <span class="badge badge-yellow" title="Go to the NCBI dbSNP website"><a href="//www.ncbi.nlm.nih.gov/SNP/" target="_blank">dbSNP</a></span> -->
-                <!--       <span class="badge badge-yellow" title="Go to the OMIM website"><a href="//omim.org/" target="_blank">OMIM</a></span> -->
-                <!--   </td> -->
-                <!--   <td class="center"> -->
-                <!--     {{ latest_catalog_date }} -->
-                <!--   </td> -->
-                <!-- </tr> -->
-              </tbody>
-            </table>
+            <div class="padded">
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>Reference Files</th>
+                    <th>Versions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="center">dbSNP Build</td>
+                    <td class="center">{{ dbsnp_version }}</td>
+                  </tr>
+                  <tr>
+                    <td class="center">Human Genome Assembly</td>
+                    <td class="center">{{ refgenome_version }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>

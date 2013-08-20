@@ -21,7 +21,7 @@ TRAITS, TRAITS_JA, TRAITS_CATEGORY, TRAITS_WIKI_URL_EN = gwascatalog.get_traits_
 def index(request):
     msg, err = '', ''
 
-    latest_catalog_date = gwascatalog.get_latest_catalog_date()
+    latest_catalog_date = gwascatalog.get_latest_catalog_date().date()
 
     return direct_to_template(request, 'library/index.html',
                               dict(msg=msg, err=err,
