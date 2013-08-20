@@ -288,7 +288,7 @@ class Command(BaseCommand):
             pidfile_path = os.path.join(settings.BASE_DIR, 'import_genomes.pid')
             if os.path.exists(pidfile_path):
                 log.error('Previous process has not finished yet.')
-                return
+                sys.exit()
 
             with open(pidfile_path, 'w') as pidfile:
                 print >>pidfile, os.getpid()
