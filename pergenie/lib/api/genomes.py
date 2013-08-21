@@ -135,6 +135,7 @@ class Genomes(object):
                 log.warn('ref not found: loc: %s loctype: %s' % (loc, loctype))
 
         # Cases for each fileformat
+        # FIXME: reflect settings.FILEFORMAT. otherwise this hardcoding maybe buggy.
         if file_format == 'vcf_whole_genome':
             return ref * 2
         elif file_format == 'vcf_exome_truseq':
