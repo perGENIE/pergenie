@@ -92,8 +92,8 @@ class Bioq(object):
             rs = int(rs.replace('rs', ''))
 
         if rec:
-            chr_id = rec['chr_id']
-            chr_pos = rec['chr_pos']
+            chr_id = rec.get('chr_id')
+            chr_pos = rec.get('chr_pos')
 
         if not rec or (chr_id is None) or (chr_pos is None):
             pos_global = self.get_pos_global(rs)['rs' + str(rs)]
