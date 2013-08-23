@@ -19,101 +19,108 @@
         </div>
       </div>
 
-      <div class="content-box">
-        <div class="content-box-header">
-          <i class="icon-book"></i> Allele and Genotype frequency of My Catalog
-        </div>
 
-        <div class="row-fluid">
-          <div class="span12">
+      <div class="row-fluid">
+        <div class="span14">
 
-            <table class="table table-bordered">
+          <div class="content-box">
+            <div class="content-box-header">
+              <i class="icon-book"></i> Allele and Genotype frequency of My Catalog
+            </div>
 
-                <thead>
-                <tr>
-                  <th>name</th>
-                  <th>rs id</th>
-                  <th>gene</th>
-                  <th>chrom</th>
-                  <th><span style="color : #81bfff">non-risk allele</span></th>
-                  <th><span style="color : #ff81bf">risk allele</span></th>
-                  <th><span style="color : #b4b4b4">reference genome</span></th>
-                  <th>allele freq.</th>
-                  <th>genotype freq.</th>
-                  {% for format in file_formats %}
-                  {% if format != "vcf_whole_genome" %}
-                  <th>in {{ format|file_format }} region</th>
-                  {% endif %}
-                  {% endfor %}
-                </tr>
-                </thead>
-                <tbody>
-                {% for record in mycatalog %}
-                <tr>
-                  <td>{{ record.name }}</td>
-                  <td>
-                    <a href="//www.ncbi.nlm.nih.gov/projects/SNP/snp_ref.cgi?rs={{ record.rsid }}" target="_blank">{{ record.rsid }}</a>
-                  </td>
-                  <td>{{ record.gene_symbol }}</td>
-                  <td>{{ record.chromosome }}</td>
-                  <td><span style="color : #81bfff">{{ record.non_effective_allele }}</span></td>
-                  <td><span style="color : #ff81bf">{{ record.effective_allele }}</span></td>
+            <div class="row-fluid">
+              <div class="span12">
 
-                  <!-- allele of reference genome -->
-                  <td>
-                    <span{% if record.ref in record.effective_allele %} style="color : #ff81bf"{% elif record.ref in record.non_effective_allele %} style="color : #81bfff"{% endif %}>{{ record.ref }}</span>
-                  </td>
+                <table class="table table-bordered">
 
-                  <td>
-                    {% for k,v in record.allele_freq.items %}
-                    <span{% if k in record.effective_allele %} style="color : #ff81bf"{% elif k in record.non_effective_allele %} style="color : #81bfff"{% endif %}>{{ k }}:{{ v }}</span>
+                  <thead>
+                    <tr>
+                      <th>name</th>
+                      <th>rs id</th>
+                      <th>gene</th>
+                      <th>chrom</th>
+                      <th><span style="color : #81bfff">non-risk allele</span></th>
+                      <th><span style="color : #ff81bf">risk allele</span></th>
+                      <th><span style="color : #b4b4b4">reference genome</span></th>
+                      <th>allele freq.</th>
+                      <th>genotype freq.</th>
+                      {% for format in file_formats %}
+                      {% if format != "vcf_whole_genome" %}
+                      <th>in {{ format|file_format }} region</th>
+                      {% endif %}
+                      {% endfor %}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for record in mycatalog %}
+                    <tr>
+                      <td>{{ record.name }}</td>
+                      <td>
+                        <a href="//www.ncbi.nlm.nih.gov/projects/SNP/snp_ref.cgi?rs={{ record.rsid }}" target="_blank">{{ record.rsid }}</a>
+                      </td>
+                      <td>{{ record.gene_symbol }}</td>
+                      <td>{{ record.chromosome }}</td>
+                      <td><span style="color : #81bfff">{{ record.non_effective_allele }}</span></td>
+                      <td><span style="color : #ff81bf">{{ record.effective_allele }}</span></td>
+
+                      <!-- allele of reference genome -->
+                      <td>
+                        <span{% if record.ref in record.effective_allele %} style="color : #ff81bf"{% elif record.ref in record.non_effective_allele %} style="color : #81bfff"{% endif %}>{{ record.ref }}</span>
+                      </td>
+
+                      <td>
+                        {% for k,v in record.allele_freq.items %}
+                        <span{% if k in record.effective_allele %} style="color : #ff81bf"{% elif k in record.non_effective_allele %} style="color : #81bfff"{% endif %}>{{ k }}:{{ v }}</span>
+                        {% endfor %}
+                      </td>
+
+                      <td>
+                        {% for k,v in record.genotype_freq.items %}{{ k }}:{{ v }}{% endfor %}
+                      </td>
+
+                      <!-- file format -->
+                      {% for format in file_formats %}
+                      {% if format == "vcf_exome_truseq" %}
+                      <td>{% if record.is_in_truseq %}&#10004;{% endif %}</td>
+                      {% elif format == "andme" %}
+                      <td>{% if record.is_in_andme %}&#10004;{% endif %}</td>
+                      {% elif format == "vcf_exome_iontargetseq" %}
+                      <td>{% if record.is_in_iontargetseq %}&#10004;{% endif %}</td>
+                      {% endif %}
+                      {% endfor %}
+
+                    </tr>
+
                     {% endfor %}
-                  </td>
+                  </tbody>
+                </table>
 
-                  <td>
-                    {% for k,v in record.genotype_freq.items %}{{ k }}:{{ v }}{% endfor %}
-                  </td>
+                <hr>
 
-                  <!-- file format -->
-                  {% for format in file_formats %}
-                  {% if format == "vcf_exome_truseq" %}
-                  <td>{% if record.is_in_truseq %}&#10004;{% endif %}</td>
-                  {% elif format == "andme" %}
-                  <td>{% if record.is_in_andme %}&#10004;{% endif %}</td>
-                  {% elif format == "vcf_exome_iontargetseq" %}
-                  <td>{% if record.is_in_iontargetseq %}&#10004;{% endif %}</td>
-                  {% endif %}
-                  {% endfor %}
+                <h4>People who have risk alleles</h4>
 
-                </tr>
+                <table class="table table-bordered">
+                  <thead>
+                    <tr>
+                      <th>name</th>
+                      <th>risks</th>
+                    </tr>
+                  </thead>
 
-                {% endfor %}
-              </tbody>
-            </table>
+                  <tbody>
+                    {% for person,risk_names in risk_report.items %}
+                    <tr>
+                      <td>{{ person }}</td>
+                      <td>{% for risk_name in risk_names %}{{ risk_name }} {% endfor %}</td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
 
-            <hr>
-
-            <h4>People who have risk alleles</h4>
-
-            <table class="table table-bordered">
-              <thead>
-                <tr>
-                  <th>name</th>
-                  <th>risks</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {% for person,risk_names in risk_report.items %}
-                <tr>
-                  <td>{{ person }}</td>
-                  <td>{% for risk_name in risk_names %}{{ risk_name }} {% endfor %}</td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-
+              </div>
+            </div>
           </div>
+
         </div>
       </div>
 
