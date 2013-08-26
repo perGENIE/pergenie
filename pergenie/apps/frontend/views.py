@@ -38,6 +38,12 @@ def register(request):
             user_id = form.cleaned_data['user_id']
             password1 = form.cleaned_data['password1']
             password2 = form.cleaned_data['password2']
+            terms_ok = form.cleaned_data['terms_ok']
+
+            # Not read and accept terms of service
+            if not terms_ok:
+                err = _('Not read and accept terms of service.')
+                break
 
             if password1 != password2:
                 err = _('Passwords do not match.')
@@ -47,7 +53,7 @@ def register(request):
             try:
                 u.create(user_id, password1)
             except Exception, e:
-                err = str(e)
+                err = e
                 break
 
             # Registration *without* mail verification
@@ -59,7 +65,7 @@ def register(request):
             try:
                 u.send_activation_email(user_id)
             except Exception, e:
-                err = str(e)
+                err = e
                 break
 
             return direct_to_template(request, 'frontend/registration_completed.html', dict(err=err, user_id=user_id))
@@ -116,7 +122,6 @@ def login(request):
             if not user.is_active:
                 # err = _('invalid mail address or password')
                 err = _('invalid mail address or password')
-
                 break
 
             auth_login(request, user)
@@ -125,6 +130,7 @@ def login(request):
             # if not request.POST.get('remember_me', None):
             #     request.session.set_expiry(0)
             #     log.debug("Not Remember Me")
+
 
             # log.debug(request.session.get_expiry_age())
 

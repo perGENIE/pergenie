@@ -10,3 +10,4 @@ class RegisterForm(forms.Form):
     user_id = forms.CharField(max_length=128)
     password1 = forms.CharField(max_length=128)
     password2 = forms.CharField(max_length=128)
+    terms_ok = forms.BooleanField(required=False)
