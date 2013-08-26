@@ -7,45 +7,38 @@
 
 {% block main_container %}
 <section id="main">
-  <div class="container">
-    <div class="row-fluid">
+  <div class="login-container center">
+    <div class="title"><a href="{% url apps.frontend.views.index %}"><img class="login_logo" src="{% static 'images/logo.png' %}"></a></div>
 
-      <div class="span12">
-        <div class="login-container center">
-          <div class="title"><a href="{% url apps.frontend.views.index %}"><img class="login_logo" src="{% static 'images/logo.png' %}"></a></div>
-
-          <form class="login-form" action="." method="POST">
-            {% csrf_token %}
-            <ul class="fields-list">
-              <li>
-                <i class="icon-envelope-alt" style="float: left;"></i>
-                <input autocomplete="off" id="email" name="user_id" placeholder="email" type="text">
-              </li>
-              <li>
-                <i class="icon-key"></i>
-                <input autocomplete="off" id="password" name="password" placeholder="password" type="password">
-              </li>
-             </ul>
-            <!-- <label><input type="checkbox" id="remember_me" name="remember_me" value="remember_me"> Remember me.</label> -->
-            <div class="actions">
-              <input class="btn btn-green btn-large login-btn" name="commit" type="submit" value="Login">
-            </div>
-
-          </form>
-
-          {% if err %}
-          <div class="alert alert-error">
-            <strong>Error!</strong> {{ err }}
-          </div>
-          {% endif %}
-
-          {% if is_registerable %}
-          <a href="{% url apps.frontend.views.register %}">{% trans "Create an account." %}</a>
-          {% endif %}
-
-        </div>
+    <form class="login-form" action="." method="POST">
+      {% csrf_token %}
+      <ul class="fields-list">
+        <li>
+          <i class="icon-envelope-alt" style="float: left;"></i>
+          <input autocomplete="off" id="email" name="user_id" placeholder="email" type="text">
+        </li>
+        <li>
+          <i class="icon-key"></i>
+          <input autocomplete="off" id="password" name="password" placeholder="password" type="password">
+        </li>
+      </ul>
+      <!-- <label><input type="checkbox" id="remember_me" name="remember_me" value="remember_me"> Remember me.</label> -->
+      <div class="actions">
+        <input class="btn btn-green btn-large login-btn" name="commit" type="submit" value="{% trans "Login" %}">
       </div>
+
+    </form>
+
+    {% if err %}
+    <div class="alert alert-error">
+      <strong>Error!</strong> {{ err }}
     </div>
+    {% endif %}
+
+    {% if is_registerable %}
+    <a href="{% url apps.frontend.views.register %}">{% trans "Create an account." %}</a>
+    {% endif %}
+
   </div>
 
 </section>

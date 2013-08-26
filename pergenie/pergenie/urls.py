@@ -32,7 +32,8 @@ urlpatterns = patterns('',
     url(r'^login/$', 'apps.frontend.views.login'),
     url(r'^logout/$', 'apps.frontend.views.logout'),
     url(r'^trydemo/$', 'apps.frontend.views.trydemo'),
-    url(r'^terms-of-service/$', 'apps.frontend.views.terms'),
+    # url(r'^terms-of-service/$', 'apps.frontend.views.terms'),
+    url(r'^about-service/$', 'apps.frontend.views.about_service'),
 
     # contents
     url(r'^dashboard/$', 'apps.dashboard.views.index'),

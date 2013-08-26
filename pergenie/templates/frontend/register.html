@@ -7,58 +7,53 @@
 
 {% block main_container %}
 <section id="main">
-  <div class="container">
 
-    <div class="row-fluid">
-      <div class="span12">
-        <div class="login-container center">
-          <div class="title"><a href="{% url apps.frontend.views.index %}"><img class="login_logo" src="{% static 'images/logo.png' %}"></a></div>
+  <div class="login-container">
+    <div class="title"><a href="{% url apps.frontend.views.index %}"><img class="login_logo" src="{% static 'images/logo.png' %}"></a></div>
 
-          <form class="login-form" action="{% url apps.frontend.views.register %}" method="POST" id="password-form">
-	        {% csrf_token %}
-            <ul class="fields-list">
-              <li>
-                <i class="icon-envelope-alt" style="float: left;"></i>
-                <input autocomplete="off" id="email" name="user_id" placeholder="email" type="text">
-              </li>
-              <li>
-                <i class="icon-key"></i>
-                <input autocomplete="off" id="password1" name="password1" placeholder="password" type="password">
-              </li>
-              <li>
-                <i class="icon-key"></i>
-                <input autocomplete="off" id="password2" name="password2" placeholder="confirm password" type="password">
-              </li>
-            </ul>
+    <form class="login-form" action="{% url apps.frontend.views.register %}" method="POST" id="password-form">
+	  {% csrf_token %}
+      <ul class="fields-list">
+        <li>
+          <i class="icon-envelope-alt" style="float: left;"></i>
+          <input autocomplete="off" id="email" name="user_id" placeholder="email" type="text">
+        </li>
+        <li>
+          <i class="icon-key"></i>
+          <input autocomplete="off" id="password1" name="password1" placeholder="password" type="password">
+        </li>
+        <li>
+          <i class="icon-key"></i>
+          <input autocomplete="off" id="password2" name="password2" placeholder="confirm password" type="password">
+        </li>
+      </ul>
 
-            <div class="actions clearfix">
-              <label>
-                <input type="checkbox" id="terms_ok" name="terms_ok" value="terms_ok">
-                {% if browser_language == "ja" %}
-                私は
-                <b><a href="{% url apps.frontend.views.terms %}" target="_blank">利用規約</a></b>を読み、これに同意します。
+      <div class="actions clearfix">
+        {% if browser_language == "ja" %}
+        私は、<a href="{% url apps.frontend.views.about_service %}">perGENIEのサービスについて</a>を読み
+        {% else %}
+        I read <a href="{% url apps.frontend.views.about_service %}" target="_blank">About service of perGENIE</a>, and
+        {% endif %}
+        <label>
+          <input type="checkbox" id="terms_ok" name="terms_ok" value="terms_ok_0">
+          {% trans " I accept it." %}
+        </label>
+        <label>
+          <input type="checkbox" id="terms_ok" name="terms_ok" value="terms_ok_1">
+          {% trans " Especially, I accept that the services of perGENIE are NOT medical diagnosis; they are jsut experimental attempts." %}
+        </label>
 
-                {% else %}
-                I read and accept
-                <b><a href="{% url apps.frontend.views.terms %}" target="_blank">{% trans "Terms of Service" %}</a></b>.
-                {% endif %}
-                </label>
-              <input class="btn btn-green btn-large login-btn" name="commit" type="submit" value="Register">
-            </div>
-
-          </form>
-
-          {% if err %}
-          <div class="alert alert-error">
-            <strong>Error!</strong> {{ err }}
-          </div>
-          {% endif %}
-
-          {% trans "If you already have accounts," %}<a href="{% url apps.frontend.views.login %}"> Login</a>.
-
-        </div>
+        <input class="btn btn-green btn-large login-btn" name="commit" type="submit" value="{% trans "Register" %}">
       </div>
+
+    </form>
+
+    {% if err %}
+    <div class="alert alert-error">
+      <strong>Error!</strong> {{ err }}
     </div>
+    {% endif %}
+
   </div>
 
 </section>

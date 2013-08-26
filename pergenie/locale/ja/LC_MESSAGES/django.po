@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-08-20 15:35+0900\n"
+"POT-Creation-Date: 2013-08-26 19:23+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -57,17 +57,21 @@ msgstr ""
 "短すぎるパスワードです．%(min_password_length)s 文字以上のパスワードを設定し"
 "て下さい．"
 
-#: apps/frontend/views.py:35 apps/frontend/views.py:90
+#: apps/frontend/views.py:41 apps/frontend/views.py:102
 #: apps/riskreport/views.py:81 apps/riskreport/views.py:256
 msgid "Invalid request."
 msgstr "不正なリクエストです．"
 
-#: apps/frontend/views.py:43 lib/api/user.py:26
+#: apps/frontend/views.py:51
+msgid "Not read and accept terms of service."
+msgstr ""
+
+#: apps/frontend/views.py:55 lib/api/user.py:26
 msgid "Passwords do not match."
 msgstr "パスワードが一致していません．"
 
-#: apps/frontend/views.py:97 apps/frontend/views.py:113
-#: apps/frontend/views.py:118
+#: apps/frontend/views.py:109 apps/frontend/views.py:125
+#: apps/frontend/views.py:130
 msgid "invalid mail address or password"
 msgstr "メールアドレスかパスワードが正しくありません．"
 
@@ -191,29 +195,85 @@ msgstr "アカウントの新規登録"
 msgid "Logout"
 msgstr "ログアウト"
 
+#: templates/dashboard/index.html:15
+msgid "Components"
+msgstr ""
+
 #: templates/dashboard/index.html:115
 msgid "About Your Genome Files"
 msgstr "あなたのゲノムファイル"
 
-#: templates/dashboard/index.html:136 templates/dashboard/index.html.py:164
+#: templates/dashboard/index.html:136 templates/dashboard/index.html.py:163
 msgid "File name"
 msgstr "ファイル名"
 
-#: templates/dashboard/index.html:143 templates/dashboard/index.html.py:169
+#: templates/dashboard/index.html:142 templates/dashboard/index.html.py:168
 msgid "Import status:"
 msgstr "インポート状況"
 
-#: templates/dashboard/index.html:192
+#: templates/dashboard/index.html:191
 msgid "Recently Added Studies"
 msgstr "最近追加された研究論文"
 
-#: templates/dashboard/index.html:209
+#: templates/dashboard/index.html:208
 msgid "Trait: "
 msgstr "形質: "
 
-#: templates/dashboard/index.html:214
+#: templates/dashboard/index.html:213
 msgid "Study: "
 msgstr "論文: "
+
+#: templates/frontend/about-service.html:16
+msgid "About the service of perGENIE"
+msgstr "perGENIEのサービスについて"
+
+#: templates/frontend/about-service.html:18
+msgid "perGENIE and perGENIE Team"
+msgstr "perGENIEとperGENIEチーム"
+
+#: templates/frontend/about-service.html:19
+msgid ""
+"perGENIE is being developed and maintained by perGENIE Team (pergenie@gmail."
+"com)."
+msgstr ""
+"perGENIEはperGENIEチーム(pergenie@gmail.com)によって開発・メンテナンスされています。"
+
+#: templates/frontend/about-service.html:20
+msgid ""
+"As an open source software, perGENIE is licensed under the *** License, and "
+"the code is hosted at BitBucket"
+msgstr ""
+"perGENIEは***ライセンスの元で、オープソースソフトウェアとして公開されています。"
+
+#: templates/frontend/about-service.html:22
+msgid "Services of perGENIE"
+msgstr "perGENIEのサービス"
+
+#: templates/frontend/about-service.html:23
+msgid ""
+"We host this website (http://pergenie.org) as a proof-of-concept of perGENIE."
+msgstr ""
+"私たちはこのウェブサイト(http://pergenie.org)を、perGENIEのコンセプトの検証のために公開します。"
+
+#: templates/frontend/about-service.html:24
+msgid ""
+"All the reported results from perGENIE are NOT medical diagnosis. They are "
+"jsut experimental attempts."
+msgstr ""
+"perGENIEが提供する各種機能はすべてパーソナル・ゲノミクスにおける実験的な試み"
+"であって、診断行為ではありません。"
+
+#: templates/frontend/about-service.html:26
+msgid "Genome files"
+msgstr "ゲノムファイル"
+
+#: templates/frontend/about-service.html:27
+msgid ""
+"Genome files which uploaded by users are used only for the services of "
+"perGENIE, e.g., RiskReport, and they are not used any other purposes."
+msgstr ""
+"ユーザによってアップロードされるゲノムファイルは、perGENIEが提供するサービス(RiskReportなど)のためのみに使われ、その他の目的には使われません。"
+
 
 #: templates/frontend/activation_completed.html:19
 msgid "Activation completed"
@@ -235,7 +295,7 @@ msgstr "デモを試す"
 msgid "Sign up"
 msgstr "新規登録"
 
-#: templates/frontend/index.html:55
+#: templates/frontend/index.html:55 templates/frontend/login.html:27
 msgid "Login"
 msgstr "ログイン"
 
@@ -299,15 +359,27 @@ msgstr "さらなる機能を開発中です..."
 
 #: templates/frontend/index.html:145
 msgid "About us"
-msgstr ""
+msgstr "私たちについて"
 
-#: templates/frontend/login.html:43
+#: templates/frontend/login.html:39
 msgid "Create an account."
 msgstr "新規アカウント登録"
 
+#: templates/frontend/register.html:39
+msgid " I accept it."
+msgstr " その内容について了承します。"
+
+#: templates/frontend/register.html:43
+msgid ""
+" Especially, I accept that the services of perGENIE are NOT medical "
+"diagnosis; they are jsut experimental attempts."
+msgstr ""
+" 特に、perGENIEが提供する各種機能はパーソナル・ゲノミクスにおける実験的な試み"
+"であって、診断行為ではないことを了承します。"
+
 #: templates/frontend/register.html:46
-msgid "If you already have accounts,"
-msgstr "アカウントをお持ちの方はこちらから:"
+msgid "Register"
+msgstr "アカウント登録"
 
 #: templates/frontend/registration_completed.html:18
 msgid "Registeration completed"
@@ -324,6 +396,10 @@ msgstr ""
 msgid ""
 " Check the email and follow the instructions for activating your account!"
 msgstr "宛に送られる，perGENIEからのメールをご確認ください．"
+
+#: templates/library/index.html:63
+msgid "View detailed statistics"
+msgstr ""
 
 #: templates/risk_report/index.html:16
 msgid "Your disease risk report is shown bellow."
@@ -509,6 +585,9 @@ msgstr "信頼度ランク"
 #, fuzzy
 msgid "Information about SNPs & Genotypes"
 msgstr "参照元論文に関する情報"
+
+#~ msgid "If you already have accounts,"
+#~ msgstr "アカウントをお持ちの方はこちらから:"
 
 #~ msgid "Genome Statistics"
 #~ msgstr "ゲノム統計データ"

@@ -22,10 +22,11 @@ def index(request):
     return direct_to_template(request, 'frontend/index.html', dict(is_registerable=settings.IS_REGISTERABLE,
                                                                    set_tweet_button=settings.SET_TWEET_BUTTON))
 
+# def terms(request):
+#     return direct_to_template(request, 'frontend/terms-of-service.html', dict(browser_language=get_language()))
 
-def terms(request):
-    return direct_to_template(request, 'frontend/terms-of-service.html', dict(browser_language=get_language()))
-
+def about_service(request):
+    return direct_to_template(request, 'frontend/about-service.html', dict(browser_language=get_language()))
 
 @require_http_methods(['GET', 'POST'])
 def register(request):
