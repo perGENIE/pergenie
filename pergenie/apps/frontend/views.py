@@ -7,6 +7,7 @@ from django.shortcuts import redirect
 from django.views.decorators.http import require_http_methods
 from django.views.generic.simple import direct_to_template
 from django.utils.translation import ugettext as _
+from django.utils.translation import get_language
 from django.conf import settings
 from django.db import IntegrityError
 from django.http import Http404
@@ -20,6 +21,10 @@ log = clogging.getColorLogger(__name__)
 def index(request):
     return direct_to_template(request, 'frontend/index.html', dict(is_registerable=settings.IS_REGISTERABLE,
                                                                    set_tweet_button=settings.SET_TWEET_BUTTON))
+
+
+def terms(request):
+    return direct_to_template(request, 'frontend/terms-of-service.html', dict(browser_language=get_language()))
 
 
 @require_http_methods(['GET', 'POST'])
@@ -70,7 +75,7 @@ def register(request):
 
             return direct_to_template(request, 'frontend/registration_completed.html', dict(err=err, user_id=user_id))
 
-    return direct_to_template(request, 'frontend/register.html', dict(err=err))
+    return direct_to_template(request, 'frontend/register.html', dict(err=err, browser_language=get_language()))
 
 
 def activation(request, activation_key):

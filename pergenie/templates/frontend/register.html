@@ -33,8 +33,15 @@
 
             <div class="actions clearfix">
               <label>
-                <input type="checkbox" id="terms_ok" name="terms_ok" value="terms_ok"> I read and accept
-                <a href="" target="_blank">{% trans "terms of service" %}</a>.
+                <input type="checkbox" id="terms_ok" name="terms_ok" value="terms_ok">
+                {% if browser_language == "ja" %}
+                私は
+                <b><a href="{% url apps.frontend.views.terms %}" target="_blank">利用規約</a></b>を読み、これに同意します。
+
+                {% else %}
+                I read and accept
+                <b><a href="{% url apps.frontend.views.terms %}" target="_blank">{% trans "Terms of Service" %}</a></b>.
+                {% endif %}
                 </label>
               <input class="btn btn-green btn-large login-btn" name="commit" type="submit" value="Register">
             </div>
