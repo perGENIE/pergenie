@@ -30,16 +30,16 @@
 
       <div class="actions clearfix">
         {% if browser_language == "ja" %}
-        私は、<a href="{% url apps.frontend.views.about_service %}">perGENIEのサービスについて</a>を読み
+        私は、<a href="{% url apps.frontend.views.about_service %}" target="_blank">perGENIEのサービスについて</a>を読み
         {% else %}
         I read <a href="{% url apps.frontend.views.about_service %}" target="_blank">About service of perGENIE</a>, and
         {% endif %}
         <label>
-          <input type="checkbox" id="terms_ok" name="terms_ok" value="terms_ok_0">
+          <input type="checkbox" id="terms_ok_0" name="terms_ok_0" value="terms_ok_0">
           {% trans " I accept it." %}
         </label>
         <label>
-          <input type="checkbox" id="terms_ok" name="terms_ok" value="terms_ok_1">
+          <input type="checkbox" id="terms_ok_1" name="terms_ok_1" value="terms_ok_1">
           {% trans " Especially, I accept that the services of perGENIE are NOT medical diagnosis; they are jsut experimental attempts." %}
         </label>
 

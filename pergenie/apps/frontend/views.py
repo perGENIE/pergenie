@@ -44,11 +44,12 @@ def register(request):
             user_id = form.cleaned_data['user_id']
             password1 = form.cleaned_data['password1']
             password2 = form.cleaned_data['password2']
-            terms_ok = form.cleaned_data['terms_ok']
+            terms_ok_0 = form.cleaned_data['terms_ok_0']
+            terms_ok_1 = form.cleaned_data['terms_ok_1']
 
             # Not read and accept terms of service
-            if not terms_ok:
-                err = _('Not read and accept terms of service.')
+            if not terms_ok_0 or not terms_ok_1:
+                err = _('Not read and accept about service of perGENIE.')
                 break
 
             if password1 != password2:
@@ -67,6 +68,8 @@ def register(request):
                 user = User.objects.filter(username=user_id)
                 auth_login(request, user)
                 return redirect('apps.dashboard.views.index')
+
+            log.debug(user_id)
 
             try:
                 u.send_activation_email(user_id)

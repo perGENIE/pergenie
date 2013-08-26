@@ -50,7 +50,7 @@ class User(object):
         if django_User.objects.filter(username=user_id):
             raise Exception(_('Already registered.'))
 
-        user = django_User.objects.create_user(user_id, '', password)
+        user = django_User.objects.create_user(user_id, user_id, password)
 
         for fileformat in settings.FILEFORMATS:
             tmp_upload_dir = os.path.join(settings.UPLOAD_DIR, user_id, fileformat['name'])
@@ -114,26 +114,25 @@ To complete your registration, please visit following URL:
 If you have problems with signing up, please contact us at %(support_email)s
 
 
-- perGENIE teams
+- perGENIE Team
 
---
-This email address is SEND ONLY, NO-REPLY.
 """ % {'activation_url': activation_url, 'support_email': settings.SUPPORT_EMAIL}
 
         try:
+            user = django_User.objects.filter(username=user_id)[0]
             user.email_user(subject=email_title, message=email_body)
         except:  # SMTPException
             # Send activation_key faild, so delete user
             with MongoClient(host=settings.MONGO_URI) as c:
                 user_info = c['pergenie']['user_info']
                 user_info.remove({'user_id': user_id})
-            user = django_User.objects.filter(username=user_id)
+            user = django_User.objects.filter(username=user_id)[0]
             user.delete()
             log.error('send activaton email failed')
             raise Exception(_('Invalid mail address assumed.'))
 
 
-    def activate(self):
+    def activate(self, activation_key):
         with MongoClient(host=settings.MONGO_URI) as c:
             user_info = c['pergenie']['user_info']
 
@@ -162,10 +161,8 @@ This email address is SEND ONLY, NO-REPLY.
 If this account activation is not intended by you, please contact us at %(support_email)s
 
 
-- perGENIE teams
+- perGENIE Team
 
---
-This email address is SEND ONLY, NO-REPLY.
 """  % {'support_email': settings.SUPPORT_EMAIL})
             except:
                 log.error('Failed to send notification. %s' % challenging_user_info['user_id'])
