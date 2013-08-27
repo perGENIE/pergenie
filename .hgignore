@@ -27,6 +27,8 @@ nosetests.xml
 # DB, pickle
 *.sqlite3
 *.p
+mongo.dump.*
+mysql.dump.*
 
 # Log
 *.log
