@@ -35,11 +35,10 @@ class Command(BaseCommand):
             log.info('Dump MongoDB backup...')
 
             # Add auth settings if exists
+            mongo_auth_settings = []
             if settings.MONGO_PASSWORD:
                 mongo_auth_settings = ['--username', settings.MONGO_USER,
                                        '--password', settings.MONGO_PASSWORD]
-            else:
-                mongo_auth_settings = []
 
             print subprocess.Popen(['mongodump',
                                     '-h', str(settings.MONGO_HOST), '--port', str(settings.MONGO_PORT)]
@@ -50,11 +49,18 @@ class Command(BaseCommand):
         elif options["mysql"]:
             log.info('Dump MySQL backup...')
 
-            # TODO: add auth settings
+            # Add optional settings if exists
+            mysql_optional_settings = []
+            if settings.DATABASES['default']['HOST']:
+                mysql_optional_settings.append('--host=%s' % settings.DATABASES['default']['HOST'])
+            if settings.DATABASES['default']['PORT']:
+                mysql_optional_settings.append('--port=%s' % settings.DATABASES['default']['PORT'])
+
             print subprocess.Popen(['mysqldump',
                                     '--user=%s' % settings.DATABASES['default']['USER'],
-                                    '--password=%s' % settings.DATABASES['default']['PASSWORD'],
-                                    'pergenie'],
+                                    '--password=%s' % settings.DATABASES['default']['PASSWORD']]
+                                   + mysql_optional_settings
+                                   + ['pergenie'],
                                    stdout=subprocess.PIPE).communicate()[0]
 
         else:

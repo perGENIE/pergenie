@@ -50,41 +50,44 @@ class Command(BaseCommand):
             log.info('latest_backup: %s' % latest_backup)
             log.info('Proceed restore?')
             yn = raw_input('y/n > ')
-            if yn == 'y':
-                # Add auth settings if exists
-                if settings.MONGO_PASSWORD:
-                    mongo_auth_settings = ['--username', settings.MONGO_USER,
-                                           '--password', settings.MONGO_PASSWORD]
-                else:
-                    mongo_auth_settings = []
+            if yn != 'y': sys.exit()
 
-                print subprocess.Popen(['mongorestore',
-                                        '-h', str(settings.MONGO_HOST), '--port', str(settings.MONGO_PORT)]
-                                       + mongo_auth_settings
-                                       + ['--drop', latest_backup],
-                                       stdout=subprocess.PIPE).communicate()[0]
-            else:
-                sys.exit()
+            # Add auth settings if exists
+            mongo_auth_settings = []
+            if settings.MONGO_PASSWORD:
+                mongo_auth_settings = ['--username', settings.MONGO_USER,
+                                       '--password', settings.MONGO_PASSWORD]
 
+            print subprocess.Popen(['mongorestore',
+                                    '-h', str(settings.MONGO_HOST), '--port', str(settings.MONGO_PORT)]
+                                   + mongo_auth_settings
+                                   + ['--drop', latest_backup],
+                                   stdout=subprocess.PIPE).communicate()[0]
 
         elif options["mysql"]:
             log.info('Restore MySQL backup...')
 
+            # FIXME:
             latest_backup = 'pergenie.dump.***.sql'
             log.info('latest_backup: %s' % latest_backup)
             log.info('Proceed restore?')
             yn = raw_input('y/n > ')
-            if yn == 'y':
-                pass
+            if yn != 'y': sys.exit()
 
-                # TODO:
-                # print subprocess.Popen(['mysql',
-                #                         '--user=%s' % settings.DATABASES['default']['USER'],
-                #                         '--password=%s' % settings.DATABASES['default']['PASSWORD'],
-                #                         'pergenie', '<', latest_backup],
-                #                        stdout=subprocess.PIPE).communicate()[0]
-            else:
-                sys.exit()
+            # Add optional settings if exists
+            mysql_optional_settings = []
+            if settings.DATABASES['default']['HOST']:
+                mysql_optional_settings.append('--host=%s' % settings.DATABASES['default']['HOST'])
+            if settings.DATABASES['default']['PORT']:
+                mysql_optional_settings.append('--port=%s' % settings.DATABASES['default']['PORT'])
+
+            # FIXME:
+            print subprocess.Popen(['mysql',
+                                    '--user=%s' % settings.DATABASES['default']['USER'],
+                                    '--password=%s' % settings.DATABASES['default']['PASSWORD']]
+                                   + mysql_optional_settings
+                                   + ['pergenie', '<', latest_backup],
+                                   stdout=subprocess.PIPE).communicate()[0]
 
         else:
-            self.print_help("import", "help")
+            self.print_help("restore", "help")
