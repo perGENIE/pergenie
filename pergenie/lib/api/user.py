@@ -104,8 +104,8 @@ class User(object):
         if not activation_url.endswith(os.path.sep):
             activation_url += os.path.sep
 
-        email_title = "Welcome to perGENIE"
-        email_body = """Welcome to perGENIE!
+        email_title = _("Welcome to perGENIE")
+        email_body = _("""Welcome to perGENIE!
 
 To complete your registration, please visit following URL:
 
@@ -116,7 +116,7 @@ If you have problems with signing up, please contact us at %(support_email)s
 
 - perGENIE Team
 
-""" % {'activation_url': activation_url, 'support_email': settings.SUPPORT_EMAIL}
+""") % {'activation_url': activation_url, 'support_email': settings.SUPPORT_EMAIL}
 
         try:
             user = django_User.objects.filter(username=user_id)[0]
@@ -155,15 +155,15 @@ If you have problems with signing up, please contact us at %(support_email)s
 
             # Send email notification that 'your account has been activated.'
             try:
-                challenging_user.email_user(subject='Your account has been activated',
-                                            message="""Your perGENIE account has been activated!
+                challenging_user.email_user(subject=_('Your account has been activated'),
+                                            message=_("""Your perGENIE account has been activated!
 
 If this account activation is not intended by you, please contact us at %(support_email)s
 
 
 - perGENIE Team
 
-"""  % {'support_email': settings.SUPPORT_EMAIL})
+""")  % {'support_email': settings.SUPPORT_EMAIL})
             except:
                 log.error('Failed to send notification. %s' % challenging_user_info['user_id'])
 

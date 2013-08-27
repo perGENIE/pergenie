@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-08-26 19:23+0900\n"
+"POT-Creation-Date: 2013-08-27 21:11+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -28,7 +28,7 @@ msgstr "ここからゲノムファイルを変えることができます。"
 
 #: apps/dashboard/views.py:51
 msgid "So, first, upload your genome file!"
-msgstr "まずは，genome fileをアップロードしましょう!"
+msgstr "まずは、genome fileをアップロードしましょう!"
 
 #: apps/dashboard/views.py:58
 msgid "Genome files are already uploaded for demo users."
@@ -54,51 +54,49 @@ msgid ""
 "Passwords too short (passwords should be longer than %(min_password_length)s "
 "characters)."
 msgstr ""
-"短すぎるパスワードです．%(min_password_length)s 文字以上のパスワードを設定し"
-"て下さい．"
+"短すぎるパスワードです。%(min_password_length)s 文字以上のパスワードを設定し"
+"て下さい。"
 
-#: apps/frontend/views.py:41 apps/frontend/views.py:102
+#: apps/frontend/views.py:41 apps/frontend/views.py:105
 #: apps/riskreport/views.py:81 apps/riskreport/views.py:256
 msgid "Invalid request."
-msgstr "不正なリクエストです．"
+msgstr "不正なリクエストです。"
 
-#: apps/frontend/views.py:51
-msgid "Not read and accept terms of service."
-msgstr ""
+#: apps/frontend/views.py:52
+msgid "Not read and accept about service of perGENIE."
+msgstr "perGENIEのサービスについて同意いただけていません"
 
-#: apps/frontend/views.py:55 lib/api/user.py:26
+#: apps/frontend/views.py:56 lib/api/user.py:26
 msgid "Passwords do not match."
-msgstr "パスワードが一致していません．"
+msgstr "パスワードが一致していません。"
 
-#: apps/frontend/views.py:109 apps/frontend/views.py:125
-#: apps/frontend/views.py:130
+#: apps/frontend/views.py:112 apps/frontend/views.py:128
+#: apps/frontend/views.py:133
 msgid "invalid mail address or password"
-msgstr "メールアドレスかパスワードが正しくありません．"
+msgstr "メールアドレスかパスワードが正しくありません。"
 
 #: apps/riskreport/views.py:42 apps/riskreport/views.py:233
 msgid "no data uploaded"
-msgstr "データがアップロードされていません．"
+msgstr "データがアップロードされていません。"
 
 #: apps/riskreport/views.py:50
-#, fuzzy
 msgid "invalid user"
-msgstr "不正なリクエストです．"
+msgstr "不正なユーザ"
 
 #: apps/riskreport/views.py:71
-#, fuzzy
 msgid "Your files are in importing, please wait for seconds..."
-msgstr "%(file_name)s は現在読み込み中です．しばらくお待ちください..."
+msgstr "%(file_name)s は現在読み込み中です。しばらくお待ちください..."
 
 #: apps/riskreport/views.py:94 apps/riskreport/views.py:264
 #, python-format
 msgid "%(file_name)s is in importing, please wait for seconds..."
-msgstr "%(file_name)s は現在読み込み中です．しばらくお待ちください..."
+msgstr "%(file_name)s は現在読み込み中です。しばらくお待ちください..."
 
 #: apps/riskreport/views.py:100 apps/riskreport/views.py:176
 #: apps/riskreport/views.py:271
 #, python-format
 msgid "no such file %(file_name)s"
-msgstr "そのようなファイルはありません．%(file_name)s"
+msgstr "そのようなファイルはありません。%(file_name)s"
 
 #: apps/riskreport/views.py:154
 msgid "trait not found"
@@ -106,19 +104,19 @@ msgstr "そのようなTraitはありません"
 
 #: apps/upload/views.py:43
 msgid "Invalid request"
-msgstr "不正なリクエストです．"
+msgstr "不正なリクエストです。"
 
 #: apps/upload/views.py:53
 msgid "Select data file."
-msgstr "ファイルを選択して下さい．"
+msgstr "ファイルを選択して下さい。"
 
 #: apps/upload/views.py:57
 msgid "Select population."
-msgstr "Populationを選択して下さい．"
+msgstr "Populationを選択して下さい。"
 
 #: apps/upload/views.py:62
 msgid "Select file format."
-msgstr "File Formatを選択して下さい．"
+msgstr "File Formatを選択して下さい。"
 
 #: apps/upload/views.py:66 apps/upload/views.py:70
 msgid "Too many files."
@@ -126,16 +124,15 @@ msgstr ""
 
 #: apps/upload/views.py:76
 msgid "too large file size"
-msgstr "ファイルサイズが制限を超えています．"
+msgstr "ファイルサイズが制限を超えています。"
 
 #: apps/upload/views.py:82
-#, fuzzy
 msgid "file extension not allowed"
-msgstr "許可されいてない拡張子のファイルです．"
+msgstr "許可されいてない拡張子のファイルです。"
 
 #: apps/upload/views.py:92
 msgid "file type not allowed"
-msgstr "許可されていないファイルタイプです．"
+msgstr "許可されていないファイルタイプです。"
 
 #: apps/upload/views.py:100
 msgid ""
@@ -143,45 +140,101 @@ msgid ""
 "it, please delete old one."
 msgstr ""
 "同名で同じゲノムファイルフォーマットのファイルが既にアップロードされていま"
-"す．上書きしたい場合，アップロード済みのファイルを削除して下さい．"
+"す。上書きしたい場合、アップロード済みのファイルを削除して下さい。"
 
 #: apps/upload/views.py:119
 msgid "file type not allowed, or encoding not allowed"
 msgstr ""
-"許可されていないファイルタイプ，あるいは許可されていないエンコーディングで"
-"す．"
+"許可されていないファイルタイプ、あるいは許可されていないエンコーディングで"
+"す。"
 
 #: apps/upload/views.py:127
 #, python-format
 msgid "%(file_name)s uploaded."
-msgstr "%(file_name)s がアップロードされました．"
+msgstr "%(file_name)s がアップロードされました。"
 
 #: apps/upload/views.py:151
 msgid ", and now importing..."
-msgstr "現在，読み込んでいます..."
+msgstr "現在、読み込んでいます..."
 
 #: lib/api/user.py:33 lib/api/user.py:36 lib/api/user.py:39
-#: lib/api/user.py:133
+#: lib/api/user.py:132
 msgid "Invalid mail address assumed."
-msgstr "不正なメールアドレスです．"
+msgstr "不正なメールアドレスです。"
 
 #: lib/api/user.py:48 lib/api/user.py:51
 msgid "Already registered."
-msgstr "すでに登録済みです．"
+msgstr "すでに登録済みです。"
 
 #: lib/api/user.py:98
 msgid "Such user does not exist."
 msgstr ""
 
+#: lib/api/user.py:107
+msgid "Welcome to perGENIE"
+msgstr "perGENIEへようこそ！"
+
+#: lib/api/user.py:108
+#, python-format
+msgid ""
+"Welcome to perGENIE!\n"
+"\n"
+"To complete your registration, please visit following URL:\n"
+"\n"
+"%(activation_url)s\n"
+"\n"
+"If you have problems with signing up, please contact us at "
+"%(support_email)s\n"
+"\n"
+"\n"
+"- perGENIE Team\n"
+"\n"
+msgstr ""
+"perGENIEへようこそ!\n"
+"\n"
+"アカウントを有効にするために次のURLへアクセスして下さい。\n"
+"\n"
+"%(activation_url)s\n"
+"\n"
+"もし登録できないなど問題がございましたら %(support_email)s までご連絡くださ"
+"い。\n"
+"\n"
+"- perGENIE Team\n"
+"\n"
+
+#: lib/api/user.py:158
+msgid "Your account has been activated"
+msgstr "アカウントが有効になりました"
+
+#: lib/api/user.py:159
+#, python-format
+msgid ""
+"Your perGENIE account has been activated!\n"
+"\n"
+"If this account activation is not intended by you, please contact us at "
+"%(support_email)s\n"
+"\n"
+"\n"
+"- perGENIE Team\n"
+"\n"
+msgstr ""
+"あなたのperGENIEアカウントが有効になりました!\n"
+"\n"
+"もしこのメールの内容に心当たりがない場合、お手数ですが\n"
+"%(support_email)s までご連絡ください。い。\n"
+"\n"
+"- perGENIE Team\n"
+"\n"
+
 #: templates/404.html:21
 msgid "Sorry, the page you requested may have been moved or deleted."
-msgstr "リクエストされたページは移動，または削除されています．"
+msgstr "リクエストされたページは移動、または削除されています。"
 
 #: templates/500.html:21
 msgid ""
 "Sorry, the server encountered an internal error or misconfiguration and was "
 "unable to complete your request."
-msgstr "サーバー内部でのエラーが起きました．"
+msgstr "サーバー内部でのエラーが起きました。"
 
 #: templates/layout.html:155
 msgid "Show navigation"
@@ -236,14 +289,16 @@ msgid ""
 "perGENIE is being developed and maintained by perGENIE Team (pergenie@gmail."
 "com)."
 msgstr ""
-"perGENIEはperGENIEチーム(pergenie@gmail.com)によって開発・メンテナンスされています。"
+"perGENIEはperGENIEチーム(pergenie@gmail.com)によって開発・メンテナンスされて"
+"います。"
 
 #: templates/frontend/about-service.html:20
 msgid ""
 "As an open source software, perGENIE is licensed under the *** License, and "
 "the code is hosted at BitBucket"
 msgstr ""
-"perGENIEは***ライセンスの元で、オープソースソフトウェアとして公開されています。"
+"perGENIEは***ライセンスの元で、オープソースソフトウェアとして公開されていま"
+"す。"
 
 #: templates/frontend/about-service.html:22
 msgid "Services of perGENIE"
@@ -253,7 +308,8 @@ msgstr "perGENIEのサービス"
 msgid ""
 "We host this website (http://pergenie.org) as a proof-of-concept of perGENIE."
 msgstr ""
-"私たちはこのウェブサイト(http://pergenie.org)を、perGENIEのコンセプトの検証のために公開します。"
+"私たちはこのウェブサイト(http://pergenie.org)を、perGENIEのコンセプトの検証の"
+"ために公開します。"
 
 #: templates/frontend/about-service.html:24
 msgid ""
@@ -272,8 +328,8 @@ msgid ""
 "Genome files which uploaded by users are used only for the services of "
 "perGENIE, e.g., RiskReport, and they are not used any other purposes."
 msgstr ""
-"ユーザによってアップロードされるゲノムファイルは、perGENIEが提供するサービス(RiskReportなど)のためのみに使われ、その他の目的には使われません。"
-
+"ユーザによってアップロードされるゲノムファイルは、perGENIEが提供するサービス"
+"(RiskReportなど)のためのみに使われ、その他の目的には使われません。"
 
 #: templates/frontend/activation_completed.html:19
 msgid "Activation completed"
@@ -281,9 +337,14 @@ msgstr "アカウントが有効になりました"
 
 #: templates/frontend/activation_completed.html:21
 msgid "Thanks for signing up! Now you can "
-msgstr "ご登録ありがとうございます! こちらよりログインして下さい: "
+msgstr "ご登録ありがとうございます! こちらよりログイン可能です: "
 
-#: templates/frontend/activation_completed.html:21
+#: templates/frontend/activation_completed.html:22
+#: templates/frontend/index.html:55 templates/frontend/login.html:27
+msgid "Login"
+msgstr "ログイン"
+
+#: templates/frontend/activation_completed.html:23
 msgid " and enjoy perGENIE!"
 msgstr " それではperGENIEをお楽しみください!"
 
@@ -294,10 +355,6 @@ msgstr "デモを試す"
 #: templates/frontend/index.html:54
 msgid "Sign up"
 msgstr "新規登録"
-
-#: templates/frontend/index.html:55 templates/frontend/login.html:27
-msgid "Login"
-msgstr "ログイン"
 
 #: templates/frontend/index.html:73
 msgid "Sign up for FREE"
@@ -317,7 +374,6 @@ msgstr ""
 "算します。"
 
 #: templates/frontend/index.html:88
-#, fuzzy
 msgid "As a database of GWAS, we use "
 msgstr "使用するデータベース: "
 
@@ -383,19 +439,18 @@ msgstr "アカウント登録"
 
 #: templates/frontend/registration_completed.html:18
 msgid "Registeration completed"
-msgstr "登録が完了しました．"
+msgstr "登録が完了しました。"
 
 #: templates/frontend/registration_completed.html:20
 msgid ""
 "Registration completed. An activation link has been sent to the email "
-"address you supplied "
-msgstr ""
-"登録は以上で完了です．アカウントを有効にするために，登録したEmailアドレス"
+"address you supplied: "
+msgstr "アカウントを有効にするために、登録したEmailアドレス"
 
-#: templates/frontend/registration_completed.html:22
+#: templates/frontend/registration_completed.html:21
 msgid ""
 " Check the email and follow the instructions for activating your account!"
-msgstr "宛に送られる，perGENIEからのメールをご確認ください．"
+msgstr "宛に送られる、perGENIEからのメールをご確認ください。"
 
 #: templates/library/index.html:63
 msgid "View detailed statistics"
@@ -582,7 +637,6 @@ msgid "Reliability rank"
 msgstr "信頼度ランク"
 
 #: templates/risk_report/study.html:111
-#, fuzzy
 msgid "Information about SNPs & Genotypes"
 msgstr "参照元論文に関する情報"
 
@@ -599,7 +653,7 @@ msgstr "参照元論文に関する情報"
 #~ msgstr "疾患リスクレポート"
 
 #~ msgid "Unexpected error"
-#~ msgstr "予期しないエラーが発生しました．"
+#~ msgstr "予期しないエラーが発生しました。"
 
 #~ msgid "What percentage does your genome file cover GWAS Cataog?"
 #~ msgstr "GWAS Catalogに対するゲノムデータのカバー率"
@@ -608,10 +662,10 @@ msgstr "参照元論文に関する情報"
 #~ msgstr "アップロードされたデータのこれらの論文に対するカバー率: "
 
 #~ msgid "Next, ...."
-#~ msgstr "次に，...."
+#~ msgstr "次に、...."
 
 #~ msgid "Select sex."
-#~ msgstr "Sexを選択して下さい．"
+#~ msgstr "Sexを選択して下さい。"
 
 #~ msgid "You have successfully registered!"
-#~ msgstr "登録完了です．"
+#~ msgstr "登録完了です。"

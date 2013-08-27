@@ -17,9 +17,8 @@
 
             <h4>{% trans "Registeration completed" %}</h4>
 
-            {% trans "Registration completed. An activation link has been sent to the email address you supplied " %}
-            <b>{{ user_id }}</b>
-            {% trans " Check the email and follow the instructions for activating your account!" %}
+            <p>{% trans "Registration completed. An activation link has been sent to the email address you supplied: " %}<b>{{ user_id }}</b></p>
+            <p>{% trans " Check the email and follow the instructions for activating your account!" %}</p>
 
             {% if err %}
             <div class="alert alert-error">
