@@ -239,7 +239,7 @@ class Command(BaseCommand):
 
                         catalog_cover_rate = c['pergenie']['catalog_cover_rate']
                         info = {'user_id': settings.DEMO_USER_ID,
-                                'name': clean_file_name(os.path.basename(target['name'])),
+                                'name': clean_file_name(os.path.basename(target['name']), target['file_format']),
                                 'raw_name': os.path.basename(target['name']),
                                 'date': datetime.datetime.today(),
                                 'population': target['population'],
