@@ -3,8 +3,6 @@ from collections import defaultdict
 from pymongo import MongoClient
 from django.conf import settings
 from lib.mysql.bioq import Bioq
-from lib.mongo.mutate_fasta import MutateFasta
-m = MutateFasta(settings.PATH_TO_REFERENCE_FASTA)
 from lib.api.gwascatalog import GWASCatalog
 gwascatalog = GWASCatalog()
 from utils import clogging
