@@ -56,12 +56,13 @@ class Command(BaseCommand):
             if settings.DATABASES['default']['PORT']:
                 mysql_optional_settings.append('--port=%s' % settings.DATABASES['default']['PORT'])
 
-            print subprocess.Popen(['mysqldump',
-                                    '--user=%s' % settings.DATABASES['default']['USER'],
-                                    '--password=%s' % settings.DATABASES['default']['PASSWORD']]
-                                   + mysql_optional_settings
-                                   + ['pergenie'],
-                                   stdout=subprocess.PIPE).communicate()[0]
+            with open(os.path.join(settings.BACKUP_DIR, 'mysql.dump.%s.sql' % NOW), 'w') as fout:
+                subprocess.Popen(['mysqldump',
+                                  '--user=%s' % settings.DATABASES['default']['USER'],
+                                  '--password=%s' % settings.DATABASES['default']['PASSWORD']]
+                                 + mysql_optional_settings
+                                 + ['pergenie'],
+                                 stdout=fout)
 
         else:
             self.print_help("import", "help")
