@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-08-27 21:11+0900\n"
+"POT-Creation-Date: 2013-08-28 13:38+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -294,11 +294,9 @@ msgstr ""
 
 #: templates/frontend/about-service.html:20
 msgid ""
-"As an open source software, perGENIE is licensed under the *** License, and "
-"the code is hosted at BitBucket"
+"As an open source software, the source code of perGENIE is hosted at BitBucket."
 msgstr ""
-"perGENIEは***ライセンスの元で、オープソースソフトウェアとして公開されていま"
-"す。"
+"perGENIEはオープソースソフトウェアとして公開されます。"
 
 #: templates/frontend/about-service.html:22
 msgid "Services of perGENIE"
