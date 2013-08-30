@@ -8,7 +8,8 @@ from apps.riskreport.forms import RiskReportForm
 
 import sys, os
 from models import *
-from lib.api.db import get_data_infos
+from lib.api.genomes import Genomes
+genomes = Genomes()
 from utils import clogging
 log = clogging.getColorLogger(__name__)
 
@@ -16,7 +17,7 @@ log = clogging.getColorLogger(__name__)
 @login_required
 def index(request):
     user_id = request.user.username
-    infos = get_data_infos(user_id)
+    infos = genomes.get_data_infos(user_id)
 
     people = dict()
     for scale in ['global', 'EastAsia', 'Europe', 'Africa', 'Americas']:
