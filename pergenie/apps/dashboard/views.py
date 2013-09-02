@@ -59,7 +59,7 @@ def index(request):
         intros.append(_('So, you can check disease risk report, right now!'))
     elif intro_type == ['invitation']:
         intros.append(_('Did you have fun with perGENIE?'))
-        intros.append(_('You can register account for free, at any time. Thanks for trying this demo!'))
+        intros.append(_('Thanks for trying this demo!'))
     else:
         pass
 

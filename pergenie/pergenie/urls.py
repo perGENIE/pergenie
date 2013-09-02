@@ -19,21 +19,22 @@ urlpatterns = patterns('',
     url(r'^static/(?P<path>.*)$', 'django.views.static.serve',{'document_root': DOCUMENT_ROOT}),
     url(r'^admin/', include(admin.site.urls)),
 
-    # 23andme-api
-    url(r'^auth/callback/$', 'apps.api.views.callback'),
-    url(r'^auth/logout/$', 'apps.api.views.logout'),
-    url(r'^auth/profiles/$', 'apps.api.views.profiles'),
-    url(r'^auth/user/$', 'apps.api.views.user'),
-    url(r'^auth/genotype/(?P<snpid>\w+)/$', 'apps.api.views.genotype'),
-    url(r'^login_with_23andme/$', 'apps.login_with_23andme.views.view'),
+    # # 23andme-api
+    # url(r'^auth/callback/$', 'apps.api.views.callback'),
+    # url(r'^auth/logout/$', 'apps.api.views.logout'),
+    # url(r'^auth/profiles/$', 'apps.api.views.profiles'),
+    # url(r'^auth/user/$', 'apps.api.views.user'),
+    # url(r'^auth/genotype/(?P<snpid>\w+)/$', 'apps.api.views.genotype'),
+    # url(r'^login_with_23andme/$', 'apps.login_with_23andme.views.view'),
 
     # frontend
     url(r'^$', 'apps.frontend.views.index'),
-    url(r'^login/$', 'apps.frontend.views.login'),
-    url(r'^logout/$', 'apps.frontend.views.logout'),
-    url(r'^trydemo/$', 'apps.frontend.views.trydemo'),
     # url(r'^terms-of-service/$', 'apps.frontend.views.terms'),
     url(r'^about-service/$', 'apps.frontend.views.about_service'),
+
+    # demo mode
+    url(r'^trydemo/$', 'apps.frontend.views.trydemo'),
+    url(r'^logoutdemo/$', 'apps.frontend.views.logoutdemo'),
 
     # contents
     url(r'^dashboard/$', 'apps.dashboard.views.index'),
@@ -56,6 +57,12 @@ urlpatterns = patterns('',
 
     url(r'^faq/$', 'apps.faq.views.index'),
 )
+
+if not settings.IS_DEMO_ONLY:
+    urlpatterns += patterns('',
+        url(r'^login/$', 'apps.frontend.views.login'),
+        url(r'^logout/$', 'apps.frontend.views.logout'),
+    )
 
 if settings.IS_REGISTERABLE:
     urlpatterns += patterns('',

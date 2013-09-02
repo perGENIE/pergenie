@@ -20,6 +20,7 @@ log = clogging.getColorLogger(__name__)
 
 def index(request):
     return direct_to_template(request, 'frontend/index.html', dict(is_registerable=settings.IS_REGISTERABLE,
+                                                                   is_demo_only=settings.IS_DEMO_ONLY,
                                                                    set_tweet_button=settings.SET_TWEET_BUTTON))
 
 # def terms(request):
@@ -181,3 +182,8 @@ def trydemo(request):
     auth_login(request, user)
 
     return redirect('apps.dashboard.views.index')
+
+
+def logoutdemo(request):
+    auth_logout(request)
+    return redirect('apps.frontend.views.index')

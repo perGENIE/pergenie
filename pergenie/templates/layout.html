@@ -180,9 +180,15 @@ _8
 
                       <li class="divider"></li>
                       <li class="">
-                        <a href="{% url apps.frontend.views.logout %}">
+
+                        {% ifequal user.username|demouser_format "demo@pergenie.org" %}
+                        <a href="{% url apps.frontend.views.logoutdemo %}">
+                        {% else %}
+                        <a href="{% url apps.frontend.views.logoutdemo %}">
+                        {% endifequal %}
                           <i class="icon-off"></i> {% trans "Logout" %}
                         </a>
+
                       </li>
                     </ul>
                   </li>

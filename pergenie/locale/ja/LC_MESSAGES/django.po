@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-08-28 13:38+0900\n"
+"POT-Creation-Date: 2013-09-02 16:10+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -43,10 +43,8 @@ msgid "Did you have fun with perGENIE?"
 msgstr "perGENIEをお楽しみいただけましたか？"
 
 #: apps/dashboard/views.py:62
-msgid ""
-"You can register account for free, at any time. Thanks for trying this demo!"
+msgid "Thanks for trying this demo!"
 msgstr ""
-"アカウントは無料で登録可能です。デモを試していただきありがとうございました！"
 
 #: apps/frontend/tests.py:80 lib/api/user.py:30
 #, python-format
@@ -57,21 +55,21 @@ msgstr ""
 "短すぎるパスワードです。%(min_password_length)s 文字以上のパスワードを設定し"
 "て下さい。"
 
-#: apps/frontend/views.py:41 apps/frontend/views.py:105
+#: apps/frontend/views.py:42 apps/frontend/views.py:106
 #: apps/riskreport/views.py:81 apps/riskreport/views.py:256
 msgid "Invalid request."
 msgstr "不正なリクエストです。"
 
-#: apps/frontend/views.py:52
+#: apps/frontend/views.py:53
 msgid "Not read and accept about service of perGENIE."
 msgstr "perGENIEのサービスについて同意いただけていません"
 
-#: apps/frontend/views.py:56 lib/api/user.py:26
+#: apps/frontend/views.py:57 lib/api/user.py:26
 msgid "Passwords do not match."
 msgstr "パスワードが一致していません。"
 
-#: apps/frontend/views.py:112 apps/frontend/views.py:128
-#: apps/frontend/views.py:133
+#: apps/frontend/views.py:113 apps/frontend/views.py:129
+#: apps/frontend/views.py:134
 msgid "invalid mail address or password"
 msgstr "メールアドレスかパスワードが正しくありません。"
 
@@ -244,7 +242,7 @@ msgstr "ナビゲーション"
 msgid "Register your account, for free!"
 msgstr "アカウントの新規登録"
 
-#: templates/layout.html:184
+#: templates/layout.html:189
 msgid "Logout"
 msgstr "ログアウト"
 
@@ -294,9 +292,9 @@ msgstr ""
 
 #: templates/frontend/about-service.html:20
 msgid ""
-"As an open source software, the source code of perGENIE is hosted at BitBucket."
-msgstr ""
-"perGENIEはオープソースソフトウェアとして公開されます。"
+"As an open source software, the source code of perGENIE is hosted at "
+"BitBucket."
+msgstr "perGENIEはオープソースソフトウェアとして公開されます。"
 
 #: templates/frontend/about-service.html:22
 msgid "Services of perGENIE"
@@ -338,7 +336,7 @@ msgid "Thanks for signing up! Now you can "
 msgstr "ご登録ありがとうございます! こちらよりログイン可能です: "
 
 #: templates/frontend/activation_completed.html:22
-#: templates/frontend/index.html:55 templates/frontend/login.html:27
+#: templates/frontend/index.html:56 templates/frontend/login.html:27
 msgid "Login"
 msgstr "ログイン"
 
@@ -346,23 +344,27 @@ msgstr "ログイン"
 msgid " and enjoy perGENIE!"
 msgstr " それではperGENIEをお楽しみください!"
 
-#: templates/frontend/index.html:53 templates/frontend/index.html.py:72
+#: templates/frontend/index.html:53 templates/frontend/index.html.py:75
 msgid "Try demo"
 msgstr "デモを試す"
 
-#: templates/frontend/index.html:54
+#: templates/frontend/index.html:55
 msgid "Sign up"
 msgstr "新規登録"
 
-#: templates/frontend/index.html:73
+#: templates/frontend/index.html:77
+msgid "Try demo (Currently, demo mode only)"
+msgstr "デモを試す (現在デモのみ利用可能です)"
+
+#: templates/frontend/index.html:82
 msgid "Sign up for FREE"
 msgstr "新規登録(無料)"
 
-#: templates/frontend/index.html:85
+#: templates/frontend/index.html:96
 msgid "Disease risk calculation"
 msgstr "疾患リスクレポート"
 
-#: templates/frontend/index.html:86
+#: templates/frontend/index.html:97
 msgid ""
 "Based on the results of genotype-phenotype association studies, i.e., GWAS "
 "(Genome Wide Association Studies), perGENIE calculates your genetic risks "
@@ -371,15 +373,15 @@ msgstr ""
 "ゲノムと疾患の関連を調べる研究（GWASなど）に基づいて、あなたの疾患リスクを計"
 "算します。"
 
-#: templates/frontend/index.html:88
+#: templates/frontend/index.html:99
 msgid "As a database of GWAS, we use "
 msgstr "使用するデータベース: "
 
-#: templates/frontend/index.html:100
+#: templates/frontend/index.html:111
 msgid "Comparison of two genomes"
 msgstr "2つのゲノムの比較"
 
-#: templates/frontend/index.html:101
+#: templates/frontend/index.html:112
 msgid ""
 "You can also compare your disease risks with another person, e.g., father "
 "and mathor, parents and their children, etc."
@@ -387,31 +389,31 @@ msgstr ""
 "複数人のゲノムによる疾患リスクを直接比較することもできます。例えば、お父さん"
 "とお母さんや、親子について比較することができます。"
 
-#: templates/frontend/index.html:108
+#: templates/frontend/index.html:119
 msgid "Working with VCF & 23andMe"
 msgstr "VCFと23andMeのデータをサポート"
 
-#: templates/frontend/index.html:109
+#: templates/frontend/index.html:120
 msgid "Suppoted input file formats are:"
 msgstr "サポートされているファイルフォーマットは:"
 
-#: templates/frontend/index.html:111
+#: templates/frontend/index.html:122
 msgid ", a standard data format for DNA sequencing data from NGS."
 msgstr "DNAシークエンスデータ用の標準フォーマット"
 
-#: templates/frontend/index.html:112
+#: templates/frontend/index.html:123
 msgid "SNP array data from "
 msgstr ""
 
-#: templates/frontend/index.html:112
+#: templates/frontend/index.html:123
 msgid ", a common direct-to-consumer genetic testing service."
 msgstr ""
 
-#: templates/frontend/index.html:122
+#: templates/frontend/index.html:133
 msgid "More features are under developping..."
 msgstr "さらなる機能を開発中です..."
 
-#: templates/frontend/index.html:145
+#: templates/frontend/index.html:156
 msgid "About us"
 msgstr "私たちについて"
 
@@ -637,6 +639,13 @@ msgstr "信頼度ランク"
 #: templates/risk_report/study.html:111
 msgid "Information about SNPs & Genotypes"
 msgstr "参照元論文に関する情報"
+
+#~ msgid ""
+#~ "You can register account for free, at any time. Thanks for trying this "
+#~ "demo!"
+#~ msgstr ""
+#~ "アカウントは無料で登録可能です。デモを試していただきありがとうございまし"
+#~ "た！"
 
 #~ msgid "If you already have accounts,"
 #~ msgstr "アカウントをお持ちの方はこちらから:"
