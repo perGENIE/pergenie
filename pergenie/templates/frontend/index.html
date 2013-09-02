@@ -63,7 +63,7 @@ _8
     <div class="row">
       <div class="feature span12">
         <h2 class="motto"><strong>perGENIE</strong> interprets your personal genome</h2>
-        <h3 class="subheader">with publicly available databases & your genetic testing data.</h3>
+        <h3 class="subheader">{% trans "with publicly available databases & your genetic testing data." %}</h3>
         <img id="feature-screenshot" src="{% static 'images/snaps/snap0.n.png' %}" alt="screenshot">
       </div>
     </div>
@@ -150,21 +150,14 @@ _8
   <!-- </div> -->
 
   <div class="container">
-    <h3 class="subheader">Stay in touch.</h3>
     <div class="row">
       <div class="span12">
         <h4>{% trans "About us" %}</h4>
-        <p>perGENIE is being developed and maintained by Kensuke NUMAKURA (<a href="https://twitter.com/knmkr" target="_blank">@knmkr</a>) and perGENIE Team (<a href="https://twitter.com/per_GENIE" target="_blank">@per_GENIE</a>).</p>
-        <p>
-          As an open source software, the source code of perGENIE is hosted at BitBucket.
-        </p>
 
-        <p>
-          We host this website (http://pergenie.org) as a proof-of-concept of perGENIE.
+        <p>{% trans "perGENIE is being developed and maintained by perGENIE Team." %}</p>
 
-        <p>
-          All the reported results from perGENIE are <b>NOT medical diagnosis</b>. They are jsut experimental attempts.
-        </p>
+        <p>{% trans "We host this website (http://pergenie.org) as a proof-of-concept of perGENIE." %}</p>
+        <p>{% trans "All the reported results from perGENIE are NOT medical diagnosis. They are jsut experimental attempts." %}</p>
 
         <a href="https://www.iubenda.com/privacy-policy/126219" class="iubenda-white iubenda-embed" title="Privacy Policy">Privacy Policy</a><script type="text/javascript">(function (w,d) {var loader = function () {var s = d.createElement("script"), tag = d.getElementsByTagName("script")[0]; s.src = "https://cdn.iubenda.com/iubenda.js"; tag.parentNode.insertBefore(s,tag);}; if(w.addEventListener){w.addEventListener("load", loader, false);}else if(w.attachEvent){w.attachEvent("onload", loader);}else{w.onload = loader;}})(window, document);</script>
       </div>

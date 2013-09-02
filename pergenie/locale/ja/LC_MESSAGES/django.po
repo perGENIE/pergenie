@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-09-02 16:10+0900\n"
+"POT-Creation-Date: 2013-09-03 00:14+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -44,7 +44,7 @@ msgstr "perGENIEをお楽しみいただけましたか？"
 
 #: apps/dashboard/views.py:62
 msgid "Thanks for trying this demo!"
-msgstr ""
+msgstr "デモをお試しいただきありがとうございました!"
 
 #: apps/frontend/tests.py:80 lib/api/user.py:30
 #, python-format
@@ -282,32 +282,28 @@ msgstr "perGENIEのサービスについて"
 msgid "perGENIE and perGENIE Team"
 msgstr "perGENIEとperGENIEチーム"
 
-#: templates/frontend/about-service.html:19
-msgid ""
-"perGENIE is being developed and maintained by perGENIE Team (pergenie@gmail."
-"com)."
-msgstr ""
-"perGENIEはperGENIEチーム(pergenie@gmail.com)によって開発・メンテナンスされて"
-"います。"
+#: templates/frontend/about-service.html:19 templates/frontend/index.html:157
+msgid "perGENIE is being developed and maintained by perGENIE Team."
+msgstr "perGENIEはperGENIEチームによって開発・メンテナンスされています。"
 
 #: templates/frontend/about-service.html:20
 msgid ""
 "As an open source software, the source code of perGENIE is hosted at "
 "BitBucket."
-msgstr "perGENIEはオープソースソフトウェアとして公開されます。"
+msgstr ""
+"ソースコードはオープソースソフトウェアとしてBitBucketにて公開されています。"
 
 #: templates/frontend/about-service.html:22
 msgid "Services of perGENIE"
 msgstr "perGENIEのサービス"
 
-#: templates/frontend/about-service.html:23
+#: templates/frontend/about-service.html:23 templates/frontend/index.html:159
 msgid ""
 "We host this website (http://pergenie.org) as a proof-of-concept of perGENIE."
 msgstr ""
-"私たちはこのウェブサイト(http://pergenie.org)を、perGENIEのコンセプトの検証の"
-"ために公開します。"
+"私たちはこのウェブサイトを、perGENIEのコンセプトを検証するために公開します。"
 
-#: templates/frontend/about-service.html:24
+#: templates/frontend/about-service.html:24 templates/frontend/index.html:160
 msgid ""
 "All the reported results from perGENIE are NOT medical diagnosis. They are "
 "jsut experimental attempts."
@@ -352,6 +348,10 @@ msgstr "デモを試す"
 msgid "Sign up"
 msgstr "新規登録"
 
+#: templates/frontend/index.html:66
+msgid "with publicly available databases & your genetic testing data."
+msgstr ""
+
 #: templates/frontend/index.html:77
 msgid "Try demo (Currently, demo mode only)"
 msgstr "デモを試す (現在デモのみ利用可能です)"
@@ -386,8 +386,7 @@ msgid ""
 "You can also compare your disease risks with another person, e.g., father "
 "and mathor, parents and their children, etc."
 msgstr ""
-"複数人のゲノムによる疾患リスクを直接比較することもできます。例えば、お父さん"
-"とお母さんや、親子について比較することができます。"
+"例えば夫婦間や親子間で、2人分の疾患リスクを直接比較することもできます。"
 
 #: templates/frontend/index.html:119
 msgid "Working with VCF & 23andMe"
@@ -395,25 +394,25 @@ msgstr "VCFと23andMeのデータをサポート"
 
 #: templates/frontend/index.html:120
 msgid "Suppoted input file formats are:"
-msgstr "サポートされているファイルフォーマットは:"
+msgstr "次のファイルフォーマットに対応しています。"
 
 #: templates/frontend/index.html:122
 msgid ", a standard data format for DNA sequencing data from NGS."
-msgstr "DNAシークエンスデータ用の標準フォーマット"
+msgstr ": DNAシークエンスデータ用の標準フォーマット"
 
 #: templates/frontend/index.html:123
 msgid "SNP array data from "
-msgstr ""
+msgstr "SNPアレイ("
 
 #: templates/frontend/index.html:123
 msgid ", a common direct-to-consumer genetic testing service."
-msgstr ""
+msgstr "): 遺伝子検査サービス23andMeのSNPアレイデータ"
 
 #: templates/frontend/index.html:133
 msgid "More features are under developping..."
 msgstr "さらなる機能を開発中です..."
 
-#: templates/frontend/index.html:156
+#: templates/frontend/index.html:155
 msgid "About us"
 msgstr "私たちについて"
 
@@ -639,6 +638,13 @@ msgstr "信頼度ランク"
 #: templates/risk_report/study.html:111
 msgid "Information about SNPs & Genotypes"
 msgstr "参照元論文に関する情報"
+
+#~ msgid ""
+#~ "perGENIE is being developed and maintained by perGENIE Team "
+#~ "(pergenie@gmail.com)."
+#~ msgstr ""
+#~ "perGENIEはperGENIEチーム(pergenie@gmail.com)によって開発・メンテナンスされ"
+#~ "ています。"
 
 #~ msgid ""
 #~ "You can register account for free, at any time. Thanks for trying this "
