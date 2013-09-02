@@ -37,6 +37,11 @@ def import_mycatalog(path_to_mycatalog):
                                })
                 assert record['chr_id'] == record['chromosome']
 
+                # TODO: support INDEL
+                # Skip INDEL
+                alphabet = ('A', 'T', 'G', 'C')
+                if not record['effective_allele'] in alphabet: continue
+                if not record['non_effective_allele'] in alphabet: continue
                 mycatalog.insert(record)
 
         # TODO: move to lib.api.*
