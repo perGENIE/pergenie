@@ -191,28 +191,37 @@ class GWASCatalog(object):
         return sorted(list(set([rec['value'] for rec in list(catalog_stats.find({'field': 'snps'}))])))
 
     def get_summary(self):
+        results = dict()
+
         if self.db_select == 'mongodb':
             with MongoClient(host=settings.MONGO_URI) as c:
                 catalog_stats = c['pergenie']['catalog_stats']
 
-                # TODO: implement othres
-
-                # Field: Context
+                # Chart. Field: Context
                 stats = defaultdict(float)
                 records = list(catalog_stats.find({'field': 'context'}).sort('count', DESCENDING))
                 for rec in records:
                     index = re.split('(;|; | ; | ;)', str(rec['value']))[0]
                     stats[index] += rec['count']
-
                 # As percentage
-                total_count = sum(stats.values())
                 for k,v in stats.items():
-                    stats[k] = round(100 * v / total_count)
-
+                    stats[k] = round(100 * v / sum(stats.values()))
                 # Sort
-                results = sorted(stats.items(), key=lambda x:x[1], reverse=True)
+                sorted_stats = sorted(stats.items(), key=lambda x:x[1], reverse=True)
+                results['context'] = sorted_stats
 
-                return results
+
+                catalog = self.get_latest_catalog()
+                # Table. Top 10 reported disease/trait
+                print list(catalog.find({"$group": {"_id": "$trait"}}))
+
+                # Table. Top 10 reported SNPs
+
+                # Table. (Top 10 has-many-association SNPs)
+
+                # Chart. Odds Ratio v.s. risk allle frequency
+
+        return results['context']
 
     def get_total_number_of_publications(self):
         results = dict()
