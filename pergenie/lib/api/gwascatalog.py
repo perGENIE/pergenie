@@ -3,6 +3,7 @@ from pprint import pprint as pp
 from collections import defaultdict
 import re
 import shlex
+import datetime
 from pymongo import MongoClient, DESCENDING, ASCENDING
 from django.conf import settings
 from lib.utils import clogging
@@ -212,3 +213,18 @@ class GWASCatalog(object):
                 results = sorted(stats.items(), key=lambda x:x[1], reverse=True)
 
                 return results
+
+    def get_total_number_of_publications(self):
+        results = dict()
+
+        if self.db_select == 'mongodb':
+            catalog = self.get_latest_catalog()
+
+            this_year = datetime.date.today().year
+            years = range(2005, this_year + 1)
+            for year in years:
+                records = catalog.find({'date': {"$lte": datetime.datetime(year,12,31)}})
+                results[year] = {'snps': records.count(),
+                                 # 'uniq_snps': len(records.distinct('snp_id_current')),
+                                 'publications': len(records.distinct('pubmed_id'))}
+        return results

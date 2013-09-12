@@ -22,11 +22,13 @@ def index(request):
     msg, err = '', ''
 
     latest_catalog_date = gwascatalog.get_latest_catalog_date().date()
+    total_number_of_publications = gwascatalog.get_total_number_of_publications()
 
     return direct_to_template(request, 'library/index.html',
                               dict(msg=msg, err=err,
                                    dbsnp_version=settings.DBSNP_VERSION, refgenome_version=settings.REFGENOME_VERSION,
-                                   latest_catalog_date=latest_catalog_date))
+                                   latest_catalog_date=latest_catalog_date,
+                                   total_number_of_publications=total_number_of_publications))
 
 
 @login_required

@@ -1,4 +1,5 @@
 {% extends "layout.html" %}
+{% load staticfiles %}
 {% load i18n %}
 {% load extras %}
 {% block title %}Library{% endblock %}
@@ -31,6 +32,10 @@
             <div class="padded10">
               <h3><a href="//www.genome.gov/gwastudies/" target="_blank">NHGRI GWAS Catalog</a></h3>
               <h4>Last update in perGENIE: <b>{{ latest_catalog_date }}</b></h4>
+
+              <div class="span1">
+                <div id="container" style="width: 400px; height: 300px; margin: 0 auto"></div>
+              </div>
 
               <table class="table table-bordered">
                 <thead>
@@ -105,5 +110,100 @@
 
 
 {% block js %}
+<script type="text/javascript" src="{% static 'js/highcharts/highcharts.js' %}"></script>
+
+<script type="text/javascript">
+$(function () {
+        $('#container').highcharts({
+            chart: {
+                zoomType: 'xy'
+            },
+            title: {
+                text: 'Total number of GWAS publications'
+            },
+            subtitle: {
+                text: 'and associated SNPs'
+            },
+            xAxis: [{
+                categories: [{% for k,v in total_number_of_publications.items %}'{{ k }}',{% endfor %}],
+                labels: {
+                    rotation: -45,
+                    align: 'right'
+                }
+            }],
+            yAxis: [{ // Primary yAxis
+                labels: {
+                    format: '{value}',
+                    style: {
+                        color: '#89A54E'
+                    }
+                },
+                title: {
+                    text: 'SNPs',
+                    style: {
+                        color: '#89A54E'
+                    }
+                },
+                min: 0,
+                max: 20000
+            }, { // Secondary yAxis
+                title: {
+                    text: 'Publications',
+                    style: {
+                        color: '#4572A7'
+                    }
+                },
+                labels: {
+                    format: '{value}',
+                    style: {
+                        color: '#4572A7'
+                    }
+                },
+                opposite: true,
+                min: 0,
+                max: 2000
+            }],
+            tooltip: {
+                shared: true
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'left',
+                x: 100,
+                verticalAlign: 'top',
+                y: 50,
+                floating: true,
+                backgroundColor: '#FFFFFF'
+            },
+            series: [{
+                name: 'Publications',
+                color: '#4572A7',
+                type: 'column',
+                yAxis: 1,
+                data: [{% for k,v in total_number_of_publications.items %}{{ v.publications }},{% endfor %}],
+                tooltip: {
+                    valueSuffix: ''
+                }
+
+            }, {
+                name: 'SNPs',
+                color: '#89A54E',
+                type: 'spline',
+                data: [{% for k,v in total_number_of_publications.items %}{{ v.snps }},{% endfor %}],
+                tooltip: {
+                    valueSuffix: ''
+                }
+            }],
+            exporting: {
+                enabled: false
+            },
+            credits: {
+                enabled: false
+            }
+
+        });
+    });
+</script>
+
 <script type="text/javascript">$('span.badge').tooltip();</script>
 {% endblock %}
