@@ -213,7 +213,7 @@ class GWASCatalog(object):
 
                 catalog = self.get_latest_catalog()
                 # Table. Top 10 reported disease/trait
-                print list(catalog.find({"$group": {"_id": "$trait"}}))
+                # print catalog.aggregate([])
 
                 # Table. Top 10 reported SNPs
 
