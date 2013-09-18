@@ -1,5 +1,4 @@
 import sys, os
-from collections import defaultdict
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 from django.views.generic.simple import direct_to_template
@@ -321,7 +320,7 @@ def show_all_files(request):
 
     user_id = request.user.username
     msg, err = '', ''
-    risks = dict()
+    risks = list()
 
     infos = genomes.get_data_infos(user_id)
     for i,info in enumerate(infos):
@@ -338,7 +337,10 @@ def show_all_files(request):
                 result[value]['count'] += 1
                 result[value]['trait'] += "," + trait
 
-        risks[info['raw_name']] = result
+        risks.append([info['raw_name'], result])
+
+    # Sort by filename
+    risks = sorted(risks, key=lambda x:x[0])
 
     return direct_to_template(request, 'risk_report/show_all_files.html',
                               dict(msg=msg, err=err, infos=infos, risks=risks))

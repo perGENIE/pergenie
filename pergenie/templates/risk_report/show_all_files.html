@@ -149,14 +149,14 @@ $(function () {
                 }
             },
             series: [
-            {% for file_name,risk in risks.items %}
+            {% for data in risks %}
             {
 
-                name: {% if file_name|length|get_digit:'-1' < 30 %}"{{ file_name }}"
-                      {% else %}"{{ file_name|slice:'30' }}..."
+                name: {% if data.0|length|get_digit:'-1' < 30 %}"{{ data.0 }}"
+                      {% else %}"{{ data.0|slice:'30' }}..."
                       {% endif %},
                 color: 'rgba(223, 83, 83, .5)',
-                data: [{% for k,v in risk.items %}{x: {{ k }}, y: {{ v.count }}, label: "{{ v.trait }}"},{% endfor %}]
+                data: [{% for k,v in data.1.items %}{x: {{ k }}, y: {{ v.count }}, label: "{{ v.trait }}"},{% endfor %}]
             },
             {% endfor %}
             ],
