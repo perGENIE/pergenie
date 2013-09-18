@@ -84,6 +84,8 @@ def index(request):
             file_name = request.POST.get('file_name')
             population = request.POST.get('population')
 
+            print request.POST
+
             for info in infos:
                 if info['name'] == file_name:
                     if info['status'] == 100:
@@ -309,3 +311,17 @@ def show_all(request):
     return direct_to_template(request, 'risk_report/show_all.html',
                               dict(msg=msg, err=err, infos=infos, tmp_infos=tmp_infos, do_intro=do_intro,
                                    risk_traits=risk_traits, risk_values=risk_values, risk_ranks=risk_ranks, risk_studies=risk_studies))
+
+@require_http_methods(['GET', 'POST'])
+@login_required
+def show_all_files(request):
+    """
+    """
+
+    user_id = request.user.username
+    msg, err = '', ''
+
+    infos = genomes.get_data_infos(user_id)
+
+    return direct_to_template(request, 'risk_report/show_all_files.html',
+                              dict(msg=msg, err=err, infos=infos))

@@ -41,6 +41,7 @@
       {% if not err %}
       <div class="row-fluid">
         <div class="span12">
+
           <div class="content-box" data-step="2" data-intro="{% trans "Information about this genome file is here." %}">
               <table class="table table-bordered">
                 <thead>
@@ -57,7 +58,7 @@
                       <form action="{% url apps.riskreport.views.index %}" method="post" enctype="multipart/form-data">
                         {% csrf_token %}
 		                <fieldset>
-                          <select name="file_name" onchange="submit(this.form)" class="file_name" title="{% trans "change genome file?" %}">
+                          <select name="file_name" onchange="submit(this.form)" class="file_name">
                             {% for info in infos %}
                             <option value="{{ info.name }}" {% if info.name == tmp_info.name %}selected{% endif %}>{{ info.raw_name }}</option>
                             {% endfor %}
@@ -68,7 +69,7 @@
 
                     <!-- Population -->
                     <td class="center" data-step="4" data-intro="{% trans "Also, you can change population setting for this genome file." %}">
-                      <a data-toggle="modal" href="#changeModal"><span class="badge badge-green" title="{% trans "change population?" %}">{{ tmp_info.population }}</span></a>
+                      <a data-toggle="modal" href="#changeModal"><span class="badge badge-green">{{ tmp_info.population }}</span></a>
 
                       <div id="changeModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="changeModalLabel" aria-hidden="true">
                         <div class="modal-body">
@@ -99,7 +100,13 @@
                 </tbody>
               </table>
 
-          </div>
+              <div class="padded">
+                <div class="row-fluid">
+                  <div class="span12">
+                    <a href="{% url apps.riskreport.views.show_all_files %}"><button class="btn btn-green"><i class="icon-resize-full icon-white" style="margin-top: 1px;"></i> View All Files</button></a>
+                  </div>
+                </div>
+              </div>
         </div>
       </div>
 
@@ -117,7 +124,7 @@
                   {% if h_risk_traits %}
                   <div id="container_highest_risks"></div>
 
-                  <a href="{% url apps.riskreport.views.show_all %}"><button class="btn btn-green" title="{% trans "view all the traits!" %}" data-step="6" data-intro="{% trans "To see all the disease risks and/or compare two genomes, click here!" %}"><i class="icon-resize-full icon-white" style="margin-top: 1px;"></i> {% trans "View more" %}</button></a>
+                  <a href="{% url apps.riskreport.views.show_all %}"><button class="btn btn-green" data-step="6" data-intro="{% trans "To see all the disease risks and/or compare two genomes, click here!" %}"><i class="icon-resize-full icon-white" style="margin-top: 1px;"></i> {% trans "View All Diseases" %}</button></a>
                   {% else %}
                   <p>{% trans "Sorry, you have no data for disease risk." %}</p>
                   <p>{% trans "Probably, uploaded data was too few to calculate risk." %}</p>
