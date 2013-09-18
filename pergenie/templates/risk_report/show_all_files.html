@@ -65,7 +65,7 @@
                   </td>
 
                   <td class="center">{{ info.population }}</td>
-                  <td class="center">{{ info.file_format }}</td>
+                  <td class="center">{{ info.file_format|file_format }}</td>
                 </tr>
                 {% endfor %}
 
@@ -94,15 +94,15 @@ $(function () {
                 zoomType: 'xy'
             },
             title: {
-                text: '{% trans "Risks for all diseases for all individulas" %}'
+                text: '{% trans "Risk distribution for all diseases" %}'
             },
             subtitle: {
-                text: ''
+                text: 'per each individuals'
             },
             xAxis: {
                 title: {
                     enabled: true,
-                    text: '{% trans "Risk relative to average population" %}'
+                    text: '{% trans "Risk relative to average population" %}(RR)'
                 },
                 startOnTick: true,
                 endOnTick: true,
@@ -111,17 +111,16 @@ $(function () {
             },
             yAxis: {
                 title: {
-                    text: '{% trans "Number of individuals per each disease" %}'
+                    text: '{% trans "Number of diseases for each RR" %}'
                 },
                 min: 1
             },
             legend: {
                 layout: 'vertical',
-                align: 'left',
+                align: 'right',
                 verticalAlign: 'top',
-                x: 100,
-                y: 60,
-                floating: true,
+                floating: false,
+                y: 40,
                 backgroundColor: '#FFFFFF',
                 borderWidth: 1
             },
@@ -145,23 +144,22 @@ $(function () {
                     },
                     tooltip: {
                         headerFormat: '<b>{series.name}</b><br>',
-                        pointFormat: 'RR: {point.y}, {point.label} '
+                        pointFormat: 'count: {point.y}, RR: {point.x}, {point.label} '
                     }
                 }
             },
-            series: [{
-                name: 'Cancer',
+            series: [
+            {% for file_name,risk in risks.items %}
+            {
+
+                name: {% if file_name|length|get_digit:'-1' < 30 %}"{{ file_name }}"
+                      {% else %}"{{ file_name|slice:'30' }}..."
+                      {% endif %},
                 color: 'rgba(223, 83, 83, .5)',
-                data: [{x:   1.1, y:    3, label: "aaa"},
-                       {x:   1.2, y:    3, label: "bbb"},
-                       {x:   4.0, y:    1, label: "ccc"}]
-            }, {
-                name: 'Others',
-                color: 'rgba(119, 152, 191, .5)',
-                data: [{x:   1.2, y:    2, label: "ddd"},
-                       {x:   1.3, y:    1, label: "eee"},
-                       {x:   2.0, y:    2, label: "fff"}]
-            }],
+                data: [{% for k,v in risk.items %}{x: {{ k }}, y: {{ v.count }}, label: "{{ v.trait }}"},{% endfor %}]
+            },
+            {% endfor %}
+            ],
             exporting: {
                 enabled: false
             },

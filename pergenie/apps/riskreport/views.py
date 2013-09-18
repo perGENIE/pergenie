@@ -1,4 +1,5 @@
 import sys, os
+from collections import defaultdict
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 from django.views.generic.simple import direct_to_template
@@ -320,8 +321,24 @@ def show_all_files(request):
 
     user_id = request.user.username
     msg, err = '', ''
+    risks = dict()
 
     infos = genomes.get_data_infos(user_id)
+    for i,info in enumerate(infos):
+        # Get riskreports
+        tmp_risk_traits, tmp_risk_values, tmp_risk_ranks, tmp_risk_studies = get_risk_values_for_indexpage(infos[i], category=['Disease'])
+
+        # Count by RR
+        # {***: {count: ***, trait: "***,***,***"}, ...
+        result = dict()
+        for trait, value in zip(tmp_risk_traits, tmp_risk_values):
+            if not value in result:
+                result[value] = {'count': 1, 'trait': trait}
+            else:
+                result[value]['count'] += 1
+                result[value]['trait'] += "," + trait
+
+        risks[info['raw_name']] = result
 
     return direct_to_template(request, 'risk_report/show_all_files.html',
-                              dict(msg=msg, err=err, infos=infos))
+                              dict(msg=msg, err=err, infos=infos, risks=risks))
