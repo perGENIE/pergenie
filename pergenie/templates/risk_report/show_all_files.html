@@ -1,0 +1,190 @@
+{% extends "layout.html" %}
+{% block title %}Risk report{% endblock %}
+{% block description %}risk report{% endblock %}
+{% load staticfiles %}
+{% load extras %}
+{% load i18n %}
+
+{% block main_container %}
+<div id="main_container" class="span14">
+  <section id="main">
+
+    <div class="container">
+
+      <div class="row-fluid">
+        <div class="span12">
+          <div class="content-box transparent" data-step="1" data-intro="{% trans "Your disease risk report is shown bellow." %}">
+            <div class="padded">
+              <h2>{% trans "Show All Files" %}</h2>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- alerts -->
+      {% if msg %}
+      <div class="alert alert-info">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>Information:</strong> {{ msg }}
+      </div>
+      {% endif %}
+
+      {% if err %}
+      <div class="alert alert-error">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>Error!</strong> {{ err }}
+      </div>
+      {% endif %}
+
+      <!-- risk reports -->
+      {% if not err %}
+      <div class="row-fluid">
+        <div class="span12">
+          <div class="content-box" data-step="2" data-intro="{% trans "Information about this genome file is here." %}">
+
+            <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th><i class="icon-user"></i>{% trans "Genome file" %}</th>
+                  <th><i class="icon-globe"></i>{% trans "Population" %}</th>
+                  <th><i class="icon-file"></i>{% trans "File Format" %}</th>
+                </tr>
+              </thead>
+              <tbody>
+
+                {% for info in infos %}
+                <tr>
+                  <td class="center">
+                    <form name="form{{ forloop.counter0 }}" onchange="submit(this.form)" class="file_name" action="{% url apps.riskreport.views.index %}" method="post" enctype="multipart/form-data" >
+                      {% csrf_token %}
+                      <a href="" onclick="document.form{{ forloop.counter0 }}.submit(); return false;">{{ info.raw_name }}</a>
+                      <input type="hidden" name="file_name" value="{{ info.name }}">
+                    </form>
+                  </td>
+
+                  <td class="center">{{ info.population }}</td>
+                  <td class="center">{{ info.file_format }}</td>
+                </tr>
+                {% endfor %}
+
+              </tbody>
+            </table>
+
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+  </section>
+</div>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript" src="{% static 'js/highcharts/highcharts.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/highcharts/modules/exporting.js' %}"></script>
+
+<script type="text/javascript">
+$(function () {
+        $('#container').highcharts({
+            chart: {
+                type: 'scatter',
+                zoomType: 'xy'
+            },
+            title: {
+                text: '{% trans "Risks for all diseases for all individulas" %}'
+            },
+            subtitle: {
+                text: ''
+            },
+            xAxis: {
+                title: {
+                    enabled: true,
+                    text: '{% trans "Risk relative to average population" %}'
+                },
+                startOnTick: true,
+                endOnTick: true,
+                showLastLabel: true,
+                min: 0
+            },
+            yAxis: {
+                title: {
+                    text: '{% trans "Number of individuals per each disease" %}'
+                },
+                min: 1
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'left',
+                verticalAlign: 'top',
+                x: 100,
+                y: 60,
+                floating: true,
+                backgroundColor: '#FFFFFF',
+                borderWidth: 1
+            },
+            plotOptions: {
+                scatter: {
+                    marker: {
+                        radius: 5,
+                        states: {
+                            hover: {
+                                enabled: true,
+                                lineColor: 'rgb(100,100,100)'
+                            }
+                        }
+                    },
+                    states: {
+                        hover: {
+                            marker: {
+                                enabled: false
+                            }
+                        }
+                    },
+                    tooltip: {
+                        headerFormat: '<b>{series.name}</b><br>',
+                        pointFormat: 'RR: {point.y}, {point.label} '
+                    }
+                }
+            },
+            series: [{
+                name: 'Cancer',
+                color: 'rgba(223, 83, 83, .5)',
+                data: [{x:   1.1, y:    3, label: "aaa"},
+                       {x:   1.2, y:    3, label: "bbb"},
+                       {x:   4.0, y:    1, label: "ccc"}]
+            }, {
+                name: 'Others',
+                color: 'rgba(119, 152, 191, .5)',
+                data: [{x:   1.2, y:    2, label: "ddd"},
+                       {x:   1.3, y:    1, label: "eee"},
+                       {x:   2.0, y:    2, label: "fff"}]
+            }],
+            exporting: {
+                enabled: false
+            },
+            credits: {
+                enabled: false
+            },
+
+        });
+    });
+
+</script>
+
+
+
+<script type="text/javascript">
+$(document).ready(function(){
+  $('#risk_reports_table').dataTable({
+    "bJQueryUI": true,
+    "sPaginationType": "full_numbers",
+    "iDisplayLength": 25,
+    "aLengthMenu": [ 25, 50, -1 ]
+  });
+});
+</script>
+
+{% endblock %}
