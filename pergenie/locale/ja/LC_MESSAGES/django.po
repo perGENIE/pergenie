@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-09-18 17:45+0900\n"
+"POT-Creation-Date: 2013-10-03 17:50+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -56,7 +56,7 @@ msgstr ""
 "て下さい。"
 
 #: apps/frontend/views.py:42 apps/frontend/views.py:106
-#: apps/riskreport/views.py:82 apps/riskreport/views.py:259
+#: apps/riskreport/views.py:81 apps/riskreport/views.py:258
 msgid "Invalid request."
 msgstr "不正なリクエストです。"
 
@@ -73,30 +73,30 @@ msgstr "パスワードが一致していません。"
 msgid "invalid mail address or password"
 msgstr "メールアドレスかパスワードが正しくありません。"
 
-#: apps/riskreport/views.py:43 apps/riskreport/views.py:236
+#: apps/riskreport/views.py:42 apps/riskreport/views.py:235
 msgid "no data uploaded"
 msgstr "データがアップロードされていません。"
 
-#: apps/riskreport/views.py:51
+#: apps/riskreport/views.py:50
 msgid "invalid user"
 msgstr "不正なユーザ"
 
-#: apps/riskreport/views.py:72
+#: apps/riskreport/views.py:71
 msgid "Your files are in importing, please wait for seconds..."
 msgstr "%(file_name)s は現在読み込み中です。しばらくお待ちください..."
 
-#: apps/riskreport/views.py:97 apps/riskreport/views.py:267
+#: apps/riskreport/views.py:96 apps/riskreport/views.py:266
 #, python-format
 msgid "%(file_name)s is in importing, please wait for seconds..."
 msgstr "%(file_name)s は現在読み込み中です。しばらくお待ちください..."
 
-#: apps/riskreport/views.py:103 apps/riskreport/views.py:179
-#: apps/riskreport/views.py:274
+#: apps/riskreport/views.py:102 apps/riskreport/views.py:178
+#: apps/riskreport/views.py:273
 #, python-format
 msgid "no such file %(file_name)s"
 msgstr "そのようなファイルはありません。%(file_name)s"
 
-#: apps/riskreport/views.py:157
+#: apps/riskreport/views.py:156
 msgid "trait not found"
 msgstr "そのようなTraitはありません"
 
@@ -455,6 +455,12 @@ msgstr "宛に送られる、perGENIEからのメールをご確認ください�
 msgid "View detailed statistics"
 msgstr ""
 
+#: templates/library/index.html:80
+msgid ""
+"Center for Cancer Control and Information Services, National Cancer Center, "
+"Japan"
+msgstr "国立がん研究センターがん対策情報センター"
+
 #: templates/risk_report/index.html:16
 #: templates/risk_report/show_all_files.html:16
 msgid "Your disease risk report is shown bellow."
@@ -607,11 +613,11 @@ msgid "Show All Files"
 msgstr ""
 
 #: templates/risk_report/show_all_files.html:97
-msgid "Risk distribution for all diseases"
+msgid "Risk distribution of all diseases"
 msgstr "すべての病気についてのリスク分布"
 
 #: templates/risk_report/show_all_files.html:100
-msgid "per each individuals"
+msgid "per individual"
 msgstr "(個人ごと)"
 
 #: templates/risk_report/show_all_files.html:114
