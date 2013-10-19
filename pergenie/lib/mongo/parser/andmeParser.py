@@ -12,8 +12,12 @@ class andmeParseError(Exception):
 
 
 class andmeParser(object):
-    def __init__(self, fin, allowed_ref_genome_versions=('b37')):
-        self.handle = fin
+    def __init__(self, fin, allowed_ref_genome_versions=('b36', 'b37')):
+        if not type(fin) == file:
+            self.handle = open(fin)
+        else:
+            self.handle = fin
+
         self.delimiter = '\t'
         self.ref_genome_version = None
 
@@ -56,12 +60,14 @@ class andmeParser(object):
 
             data['id'] = _string(record['rsid'])
             data['rs'] = _rsid(record['rsid'])
-            data['chrom'] = _string(record['chromosome'])
+            data['chrom'] = _chrom(record['chromosome'])
             data['pos'] = _integer(record['position'])
             data['genotype'] = _string(record['genotype'])
 
             yield data
 
+    def build_line(self, data):
+        return '{id}\t{chrom}\t{pos}\t{genotype}'.format(**data)
 
 def _integer(text):
     return int(text)
@@ -95,6 +101,15 @@ def _rsid(text):
             pass
 
     return None
+
+def _chrom(text):
+    if text.startswith('chr'):
+        text = text.replace('chr', '')
+
+    if text in [str(i+1) for i in range(22)] + ['X', 'Y', 'MT', 'M']:
+        return text
+    else:
+        return None
 
 
 if __name__ == '__main__':
