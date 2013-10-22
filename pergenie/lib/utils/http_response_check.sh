@@ -1,34 +1,36 @@
 #!/usr/bin/env bash
 
-MAIL_TO=numakura@sb.ecei.tohoku.ac.jp
-URL=http://pergenie.org
-WGET_LOG=/tmp/pergenie_http_response.log
-STAT=/tmp/pergenie_http_response.txt
+TO=numakura@sb.ecei.tohoku.ac.jp
+URL=https://pergenie.org
+LOG=/tmp/pergenie_http_response.html
+STAT=/tmp/pergenie_http_response.stat
+
+CURL=/usr/bin/curl
+MAIL=/usr/bin/mail
 
 # Check http response
-wget -nv --spider --no-check-certificate $URL 1>$WGET_LOG 2>&1
-is_live=`awk '/200 OK/ {print 0}' $WGET_LOG`
+current=`$CURL -s -w '%{http_code}\n' -o $LOG $URL`
+echo [INFO] current: $current
 
 # Load previous status
-if [ ! -d $STAT ]; then touch $STAT; fi
+if [ ! -f $STAT ]; then echo "die" > $STAT; echo "[INFO] new"; fi
 prev=`cat $STAT`
 
 # Alert if status changes
-echo [DEBUG] STAT: `cat $STAT`
+echo [INFO] STAT: `cat $STAT`
 
-if [ $is_live -eq 0 ]; then
+if [ $current -eq 200 ]; then
     if [ $prev != "live" ]; then
-        echo isup
-        echo $WGET_LOG | mail -s "Alert: $URL is up" $MAIL
+        cat $LOG | mail -s "Alert: $URL is up" $TO
+        echo "[INFO] is up. mail sent"
     fi
     echo "live" > $STAT
 else
     if [ $prev != "die" ]; then
-        echo isdown
-        echo $WGET_LOG | mail -s "Alert: $URL is down" $MAIL
+        cat $LOG | mail -s "Alert: $URL is down" $TO
+        echo "[INFO] is down. mail sent"
     fi
     echo "die" > $STAT
 fi
 
-echo [DEBUG] STAT: `cat $STAT`
-echo [DEBUG] WGET_LOG: `cat $WGET_LOG`
+echo [INFO] STAT: `cat $STAT`
