@@ -59,7 +59,7 @@ _8
     <!-- Wrap all page content here -->
     <div id="wrap">
 
-      <div class="navbar navbar-inverse navbar-fixed-top" role="navigation" {% ifequal intro_type.0 'invitation' %}data-step="1" data-intro="{{ intros.0 }}" {% endifequal %}>
+      <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
 
         <div class="container">
           <div class="navbar-header">
@@ -105,14 +105,14 @@ _8
                 </ul>
               </li>
 
-              <!-- <li id="docs-trigger"> -->
-              <!--   <button style="padding-left: 10px; margin-top: 14px" class="btn btn-inverse btn-mini" type="button" onclick="introJs().start()"> -->
-              <!--     <span id="dtrigger">{% trans "Show navigation" %}</span> -->
-              <!--   </button> -->
-              <!-- </li> -->
+              <li id="docs-trigger">
+                <button style="padding-left: 10px; margin-top: 14px" class="btn btn-inverse btn-mini" type="button" onclick="startIntro()">
+                  <span id="dtrigger">{% trans "Show navigation" %}</span>
+                </button>
+              </li>
             </ul>
 
-            <ul class="nav navbar-nav navbar-right" {% ifequal intro_type.0 'invitation' %}data-step="2" data-intro="{{ intros.1 }}" {% endifequal %}>
+            <ul class="nav navbar-nav navbar-right">
               <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-unlock"></span>
                   {% if user %}{{ user.username|demouser_format }}{% endif %}

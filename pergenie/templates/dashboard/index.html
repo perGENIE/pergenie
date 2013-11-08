@@ -9,32 +9,32 @@
 <div class="row">
   <div class="col-md-12">
 
-    <div class="content-box" {% ifequal intro_type.0 'welcome' %} data-step="1" data-intro="{{ intros.0 }}" {% endifequal %} {% ifequal intro_type.0 'first' %} data-step="1" data-intro="{{ intros.0 }}" {% endifequal %}>
+    <div class="content-box">
 
       <div class="content-box-header">
         <span class="glyphicon glyphicon-dashboard"></span> {% trans "Components" %}
       </div>
 
-      <a href="{% url apps.riskreport.views.index %}" role="button" class="btn btn-default btn-lg" {% ifequal intro_type.0 'risk_report' %} data-step="1" data-intro="{{ intros.0 }}" {% endifequal %} {% ifequal intro_type.0 'welcome' %} data-step="3" data-intro="{{ intros.2 }}" {% endifequal %}>
+      <a href="{% url apps.riskreport.views.index %}" role="button" class="btn btn-default btn-lg" id="riskreport-button">
         <span class="glyphicon glyphicon-align-left"></span> RiskReport
       </a>
 
       {% if "population"|is_in_installed_my_apps %}
-      <a href="{% url apps.population.views.index %}" role="button" class="btn btn-default btn-lg">
+      <a href="{% url apps.population.views.index %}" role="button" class="btn btn-default btn-lg" id="population-button">
         <span class="glyphicon glyphicon-globe"></span> Population
         <span class="badge badge-blue">&nbsp;&beta;&nbsp;</span>
       </a>
       {% endif %}
 
       {% if "mygene"|is_in_installed_my_apps %}
-      <a href="{% url apps.mygene.views.index %}" role="button" class="btn btn-default btn-lg">
+      <a href="{% url apps.mygene.views.index %}" role="button" class="btn btn-default btn-lg" id="mygene-button">
         <span class="glyphicon glyphicon-th-large"></span> MyGene
         <span class="badge badge-blue">&nbsp;&beta;&nbsp;</span>
       </a>
       {% endif %}
 
       {% if "mycatalog"|is_in_installed_my_apps %}
-      <a href="{% url apps.mycatalog.views.index %}" role="button" class="btn btn-default btn-lg">
+      <a href="{% url apps.mycatalog.views.index %}" role="button" class="btn btn-default btn-lg" id="mycatalog-button">
         <span class="glyphicon glyphicon-th-large"></span> MyCatalog
         <span class="badge badge-blue">&nbsp;&beta;&nbsp;</span>
       </a>
@@ -42,17 +42,17 @@
 
       {% ifnotequal user.username|demouser_format "demo@pergenie.org" %}
       {% if "upload"|is_in_installed_my_apps %}
-      <a href="{% url apps.upload.views.index %}" role="button" class="btn btn-default btn-lg" {% ifequal intro_type.0 'first' %}data-step="3" data-intro="{{ intros.2 }}" {% endifequal %}>
+      <a href="{% url apps.upload.views.index %}" role="button" class="btn btn-default btn-lg" id="upload-button">
         <span class="glyphicon glyphicon-arrow-up"></span> Upload
       </a>
       {% endif %}
       {% endifnotequal %}
 
-      <a href="{% url apps.library.views.index %}" role="button" class="btn btn-default btn-lg">
+      <a href="{% url apps.library.views.index %}" role="button" class="btn btn-default btn-lg" id="library-button">
         <span class="glyphicon glyphicon-book"></span> Library
       </a>
 
-      <a href="{% url apps.faq.views.index %}" role="button" class="btn btn-default btn-lg">
+      <a href="{% url apps.faq.views.index %}" role="button" class="btn btn-default btn-lg" id="faq-button">
         <span class="glyphicon glyphicon-question-sign"></span> FAQ
       </a>
     </div>
@@ -60,7 +60,7 @@
 
     <div class="row">
       <div class="col-md-6">
-        <div class="content-box" {% ifequal intro_type.0 'welcome' %} data-step="2" data-intro="{{ intros.1 }}" {% endifequal %}  {% ifequal intro_type.0 'first' %}data-step="2" data-intro="{{ intros.1 }}" {% endifequal %}>
+        <div class="content-box">
           <div class="content-box-header">
             <icon class="icon-bar-chart"></icon> {% trans "About Your Genome Files" %}
           </div>
@@ -89,7 +89,7 @@
 
                         <tr>
                           <td class="center">
-                            <p {% ifequal intro_type.0 'wait_upload' %}data-step="1" data-intro="{{ intros.0 }}" {% endifequal %}>{% trans "Import status:" %}</p>
+                            <p>{% trans "Import status:" %}</p>
                           </td>
                           <td class="center">
                             <div class="donut donut-big">
@@ -176,10 +176,94 @@
 </div>
 {% endblock %}
 
+
+
 {% block js %}
-<!-- <link href="{% static 'css/introjs.css' %}" rel="stylesheet"> -->
-<!-- <script type="text/javascript" src="{% static 'js/intro.js' %}"></script> -->
-<!-- <script type="text/javascript">introJs().start()</script> -->
+<link href="{% static 'css/introjs.css' %}" rel="stylesheet">
+<script type="text/javascript" src="{% static 'js/intro.js' %}"></script>
+<script type="text/javascript">
+    function startIntro(){
+
+        var intro_type = '{{ intro_type }}';
+
+        var intro_contents = {
+            'demo_welcome': {
+                steps: [
+                    {
+                        element: document.querySelectorAll('.content-box')[0],
+                        intro: "{% trans 'Welcome to perGENIE!' %}"
+                    },
+                    {
+                        element: document.querySelectorAll('.content-box')[1],
+                        intro: "{% trans 'Genome files are already uploaded for demo users.' %}",
+                        position: 'right'
+                    },
+                    {
+                        element: document.querySelector('#riskreport-button'),
+                        intro: "{% trans 'So, you can check disease risk report, right now!' %}",
+                        position: 'right'
+                    }
+                ]
+            },
+
+            'demo_invitation': {
+                steps: [
+                    {
+                        element: document.querySelectorAll('.content-box')[0],
+                        intro: "{% trans 'Did you have fun with perGENIE?' %}"
+                    },
+                    {
+                        element: document.querySelector('.navbar-right'),
+                        intro: "{% trans 'Thanks for trying this demo!' %}",
+                    }
+                ]
+            },
+
+            'welcome': {
+                steps: [
+                    {
+                        element: document.querySelectorAll('.content-box')[0],
+                        intro: "{% trans 'Welcome to perGENIE!' %}"
+                    },
+                    {
+                        element: document.querySelectorAll('.content-box')[1],
+                        intro: "{% trans 'You have no genome files uploaded.' %}",
+                        position: 'right'
+                    },
+                    {
+                        element: document.querySelector('#upload-button'),
+                        intro: "{% trans 'So, first, upload your genome file!' %}",
+                    }
+                ]
+            },
+
+            'wait_upload': {
+                steps: [
+                    {
+                        element: document.querySelectorAll('.content-box')[1],
+                        intro: "{% trans 'Please wait until your genome file uploaded...' %}",
+                        position: 'right'
+                    }
+                ]
+            },
+
+            'finish_upload': {
+                steps: [
+                    {
+                        element: document.querySelector('#riskreport-button'),
+                        intro: "{% trans 'Browse your Risk Report!' %}"
+                    }
+                ]
+            }
+        };
+
+        // init
+        var intro = introJs();
+        intro.setOptions(intro_contents[intro_type]);
+        intro.start();
+    }
+</script>
+<script type="text/javascript">$(function(){startIntro();});</script>
 
 <link href="{% static 'css/donuts.css' %}" rel="stylesheet">
 <script src="{% static 'js/donuts.js' %}"></script>

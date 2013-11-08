@@ -18,7 +18,6 @@ log = getColorLogger(__name__)
 def index(request):
     user_id = request.user.username
     msg, err, = '', ''
-    intro_type, intros = [''], []
 
     while True:
         gwascatalog.check_gwascatalog_imported()
@@ -30,13 +29,13 @@ def index(request):
         if user_id.startswith(settings.DEMO_USER_ID):
             tmp_user_info = user.get_user_info(user_id)
             if not tmp_user_info.get('last_viewed_file'):
-                intro_type = ['welcome']
+                intro_type = 'demo_welcome'
             else:
-                intro_type = ['invitation']
+                intro_type = 'demo_invitation'
 
         else:
             if not infos:
-                intro_type = ['first']
+                intro_type = 'welcome'
                 break
 
             # for info in infos:
@@ -45,32 +44,12 @@ def index(request):
 
         break
 
-    # Intro.js
-    if intro_type == ['first']:
-        intros.append(_('Welcome to perGENIE!'))
-        intros.append(_('You have no genome files uploaded.'))
-        intros.append(_('So, first, upload your genome file!'))
-    # elif intro_type == ['wait_upload']:
-    #     intros.append(_('Please wait until your genome file uploaded...'))
-    # elif intro_type == ['risk_report']:
-    #     intros.append(_('Browse your Risk Report!'))
-    elif intro_type == ['welcome']:
-        intros.append(_('Welcome to perGENIE!'))
-        intros.append(_('Genome files are already uploaded for demo users.'))
-        intros.append(_('So, you can check disease risk report, right now!'))
-    elif intro_type == ['invitation']:
-        intros.append(_('Did you have fun with perGENIE?'))
-        intros.append(_('Thanks for trying this demo!'))
-    else:
-        pass
-
     msgs = dict(msg=msg, err=err,
                 demo_user_id=settings.DEMO_USER_ID,
                 catalog_latest_new_records_data=catalog_latest_new_records_data,
                 recent_catalog_records=recent_catalog_records,
-                intros=intros,
-                intro_type=intro_type,
                 infos=infos,
+                intro_type=intro_type,
                 is_registerable=settings.IS_REGISTERABLE)
 
     return direct_to_template(request, 'dashboard/index.html', msgs)
