@@ -11,8 +11,8 @@
 
     <div class="container">
 
-      <div class="row-fluid">
-        <div class="span12">
+      <div class="row">
+        <div class="col-md-12">
           <div class="content-box transparent">
             <div class="padded10">
               <h2>{{ trait }}{% if is_ja %} ({{ trait_eng }}){% endif %}
@@ -23,12 +23,12 @@
         </div>
       </div>
 
-      <div class="row-fluid">
-        <div class="span4">
+      <div class="row">
+        <div class="col-md-4">
           <div class="content-box">
 
             <div class="content-box-header">
-              <i class="icon-bar-chart"></i> {% trans "Effects of SNPs" %}
+              <span class="glyphicon glyphicon-bar-chart"></span> {% trans "Effects of SNPs" %}
             </div>
 
             <!-- <div id="container" style="max-width: 100px; height: 300px; margin: auto"></div> -->
@@ -37,10 +37,10 @@
           </div>
         </div>
 
-        <div class="span8">
+        <div class="col-md-8">
           <div class="content-box">
             <div class="content-box-header">
-              <i class="icon-book"></i> {% trans "Information about reference study" %}
+              <span class="glyphicon glyphicon-book"></span> {% trans "Information about reference study" %}
             </div>
 
             <table class="table table-hover">
@@ -80,11 +80,11 @@
                   <td>{{ record.catalog_info.p_value }}</td>
                 </tr>
                 <tr>
-                  <td><a href="#">{% trans "Reliability rank" %} <i class="icon-question-sign"></i></a></td>
+                  <td><a href="#">{% trans "Reliability rank" %} <span class="glyphicon glyphicon-question-sign"></span></a></td>
                   <td>
                     {% for r in record.rank %}
                     {% ifequal r "m" %}<span class="label label-green">Meta</span>
-                    {% else %}{% ifequal r "*" %}<i class="icon-star"></i>{% endifequal %}{% endifequal %}
+                    {% else %}{% ifequal r "*" %}<span class="glyphicon glyphicon-star"></span>{% endifequal %}{% endifequal %}
                     {% endfor %}
 
                   </td>
@@ -98,17 +98,17 @@
 
             <!-- TODO: support Other studies -->
             <!-- <a href="{% url apps.riskreport.views.trait trait=trait_name %}">
-<button class="btn btn-green"><i class="icon-book icon-white" style="margin-top: 1px;"></i> Other studies</button></a> -->
+<button class="btn btn-green"><span class="glyphicon glyphicon-book icon-white" style="margin-top: 1px;"></span> Other studies</button></a> -->
           </div>
         </div>
       </div>
 
-      <div class="row-fluid">
-        <div class="span12">
+      <div class="row">
+        <div class="col-md-12">
           <div class="content-box">
 
             <div class="content-box-header">
-              <i class="icon-bar-chart"></i> {% trans "Information about SNPs & Genotypes" %}
+              <span class="glyphicon glyphicon-bar-chart"></span> {% trans "Information about SNPs & Genotypes" %}
             </div>
 
 

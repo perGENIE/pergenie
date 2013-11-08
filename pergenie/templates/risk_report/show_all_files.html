@@ -11,8 +11,8 @@
 
     <div class="container">
 
-      <div class="row-fluid">
-        <div class="span12">
+      <div class="row">
+        <div class="col-md-12">
           <div class="content-box transparent" data-step="1" data-intro="{% trans "Your disease risk report is shown bellow." %}">
             <div class="padded">
               <h2>{% trans "Show All Files" %}</h2>
@@ -38,8 +38,8 @@
 
       <!-- risk reports -->
       {% if not err %}
-      <div class="row-fluid">
-        <div class="span12">
+      <div class="row">
+        <div class="col-md-12">
           <div class="content-box" data-step="2" data-intro="{% trans "Information about this genome file is here." %}">
 
             <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
@@ -47,9 +47,9 @@
             <table class="table table-bordered">
               <thead>
                 <tr>
-                  <th><i class="icon-user"></i>{% trans "Genome file" %}</th>
-                  <th><i class="icon-globe"></i>{% trans "Population" %}</th>
-                  <th><i class="icon-file"></i>{% trans "File Format" %}</th>
+                  <th><span class="glyphicon glyphicon-user"></span>{% trans "Genome file" %}</th>
+                  <th><span class="glyphicon glyphicon-globe"></span>{% trans "Population" %}</th>
+                  <th><span class="glyphicon glyphicon-file"></span>{% trans "File Format" %}</th>
                 </tr>
               </thead>
               <tbody>

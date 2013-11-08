@@ -70,7 +70,7 @@ _8
 
     <div class="container">
       <div class="row">
-        <div class="span12 center graded">
+        <div class="col-md-12 center graded">
           {% if not is_demo_only %}
           <a href="{% url apps.frontend.views.trydemo %}" class="signup">{% trans "Try demo" %}</a>
           {% else %}
@@ -89,7 +89,7 @@ _8
   <div class="container">
     <h2>Features.</h2>
     <div class="row">
-      <div class="span12 box drop-shadow">
+      <div class="col-md-12 box drop-shadow">
 
         <div class="row">
           <article class="span6 offset1">
@@ -98,13 +98,13 @@ _8
             </p>
             <p>{% trans "As a database of GWAS, we use " %}<a href="//www.genome.gov/gwastudies/" target="_blank"> NHGRI GWAS Catalog</a>.</p>
           </article>
-          <div class="span4">
+          <div class="col-md-4">
             <img src="{% static 'images/snaps/snap1.png' %}" alt="placeholder" />
           </div>
         </div>
 
         <div class="row">
-          <div class="span4 offset1">
+          <div class="col-md-4 offset1">
             <img src="{% static 'images/snaps/snap2.png' %}" alt="placeholder" />
           </div>
           <article class="span6">
@@ -123,7 +123,7 @@ _8
               <li>{% trans "SNP array data from " %}<a href="//www.23andme.com/" target="_blank">23andMe</a>{% trans ", a common direct-to-consumer genetic testing service." %}</li>
             </ul>
           </article>
-          <div class="span4">
+          <div class="col-md-4">
             <img src="{% static 'images/snaps/snap3.png' %}" alt="placeholder" />
           </div>
         </div>
@@ -141,7 +141,7 @@ _8
   <!-- <div class="container"> -->
   <!--   <h2>Final pitch.</h2> -->
   <!--   <div class="row"> -->
-  <!--     <div class="span12 box"> -->
+  <!--     <div class="col-md-12 box"> -->
   <!--       <article class="span10 offset1"> -->
   <!--         <p>.</p> -->
   <!--       </article> -->
@@ -151,7 +151,7 @@ _8
 
   <div class="container">
     <div class="row">
-      <div class="span12">
+      <div class="col-md-12">
         <h4>{% trans "About us" %}</h4>
 
         <p>{% trans "perGENIE is being developed and maintained by perGENIE Team." %}</p>
@@ -165,7 +165,7 @@ _8
   </div>
 
   <div class="row footer">
-    <div class="span12">
+    <div class="col-md-12">
       <ul class="links">
         <li>&copy; 2012-2013 perGENIE Team.</li>
       </ul>

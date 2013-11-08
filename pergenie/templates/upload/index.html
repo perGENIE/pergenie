@@ -10,20 +10,20 @@
 
     <div class="container">
 
-      <div class="row-fluid">
-        <div class="span12">
+      <div class="row">
+        <div class="col-md-12">
           <div class="content-box transparent">
             <div class="padded">
               <h2>Upload</h2>
-              <!-- <a data-toggle="modal" href="#uploadModal" class="helpModal" title="see help?" >Help for Upload <i class="icon-question-sign"></i></a> -->
+              <!-- <a data-toggle="modal" href="#uploadModal" class="helpModal" title="see help?" >Help for Upload <span class="glyphicon glyphicon-question-sign"></span></a> -->
             </div>
           </div>
         </div>
       </div>
 
       <!-- upload -->
-      <div class="row-fluid">
-        <div class="span12">
+      <div class="row">
+        <div class="col-md-12">
           <div class="padded">
             <div class="content-box">
               <div class="content-box-header">
@@ -31,8 +31,8 @@
               </div>
 
               <div class="padded">
-                <div class="row-fluid">
-                  <div class="span12" data-step="1" data-intro="You can upload your genome file via this form!">
+                <div class="row">
+                  <div class="col-md-12" data-step="1" data-intro="You can upload your genome file via this form!">
 
                     <form class="form-horizontal" action="{% url apps.upload.views.index %}" method="post" enctype="multipart/form-data">
                       {% csrf_token %}
@@ -40,7 +40,7 @@
                         <a href="{% url apps.faq.views.index%}#versions_of_reference_files">[FAQ] What versions of reference files are used?</a>
                         <hr>
                         <div class="control-group" data-step="2" data-intro="First, selcet your genome file.">
-                          <label class="control-label" title="see help?"><a data-toggle="modal" href="#uploadModal">Genome File <i class="icon-question-sign"></i></a></label>
+                          <label class="control-label" title="see help?"><a data-toggle="modal" href="#uploadModal">Genome File <span class="glyphicon glyphicon-question-sign"></span></a></label>
                           <div class="controls">
                             <input type="file" name="call" class="multi" maxlength="{{ allowed_upload_genomefile_count }}">
                           </div>
@@ -48,7 +48,7 @@
 
                         <div data-step="3" data-intro="Next, select popultion and some other features if you can.">
                         <div class="control-group">
-                          <label class="control-label" title="see help?"><a data-toggle="modal" href="#uploadModal">Population <i class="icon-question-sign"></i></a></label>
+                          <label class="control-label" title="see help?"><a data-toggle="modal" href="#uploadModal">Population <span class="glyphicon glyphicon-question-sign"></span></a></label>
                           <div class="controls">
                             <select name="population">
                               <option value="unknown">Unknown</option>
@@ -60,7 +60,7 @@
                         </div>
 
                         <!-- <div class="control-group"> -->
-                        <!--   <label class="control-label"><a data-toggle="modal" href="#uploadModal">Sex <i class="icon-question-sign"></i></a></label> -->
+                        <!--   <label class="control-label"><a data-toggle="modal" href="#uploadModal">Sex <span class="glyphicon glyphicon-question-sign"></span></a></label> -->
                         <!--   <div class="controls"> -->
                         <!--     <select name="sex"> -->
                         <!--       <option value="unknown">Unknown</option> -->
@@ -71,7 +71,7 @@
                         <!-- </div> -->
 
                         <div class="control-group">
-                          <label class="control-label" title="see help?"><a data-toggle="modal" href="#uploadModal">File Format <i class="icon-question-sign"></i></a></label>
+                          <label class="control-label" title="see help?"><a data-toggle="modal" href="#uploadModal">File Format <span class="glyphicon glyphicon-question-sign"></span></a></label>
                           <div class="controls">
                             <select name="file_format">
                               <option value="andme">23andMe</option>
@@ -173,8 +173,8 @@
 
     <!-- uploadeds -->
     {% if uploadeds %}
-    <div class="row-fluid">
-      <div class="span12">
+    <div class="row">
+      <div class="col-md-12">
 
         <div class="content-box">
           <div class="content-box-header">
@@ -182,8 +182,8 @@
           </div>
 
           <div class="padded10">
-            <div class="row-fluid">
-              <div class="span12">
+            <div class="row">
+              <div class="col-md-12">
 
                 <table class="table table-striped table-condensed">
                   <thead>
@@ -243,11 +243,11 @@
                         </div>
                         {% if uploaded.status %}
                         <a data-toggle="modal" href="#deleteModal{{ forloop.counter0 }}" class="btn btn-danger">
-                          <i class="icon-trash icon-white"></i>Delete
+                          <span class="glyphicon glyphicon-trash icon-white"></span>Delete
                           {% else %}
                           <!--                     <a href="#" class="btn btn-danger disabled"> -->
                           <a data-toggle="modal" href="#deleteModal{{ forloop.counter0 }}" class="btn btn-danger">
-                            <i class="icon-trash icon-white"></i>Delete
+                            <span class="glyphicon glyphicon-trash icon-white"></span>Delete
                             {% endif%}
 		              </td>
 		            </tr>

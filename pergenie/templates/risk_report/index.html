@@ -6,187 +6,151 @@
 {% load i18n %}
 
 {% block main_container %}
-<div id="main_container" class="span14">
-  <section id="main">
+<div class="row">
+  <div class="col-md-12">
 
-    <div class="container">
+    <div class="title-box" data-step="1" data-intro="{% trans "Your disease risk report is shown bellow." %}">
+      <h2>{% trans "Disease Risk Report" %}</h2>
+      <a href="{% url apps.faq.views.index%}#how_risk_calclulated">[FAQ] {% trans "How are the disease risk values calculated?" %}</a>
+    </div>
+  </div>
+</div>
 
-      <div class="row-fluid">
-        <div class="span12">
-          <div class="content-box transparent" data-step="1" data-intro="{% trans "Your disease risk report is shown bellow." %}">
-            <div class="padded">
-              <h2>{% trans "Disease Risk Report" %}</h2>
-                <a href="{% url apps.faq.views.index%}#how_risk_calclulated">[FAQ] {% trans "How are the disease risk values calculated?" %}</a>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      <!-- alerts -->
-      {% if msg %}
-      <div class="alert alert-info">
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
-        <strong>Information:</strong> {{ msg }}
-      </div>
-      {% endif %}
+{% if not err %}
+<div class="row">
+  <div class="col-md-12">
 
-      {% if err %}
-      <div class="alert alert-error">
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
-        <strong>Error!</strong> {{ err }}
-      </div>
-      {% endif %}
+    <div class="content-box" data-step="2" data-intro="{% trans "Information about this genome file is here." %}">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th><span class="glyphicon glyphicon-user"></span>{% trans "Genome file" %}</th>
+            <th><span class="glyphicon glyphicon-globe"></span>{% trans "Population" %}</th>
+            <th><span class="glyphicon glyphicon-file"></span>{% trans "File Format" %}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <!-- Genome file -->
+            <td class="center" data-step="3" data-intro="{% trans "You can select and change genome files here." %}">
+              <form action="{% url apps.riskreport.views.index %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+		        <fieldset>
+                  <select name="file_name" onchange="submit(this.form)" class="form-control input-sm">
+                    {% for info in infos %}
+                    <option value="{{ info.name }}" {% if info.name == tmp_info.name %}selected{% endif %}>{{ info.raw_name }}</option>
+                    {% endfor %}
+                    <option value="{{ info.name }}"> --</option>
+                    <option value="{{ info.name }}"> View All Files</option>
+                  </select>
+                </fieldset>
+              </form>
+            </td>
 
-      <!-- risk reports -->
-      {% if not err %}
-      <div class="row-fluid">
-        <div class="span12">
+            <!-- Population -->
+            <td class="center" data-step="4" data-intro="{% trans "Also, you can change population setting for this genome file." %}">
+              <a data-toggle="modal" href="#changeModal"><span class="badge badge-green">{{ tmp_info.population }}</span></a>
 
-          <div class="content-box" data-step="2" data-intro="{% trans "Information about this genome file is here." %}">
-              <table class="table table-bordered">
-                <thead>
-                  <tr>
-                    <th><i class="icon-user"></i>{% trans "Genome file" %}</th>
-                    <th><i class="icon-globe"></i>{% trans "Population" %}</th>
-                    <th><i class="icon-file"></i>{% trans "File Format" %}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <!-- Genome file -->
-                    <td class="center" data-step="3" data-intro="{% trans "You can select and change genome files here." %}">
-                      <form action="{% url apps.riskreport.views.index %}" method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
-		                <fieldset>
-                          <select name="file_name" onchange="submit(this.form)" class="file_name">
-                            {% for info in infos %}
-                            <option value="{{ info.name }}" {% if info.name == tmp_info.name %}selected{% endif %}>{{ info.raw_name }}</option>
-                            {% endfor %}
-                          </select>
-                        </fieldset>
-                      </form>
-                    </td>
-
-                    <!-- Population -->
-                    <td class="center" data-step="4" data-intro="{% trans "Also, you can change population setting for this genome file." %}">
-                      <a data-toggle="modal" href="#changeModal"><span class="badge badge-green">{{ tmp_info.population }}</span></a>
-
-                      <div id="changeModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="changeModalLabel" aria-hidden="true">
-                        <div class="modal-body">
-                          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                          <h4 id="changeModalLabel">{% trans "Change population to ..." %}</h4>
-                          <form action="{% url apps.riskreport.views.index %}" method="post" enctype="multipart/form-data">
-                            {% csrf_token %}
-		                    <fieldset>
-                              <select name="population" onchange="submit(this.form)" class="population" title="{% trans "change population?" %}">
-                                <option value="unknown" {% ifequal tmp_info.population 'unknown' %}selected{% endifequal %}>Unknown</option>
-                                <option value="Asian" {% ifequal tmp_info.population 'Asian' %}selected{% endifequal %}>Asian</option>
-                                <option value="European" {% ifequal tmp_info.population 'European' %}selected{% endifequal %}>European</option>
-                                <option value="Japanese" {% ifequal tmp_info.population 'Japanese' %}selected{% endifequal %}>Japanese</option>
-                              </select>
-                            </fieldset>
-                            <input type="hidden" name="file_name" value="{{ file_name }}" />
-                          </form>
-                        </div>
-                      </div>
-
-                    </td>
-
-                    <!-- File Format -->
-                    <td class="center">
-                      <span class="badge badge-green">{{ tmp_info.file_format|file_format }}</span>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-
-              <div class="padded">
-                <div class="row-fluid">
-                  <div class="span12">
-                    <a href="{% url apps.riskreport.views.show_all_files %}"><button class="btn btn-green"><i class="icon-resize-full icon-white" style="margin-top: 1px;"></i> View All Files</button></a>
-                  </div>
+              <div id="changeModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="changeModalLabel" aria-hidden="true">
+                <div class="modal-body">
+                  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                  <h4 id="changeModalLabel">{% trans "Change population to ..." %}</h4>
+                  <form action="{% url apps.riskreport.views.index %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+		            <fieldset>
+                      <select name="population" onchange="submit(this.form)" class="population" title="{% trans "change population?" %}">
+                        <option value="unknown" {% ifequal tmp_info.population 'unknown' %}selected{% endifequal %}>Unknown</option>
+                        <option value="Asian" {% ifequal tmp_info.population 'Asian' %}selected{% endifequal %}>Asian</option>
+                        <option value="European" {% ifequal tmp_info.population 'European' %}selected{% endifequal %}>European</option>
+                        <option value="Japanese" {% ifequal tmp_info.population 'Japanese' %}selected{% endifequal %}>Japanese</option>
+                      </select>
+                    </fieldset>
+                    <input type="hidden" name="file_name" value="{{ file_name }}" />
+                  </form>
                 </div>
               </div>
-        </div>
+
+            </td>
+
+            <!-- File Format -->
+            <td class="center">
+              <span class="badge badge-green">{{ tmp_info.file_format|file_format }}</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-6">
+    <div class="content-box"  data-step="5" data-intro="{% trans "Your top 10 highest risks are listed here." %}">
+      <div class="content-box-header">
+        <span class="glyphicon glyphicon-align-left"></span> {% trans "Top 10 Highest" %}
       </div>
 
-      <div class="row-fluid">
+      <div class="row">
+        <div class="col-md-12">
+          {% if h_risk_traits %}
+          <div id="container_highest_risks"></div>
 
-        <div class="span6">
-          <div class="content-box"  data-step="5" data-intro="{% trans "Your top 10 highest risks are listed here." %}">
-            <div class="content-box-header">
-              <icon class="icon-align-left"></icon> {% trans "Top 10 Highest" %}
-            </div>
-
-            <div class="padded">
-              <div class="row-fluid">
-                <div class="span12">
-                  {% if h_risk_traits %}
-                  <div id="container_highest_risks"></div>
-
-                  <a href="{% url apps.riskreport.views.show_all %}"><button class="btn btn-green" data-step="6" data-intro="{% trans "To see all the disease risks and/or compare two genomes, click here!" %}"><i class="icon-resize-full icon-white" style="margin-top: 1px;"></i> {% trans "View All Diseases" %}</button></a>
-                  {% else %}
-                  <p>{% trans "Sorry, you have no data for disease risk." %}</p>
-                  <p>{% trans "Probably, uploaded data was too few to calculate risk." %}</p>
-                  {% endif %}
-                </div>
-              </div>
-            </div>
-          </div>
+          <a href="{% url apps.riskreport.views.show_all %}"><button class="btn btn-green" data-step="6" data-intro="{% trans "To see all the disease risks and/or compare two genomes, click here!" %}"><span class="glyphicon glyphicon-resize-full"></span> {% trans "View All Diseases" %}</button></a>
+          {% else %}
+          <p>{% trans "Sorry, you have no data for disease risk." %}</p>
+          <p>{% trans "Probably, uploaded data was too few to calculate risk." %}</p>
+          {% endif %}
         </div>
-
-
-        <div class="span6">
-          <div class="padded">
-            <div class="content-box">
-              <div class="content-box-header">
-                <icon class="icon-ok-sign"></icon> {% trans "Statistics" %}
-              </div>
-
-                <div class="row-fluid">
-
-                  <table class="table table-bordered">
-                    <tbody>
-
-                      <tr>
-                        <td>
-                          {% trans "Number of studies for this population is " %}
-                          <b>{{ tmp_info.n_studies }}</b>.<br>
-                        </td>
-                      </tr>
-
-                      <tr>
-                        <td class="center">
-                          <p>{% trans "What percentage does your genome file cover SNPs of these studies?" %}</p>
-                        </td>
-                        <td class="center">
-                          <div class="donut donut-big">
-                            <div class="donut-arrow" data-percentage="{{ tmp_info.catalog_cover_rate }}"></div>
-                          </div>
-                        </td>
-                      </tr>
-
-                      <!-- <tr> -->
-                      <!--   <td class="center"> -->
-                      <!--     <p>{% trans "What percentage does your genome file cover whole genome?" %}</p> -->
-                      <!--   </td> -->
-                      <!--   <td class="center"> -->
-                      <!--     <div class="donut donut-big"> -->
-                      <!--       <div class="donut-arrow" data-percentage="{{ tmp_info.genome_cover_rate }}"></div> -->
-                      <!--     </div> -->
-                      <!--   </td> -->
-                      <!-- </tr> -->
-                    </tbody>
-                  </table>
-
-                </div>
-            </div>
-          </div>
-        </div>
-      {% endif %}
-
       </div>
-  </section>
+    </div>
+  </div>
+
+
+  <div class="col-md-6">
+    <div class="content-box">
+      <div class="content-box-header">
+        <span class="glyphicon glyphicon-ok-sign"></span> {% trans "Statistics" %}
+      </div>
+
+      <table class="table table-bordered">
+        <tbody>
+
+          <tr>
+            <td>
+              {% trans "Number of studies for this population is " %}
+              <b>{{ tmp_info.n_studies }}</b>.<br>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="center">
+              <p>{% trans "What percentage does your genome file cover SNPs of these studies?" %}</p>
+            </td>
+            <td class="center">
+              <div class="donut donut-big">
+                <div class="donut-arrow" data-percentage="{{ tmp_info.catalog_cover_rate }}"></div>
+              </div>
+            </td>
+          </tr>
+
+          <!-- <tr> -->
+          <!--   <td class="center"> -->
+          <!--     <p>{% trans "What percentage does your genome file cover whole genome?" %}</p> -->
+          <!--   </td> -->
+          <!--   <td class="center"> -->
+          <!--     <div class="donut donut-big"> -->
+          <!--       <div class="donut-arrow" data-percentage="{{ tmp_info.genome_cover_rate }}"></div> -->
+          <!--     </div> -->
+          <!--   </td> -->
+          <!-- </tr> -->
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+  {% endif %}
+
 </div>
 {% endblock %}
 
