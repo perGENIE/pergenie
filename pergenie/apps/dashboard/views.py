@@ -21,6 +21,7 @@ def index(request):
     intro_type, intros = [''], []
 
     while True:
+        gwascatalog.check_gwascatalog_imported()
         catalog_latest_new_records_data = gwascatalog.get_latest_added_date()
         recent_catalog_records = gwascatalog.get_recent_catalog_records()
 

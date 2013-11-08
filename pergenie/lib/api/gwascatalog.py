@@ -16,6 +16,15 @@ class GWASCatalog(object):
     def __init__(self):
         self.db_select = settings.DB_SELECT['gwascatalog']
 
+    def check_gwascatalog_imported(self):
+        #
+        if self.db_select == 'mongodb':
+            with MongoClient(host=settings.MONGO_URI) as c:
+                catalog_stats = c['pergenie']['catalog_stats']
+                if catalog_stats.count() == 0:
+                    raise Exception, 'GWASCatalog is not imported correctly.'
+
+
     def get_catalog_records(self, rs):
         catalog = self.get_latest_catalog()
         return list(catalog.find({'snps': rs}).sort('date', DESCENDING))
