@@ -1,4 +1,4 @@
-Django==1.4.1
+Django==1.4.10
 Fabric==1.6.0
 Jinja2==2.6
 LEPL==5.1.3
