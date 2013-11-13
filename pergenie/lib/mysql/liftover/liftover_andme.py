@@ -9,10 +9,14 @@ USERNAME = 'root'
 PASSWORD = ''
 DBNAME = 'liftover'
 
-table = 'hg18LiftToHg19'
 
-def init_db(hg18tohg19, **kwargs):
+def init_db(hg18sample, hg19sample, **kwargs):
     """Init database.
+
+    Create table `liftover`, then load rsIDs, chroms, and positions.
+
+    - hg18sample: 23andme format genotype data
+    - hg19sample: 23andme format genotype data
     """
 
     con = mdb.connect(user=USERNAME, passwd=PASSWORD, db=DBNAME)
@@ -20,31 +24,46 @@ def init_db(hg18tohg19, **kwargs):
         cur = con.cursor(mdb.cursors.DictCursor)
 
         # Init
-        cur.execute("""DROP TABLE IF EXISTS hg18LiftToHg19""")
+        cur.execute("""DROP TABLE IF EXISTS `liftover`""")
 
         # Table schema
-        cur.execute("""CREATE TABLE hg18LiftToHg19 (
+        cur.execute("""CREATE TABLE `liftover` (
+        `snp_id` int(11) NOT NULL default '0',
         `hg18chrom` varchar(2) default NULL,
         `hg18pos` bigint(11) default NULL,
         `hg19chrom` varchar(2) default NULL,
         `hg19pos` bigint(11) default NULL,
+        PRIMARY KEY  (`snp_id`),
         KEY `i_hg18_chrom_pos` (`hg18chrom`,`hg18pos`),
         KEY `i_hg19_chrom_pos` (`hg19chrom`,`hg19pos`)
         )""")
 
         # Load data
         print 'updating hg18...'
-        with open(hg18tohg19) as fin:
+        with open(hg18sample) as fin:
             for line in fin:
-                hg18chrom, hg18pos, hg19pos = line.split('\t')
-                hg18chrom = hg18chrom.replace('chr', '')
-                hg19chrom = hg18chrom
-                cur.execute("""INSERT INTO hg18LiftToHg19 VALUES (%s, %s, %s, %s)""", (hg18chrom, hg18pos, hg19chrom, hg19pos,))
+                if line.startswith('#'): continue
+                rs, chrom, pos, genotype = parse_23andme(line.split('\t'))
+
+                if rs:
+                    cur.execute("""INSERT IGNORE INTO liftover VALUES (%s, null, null, null, null)""", (rs,))  # rsid
+                    cur.execute("""UPDATE liftover SET hg18chrom=%s, hg18pos=%s WHERE snp_id=%s""", (chrom, pos, rs,))  # update hg18
+
+
+        print 'updating hg19...'
+        with open(hg19sample) as fin:
+            for line in fin:
+                if line.startswith('#'): continue
+                rs, chrom, pos, genotype = parse_23andme(line.split('\t'))
+
+                if rs:
+                    cur.execute("""INSERT IGNORE INTO liftover VALUES (%s, null, null, null, null)""", (rs,))  # rsid
+                    cur.execute("""UPDATE liftover SET hg19chrom=%s, hg19pos=%s WHERE snp_id=%s""", (chrom, pos, rs,))  # update hg19
 
         print 'done'
 
         # Count
-        cur.execute("""SELECT COUNT(*) FROM hg18LiftToHg19""")
+        cur.execute("""SELECT COUNT(*) FROM liftover""")
         res = cur.fetchone()
         print res
 
@@ -56,9 +75,9 @@ def search_db(version_from, version_to, chrom, pos, **kwargs):
 
         # FIXME: avoid hardcoding
         if version_from == 'hg18':
-            cur.execute("""SELECT * FROM hg18LiftToHg19 WHERE hg18chrom=%s and hg18pos=%s""", (str(chrom), int(pos),))
-        # if version_from == 'hg19':
-        #     cur.execute("""SELECT * FROM liftover WHERE hg19chrom=%s and hg19pos=%s""", (str(chrom), int(pos),))
+            cur.execute("""SELECT * FROM liftover WHERE hg18chrom=%s and hg18pos=%s""", (str(chrom), int(pos),))
+        if version_from == 'hg19':
+            cur.execute("""SELECT * FROM liftover WHERE hg19chrom=%s and hg19pos=%s""", (str(chrom), int(pos),))
 
         row = cur.fetchone()
         rec = [row[version_to + 'chrom'], int(row[version_to + 'pos'])] if row else []
@@ -70,13 +89,26 @@ def search_db(version_from, version_to, chrom, pos, **kwargs):
         return rec
 
 
+def parse_23andme(record):
+    _rs, _chrom, _pos, _genotype = record
+
+    try:
+        rs = int(_rs.replace('rs', ''))  # int
+    except ValueError:
+        rs = None
+    chrom = _chrom  # str
+    pos = int(_pos)  # int
+    genotype = _genotype  # str
+    return rs, chrom, pos, genotype
+
+
 def _main():
     parser = argparse.ArgumentParser(description='')
     subparsers = parser.add_subparsers()
 
     parser_init_db = subparsers.add_parser('init')
-    parser_init_db.add_argument('hg18tohg19')
-    # parser_init_db.add_argument('hg19sample')
+    parser_init_db.add_argument('hg18sample')
+    parser_init_db.add_argument('hg19sample')
     parser_init_db.set_defaults(func=init_db)
 
     parser_search_db = subparsers.add_parser('search')
