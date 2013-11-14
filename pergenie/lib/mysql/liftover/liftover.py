@@ -11,7 +11,7 @@ DBNAME = 'liftover'
 
 table = 'hg18LiftToHg19'
 
-def init_db(hg18tohg19, **kwargs):
+def init_db(**kwargs):
     """Init database.
     """
 
@@ -32,13 +32,25 @@ def init_db(hg18tohg19, **kwargs):
         KEY `i_hg19_chrom_pos` (`hg19chrom`,`hg19pos`)
         )""")
 
+
+def load_data(hg18tohg19, **kwargs):
+    con = mdb.connect(user=USERNAME, passwd=PASSWORD, db=DBNAME)
+    with con:
+        cur = con.cursor(mdb.cursors.DictCursor)
+
         # Load data
         print 'updating hg18...'
         with open(hg18tohg19) as fin:
             for line in fin:
-                hg18chrom, hg18pos, hg19pos = line.split('\t')
-                hg18chrom = hg18chrom.replace('chr', '')
-                hg19chrom = hg18chrom
+                hg18chrom, hg18pos, hg19pos = line.rstrip().split('\t')
+
+                hg18chrom, hg18pos = hg18chrom.replace('chr', ''), int(hg18pos)
+
+                if hg19pos == '.':
+                    hg19chrom, hg19pos = None, None
+                else:
+                    hg19chrom, hg19pos = hg18chrom, int(hg19pos)
+
                 cur.execute("""INSERT INTO hg18LiftToHg19 VALUES (%s, %s, %s, %s)""", (hg18chrom, hg18pos, hg19chrom, hg19pos,))
 
         print 'done'
@@ -75,9 +87,11 @@ def _main():
     subparsers = parser.add_subparsers()
 
     parser_init_db = subparsers.add_parser('init')
-    parser_init_db.add_argument('hg18tohg19')
-    # parser_init_db.add_argument('hg19sample')
     parser_init_db.set_defaults(func=init_db)
+
+    parser_init_db = subparsers.add_parser('load')
+    parser_init_db.add_argument('hg18tohg19')
+    parser_init_db.set_defaults(func=load_data)
 
     parser_search_db = subparsers.add_parser('search')
     parser_search_db.add_argument('version_from', choices=['hg18', 'hg19'])
