@@ -39,3 +39,14 @@ $ ${EDITOR} pergenie/pergenie/settings/develop.py
 $ python manage.py celeryd_detach
 $ python manage.py runserver 8080
 ```
+
+
+## Notice
+
+* Theme
+
+  * [Bootstrap](//getbootstrap.com/), Apache License v2.0
+  * Background pattern is downloaded from [subtlepatterns.com](//subtlepatterns.com/), [free to use](//subtlepatterns.com/about/)
+
+
+*
