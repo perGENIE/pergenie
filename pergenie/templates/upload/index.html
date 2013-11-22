@@ -5,282 +5,272 @@
 {% load extras %}
 
 {% block main_container %}
-<div id="main_container" class="span14">
-  <section id="main">
-
-    <div class="container">
-
-      <div class="row">
-        <div class="col-md-12">
-          <div class="content-box transparent">
-            <div class="padded">
-              <h2>Upload</h2>
-              <!-- <a data-toggle="modal" href="#uploadModal" class="helpModal" title="see help?" >Help for Upload <span class="glyphicon glyphicon-question-sign"></span></a> -->
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- upload -->
-      <div class="row">
-        <div class="col-md-12">
-          <div class="padded">
-            <div class="content-box">
-              <div class="content-box-header">
-                <icon class="icon-arrow-up"></icon> Upload Genome Files
-              </div>
-
-              <div class="padded">
-                <div class="row">
-                  <div class="col-md-12" data-step="1" data-intro="You can upload your genome file via this form!">
-
-                    <form class="form-horizontal" action="{% url apps.upload.views.index %}" method="post" enctype="multipart/form-data">
-                      {% csrf_token %}
-		              <fieldset>
-                        <a href="{% url apps.faq.views.index%}#versions_of_reference_files">[FAQ] What versions of reference files are used?</a>
-                        <hr>
-                        <div class="control-group" data-step="2" data-intro="First, selcet your genome file.">
-                          <label class="control-label" title="see help?"><a data-toggle="modal" href="#uploadModal">Genome File <span class="glyphicon glyphicon-question-sign"></span></a></label>
-                          <div class="controls">
-                            <input type="file" name="call" class="multi" maxlength="{{ allowed_upload_genomefile_count }}">
-                          </div>
-                        </div>
-
-                        <div data-step="3" data-intro="Next, select popultion and some other features if you can.">
-                        <div class="control-group">
-                          <label class="control-label" title="see help?"><a data-toggle="modal" href="#uploadModal">Population <span class="glyphicon glyphicon-question-sign"></span></a></label>
-                          <div class="controls">
-                            <select name="population">
-                              <option value="unknown">Unknown</option>
-                              <option value="Asian">Asian</option>
-                              <option value="European">European</option>
-                              <option value="Japanese">Japanese</option>
-                            </select>
-                          </div>
-                        </div>
-
-                        <!-- <div class="control-group"> -->
-                        <!--   <label class="control-label"><a data-toggle="modal" href="#uploadModal">Sex <span class="glyphicon glyphicon-question-sign"></span></a></label> -->
-                        <!--   <div class="controls"> -->
-                        <!--     <select name="sex"> -->
-                        <!--       <option value="unknown">Unknown</option> -->
-                        <!--       <option value="male">male</option> -->
-                        <!--       <option value="female">female</option> -->
-                        <!--     </select> -->
-                        <!--   </div> -->
-                        <!-- </div> -->
-
-                        <div class="control-group">
-                          <label class="control-label" title="see help?"><a data-toggle="modal" href="#uploadModal">File Format <span class="glyphicon glyphicon-question-sign"></span></a></label>
-                          <div class="controls">
-                            <select name="file_format">
-                              <option value="andme">23andMe</option>
-                              <option value="vcf_whole_genome">VCF (Whole Genome)</option>
-                              <option value="vcf_exome_truseq">VCF (TruSeq Exome)</option>
-                              <option value="vcf_exome_iontargetseq">VCF (IonTargetSeq Exome)</option>
-                            </select>
-                          </div>
-                        </div>
-                        </div>
-                        <!-- <span class="label label-warning">Notice</span> genome fileをアップロードする前に，<a href="#">利用規約</a>をご確認ください． -->
-                        <div  data-step="3" data-intro="Finally, submit!">
-                        <div class="form-actions">
-                          <input type="submit" class="btn btn-primary">
-                          <input type="reset" value="reset" class="btn">
-
-                        </div>
-                        </div>
-
-                        {% if msg %}
-                        <div class="alert alert-success">
-                          {{ msg }}
-                        </div>
-                        {% endif %}
-
-                        {% if msgs %}
-                        {% for m in msgs %}
-                        <div class="alert alert-success">
-                          {{ m }}
-                        </div>
-                        {% endfor %}
-                        {% endif %}
-
-                        {% if err %}
-                        <div class="alert alert-error">
-                          {{ err }}
-                        </div>
-                        {% endif %}
-
-                        {% if errs %}
-                        {% for e in errs %}
-                        <div class="alert alert-error">
-                          {{ e }}
-                        </div>
-                        {% endfor %}
-                        {% endif %}
-
-                      </fieldset>
-
-                    </form>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-
-      <!-- upload help modal -->
-      <div id="uploadModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel" aria-hidden="true">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h3 id="uploadModalLabel">Help for Upload</h3>
-        </div>
-        <div class="modal-body">
-
-          <ul class="unstyled">
-            <li><h4>Genome File</h4></li>
-            <li>Choose genome file to upload.</li>
-            <hr>
-            <li><h4>Population</h4></li>
-            <li>Choose population of your genome file.</li>
-            <li>Suppoted populations are:</li>
-            <ul>
-              <li><code>Asian</code></li>
-              <li><code>European</code></li>
-              <li><code>Japanese</code></li>
-              <li><code>Unknown</code>: Population is unkown or cannot be difined.</li>
-            </ul>
-            <hr>
-            <li><h4>File Format</h4></li>
-            <li>Choose file format of your genome file.</li>
-            <li>Suppoted populations are:</li>
-            <ul>
-              <li><a href="{% static 'example_data/23andme.txt' %}"><code>23andMe format (SNP array data)</code></a></li>
-              <li><a href="{% static 'example_data/vcf.v4.1.vcf' %}"><code>VCF (Variant Call Format)</code></a></li>
-            </ul>
-            <br>
-            <li>In addition, for VCF, we distinguish <code>While Genome Sequencing</code> and <code>Targeted Exome Sequencing</code>.
-              Otherwise, we cannot distinguish whether the genotype not appear in VCF is <b>reference allele</b> or <b>not available allele in the targeted sequence</b>.
-              (Usually, records in VCF is only <b>alternative allele (non-reference allele)</b>).</li>
-            <li>See more detail <a href="{% url apps.faq.views.index %}">[FAQ] What does na in genotypes mean?</a></li>
-          </ul>
-
-        </div>
-      </div>
+<div class="row">
+  <div class="col-md-12">
+    <div class="content-box carving no-box-shadow">
+      <h2>Upload</h2>
     </div>
-
-    <!-- uploadeds -->
-    {% if uploadeds %}
-    <div class="row">
-      <div class="col-md-12">
-
-        <div class="content-box">
-          <div class="content-box-header">
-            <icon class="icon-file"></icon> Uploaded Status
-          </div>
-
-          <div class="padded10">
-            <div class="row">
-              <div class="col-md-12">
-
-                <table class="table table-striped table-condensed">
-                  <thead>
-                    <tr>
-                      <th>File Name</th>
-                      <th>Date</th>
-                      <th>Population</th>
-                      <th>File Format</th>
-                      <th>Import Status</th>
-                      <th></th>
-                    </tr>
-                  </thead>
-
-                  <tbody>
-                    {% if uploadeds %}
-                    {% for uploaded in uploadeds %}
-
-                    <tr class="uploaded_file">
-                      <td class="dataname">{{ uploaded.raw_name }}</td>
-                      <td class="center">{{ uploaded.date }}</td>
-                      <td class="center">
-                        <span class="label label-success">{{ uploaded.population }}</span>
-                      </td>
-                      <td class="center">
-                        <span class="label label-success">{{ uploaded.file_format|file_format }}</span>
-                      </td>
-                      <td class="center">
-		                {% if uploaded.status == -1 %}
-                        <div>
-                          <p>Failed</p>
-		                </div>
-
-		                {% elif uploaded.status >= 100 %}
-                        <div>
-                          <p>100&#37;</p>
-		                </div>
-
-		                {% else %}
-                        <div class="progress progress-striped progress-success active">
-		                  <div class="bar" style="width: {{ uploaded.status }}&#37;;"></div>
-                        </div>
-		                {% endif %}
-                      </td>
-
-                      <td class="center">
-                        <!-- Delete  -->
-                        {% if not uploaded.status %}
-                        <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#deleteModal{{ forloop.counter0 }}">
-                          <span class="glyphicon glyphicon-trash"></span>Delete
-                        </button>
-                        {% endif %}
-
-                        <!-- deleteModal -->
-                        <div class="modal fade" id="deleteModal{{ forloop.counter0 }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
-                          <div class="modal-dialog">
-                            <div class="modal-content">
-                              <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                                <h4 class="modal-title" id="deleteModalLabel">Modal title</h4>
-                              </div>
-                              <div class="modal-body">
-                                Really delete "{{ uploaded.name }}"?
-                              </div>
-                              <div class="modal-footer">
-			                    <form action="{% url apps.upload.views.delete %}" method="POST" enctype="multipart/form-data">
-                                  {% csrf_token %}
-			                      <input type="hidden" name="name" value="{{ uploaded.name }}">
-			                      <button class="btn btn-default" data-dismiss="modal">No.</button>
-			                      <button class="btn btn-primary" href="#" type="submit">Yes, delete this data.</button>
-			                    </form>
-                              </div>
-                            </div><!-- /.modal-content -->
-                          </div><!-- /.modal-dialog -->
-                        </div><!-- /.modal -->
-		              </td>
-		            </tr>
-
-		            {% endfor %}
-		            {% endif %}
-                  </tbody>
-                </table>
-
-	            <form id="uploaded-file-deleter" style="display: none;" action="{% url apps.upload.views.delete %}" method="POST" enctype="multipart/form-data">
-                  {% csrf_token %}
-	              <input type="hidden" name="name" value="">
-	            </form>
-
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    {% endif %} <!-- end uploaded -->
-
-  </section>
+  </div>
 </div>
+
+<!-- upload -->
+<div class="row">
+  <div class="col-md-12">
+    <div class="padded">
+      <div class="content-box">
+        <div class="content-box-header">
+          <icon class="icon-arrow-up"></icon> Upload Genome Files
+        </div>
+
+        <div class="padded">
+          <div class="row">
+            <div class="col-md-12" data-step="1" data-intro="You can upload your genome file via this form!">
+
+              <form class="form-horizontal" action="{% url apps.upload.views.index %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+		        <fieldset>
+                  <a href="{% url apps.faq.views.index%}#versions_of_reference_files">[FAQ] What versions of reference files are used?</a>
+                  <hr>
+                  <div class="control-group" data-step="2" data-intro="First, selcet your genome file.">
+                    <label class="control-label" title="see help?"><a data-toggle="modal" href="#uploadModal">Genome File <span class="glyphicon glyphicon-question-sign"></span></a></label>
+                    <div class="controls">
+                      <input type="file" name="call" class="multi" maxlength="{{ allowed_upload_genomefile_count }}">
+                    </div>
+                  </div>
+
+                  <div data-step="3" data-intro="Next, select popultion and some other features if you can.">
+                    <div class="control-group">
+                      <label class="control-label" title="see help?"><a data-toggle="modal" href="#uploadModal">Population <span class="glyphicon glyphicon-question-sign"></span></a></label>
+                      <div class="controls">
+                        <select name="population">
+                          <option value="unknown">Unknown</option>
+                          <option value="Asian">Asian</option>
+                          <option value="European">European</option>
+                          <option value="Japanese">Japanese</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <!-- <div class="control-group"> -->
+                    <!--   <label class="control-label"><a data-toggle="modal" href="#uploadModal">Sex <span class="glyphicon glyphicon-question-sign"></span></a></label> -->
+                    <!--   <div class="controls"> -->
+                    <!--     <select name="sex"> -->
+                    <!--       <option value="unknown">Unknown</option> -->
+                    <!--       <option value="male">male</option> -->
+                    <!--       <option value="female">female</option> -->
+                    <!--     </select> -->
+                    <!--   </div> -->
+                    <!-- </div> -->
+
+                    <div class="control-group">
+                      <label class="control-label" title="see help?"><a data-toggle="modal" href="#uploadModal">File Format <span class="glyphicon glyphicon-question-sign"></span></a></label>
+                      <div class="controls">
+                        <select name="file_format">
+                          <option value="andme">23andMe</option>
+                          <option value="vcf_whole_genome">VCF (Whole Genome)</option>
+                          <option value="vcf_exome_truseq">VCF (TruSeq Exome)</option>
+                          <option value="vcf_exome_iontargetseq">VCF (IonTargetSeq Exome)</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- <span class="label label-warning">Notice</span> genome fileをアップロードする前に，<a href="#">利用規約</a>をご確認ください． -->
+                  <div  data-step="3" data-intro="Finally, submit!">
+                    <div class="form-actions">
+                      <input type="submit" class="btn btn-primary">
+                      <input type="reset" value="reset" class="btn">
+
+                    </div>
+                  </div>
+
+                  {% if msg %}
+                  <div class="alert alert-success">
+                    {{ msg }}
+                  </div>
+                  {% endif %}
+
+                  {% if msgs %}
+                  {% for m in msgs %}
+                  <div class="alert alert-success">
+                    {{ m }}
+                  </div>
+                  {% endfor %}
+                  {% endif %}
+
+                  {% if err %}
+                  <div class="alert alert-error">
+                    {{ err }}
+                  </div>
+                  {% endif %}
+
+                  {% if errs %}
+                  {% for e in errs %}
+                  <div class="alert alert-error">
+                    {{ e }}
+                  </div>
+                  {% endfor %}
+                  {% endif %}
+
+                </fieldset>
+
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- upload help modal -->
+<div id="uploadModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h3 id="uploadModalLabel">Help for Upload</h3>
+  </div>
+  <div class="modal-body">
+
+    <ul class="unstyled">
+      <li><h4>Genome File</h4></li>
+      <li>Choose genome file to upload.</li>
+      <hr>
+      <li><h4>Population</h4></li>
+      <li>Choose population of your genome file.</li>
+      <li>Suppoted populations are:</li>
+      <ul>
+        <li><code>Asian</code></li>
+        <li><code>European</code></li>
+        <li><code>Japanese</code></li>
+        <li><code>Unknown</code>: Population is unkown or cannot be difined.</li>
+      </ul>
+      <hr>
+      <li><h4>File Format</h4></li>
+      <li>Choose file format of your genome file.</li>
+      <li>Suppoted populations are:</li>
+      <ul>
+        <li><a href="{% static 'example_data/23andme.txt' %}"><code>23andMe format (SNP array data)</code></a></li>
+        <li><a href="{% static 'example_data/vcf.v4.1.vcf' %}"><code>VCF (Variant Call Format)</code></a></li>
+      </ul>
+      <br>
+      <li>In addition, for VCF, we distinguish <code>While Genome Sequencing</code> and <code>Targeted Exome Sequencing</code>.
+        Otherwise, we cannot distinguish whether the genotype not appear in VCF is <b>reference allele</b> or <b>not available allele in the targeted sequence</b>.
+        (Usually, records in VCF is only <b>alternative allele (non-reference allele)</b>).</li>
+      <li>See more detail <a href="{% url apps.faq.views.index %}">[FAQ] What does na in genotypes mean?</a></li>
+    </ul>
+
+  </div>
+</div>
+</div>
+
+<!-- uploadeds -->
+{% if uploadeds %}
+<div class="row">
+  <div class="col-md-12">
+
+    <div class="content-box">
+      <div class="content-box-header">
+        <icon class="icon-file"></icon> Uploaded Status
+      </div>
+
+      <div class="padded10">
+        <div class="row">
+          <div class="col-md-12">
+
+            <table class="table table-striped table-condensed">
+              <thead>
+                <tr>
+                  <th>File Name</th>
+                  <th>Date</th>
+                  <th>Population</th>
+                  <th>File Format</th>
+                  <th>Import Status</th>
+                  <th></th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {% if uploadeds %}
+                {% for uploaded in uploadeds %}
+
+                <tr class="uploaded_file">
+                  <td class="dataname">{{ uploaded.raw_name }}</td>
+                  <td class="center">{{ uploaded.date }}</td>
+                  <td class="center">
+                    <span class="label label-success">{{ uploaded.population }}</span>
+                  </td>
+                  <td class="center">
+                    <span class="label label-success">{{ uploaded.file_format|file_format }}</span>
+                  </td>
+                  <td class="center">
+		            {% if uploaded.status == -1 %}
+                    <div>
+                      <p>Failed</p>
+		            </div>
+
+		            {% elif uploaded.status >= 100 %}
+                    <div>
+                      <p>100&#37;</p>
+		            </div>
+
+		            {% else %}
+                    <div class="progress progress-striped progress-success active">
+		              <div class="bar" style="width: {{ uploaded.status }}&#37;;"></div>
+                    </div>
+		            {% endif %}
+                  </td>
+
+                  <td class="center">
+                    <!-- Delete  -->
+                    {% if not uploaded.status %}
+                    <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#deleteModal{{ forloop.counter0 }}">
+                      <span class="glyphicon glyphicon-trash"></span>Delete
+                    </button>
+                    {% endif %}
+
+                    <!-- deleteModal -->
+                    <div class="modal fade" id="deleteModal{{ forloop.counter0 }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title" id="deleteModalLabel">Modal title</h4>
+                          </div>
+                          <div class="modal-body">
+                            Really delete "{{ uploaded.name }}"?
+                          </div>
+                          <div class="modal-footer">
+			                <form action="{% url apps.upload.views.delete %}" method="POST" enctype="multipart/form-data">
+                              {% csrf_token %}
+			                  <input type="hidden" name="name" value="{{ uploaded.name }}">
+			                  <button class="btn btn-default" data-dismiss="modal">No.</button>
+			                  <button class="btn btn-primary" href="#" type="submit">Yes, delete this data.</button>
+			                </form>
+                          </div>
+                        </div><!-- /.modal-content -->
+                      </div><!-- /.modal-dialog -->
+                    </div><!-- /.modal -->
+		          </td>
+		        </tr>
+
+		        {% endfor %}
+		        {% endif %}
+              </tbody>
+            </table>
+
+	        <form id="uploaded-file-deleter" style="display: none;" action="{% url apps.upload.views.delete %}" method="POST" enctype="multipart/form-data">
+              {% csrf_token %}
+	          <input type="hidden" name="name" value="">
+	        </form>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %} <!-- end uploaded -->
+
 {% endblock %}
 
 {% block js %}
