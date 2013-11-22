@@ -121,7 +121,8 @@ If you have problems with signing up, please contact us at %(support_email)s
         try:
             user = django_User.objects.filter(username=user_id)[0]
             user.email_user(subject=email_title, message=email_body)
-        except:  # SMTPException
+        except Exception as e:  # SMTPException
+            log.error(e)
             # Send activation_key faild, so delete user
             with MongoClient(host=settings.MONGO_URI) as c:
                 user_info = c['pergenie']['user_info']
