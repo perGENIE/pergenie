@@ -49,4 +49,6 @@ $ python manage.py runserver 8080
   * Background pattern is downloaded from [subtlepatterns.com](//subtlepatterns.com/), [free to use](//subtlepatterns.com/about/)
 
 
-*
+* Data visualization
+
+  * Highcharts JS, [for free under the Creative Commons Attribution-NonCommercial 3.0 License](//shop.highsoft.com/highcharts.html)
