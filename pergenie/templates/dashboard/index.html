@@ -15,45 +15,45 @@
       <!--   <span class="glyphicon glyphicon-dashboard"></span> {% trans "Components" %} -->
       <!-- </div> -->
 
-      <a href="{% url apps.riskreport.views.index %}" role="button" class="btn btn-default btn-lg" id="riskreport-button">
-        <span class="glyphicon glyphicon-align-left"></span> RiskReport
+      <a href="{% url apps.riskreport.views.index %}" role="button" class="btn btn-default btn-square" id="riskreport-button">
+        <span class="glyphicon glyphicon-align-left icon-large"></span><br> RiskReport
       </a>
 
       {% if "population"|is_in_installed_my_apps %}
-      <a href="{% url apps.population.views.index %}" role="button" class="btn btn-default btn-lg" id="population-button">
-        <span class="glyphicon glyphicon-globe"></span> Population
-        <span class="badge badge-blue">&nbsp;&beta;&nbsp;</span>
+      <a href="{% url apps.population.views.index %}" role="button" class="btn btn-default btn-square" id="population-button">
+        <span class="glyphicon glyphicon-globe icon-large"></span><br> Population<!-- <br> -->
+        <!-- <span class="badge badge-blue">&nbsp;&beta;&nbsp;</span> -->
       </a>
       {% endif %}
 
-      {% if "mygene"|is_in_installed_my_apps %}
-      <a href="{% url apps.mygene.views.index %}" role="button" class="btn btn-default btn-lg" id="mygene-button">
-        <span class="glyphicon glyphicon-th-large"></span> MyGene
-        <span class="badge badge-blue">&nbsp;&beta;&nbsp;</span>
-      </a>
-      {% endif %}
+      <!-- {% if "mygene"|is_in_installed_my_apps %} -->
+      <!-- <a href="{% url apps.mygene.views.index %}" role="button" class="btn btn-default btn-lg" id="mygene-button"> -->
+      <!--   <span class="glyphicon glyphicon-th-large"></span> MyGene -->
+      <!--   <span class="badge badge-blue">&nbsp;&beta;&nbsp;</span> -->
+      <!-- </a> -->
+      <!-- {% endif %} -->
 
-      {% if "mycatalog"|is_in_installed_my_apps %}
-      <a href="{% url apps.mycatalog.views.index %}" role="button" class="btn btn-default btn-lg" id="mycatalog-button">
-        <span class="glyphicon glyphicon-th-large"></span> MyCatalog
-        <span class="badge badge-blue">&nbsp;&beta;&nbsp;</span>
-      </a>
-      {% endif %}
+      <!-- {% if "mycatalog"|is_in_installed_my_apps %} -->
+      <!-- <a href="{% url apps.mycatalog.views.index %}" role="button" class="btn btn-default btn-lg" id="mycatalog-button"> -->
+      <!--   <span class="glyphicon glyphicon-th-large"></span> MyCatalog -->
+      <!--   <span class="badge badge-blue">&nbsp;&beta;&nbsp;</span> -->
+      <!-- </a> -->
+      <!-- {% endif %} -->
 
       {% ifnotequal user.username|demouser_format "demo@pergenie.org" %}
       {% if "upload"|is_in_installed_my_apps %}
-      <a href="{% url apps.upload.views.index %}" role="button" class="btn btn-default btn-lg" id="upload-button">
-        <span class="glyphicon glyphicon-arrow-up"></span> Upload
+      <a href="{% url apps.upload.views.index %}" role="button" class="btn btn-default btn-square" id="upload-button">
+        <span class="glyphicon glyphicon-arrow-up icon-large"></span><br> Upload
       </a>
       {% endif %}
       {% endifnotequal %}
 
-      <a href="{% url apps.library.views.index %}" role="button" class="btn btn-default btn-lg" id="library-button">
-        <span class="glyphicon glyphicon-book"></span> Library
+      <a href="{% url apps.library.views.index %}" role="button" class="btn btn-default btn-square" id="library-button">
+        <span class="glyphicon glyphicon-book icon-large"></span><br> Library
       </a>
 
-      <a href="{% url apps.faq.views.index %}" role="button" class="btn btn-default btn-lg" id="faq-button">
-        <span class="glyphicon glyphicon-question-sign"></span> FAQ
+      <a href="{% url apps.faq.views.index %}" role="button" class="btn btn-default btn-square" id="faq-button">
+        <span class="glyphicon glyphicon-question-sign icon-large"></span><br> FAQ
       </a>
     </div>
 
@@ -100,6 +100,13 @@
                           </td>
                         </tr>
                     </table>
+
+
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-unlock"></span>
+                  {% if user %}{{ user.username|demouser_format }}{% endif %}
+                  <b class="caret"></b></a>
+
+
                   </div>
                 </div>
               </div>

@@ -69,10 +69,10 @@ _8
               <span class="icon-bar"></span>
               <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="{% url apps.dashboard.views.index %}"><img src="{% static 'images/logo.s.png' %}" alt="perGENIE"></a>
+            <!-- <a class="navbar-brand" href="{% url apps.dashboard.views.index %}"><\!-- <img src="{% static 'images/logo.s.png' %}" alt="perGENIE"> -\-></a> -->
           </div>
           <div class="collapse navbar-collapse">
-            <ul class="nav navbar-nav">
+            <ul class="nav navbar-nav navbar-right">
               <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Components<b class="caret"></b></a>
 
@@ -102,23 +102,9 @@ _8
 
                   <li><a href="{% url apps.library.views.index %}"><span class="glyphicon glyphicon-book"></span> Library</a></li>
                   <li><a href="{% url apps.faq.views.index %}"><span class="glyphicon glyphicon-question-sign"></span> FAQ</a></li>
-                </ul>
-              </li>
 
-              <li id="docs-trigger">
-                <button style="padding-left: 10px; margin-top: 14px" class="btn btn-inverse btn-mini" type="button" onclick="startIntro()">
-                  <span id="dtrigger">{% trans "Show navigation" %}</span>
-                </button>
-              </li>
-            </ul>
+                  <li class="divider"></li>
 
-            <ul class="nav navbar-nav navbar-right">
-              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-unlock"></span>
-                  {% if user %}{{ user.username|demouser_format }}{% endif %}
-                  <b class="caret"></b></a>
-
-                <ul class="dropdown-menu">
                   {% if is_registerable %}
                   {% ifequal user.username|demouser_format "demo@pergenie.org" %}
                   <li><a href="{% url apps.frontend.views.register %}"><span class="glyphicon glyphicon-cog"></span> {% trans "Register your account, for free!" %}</a></li>
@@ -126,6 +112,7 @@ _8
                   {% endif %}
 
                   <li class="divider"></li>
+
                   <li>
                     {% ifequal user.username|demouser_format "demo@pergenie.org" %}
                     <a href="{% url apps.frontend.views.logoutdemo %}"><span class="glyphicon glyphicon-off"></span> {% trans "Logout" %}</a>
@@ -133,8 +120,15 @@ _8
                     <a href="{% url apps.frontend.views.logoutdemo %}"><span class="glyphicon glyphicon-off"></span> {% trans "Logout" %}</a>
                     {% endifequal %}
                   </li>
+
                 </ul>
               </li>
+
+              <!-- <li id="docs-trigger"> -->
+              <!--   <button style="padding-left: 10px; margin-top: 14px" class="btn btn-inverse btn-mini" type="button" onclick="startIntro()"> -->
+              <!--     <span id="dtrigger">{% trans "Show navigation" %}</span> -->
+              <!--   </button> -->
+              <!-- </li> -->
             </ul>
 
           </div><!--/.nav-collapse -->
