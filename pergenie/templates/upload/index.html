@@ -227,37 +227,46 @@
                         </div>
 		                {% endif %}
                       </td>
-                      <td class="center">
-                        <div id="deleteModal{{ forloop.counter0 }}" class="modal hide fade in delete" style="display: none;">
-                          <div class="modal-header"></div>
-                          <div class="modal-body"><p>Really delete "{{ uploaded.name }}"?</p></div>
-                          <div class="modal-footer">
-			                <form action="{% url apps.upload.views.delete %}" method="POST" enctype="multipart/form-data">
-                              {% csrf_token %}
-			                  <input type="hidden" name="name" value="{{ uploaded.name }}">
 
-			                  <button class="btn" data-dismiss="modal">No.</button>
-			                  <button class="btn btn-primary" href="#" type="submit">Yes, delete this data.</button>
-			                </form>
-                          </div>
-                        </div>
-                        {% if uploaded.status %}
-                        <a data-toggle="modal" href="#deleteModal{{ forloop.counter0 }}" class="btn btn-danger">
-                          <span class="glyphicon glyphicon-trash icon-white"></span>Delete
-                          {% else %}
-                          <!--                     <a href="#" class="btn btn-danger disabled"> -->
-                          <a data-toggle="modal" href="#deleteModal{{ forloop.counter0 }}" class="btn btn-danger">
-                            <span class="glyphicon glyphicon-trash icon-white"></span>Delete
-                            {% endif%}
+                      <td class="center">
+                        <!-- Delete  -->
+                        {% if not uploaded.status %}
+                        <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#deleteModal{{ forloop.counter0 }}">
+                          <span class="glyphicon glyphicon-trash"></span>Delete
+                        </button>
+                        {% endif %}
+
+                        <!-- deleteModal -->
+                        <div class="modal fade" id="deleteModal{{ forloop.counter0 }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                          <div class="modal-dialog">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                <h4 class="modal-title" id="deleteModalLabel">Modal title</h4>
+                              </div>
+                              <div class="modal-body">
+                                Really delete "{{ uploaded.name }}"?
+                              </div>
+                              <div class="modal-footer">
+			                    <form action="{% url apps.upload.views.delete %}" method="POST" enctype="multipart/form-data">
+                                  {% csrf_token %}
+			                      <input type="hidden" name="name" value="{{ uploaded.name }}">
+			                      <button class="btn btn-default" data-dismiss="modal">No.</button>
+			                      <button class="btn btn-primary" href="#" type="submit">Yes, delete this data.</button>
+			                    </form>
+                              </div>
+                            </div><!-- /.modal-content -->
+                          </div><!-- /.modal-dialog -->
+                        </div><!-- /.modal -->
 		              </td>
 		            </tr>
+
 		            {% endfor %}
 		            {% endif %}
                   </tbody>
                 </table>
 
-	            <form id="uploaded-file-deleter" style="display: none;"
-		              action="{% url apps.upload.views.delete %}" method="POST" enctype="multipart/form-data">
+	            <form id="uploaded-file-deleter" style="display: none;" action="{% url apps.upload.views.delete %}" method="POST" enctype="multipart/form-data">
                   {% csrf_token %}
 	              <input type="hidden" name="name" value="">
 	            </form>
