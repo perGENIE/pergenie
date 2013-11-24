@@ -8,67 +8,42 @@
 {% block main_container %}
 <div class="row">
   <div class="col-md-12">
-    <div class="padded">
-      <div class="content-box">
+    <div class="content-box centered">
 
-        <!-- <a href="{% url apps.frontend.views.index %}"> -->
-        <!--   <img class="login_logo" src="{% static 'images/logo.png' %}"></a> -->
-        <form class="form-horizontal" role="form" action="{% url apps.frontend.views.register %}" method="POST">
-          {% csrf_token %}
-          <div class="form-group">
-            <label for="user_id" class="col-sm-2 control-label">Email</label>
-            <div class="col-sm-10">
-              <input type="email" class="form-control" id="user_id" name="user_id" placeholder="Email">
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="password1" class="col-sm-2 control-label">Password</label>
-            <div class="col-sm-10">
-              <input type="password" class="form-control" id="password1" name="password1" placeholder="Password">
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="password2" class="col-sm-2 control-label">Confirm Password</label>
-            <div class="col-sm-10">
-              <input type="password" class="form-control" id="password2" name="password2" placeholder="Password">
-            </div>
-          </div>
+      <form class="form-signin" role="form" action="{% url apps.frontend.views.register %}" method="POST">
+        {% csrf_token %}
 
-          <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-10">
-              {% if browser_language == "ja" %}
-              私は、<a href="{% url apps.frontend.views.about_service %}" target="_blank">perGENIEのサービスについて</a>を読み
-              {% else %}
-              I read <a href="{% url apps.frontend.views.about_service %}" target="_blank">About service of perGENIE</a>, and
-              {% endif %}
+        <div class="form-signin-heading">
+          <a href="{% url apps.frontend.views.index %}"><img class="login_logo" src="{% static 'images/logo.png' %}"></a>
+        </div>
 
-              <div class="checkbox">
-                <label>
-                  <input type="checkbox" id="terms_ok_0" name="terms_ok_0" value="terms_ok_0"> {% trans " I accept it." %}
-                </label>
-              </div>
-              <div class="checkbox">
-                <label>
-                  <input type="checkbox" id="terms_ok_1" name="terms_ok_1" value="terms_ok_1">
-                  {% trans " Especially, I accept that the services of perGENIE are NOT medical diagnosis; they are jsut experimental attempts." %}
-                </label>
-              </div>
-            </div>
-          </div>
+        <input type="email" class="form-control" id="user_id" name="user_id" placeholder="Email">
+        <input type="password" class="form-control" id="password1" name="password1" placeholder="Password">
+        <input type="password" class="form-control" id="password2" name="password2" placeholder="Confirm Password">
 
-          <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-10">
-              <button type="submit" class="btn btn-default">{% trans "Register" %}</button>
-            </div>
-          </div>
-        </form>
+        {% if browser_language == "ja" %}
+        私は、<a href="{% url apps.frontend.views.about_service %}" target="_blank">perGENIEのサービスについて</a>を読み
+        {% else %}
+        I read <a href="{% url apps.frontend.views.about_service %}" target="_blank">About service of perGENIE</a>, and
+        {% endif %}
+
+        <label class="checkbox">
+          <input type="checkbox" id="terms_ok_0" name="terms_ok_0" value="terms_ok_0"> {% trans " I accept it." %}
+        </label>
+        <label class="checkbox">
+          <input type="checkbox" id="terms_ok_1" name="terms_ok_1" value="terms_ok_1">
+          {% trans " Especially, I accept that the services of perGENIE are NOT medical diagnosis; they are jsut experimental attempts." %}
+        </label>
 
         {% if err %}
         <div class="alert alert-danger">
           <strong>Error!</strong> {{ err }}
         </div>
         {% endif %}
-      </div>
+
+        <button type="submit" class="btn btn-lg btn-primary btn-block">{% trans "Register" %}</button>
+
+      </form>
     </div>
   </div>
 </div>
