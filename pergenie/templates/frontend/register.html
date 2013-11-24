@@ -21,11 +21,15 @@
         <input type="password" class="form-control" id="password1" name="password1" placeholder="Password">
         <input type="password" class="form-control" id="password2" name="password2" placeholder="Confirm Password">
 
-        {% if browser_language == "ja" %}
-        私は、<a href="{% url apps.frontend.views.about_service %}" target="_blank">perGENIEのサービスについて</a>を読み
-        {% else %}
-        I read <a href="{% url apps.frontend.views.about_service %}" target="_blank">About service of perGENIE</a>, and
-        {% endif %}
+        <div class="form-signin-msg">
+          <p>
+            {% if browser_language == "ja" %}
+            私は、<a href="{% url apps.frontend.views.about_service %}" target="_blank">perGENIEのサービスについて</a>を読み
+            {% else %}
+            I read <a href="{% url apps.frontend.views.about_service %}" target="_blank">About service of perGENIE</a>, and
+            {% endif %}
+          </p>
+        </div>
 
         <label class="checkbox">
           <input type="checkbox" id="terms_ok_0" name="terms_ok_0" value="terms_ok_0"> {% trans " I accept it." %}
@@ -41,7 +45,7 @@
         </div>
         {% endif %}
 
-        <button type="submit" class="btn btn-lg btn-primary btn-block">{% trans "Register" %}</button>
+        <button type="submit" class="btn btn-lg btn-primary btn-block" name="commit">{% trans "Register" %}</button>
 
       </form>
     </div>
