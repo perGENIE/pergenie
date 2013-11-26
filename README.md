@@ -41,6 +41,36 @@ $ python manage.py runserver 8080
 ```
 
 
+## CUI
+
+### Batch-import
+
+To batch-import genome files,
+
+   1. Place genome files as `/path_to_genome_file_dir/file_format/genome_file`.
+      For example,
+
+      $ ls ~/knmkr/genomes/vcf_whole_genome
+      genome1.vcf genome2.vcf genome3.vcf
+
+   2. Set `user_id` and path to genome file directory in Django settings.
+      For example, in pergenie/settings/develop.py,
+
+      CRON_DIRS = {'knmkr@pergenie.org': ['~/knmkr/genomes']}
+
+   3. Run batch-import command
+
+      $ manage.py import --genomes
+
+
+### Delete genome data
+
+To delete genome data (data_info in DB, user_id.variants in DB, and genome file), run following command with user_id
+
+   $ lib/mongo/utils/mongo_variants_utils.py --drop user_id
+
+
+
 ## Notice
 
 * Theme
