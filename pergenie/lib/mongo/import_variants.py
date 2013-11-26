@@ -84,8 +84,9 @@ def import_variants(file_path, population, file_format, user_id, minimum_import=
 
                         # Minimum import
                         if minimum_import:
-                            continue
-
+                            if not data['rs'] in uniq_snps:
+                                continue
+                            log.debug("ok:{rs}".format(rs=data['rs']))
 
                         # sub_data = {k: data[k] for k in ('chrom', 'pos', 'rs', 'genotype')}  # py27
                         sub_data = dict((k, data[k]) for k in ('chrom', 'pos', 'rs', 'genotype'))  # py26

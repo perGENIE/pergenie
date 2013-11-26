@@ -222,11 +222,11 @@
 
                   <td class="center">
                     <!-- Delete  -->
-                    {% if not uploaded.status %}
+                    <!-- {% if uploaded.status %} -->
                     <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#deleteModal{{ forloop.counter0 }}">
                       <span class="glyphicon glyphicon-trash"></span>Delete
                     </button>
-                    {% endif %}
+                    <!-- {% endif %} -->
 
                     <!-- deleteModal -->
                     <div class="modal fade" id="deleteModal{{ forloop.counter0 }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
