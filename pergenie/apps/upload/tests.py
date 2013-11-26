@@ -45,6 +45,10 @@ class SimpleTest(TestCase):
 
     def test_celery_job_add(self):
         """Check if celery-job works
+
+        * if fails with `error: [Errno 61] Connection refused]`, rabbitmq-server may not be working
+        * if fails with `AssertionError: False != True`, celery may not be working
+
         """
         from lib.tasks import add
         from time import sleep

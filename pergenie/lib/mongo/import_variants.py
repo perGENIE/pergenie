@@ -11,12 +11,19 @@ bq = Bioq(settings.DATABASES['bioq']['HOST'],
           settings.DATABASES['bioq']['USER'],
           settings.DATABASES['bioq']['PASSWORD'],
           settings.DATABASES['bioq']['NAME'])
+from lib.api.gwascatalog import GWASCatalog
+gwascatalog = GWASCatalog()
 from utils import clogging
 log = clogging.getColorLogger(__name__)
 
 
-def import_variants(file_path, population, file_format, user_id):
+def import_variants(file_path, population, file_format, user_id, minimum_import=True):
     """Import variants (genotypes) file, into MongoDB.
+
+    Changelog:
+
+    * minimum import (only import GWAS Catalog SNPs)
+
     """
 
     file_name = os.path.basename(file_path)
@@ -52,6 +59,10 @@ def import_variants(file_path, population, file_format, user_id):
 
         log.info('Start importing ...')
 
+        if minimum_import:
+            uniq_snps = set(gwascatalog.get_uniq_snps_list())
+            print uniq_snps
+
         with open(file_path, 'rb') as fin:
             try:
                 p = {'vcf_whole_genome': VCFParser,
@@ -70,6 +81,12 @@ def import_variants(file_path, population, file_format, user_id):
                         data['rs'] = bq.get_rs(data['chrom'], data['pos'])
 
                     if data['rs']:
+
+                        # Minimum import
+                        if minimum_import:
+                            continue
+
+
                         # sub_data = {k: data[k] for k in ('chrom', 'pos', 'rs', 'genotype')}  # py27
                         sub_data = dict((k, data[k]) for k in ('chrom', 'pos', 'rs', 'genotype'))  # py26
                         users_variants.insert(sub_data)
