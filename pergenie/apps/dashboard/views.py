@@ -18,6 +18,7 @@ log = getColorLogger(__name__)
 def index(request):
     user_id = request.user.username
     msg, err, = '', ''
+    intro_type = ''
 
     while True:
         gwascatalog.check_gwascatalog_imported()
