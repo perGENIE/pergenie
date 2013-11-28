@@ -40,6 +40,13 @@ class RiskReport(object):
         riskreports = self.db['riskreports'][file_uuid]
         return riskreports
 
+    def get_all_riskreports(self, user_id):
+        all_riskreports = []
+        user_files = genomes.get_data_infos(user_id)
+        for file_uuid in [x['file_uuid'] for x in user_files]:
+            all_riskreports.append(self.db['riskreports'][file_uuid])
+        return all_riskreports
+
     def import_riskreport(self, info):
         if info['user_id'].startswith(settings.DEMO_USER_ID): info['user_id'] = settings.DEMO_USER_ID
 
