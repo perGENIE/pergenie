@@ -2,6 +2,8 @@ import sys, os
 import subprocess
 from pymongo import MongoClient
 from django.conf import settings
+from lib.api.genomes import Genomes
+genomes = Genomes()
 from utils import clogging
 log = clogging.getColorLogger(__name__)
 
@@ -13,7 +15,7 @@ def projection(scale, info):
 
     with MongoClient(host=settings.MONGO_URI) as connection:
         db = connection['pergenie']
-        variants = db['variants'][info['user_id']][info['name']]
+        variants = genomes.get_variants(info['user_id'], info['name'])
 
         user_snps_list = variants.find({'rs': {'$in': [int(s[2:-2]) for s in pca_snps]}})
         user_snps = dict((data['rs'], data) for data in user_snps_list)

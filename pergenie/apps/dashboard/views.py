@@ -1,6 +1,6 @@
 import sys, os
 from django.contrib.auth.decorators import login_required
-from django.views.generic.simple import direct_to_template
+from django.shortcuts import render
 from django.utils.translation import ugettext as _
 from django.conf import settings
 
@@ -53,4 +53,4 @@ def index(request):
                 intro_type=intro_type,
                 is_registerable=settings.IS_REGISTERABLE)
 
-    return direct_to_template(request, 'dashboard/index.html', msgs)
+    return render(request, 'dashboard/index.html', msgs)

@@ -4,14 +4,14 @@ import pymongo
 import magic
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, Http404
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.utils import simplejson
 from django.views.decorators.http import require_http_methods
-from django.views.generic.simple import direct_to_template
 from django.utils.translation import ugettext as _
 from django.conf import settings
 from apps.upload.forms import UploadForm
-
+from lib.api.genomes import Genomes
+genomes = Genomes()
 from lib.common import clean_file_name
 from lib.tasks import qimport_variants
 from utils import clogging
@@ -163,10 +163,10 @@ def index(request):
     # if err:
     #     log.error('err: {0}'.format(err))
 
-    return direct_to_template(request, 'upload/index.html',
-                              dict(msg=msg, err=err, msgs=msgs, errs=errs, uploadeds=uploadeds,
-                                   do_intro=do_intro,
-                                   allowed_upload_genomefile_count=settings.UPLOAD_GENOMEFILE_COUNT))
+    return render(request, 'upload/index.html',
+                  dict(msg=msg, err=err, msgs=msgs, errs=errs, uploadeds=uploadeds,
+                       do_intro=do_intro,
+                       allowed_upload_genomefile_count=settings.UPLOAD_GENOMEFILE_COUNT))
 
 
 @login_required
@@ -182,8 +182,10 @@ def delete(request):
         db = connection['pergenie']
         data_info = db['data_info']
 
-        # delete collection `variants.user_id.filename`
-        target_collection = 'variants.{0}.{1}'.format(user_id, name)
+        # delete Mongo Collection
+        target_collection = genomes.get_variants(user_id, name).name
+        log.debug(target_collection)
+
         log.debug('target is in db {0}'.format(target_collection in db.collection_names()))
         db.drop_collection(target_collection)
         log.debug('target is in db {0}'.format(target_collection in db.collection_names()))

@@ -5,17 +5,52 @@ from django.conf import settings
 from lib.mysql.bioq import Bioq
 from lib.api.gwascatalog import GWASCatalog
 gwascatalog = GWASCatalog()
-from utils import clogging
+from lib.utils import clogging
 log = clogging.getColorLogger(__name__)
 
 
 class Genomes(object):
+    """
+
+    Changelog
+
+    - Use UUID for filenames.
+
+      - `get_variants` returns Mongo Collection for `user_id` and `file_name`
+      - `get_file_uuid` returns `file_uuid` (UUID string)
+    """
+
+
+
     def __init__(self):
         self.db_select = settings.DB_SELECT['genomes']
         self.bq = Bioq(settings.DATABASES['bioq']['HOST'],
                        settings.DATABASES['bioq']['USER'],
                        settings.DATABASES['bioq']['PASSWORD'],
                        settings.DATABASES['bioq']['NAME'])
+
+    def get_file_uuid(self, user_id, file_name):
+        with MongoClient(host=settings.MONGO_URI) as c:
+            db = c['pergenie']
+            data_info = db['data_info']
+            file_uuid = data_info.find_one({'user_id': user_id, 'name': file_name})['file_uuid']
+            return file_uuid
+
+    def get_variants(self, user_id, file_name):
+        with MongoClient(host=settings.MONGO_URI) as c:
+            db = c['pergenie']
+            file_uuid = self.get_file_uuid(user_id, file_name)
+            variants = db['variants'][file_uuid]
+            return variants
+
+    def get_all_variants(self, user_id):
+        with MongoClient(host=settings.MONGO_URI) as c:
+            db = c['pergenie']
+            all_variants = []
+            user_files = self.get_data_infos(user_id)
+            for file_uuid in [x['file_uuid'] for x in user_files]:
+                all_variants.append(db['variants'][file_uuid])
+            return all_variants
 
     def get_freq(self, user_id, locs, loctype='rs', rec=None):
         # Build query
@@ -69,10 +104,8 @@ class Genomes(object):
         genotypes = dict()
         locs = list(set(locs))
 
-        if self.db_select == 'mongodb':
-            with MongoClient(host=settings.MONGO_URI) as c:
-                variants = c['pergenie']['variants'][user_id][file_name]
-                records = variants.find({loctype: {'$in': locs}})
+        variants = self.get_variants(user_id, file_name)  #
+        records = variants.find({loctype: {'$in': locs}})
 
         if records:
             for record in records:
@@ -111,7 +144,7 @@ class Genomes(object):
         # If fileformat is SNP array, always `N/A`.
         na = 'na'
         if file_format == 'andme':
-            log.debug('in andme region, but genotype is na')
+            # log.debug('in andme region, but genotype is na')
             return na
 
         # If rec(gwascatalog record) is provided, use it. otherwise seach mongo.catalog.
@@ -179,14 +212,14 @@ class Genomes(object):
         """
         people = set()
 
-        if self.db_select == 'mongodb':
-            with MongoClient(host=settings.MONGO_URI) as c:
-                data_info = c['pergenie']['data_info']
-                infos = list(data_info.find({'user_id': user_id}))
-                for info in infos:
-                    variants = c['pergenie']['variants'][user_id][info['name']]
-                    records = list(variants.find(query))
-                    if records:
-                        people.update([info['raw_name']])
+        # FIXME: "get data_info then, get_vatiants" is redundant (searching database twice)...
+        with MongoClient(host=settings.MONGO_URI) as c:
+            data_info = c['pergenie']['data_info']
+            infos = list(data_info.find({'user_id': user_id}))
+            for info in infos:
+                variants = self.get_variants(user_id, info['name'])
+                records = list(variants.find(query))
+                if records:
+                    people.update([info['raw_name']])
 
         return list(people)

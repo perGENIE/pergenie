@@ -4,7 +4,7 @@ import string
 from pprint import pprint as pp
 from django.conf import settings
 from lib.mongo.mutate_fasta import MutateFasta
-from utils import clogging
+from lib.utils import clogging
 log = clogging.getColorLogger(__name__)
 
 

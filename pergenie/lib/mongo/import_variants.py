@@ -1,6 +1,7 @@
 import sys, os
 import datetime
 import subprocess
+from uuid import uuid4 as uuid
 from pymongo import MongoClient, ASCENDING
 from common import clean_file_name
 from parser.VCFParser import VCFParser, VCFParseError
@@ -36,7 +37,11 @@ def import_variants(file_path, population, file_format, user_id, minimum_import=
 
     with MongoClient(host=settings.MONGO_URI) as con:
         db = con['pergenie']
-        users_variants = db['variants'][user_id][file_name_cleaned]
+
+        # Use UUID for filename
+        file_uuid = uuid().hex
+        users_variants = db['variants'][file_uuid]
+
         data_info = db['data_info']
 
         # Ensure that this variants file has not been imported
@@ -44,7 +49,8 @@ def import_variants(file_path, population, file_format, user_id, minimum_import=
             db.drop_collection(users_variants)
             log.warn('Dropped old collection of {0}'.format(file_name_cleaned))
 
-        info = {'user_id': user_id,
+        info = {'file_uuid': file_uuid,
+                'user_id': user_id,
                 'name': file_name_cleaned,
                 'raw_name': file_name,
                 'date': datetime.datetime.today(),

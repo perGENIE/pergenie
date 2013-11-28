@@ -5,12 +5,20 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic.simple import direct_to_template
 from django.utils import translation
 from django.utils.translation import ugettext as _
-from django.conf import settings
 from models import *
-
+from django.conf import settings
+from lib.mysql.bioq import Bioq
+bq = Bioq(settings.DATABASES['bioq']['HOST'],
+          settings.DATABASES['bioq']['USER'],
+          settings.DATABASES['bioq']['PASSWORD'],
+          settings.DATABASES['bioq']['NAME'])
+from lib.mongo.mutate_fasta import MutateFasta
+fa = MutateFasta(settings.PATH_TO_REFERENCE_FASTA)
 from lib.utils.io import pickle_load_obj
 from lib.api.gwascatalog import GWASCatalog
 gwascatalog = GWASCatalog()
+from lib.api.genomes import Genomes
+genomes = Genomes()
 from lib.utils.clogging import getColorLogger
 log = getColorLogger(__name__)
 
@@ -119,10 +127,6 @@ def snps(request, rs):
 
     user_id = request.user.username
     msg, err = '', ''
-    bq = Bioq(settings.DATABASES['bioq']['HOST'],
-              settings.DATABASES['bioq']['USER'],
-              settings.DATABASES['bioq']['PASSWORD'],
-              settings.DATABASES['bioq']['NAME'])
 
     with pymongo.MongoClient(host=settings.MONGO_URI) as c:
         db = c['pergenie']
@@ -133,7 +137,8 @@ def snps(request, rs):
         # data from uploaded files
         variants = {}
         for file_name in file_names:
-            variant = db['variants'][user_id][file_name].find_one({'rs': rs})
+            user_variants = genomes.get_variants(user_id, file_name)
+            variant = user_variants.find_one({'rs': rs})
             variants[file_name] = variant['genotype'] if variant else 'NA'
 
         # data from dbsnp
@@ -142,7 +147,7 @@ def snps(request, rs):
         log.debug('dbsnp_record {0}'.format(dbsnp_record))
 
         # TODO: data from HapMap
-        # * allele freq by polulation (with allele strand dbsnp oriented)
+        # * allle freq by polulation (with allele strand dbsnp oriented)
         # * LD data(r^2)
 
     # data from gwascatalog
@@ -173,10 +178,14 @@ def snps(request, rs):
     bq_snp_summary = bq.get_snp_summary(rs)
     ref = bq_snp_summary['ancestral_alleles']
 
+    # FIXME:
     # This may be buggy, when allele freq is not available...
-    alleles.remove(ref)
+    if ref in alleles:
+        alleles.remove(ref)
     alts = list(alleles)
-    seq = get_seq(bq_snp_summary['unique_chr'], bq_snp_summary['unique_pos_bp'])
+    seq = fa._slice_fasta(bq_snp_summary['unique_chr'],
+                          bq_snp_summary['unique_pos_bp'],
+                          bq_snp_summary['unique_pos_bp'])
 
     # Context
     # is in a gene
