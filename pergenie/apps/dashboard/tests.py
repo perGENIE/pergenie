@@ -1,14 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from pprint import pprint
-from pymongo import MongoClient
-
-from django.contrib.auth.models import User
-from django.test import TestCase
-from django.test.client import Client
-from django.conf import settings
-
-from lib.mongo.import_variants import import_variants
+# from pymongo import MongoClient
+# from django.conf import settings
 from lib.test import LoginUserTestCase
 from lib.utils.clogging import getColorLogger
 log = getColorLogger(__name__)
@@ -19,7 +12,8 @@ class SimpleTestCase(LoginUserTestCase):
         self.app_name = __name__.split('.')[1]
 
     def test_login_required(self):
-        self._test_login_required(self.app_name)
+        log.info('test_login_required')
+        self._test_login_required('/{app_name}/'.format(app_name=self.app_name))
 
 
 

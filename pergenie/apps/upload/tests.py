@@ -1,47 +1,20 @@
 # -*- coding: utf-8 -*-
 
-from django.test import TestCase
-from django.contrib.auth.models import User
-from django.test.client import Client
-from django.conf import settings
+# from pymongo import MongoClient
+# from django.conf import settings
+from lib.test import LoginUserTestCase
+from lib.utils.clogging import getColorLogger
+log = getColorLogger(__name__)
 
-# import pymongo
 
-
-class SimpleTest(TestCase):
-    def setUp(self):
-        # create test user
-        self.client = Client()
-        self.test_user_id = settings.TEST_USER_ID
-        self.test_user_password = settings.TEST_USER_PASSWORD
-        self.dummy_user_id = settings.TEST_DUMMY_USER_ID
-        self.failUnlessEqual(bool(self.test_user_id != self.dummy_user_id), True)
-        user = User.objects.create_user(self.test_user_id,
-                                        '',
-                                        self.test_user_password)
-        # TDOO: >>> csrf_client = Client(enforce_csrf_checks=True)
+class SimpleTestCase(LoginUserTestCase):
+    def _setUp(self):
+        self.app_name = __name__.split('.')[1]
 
     def test_login_required(self):
-        for page in ['/upload/', '/upload/status']:
-            self.client.logout()
-            # without login -> redirect to /login/?next=/upload/
-            response = self.client.get(page)
-            self.failUnlessEqual(response.status_code, 302)
-
-            # user does not exist
-            self.client.login(username=self.dummy_user_id, password='anonymousLogin')
-            response = self.client.get(page)
-            self.failUnlessEqual(response.status_code, 302)
-
-            # incorrect password
-            self.client.login(username=self.test_user_id, password='incorrectPassword')
-            response = self.client.get(page)
-            self.failUnlessEqual(response.status_code, 302)
-
-            # success
-            self.client.login(username=self.test_user_id, password=self.test_user_password)
-            response = self.client.get(page)
-            self.failUnlessEqual(response.status_code, 200)
+        log.info('test_login_required')
+        self._test_login_required('/upload/')
+        self._test_login_required('/upload/status')
 
     def test_celery_job_add(self):
         """Check if celery-job works
