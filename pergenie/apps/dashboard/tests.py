@@ -1,58 +1,26 @@
 # -*- coding: utf-8 -*-
 
+from pprint import pprint
+from pymongo import MongoClient
+
 from django.contrib.auth.models import User
 from django.test import TestCase
 from django.test.client import Client
 from django.conf import settings
 
-from pprint import pprint
-import pymongo
+from lib.mongo.import_variants import import_variants
+from lib.test import LoginUserTestCase
+from lib.utils.clogging import getColorLogger
+log = getColorLogger(__name__)
 
 
-class SimpleTestCase(TestCase):
-    def setUp(self):
-        # create test user
-        self.client = Client()
-        self.test_user_id = settings.TEST_USER_ID
-        self.test_user_password = settings.TEST_USER_PASSWORD
-        self.dummy_user_id = settings.TEST_DUMMY_USER_ID
-        self.failUnlessEqual(bool(self.test_user_id != self.dummy_user_id), True)
-        user = User.objects.create_user(self.test_user_id,
-                                        '',
-                                        self.test_user_password)
-
-        # #
-        # with pymongo.MongoClient(host=settings.MONGO_URI) as connection:
-        #     db = connection['pergenie']
-        #     catalog_info = db['catalog_info']
-        #     data_info = db['data_info']
-
-        #     # init test user
-        #     test_user_data_info = data_info.find_one({'user_id': self.test_user_id})
-        #     self.failUnlessEqual(bool(test_user_data_info == None), True)
-
+class SimpleTestCase(LoginUserTestCase):
+    def _setUp(self):
+        self.app_name = __name__.split('.')[1]
 
     def test_login_required(self):
-        # attempt to access /dashboard/ without login
-        # -> redirect to /login/?next=/dashboard/
-        response = self.client.get('/dashboard/')
-        self.failUnlessEqual(response.status_code, 302)
+        self._test_login_required(self.app_name)
 
-        # attempt to access /dashboard/ with login
-        # but, user does not exist
-        self.client.login(username=self.dummy_user_id, password='anonymousLogin')
-        response = self.client.get('/dashboard/')
-        self.failUnlessEqual(response.status_code, 302)
-
-        # but, incorrect password
-        self.client.login(username=self.test_user_id, password='incorrectPassword')
-        response = self.client.get('/dashboard/')
-        self.failUnlessEqual(response.status_code, 302)
-
-        # success
-        self.client.login(username=self.test_user_id, password=self.test_user_password)
-        response = self.client.get('/dashboard/')
-        self.failUnlessEqual(response.status_code, 200)
 
 
     # def test_menu_bar(self):
@@ -75,12 +43,6 @@ class SimpleTestCase(TestCase):
 # </a>'''.format(self.test_user_id)
 #         self.failUnlessEqual(bool(menu_bar_user_id in response.content), True)
 
-
-    def test_logout(self):
-        self.client.login(username=self.test_user_id, password=self.test_user_password)
-        response = self.client.get('/dashboard/')
-        response = self.client.get('/logout/')# , follow=True)
-        self.failUnlessEqual(response.status_code, 302)
 
         # TODO: check cookies & session data
 
