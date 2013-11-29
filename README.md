@@ -71,6 +71,18 @@ To delete genome data (data_info in DB, user_id.variants in DB, and genome file)
 
 
 
+## Web-documentation
+
+[perGENIE documentation]() is built by [Sphinx - Python documentation generator](//sphinx-doc.org/).
+
+
+To build documentation locally, install `omake` and run
+
+   omake -P --verbose
+
+in `perGENIE/web-documentation` directory.
+
+
 ## Notice
 
 * Theme
