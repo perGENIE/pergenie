@@ -9,6 +9,9 @@ syntax: glob
 *.orig
 *_flymake.py
 
+# Documents (Sphix)
+web-documentation/_build
+
 # Packages
 *.egg
 *.egg-info
@@ -43,6 +46,7 @@ pergenie/fabfiles/passwd/
 data/gwascatalog.20*
 data/large_dbs/
 data/summary/
+data/mycatalog/
 static/vendor
 _static/
 misc
