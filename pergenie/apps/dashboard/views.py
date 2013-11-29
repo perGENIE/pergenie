@@ -1,3 +1,9 @@
+"""
+.. module:: views
+   :synopsis: A useful module indeed.
+
+"""
+
 import sys, os
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
@@ -16,6 +22,33 @@ log = getColorLogger(__name__)
 
 @login_required
 def index(request):
+    """This function does something.
+
+    Args:
+       name (str):  The name to use.
+
+    Kwargs:
+       state (bool): Current state to be in.
+
+    Returns:
+       int.  The return code::
+
+          0 -- Success!
+          1 -- No good.
+          2 -- Try again.
+
+    Raises:
+       AttributeError, KeyError
+
+    A really great idea.  A way you might use me is
+
+    >>> print public_fn_with_googley_docstring(name='foo', state=None)
+    0
+
+    BTW, this always returns 0.  **NEVER** use with :class:`MyPublicClass`.
+
+    """
+
     user_id = request.user.username
     msg, err, = '', ''
     intro_type = ''
