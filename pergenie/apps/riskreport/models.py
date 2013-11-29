@@ -21,10 +21,10 @@ def get_risk_values_for_indexpage(tmp_info, category=[], is_higher=False, is_low
             log.info('update riskreport')
             riskreport.import_riskreport(tmp_info)
 
-        users_reports = c['pergenie']['reports'][tmp_info['user_id']][tmp_info['name']]
+        users_report = riskreport.get_riskreport(tmp_info['user_id'], tmp_info['name'])
 
         # get traits, sorted by RR
-        founds = list(users_reports.find().sort('RR', DESCENDING))
+        founds = list(users_report.find().sort('RR', DESCENDING))
 
     # in category (=disease)
     records = [record for record in founds if TRAITS2CATEGORY.get(record['trait'], 'NA') in category]
@@ -55,10 +55,10 @@ def get_risk_infos_for_subpage(info, trait=None, study=None):
         catalog = gwascatalog.get_latest_catalog()
 
         # TODO: check if riskreport.<user>.<file_name> exist and latest in data_info
-        users_reports = c['pergenie']['reports'][info['user_id']][info['name']]
+        users_report = riskreport.get_riskreport(info['user_id'], info['name'])
 
         if study and trait:
-            record = users_reports.find_one({'trait': trait})
+            record = users_report.find_one({'trait': trait})
             record['catalog_info'] = catalog.find_one({'study': study})
 
             # Get SNP infos (RR, genotype, etc...) for *this* stydy.

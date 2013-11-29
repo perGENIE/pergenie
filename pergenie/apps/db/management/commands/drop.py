@@ -12,6 +12,8 @@ from django.core.management.base import BaseCommand
 from django.conf import settings
 from lib.api.genomes import Genomes
 genomes = Genomes()
+from lib.api.riskreport import RiskReport
+riskreport = RiskReport()
 from lib.utils import clogging
 log = clogging.getColorLogger(__name__)
 
@@ -24,7 +26,7 @@ class Command(BaseCommand):
             help=""
         ),
         make_option(
-            "--reports",
+            "--riskreports",
             action='store_true',
             help=""
         ),
@@ -71,9 +73,18 @@ class Command(BaseCommand):
                     for target in targets:
                         data_info.remove(target)
 
-            if options["reports"]:
-                print 'sorry, not implemented yet...'
-                return
+            if options["riskreports"]:
+                # Drop collection `riskreport.file_uuid`
+                targets = []
+                for user_id in args:
+                    targets += riskreport.get_all_riskreports(user_id)
+
+                pprint(targets)
+                print '...will be deleted'
+                yn = raw_input('y/n > ')
+                if yn == 'y':
+                    for target in targets:
+                        db.drop_collection(target)
 
             if options["user"]:
                 print 'sorry, not implemented yet...'

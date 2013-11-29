@@ -77,16 +77,20 @@ def import_genomes(settings):
                                                  info['file_format'],
                                                  info['user_id']))
 
-                        # Riskreport
-                        riskreport.import_riskreport(info)
+                        # if import_variants succeeded
+                        db_info = db['data_info'].find_one({'user_id': username, 'name': info['name']})
 
-                        # population PCA
-                        person_xy = [0,0]  # FIXME: projection(info)
-                        db['data_info'].update({'user_id': username, 'name': info['name']},
-                                               {"$set": {'pca': {'position': person_xy,
-                                                                 'label': info['user_id'],
-                                                                 'map_label': ''},
-                                                         'status': 100}})
+                        if db_info.get('status') != -1:
+                            # Riskreport
+                            riskreport.import_riskreport(info)
+
+                            # population PCA
+                            person_xy = [0,0]  # FIXME: projection(info)
+                            db['data_info'].update({'user_id': username, 'name': info['name']},
+                                                   {"$set": {'pca': {'position': person_xy,
+                                                                     'label': info['user_id'],
+                                                                     'map_label': ''},
+                                                             'status': 100}})
             log.info('Import new files done.')
 
             # Try to delete non exist files.

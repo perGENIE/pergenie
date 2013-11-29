@@ -26,7 +26,7 @@ class Command(BaseCommand):
             help=""
         ),
         make_option(
-            "--reports",
+            "--riskreports",
             action='store_true',
             help=""
         ),
@@ -58,7 +58,7 @@ class Command(BaseCommand):
                 # for user_id in args:
                 #     targets += list(data_info.find({'user_id': user_id}))
 
-            if options["reports"]:
+            if options["riskreports"]:
                 for user_id in args:
                     pprint([x.name for x in riskreport.get_all_riskreports(user_id)])
 

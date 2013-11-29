@@ -35,16 +35,16 @@ class RiskReport(object):
         file_uuid = self.data_info.find_one({'user_id': user_id, 'name': file_name})['file_uuid']
         return file_uuid
 
-    def get_riskreports(self, user_id, file_name):
+    def get_riskreport(self, user_id, file_name):
         file_uuid = self.get_file_uuid(user_id, file_name)
-        riskreports = self.db['riskreports'][file_uuid]
-        return riskreports
+        riskreport = self.db['riskreport'][file_uuid]
+        return riskreport
 
     def get_all_riskreports(self, user_id):
         all_riskreports = []
         user_files = genomes.get_data_infos(user_id)
         for file_uuid in [x['file_uuid'] for x in user_files]:
-            all_riskreports.append(self.db['riskreports'][file_uuid])
+            all_riskreports.append(self.db['riskreport'][file_uuid])
         return all_riskreports
 
     def import_riskreport(self, info):
@@ -129,7 +129,7 @@ class RiskReport(object):
 
         # Import riskreport into MongoDB
         file_uuid = self.get_file_uuid(info['user_id'], info['name'])
-        users_reports = self.db['reports'][file_uuid]
+        users_reports = self.db['riskreport'][file_uuid]
         if users_reports.find_one():
             self.db.drop_collection(users_reports)
 
