@@ -7,15 +7,24 @@ from common import clean_file_name
 from parser.VCFParser import VCFParser, VCFParseError
 from parser.andmeParser import andmeParser, andmeParseError
 from django.conf import settings
+from utils import clogging
+log = clogging.getColorLogger(__name__)
+
 from lib.mysql.bioq import Bioq
 bq = Bioq(settings.DATABASES['bioq']['HOST'],
           settings.DATABASES['bioq']['USER'],
           settings.DATABASES['bioq']['PASSWORD'],
           settings.DATABASES['bioq']['NAME'])
+try:
+    bq.get_allele_freqs(rs)
+except Exception:
+    log.warn('======================')
+    log.warn('BioQ not available ...')
+    log.warn('======================')
+    bq = None
+
 from lib.api.gwascatalog import GWASCatalog
 gwascatalog = GWASCatalog()
-from utils import clogging
-log = clogging.getColorLogger(__name__)
 
 
 def import_variants(file_path, population, file_format, user_id, minimum_import=True):
@@ -82,8 +91,9 @@ def import_variants(file_path, population, file_format, user_id, minimum_import=
                         tmp_genotypes = data['genotype']
                         data['genotype'] = tmp_genotypes[p.sample_names[0]]
 
-                    if not data['rs']:
-                        data['rs'] = bq.get_rs(data['chrom'], data['pos'])
+                    if bq:
+                        if not data['rs']:
+                            data['rs'] = bq.get_rs(data['chrom'], data['pos'])
 
                     if data['rs']:
 
