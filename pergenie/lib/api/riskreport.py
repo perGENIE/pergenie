@@ -40,6 +40,46 @@ class RiskReport(object):
         riskreport = self.db['riskreport'][file_uuid]
         return riskreport
 
+    def write_riskreport(self, user_id, file_name=None, ext='tsv'):
+        """Write out riskreport as plane text
+        """
+        _file_name = user_id + file_name if file_name else user_id
+        plane_text_file_name = 'RR-{file_name}-{today}.{ext}'.format(file_name=_file_name,
+                                                                     today=str(datetime.date.today()),
+                                                                     ext=ext)
+        plane_text_path = os.path.join(settings.UPLOAD_DIR, user_id, plane_text_file_name)
+
+        # Get risk reports
+        all_riskreports = []
+        user_infos = []
+        if file_name:
+            user_infos.append(genomes.get_data_info(user_id, file_name))
+            all_riskreports.append(self.get_riskreport(user_id, file_name))
+        else:
+            user_infos = genomes.get_data_infos(user_id)
+            for file_uuid in [x['file_uuid'] for x in user_infos]:
+                all_riskreports.append(self.db['riskreport'][file_uuid])
+
+        # Get traits list
+        traits, traits_ja, traits_category, _ = gwascatalog.get_traits_infos(as_dict=True)
+
+        # Write out
+        delimiter = {'csv': ',', 'tsv': '\t'}
+        with open(plane_text_path, 'w') as fout:
+            header = ['traits', 'traits_ja', 'traits_category']
+            header += [user_info['name'] for user_info in user_infos]
+            print >>fout, delimiter[ext].join(header)
+
+            for trait in traits:
+                print >>fout, delimiter[ext].join([trait, trait, traits_category[trait]]),
+                for riskreport in all_riskreports:
+                    found = riskreport.find_one({'trait': trait})
+                    print >>fout, delimiter[ext] + str(found['RR']) if found else delimiter[ext],
+                print >>fout, ''
+
+        return plane_text_path
+
+
     def get_all_riskreports(self, user_id):
         all_riskreports = []
         user_files = genomes.get_data_infos(user_id)

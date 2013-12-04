@@ -1,9 +1,10 @@
 import sys, os
+import datetime
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 from django.views.generic.simple import direct_to_template
-from django.shortcuts import redirect
-from django.http import Http404
+from django.shortcuts import redirect, render
+from django.http import HttpResponse, Http404
 from django.utils.translation import get_language
 from django.utils.translation import ugettext as _
 from django.conf import settings
@@ -204,6 +205,25 @@ def trait(request, trait):
     # return direct_to_template(request, 'risk_report/trait.html', risk_infos)
     return redirect('apps.riskreport.views.index')
 
+@login_required
+def plane(request):
+    """Download riskreport as plane text
+    """
+    user_id = request.user.username
+    file_name = request.GET.get('file_name')
+    ext = 'tsv'
+
+    # info = genomes.get_data_info(user_id, file_name)
+    # if not info:
+    #     raise Http404
+
+    plane_text_path = riskreport.write_riskreport(user_id, file_name)
+    plane_text = open(plane_text_path, 'rb').read()
+    mimetype = {'csv': 'application/comma-separated-values',
+                'tsv': 'application/tab-separated-values'}
+    response = HttpResponse(plane_text, mimetype=mimetype[ext])
+    response['Content-Disposition'] = 'filename=' + os.path.basename(plane_text_path)
+    return response
 
 @require_http_methods(['GET', 'POST'])
 @login_required
