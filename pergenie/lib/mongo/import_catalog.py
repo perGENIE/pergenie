@@ -15,6 +15,8 @@ h = HTMLParser.HTMLParser()
 from xml.sax.saxutils import *
 
 from django.conf import settings
+from lib.utils import clogging
+log = clogging.getColorLogger(__name__)
 
 from extract_region import extract_region
 from lib.mongo.mutate_fasta import MutateFasta
@@ -23,9 +25,14 @@ bq = Bioq(settings.DATABASES['bioq']['HOST'],
           settings.DATABASES['bioq']['USER'],
           settings.DATABASES['bioq']['PASSWORD'],
           settings.DATABASES['bioq']['NAME'])
+try:
+    bq.get_allele_freqs(rs)
+except Exception:
+    log.warn('======================')
+    log.warn('BioQ not available ...')
+    log.warn('======================')
+    bq = None
 
-from lib.utils import clogging
-log = clogging.getColorLogger(__name__)
 
 _g_gene_symbol_map = {}  # { Gene Symbol => (Entrez Gene ID, OMIM Gene ID) }
 _g_gene_id_map = {}      # { Entrez Gene ID => (Gene Symbol, OMIM Gene ID) }
@@ -606,35 +613,36 @@ def _risk_allele(data):
         log.warn('GWAS Catalog freq not found')
         return int(rs), risk_allele + '?'
 
-    # Strand checks
-    RV = {'A': 'T', 'T': 'A', 'G': 'C', 'C': 'G'}
-    population = data['population'][0] if data['population'] else 'European'
-    rs = int(rs)
-    # snp_summary = bq.get_snp_summary(rs)
-    # ref = snp_summary['ancestral_alleles']
-    allele_freqs, _ = bq.get_allele_freqs(rs)
-    freqs = allele_freqs[population]
-    freq = freqs.get(risk_allele)
+    # Strand checks (if BioQ is available)
+    if bq:
+        RV = {'A': 'T', 'T': 'A', 'G': 'C', 'C': 'G'}
+        population = data['population'][0] if data['population'] else 'European'
+        rs = int(rs)
+        # snp_summary = bq.get_snp_summary(rs)
+        # ref = snp_summary['ancestral_alleles']
+        allele_freqs, _ = bq.get_allele_freqs(rs)
+        freqs = allele_freqs[population]
+        freq = freqs.get(risk_allele)
 
-    if freq:
-        if abs(freq['freq'] - data['risk_allele_frequency']) > 0.5:
-            log.warn('Inconsistence between GWAS Catalog and BioQ')
-            log.debug('Catalog:{0} BioQ:{1}'.format(freq['freq'], data['risk_allele_frequency']))
-
-            # Re-try with reversed allele
-            freq = freqs.get(RV[risk_allele])
-            if not freq:
-                log.warn('BioQ freq not found')
-                log.debug(pformat(data))
-                return int(rs), risk_allele + '?'
-
+        if freq:
             if abs(freq['freq'] - data['risk_allele_frequency']) > 0.5:
-                log.warn('Could not solve inconsistence')
-                log.debug(pformat(data))
-                return int(rs), risk_allele + '?'
+                log.warn('Inconsistence between GWAS Catalog and BioQ')
+                log.debug('Catalog:{0} BioQ:{1}'.format(freq['freq'], data['risk_allele_frequency']))
 
-            log.info('Inconsistence solved with reversed allele')
-            return int(rs), RV[risk_allele]
+                # Re-try with reversed allele
+                freq = freqs.get(RV[risk_allele])
+                if not freq:
+                    log.warn('BioQ freq not found')
+                    log.debug(pformat(data))
+                    return int(rs), risk_allele + '?'
+
+                if abs(freq['freq'] - data['risk_allele_frequency']) > 0.5:
+                    log.warn('Could not solve inconsistence')
+                    log.debug(pformat(data))
+                    return int(rs), risk_allele + '?'
+
+                log.info('Inconsistence solved with reversed allele')
+                return int(rs), RV[risk_allele]
 
     return int(rs), risk_allele
 
@@ -757,6 +765,10 @@ def _gene_from_id(text):
 
 
 def _genes_from_ids(text):
+    # FIXME:
+    if not bq:
+        return None
+
     if not text or text in ('NR', 'NS'):
         return None
 
