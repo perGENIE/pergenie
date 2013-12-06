@@ -18,6 +18,9 @@ genomes = Genomes()
 from utils import clogging
 log = clogging.getColorLogger(__name__)
 
+# mimetype = {'csv': 'application/comma-separated-values',
+#             'tsv': 'application/tab-separated-values',
+#             'zip': 'application/zip'}
 
 @require_http_methods(['GET', 'POST'])
 @login_required
@@ -206,24 +209,28 @@ def trait(request, trait):
     return redirect('apps.riskreport.views.index')
 
 @login_required
-def plane(request):
-    """Download riskreport as plane text
+def export(request):
+    """Download riskreport
     """
     user_id = request.user.username
     file_name = request.GET.get('file_name')
-    ext = 'tsv'
 
-    # info = genomes.get_data_info(user_id, file_name)
-    # if not info:
-    #     raise Http404
+    if file_name:
+        file_info = genomes.get_data_info(user_id, file_name)
+        file_infos = [file_info] if file_info else []
+    else:
+        file_infos = genomes.get_data_infos(user_id)
+    if not file_infos:
+        raise Http404
 
-    plane_text_path = riskreport.write_riskreport(user_id, file_name)
-    plane_text = open(plane_text_path, 'rb').read()
-    mimetype = {'csv': 'application/comma-separated-values',
-                'tsv': 'application/tab-separated-values'}
-    response = HttpResponse(plane_text, mimetype=mimetype[ext])
-    response['Content-Disposition'] = 'filename=' + os.path.basename(plane_text_path)
-    return response
+    fout_path = riskreport.write_riskreport(user_id, file_infos)
+    if not fout_path:
+        raise Http404
+
+    with open(fout_path, 'rb').read() as fout:
+        response = HttpResponse(fout, mimetype='application/zip')
+        response['Content-Disposition'] = 'filename=' + os.path.basename(fout_path)
+        return response
 
 @require_http_methods(['GET', 'POST'])
 @login_required

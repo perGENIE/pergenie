@@ -1,6 +1,7 @@
 import sys, os
 import re
 import datetime
+import zipfile
 from pymongo import MongoClient
 from django.conf import settings
 from lib.api.gwascatalog import GWASCatalog
@@ -40,44 +41,94 @@ class RiskReport(object):
         riskreport = self.db['riskreport'][file_uuid]
         return riskreport
 
-    def write_riskreport(self, user_id, file_name=None, ext='tsv'):
-        """Write out riskreport as plane text
+    def write_riskreport(self, user_id, file_infos, ext='tsv'):
+        """Write out riskreport(.tsv|.csv) as .zip
         """
-        _file_name = user_id + file_name if file_name else user_id
-        plane_text_file_name = 'RR-{file_name}-{today}.{ext}'.format(file_name=_file_name,
-                                                                     today=str(datetime.date.today()),
-                                                                     ext=ext)
-        plane_text_path = os.path.join(settings.UPLOAD_DIR, user_id, plane_text_file_name)
 
-        # Get risk reports
-        all_riskreports = []
-        user_infos = []
-        if file_name:
-            user_infos.append(genomes.get_data_info(user_id, file_name))
-            all_riskreports.append(self.get_riskreport(user_id, file_name))
-        else:
-            user_infos = genomes.get_data_infos(user_id)
-            for file_uuid in [x['file_uuid'] for x in user_infos]:
-                all_riskreports.append(self.db['riskreport'][file_uuid])
+        fout_paths = []
 
-        # Get traits list
+        delimiter = {'tsv': '\t'}  # 'csv': ','
         traits, traits_ja, traits_category, _ = gwascatalog.get_traits_infos(as_dict=True)
+        today = str(datetime.date.today())
 
-        # Write out
-        delimiter = {'csv': ',', 'tsv': '\t'}
-        with open(plane_text_path, 'w') as fout:
-            header = ['traits', 'traits_ja', 'traits_category']
-            header += [user_info['name'] for user_info in user_infos]
-            print >>fout, delimiter[ext].join(header)
+        for file_info in file_infos:
+            # Get risk reports
+            tmp_riskreport = self.db['riskreport'][file_info['file_uuid']]
 
-            for trait in traits:
-                print >>fout, delimiter[ext].join([trait, trait, traits_category[trait]]),
-                for riskreport in all_riskreports:
-                    found = riskreport.find_one({'trait': trait})
-                    print >>fout, delimiter[ext] + str(found['RR']) if found else delimiter[ext],
-                print >>fout, ''
+            # Write out
+            fout_name = 'RR-{file_name}-{today}.{ext}'.format(file_name=file_info['name'], today=today, ext=ext)
+            fout_path = os.path.join(settings.UPLOAD_DIR, user_id, fout_name)
+            fout_paths.append(fout_path)
 
-        return plane_text_path
+            with open(fout_path, 'w') as fout:
+                header = ['traits', 'traits_ja', 'traits_category', 'relative risk', 'study', 'snps']
+                header += file_info['name']
+                print >>fout, delimiter[ext].join(header)
+
+                for trait in traits:
+                    print >>fout, delimiter[ext].join([trait, traits_ja[trait], traits_category[trait]]), delimiter[ext],
+
+                    found = tmp_riskreport.find_one({'trait': trait})
+                    if found:
+                        snps = ['rs'+str(x['snp']) for x in found['studies'] if x['study'] == found['highest']]
+                        print >>fout, delimiter[ext].join([str(found['RR']), found['highest'], ';'.join(snps)])
+                    else:
+                        print >>fout, delimiter[ext].join(['', '', ''])
+
+            # Zip (py26)
+            if len(fout_paths) == 1:
+                fout_zip_name = '{file_name}-{today}.zip'.format(file_name=os.path.basename(fout_paths[0]), today=today)
+            else:
+                fout_zip_name = 'RR-{today}.zip'.format(today=today)
+            fout_zip_path = os.path.join(settings.UPLOAD_DIR, user_id, fout_zip_name)
+            fout_zip = zipfile.ZipFile(fout_zip_path, 'w', zipfile.ZIP_DEFLATED)
+            for fout_path in fout_paths:
+                fout_zip.write(fout_path, os.path.join(user_id, os.path.basename(fout_path)))
+            fout_zip.close()
+
+        return fout_zip_path
+
+    ##
+    ## Deprecated (marge multiple files in one file)
+    ##
+    # def write_riskreport(self, user_id, file_name=None, ext='tsv'):
+    #     """Write out riskreport as plane text
+    #     """
+    #     _file_name = user_id + file_name if file_name else user_id
+    #     plane_text_file_name = 'RR-{file_name}-{today}.{ext}'.format(file_name=_file_name,
+    #                                                                  today=str(datetime.date.today()),
+    #                                                                  ext=ext)
+    #     plane_text_path = os.path.join(settings.UPLOAD_DIR, user_id, plane_text_file_name)
+
+    #     # Get risk reports
+    #     all_riskreports = []
+    #     user_infos = []
+    #     if file_name:
+    #         user_infos.append(genomes.get_data_info(user_id, file_name))
+    #         all_riskreports.append(self.get_riskreport(user_id, file_name))
+    #     else:
+    #         user_infos = genomes.get_data_infos(user_id)
+    #         for file_uuid in [x['file_uuid'] for x in user_infos]:
+    #             all_riskreports.append(self.db['riskreport'][file_uuid])
+
+    #     # Get traits list
+    #     traits, traits_ja, traits_category, _ = gwascatalog.get_traits_infos(as_dict=True)
+
+    #     # Write out
+    #     delimiter = {'csv': ',', 'tsv': '\t'}
+    #     with open(plane_text_path, 'w') as fout:
+    #         header = ['traits', 'traits_ja', 'traits_category']
+    #         header += [user_info['name'] for user_info in user_infos]
+    #         print >>fout, delimiter[ext].join(header)
+
+    #         for trait in traits:
+    #             print >>fout, delimiter[ext].join([trait, traits_ja[trait], traits_category[trait]]),
+    #             for riskreport in all_riskreports:
+    #                 found = riskreport.find_one({'trait': trait})
+    #                 print >>fout, delimiter[ext] + str(found['RR']) if found else delimiter[ext],
+    #             print >>fout, ''
+
+    #     return plane_text_path
 
 
     def get_all_riskreports(self, user_id):

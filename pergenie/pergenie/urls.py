@@ -43,7 +43,7 @@ urlpatterns = patterns('',
     url(r'^upload/status', 'apps.upload.views.status'),
 
     url(r'^riskreport/$', 'apps.riskreport.views.index'),
-    url(r'^riskreport/plane/$', 'apps.riskreport.views.plane'),
+    url(r'^riskreport/export/$', 'apps.riskreport.views.export'),
     url(r'^riskreport/show_all/$', 'apps.riskreport.views.show_all'),
     url(r'^riskreport/show_all_files/$', 'apps.riskreport.views.show_all_files'),
     url(r'^riskreport/(?P<trait>[^/]*)/$', 'apps.riskreport.views.trait'),
