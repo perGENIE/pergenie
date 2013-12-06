@@ -227,10 +227,10 @@ def export(request):
     if not fout_path:
         raise Http404
 
-    with open(fout_path, 'rb').read() as fout:
-        response = HttpResponse(fout, mimetype='application/zip')
-        response['Content-Disposition'] = 'filename=' + os.path.basename(fout_path)
-        return response
+    fout = open(fout_path, 'rb').read()
+    response = HttpResponse(fout, mimetype='application/zip')
+    response['Content-Disposition'] = 'filename=' + os.path.basename(fout_path)
+    return response
 
 @require_http_methods(['GET', 'POST'])
 @login_required

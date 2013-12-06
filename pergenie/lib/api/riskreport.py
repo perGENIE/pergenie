@@ -71,7 +71,9 @@ class RiskReport(object):
                     found = tmp_riskreport.find_one({'trait': trait})
                     if found:
                         snps = ['rs'+str(x['snp']) for x in found['studies'] if x['study'] == found['highest']]
-                        print >>fout, delimiter[ext].join([str(found['RR']), found['highest'], ';'.join(snps)])
+                        gwas = gwascatalog.get_latest_catalog()
+                        link = gwas.find_one({'study': found['highest']})['pubmed_link']
+                        print >>fout, delimiter[ext].join([str(found['RR']), link, ';'.join(snps)])
                     else:
                         print >>fout, delimiter[ext].join(['', '', ''])
 
