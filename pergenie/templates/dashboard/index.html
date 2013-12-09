@@ -62,7 +62,7 @@
       <div class="col-md-6">
         <div class="content-box">
           <div class="content-box-header">
-            <icon class="icon-bar-chart"></icon> {% trans "About Your Genome Files" %}
+            <span class="glyphicon glyphicon-file"></span> {% trans "Your Genome Files" %}
           </div>
 
           <div class="tabbable">
@@ -152,24 +152,20 @@
         <div class="row">
           <div class="col-md-12">
             {% for record in recent_catalog_records %}
-            <div class="article">
-              <div class="post-info"> {{ record.added|date }} </div>
-              <div class="post-content">
-                <table>
-                  <tbody>
-                    <tr>
-                      <td>
-                        <b>{% trans "Trait: " %}</b><!-- <a href="{% url apps.library.views.trait trait=record.trait %}"> -->{{ record.trait }}<!-- </a> -->
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <b>{% trans "Study: " %}</b>{{ record.study }} <span class="badge badge-yellow"><a href="{{ record.pubmed_link }}" target="_blank">Pubmed</a></span></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
+            <table class="table table-striped table-condensed">
+
+              <tbody>
+                <tr>
+                  <td>
+                    <b>{% trans "Trait: " %}</b>{{ record.trait }} ({{ record.added|date }})
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <b>{% trans "Study: " %}</b>{{ record.study }} <a href="{{ record.pubmed_link }}" target="_blank"><span class="label label-info">Pubmed</span></a></td>
+                </tr>
+              </tbody>
+            </table>
             {% endfor %}
             <!-- <li class="comment-box view-more" style="text-align: center"> -->
             <!--   <a href="#">View more...</a> -->
