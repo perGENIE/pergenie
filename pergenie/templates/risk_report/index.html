@@ -8,14 +8,12 @@
 {% block main_container %}
 <div class="row">
   <div class="col-md-12">
-
-    <div class="title-box" data-step="1" data-intro="{% trans "Your disease risk report is shown bellow." %}">
+    <div class="content-box carving no-box-shadow" data-step="1" data-intro="{% trans "Your disease risk report is shown bellow." %}">
       <h2>{% trans "Disease Risk Report" %}</h2>
       <a href="{% url apps.faq.views.index%}#how_risk_calclulated">[FAQ] {% trans "How are the disease risk values calculated?" %}</a>
     </div>
   </div>
 </div>
-
 
 {% if not err %}
 <div class="row">
@@ -50,32 +48,43 @@
 
             <!-- Population -->
             <td class="center" data-step="4" data-intro="{% trans "Also, you can change population setting for this genome file." %}">
-              <a data-toggle="modal" href="#changeModal"><span class="badge badge-green">{{ tmp_info.population }}</span></a>
+              <a data-toggle="modal" href="#changeModal"><span class="label label-info">{{ tmp_info.population }}</span></a>
 
-              <div id="changeModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="changeModalLabel" aria-hidden="true">
-                <div class="modal-body">
-                  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                  <h4 id="changeModalLabel">{% trans "Change population to ..." %}</h4>
-                  <form action="{% url apps.riskreport.views.index %}" method="post" enctype="multipart/form-data">
-                    {% csrf_token %}
-		            <fieldset>
-                      <select name="population" onchange="submit(this.form)" class="population" title="{% trans "change population?" %}">
-                        <option value="unknown" {% ifequal tmp_info.population 'unknown' %}selected{% endifequal %}>Unknown</option>
-                        <option value="Asian" {% ifequal tmp_info.population 'Asian' %}selected{% endifequal %}>Asian</option>
-                        <option value="European" {% ifequal tmp_info.population 'European' %}selected{% endifequal %}>European</option>
-                        <option value="Japanese" {% ifequal tmp_info.population 'Japanese' %}selected{% endifequal %}>Japanese</option>
-                      </select>
-                    </fieldset>
-                    <input type="hidden" name="file_name" value="{{ file_name }}" />
-                  </form>
-                </div>
-              </div>
+              <!-- changeModal -->
+              <div class="modal fade" id="changeModal{{ forloop.counter0 }}" tabindex="-1" role="dialog" aria-labelledby="changeModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <!-- <div class="modal-header"> -->
+                    <!--   <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button> -->
+                    <!--   <h4 class="modal-title" id="changeModalLabel"></h4> -->
+                    <!-- </div> -->
+
+                    <div class="modal-body">
+                      {% trans "Change population to ..." %}
+                      <form action="{% url apps.riskreport.views.index %}" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+		                <fieldset>
+                          <select name="population" onchange="submit(this.form)" class="population" title="{% trans "change population?" %}">
+                            <option value="unknown" {% ifequal tmp_info.population 'unknown' %}selected{% endifequal %}>Unknown</option>
+                            <option value="Asian" {% ifequal tmp_info.population 'Asian' %}selected{% endifequal %}>Asian</option>
+                            <option value="European" {% ifequal tmp_info.population 'European' %}selected{% endifequal %}>European</option>
+                            <option value="Japanese" {% ifequal tmp_info.population 'Japanese' %}selected{% endifequal %}>Japanese</option>
+                          </select>
+                        </fieldset>
+                        <input type="hidden" name="file_name" value="{{ file_name }}" />
+                      </form>
+                    </div>
+
+                    <!-- <div class="modal-footer"> -->
+                    <!-- </div> -->
+                  </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
 
             </td>
 
             <!-- File Format -->
             <td class="center">
-              <span class="badge badge-green">{{ tmp_info.file_format|file_format }}</span>
+              {{ tmp_info.file_format|file_format }}
             </td>
           </tr>
         </tbody>
@@ -88,17 +97,16 @@
   <div class="col-md-6">
     <div class="content-box"  data-step="5" data-intro="{% trans "Your top 10 highest risks are listed here." %}">
       <div class="content-box-header">
-        <span class="glyphicon glyphicon-align-left"></span> {% trans "Top 10 Highest" %}
+        <span class="glyphicon glyphicon-align-left"></span> {% trans "Top 10 Highest Risks" %}
       </div>
 
       <div class="row">
         <div class="col-md-12">
           {% if h_risk_traits %}
           <div id="container_highest_risks"></div>
+          <a href="{% url apps.riskreport.views.show_all %}"><button class="btn btn-info" data-step="6" data-intro="{% trans "To see all the disease risks and/or compare two genomes, click here!" %}"><span class="glyphicon glyphicon-zoom-in"></span> {% trans "Show more" %}</button></a>
 
-          <a href="{% url apps.riskreport.views.show_all %}"><button class="btn btn-green" data-step="6" data-intro="{% trans "To see all the disease risks and/or compare two genomes, click here!" %}"><span class="glyphicon glyphicon-resize-full"></span> {% trans "View All Diseases" %}</button></a>
-
-          <a href="{% url apps.riskreport.views.export %}?file_name={{ tmp_info.name }}"><button class="btn btn-green"><span class="glyphicon glyphicon-resize-full"></span> {% trans "Download as csv" %}</button></a>
+          <a href="{% url apps.riskreport.views.export %}?file_name={{ tmp_info.name }}"><button class="btn btn-info"><span class="glyphicon glyphicon-cloud-download"></span> {% trans "Download" %}</button></a>
 
           {% else %}
           <p>{% trans "Sorry, you have no data for disease risk." %}</p>
@@ -152,9 +160,10 @@
 
     </div>
   </div>
-  {% endif %}
-
 </div>
+{% endif %}
+
+
 {% endblock %}
 
 {% block js %}
