@@ -26,7 +26,7 @@ bq = Bioq(settings.DATABASES['bioq']['HOST'],
           settings.DATABASES['bioq']['PASSWORD'],
           settings.DATABASES['bioq']['NAME'])
 try:
-    bq.get_allele_freqs(rs)
+    bq.get_allele_freqs(3)
 except Exception:
     log.warn('======================')
     log.warn('BioQ not available ...')
