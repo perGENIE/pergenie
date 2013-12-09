@@ -98,7 +98,7 @@
 
           <a href="{% url apps.riskreport.views.show_all %}"><button class="btn btn-green" data-step="6" data-intro="{% trans "To see all the disease risks and/or compare two genomes, click here!" %}"><span class="glyphicon glyphicon-resize-full"></span> {% trans "View All Diseases" %}</button></a>
 
-          <a href="{% url apps.riskreport.views.plane %}?file_name={{ tmp_info.name }}"><button class="btn btn-green"><span class="glyphicon glyphicon-resize-full"></span> {% trans "Download as csv" %}</button></a>
+          <a href="{% url apps.riskreport.views.export %}?file_name={{ tmp_info.name }}"><button class="btn btn-green"><span class="glyphicon glyphicon-resize-full"></span> {% trans "Download as csv" %}</button></a>
 
           {% else %}
           <p>{% trans "Sorry, you have no data for disease risk." %}</p>
