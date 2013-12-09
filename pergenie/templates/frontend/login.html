@@ -1,57 +1,48 @@
 {% extends "frontend_layout.html" %}
-{% load staticfiles %}
-{% load i18n %}
 {% block title %}Login{% endblock %}
 {% block description %}login{% endblock %}
+{% load staticfiles %}
 {% load extras %}
+{% load i18n %}
 
 {% block main_container %}
-<section id="main">
-  <div class="login-container center">
-    <div class="title"><a href="{% url apps.frontend.views.index %}"><img class="login_logo" src="{% static 'images/logo.png' %}"></a></div>
+<div class="row">
+  <div class="col-md-12">
+    <div class="content-box centered">
 
-    <form class="login-form" action="." method="POST">
-      {% csrf_token %}
-      <ul class="fields-list">
-        <li>
-          <span class="glyphicon glyphicon-envelope-alt" style="float: left;"></span>
-          <input autocomplete="off" id="email" name="user_id" placeholder="email" type="text">
-        </li>
-        <li>
-          <span class="glyphicon glyphicon-key"></span>
-          <input autocomplete="off" id="password" name="password" placeholder="password" type="password">
-        </li>
-      </ul>
-      <!-- <label><input type="checkbox" id="remember_me" name="remember_me" value="remember_me"> Remember me.</label> -->
-      <div class="actions">
-        <input class="btn btn-green btn-large login-btn" name="commit" type="submit" value="{% trans "Login" %}">
+      <div id="main">
+        <form class="form-signin" role="form" action="{% url apps.frontend.views.login %}" method="POST">
+          {% csrf_token %}
+
+
+        <div class="form-signin-heading">
+          <a href="{% url apps.frontend.views.index %}"><img class="login_logo" src="{% static 'images/logo.png' %}"></a>
+        </div>
+
+          <div class="row user_id">
+            <input type="email" class="form-control" id="user_id" name="user_id" placeholder="Email">
+          </div>
+
+          <div class="row pass">
+        	<input type="password" class="form-control" id="password" name="password" placeholder="Password" />
+          </div>
+
+          {% if err %}
+          <div class="alert alert-danger">
+            <strong>Error!</strong> {{ err }}
+          </div>
+          {% endif %}
+
+          <button type="submit" class="btn btn-lg btn-primary btn-block" name="commit">{% trans "Login" %}</button>
+
+        </form>
+
+        {% if is_registerable %}
+        <a href="{% url apps.frontend.views.register %}">{% trans "Create an account." %}</a>
+        {% endif %}
+
       </div>
 
-    </form>
-
-    {% if err %}
-    <div class="alert alert-error">
-      <strong>Error!</strong> {{ err }}
-    </div>
-    {% endif %}
-
-    {% if is_registerable %}
-    <a href="{% url apps.frontend.views.register %}">{% trans "Create an account." %}</a>
-    {% endif %}
-
-  </div>
-
-</section>
-
-<div class="container">
-  <div class="row">
-    <div class="col-md-12">
-
-      <div class="footer">
-        <h5 class="transparent-text center">
-          <div>&copy; 2012-2013 perGENIE Team</div>
-        </h5>
-      </div>
     </div>
   </div>
 </div>
