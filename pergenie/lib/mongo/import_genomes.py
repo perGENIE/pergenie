@@ -83,6 +83,7 @@ def import_genomes(settings):
                         if db_info.get('status') != -1:
                             # Riskreport
                             riskreport.import_riskreport(info)
+                            riskreport.write_riskreport(username, info['name'], force_uptade=True)
 
                             # population PCA
                             person_xy = [0,0]  # FIXME: projection(info)

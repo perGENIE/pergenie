@@ -347,27 +347,29 @@ def show_all_files(request):
 
     user_id = request.user.username
     msg, err = '', ''
-    risks = list()
+    # risks = list()
 
-    infos = genomes.get_data_infos(user_id)
-    for i,info in enumerate(infos):
-        # Get riskreports
-        tmp_risk_traits, tmp_risk_values, tmp_risk_ranks, tmp_risk_studies = get_risk_values_for_indexpage(infos[i], category=['Disease'])
+    # infos = genomes.get_data_infos(user_id)
+    # for i,info in enumerate(infos):
+    #     # Get riskreports
+    #     tmp_risk_traits, tmp_risk_values, tmp_risk_ranks, tmp_risk_studies = get_risk_values_for_indexpage(infos[i], category=['Disease'])
 
-        # Count by RR
-        # {***: {count: ***, trait: "***,***,***"}, ...
-        result = dict()
-        for trait, value in zip(tmp_risk_traits, tmp_risk_values):
-            if not value in result:
-                result[value] = {'count': 1, 'trait': trait}
-            else:
-                result[value]['count'] += 1
-                result[value]['trait'] += "," + trait
+    #     # Count by RR
+    #     # {***: {count: ***, trait: "***,***,***"}, ...
+    #     result = dict()
+    #     for trait, value in zip(tmp_risk_traits, tmp_risk_values):
+    #         if not value in result:
+    #             result[value] = {'count': 1, 'trait': trait}
+    #         else:
+    #             result[value]['count'] += 1
+    #             result[value]['trait'] += "," + trait
 
-        risks.append([info['raw_name'], result])
+    #     risks.append([info['raw_name'], result])
 
-    # Sort by filename
-    risks = sorted(risks, key=lambda x:x[0])
+    # # Sort by filename
+    # risks = sorted(risks, key=lambda x:x[0])
 
+    # return direct_to_template(request, 'risk_report/show_all_files.html',
+    #                           dict(msg=msg, err=err, infos=infos, risks=risks))
     return direct_to_template(request, 'risk_report/show_all_files.html',
-                              dict(msg=msg, err=err, infos=infos, risks=risks))
+                              {})

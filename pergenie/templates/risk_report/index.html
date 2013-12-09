@@ -18,8 +18,8 @@
 {% if not err %}
 <div class="row">
   <div class="col-md-12">
-
     <div class="content-box" data-step="2" data-intro="{% trans "Information about this genome file is here." %}">
+
       <table class="table table-bordered">
         <thead>
           <tr>
@@ -39,8 +39,6 @@
                     {% for info in infos %}
                     <option value="{{ info.name }}" {% if info.name == tmp_info.name %}selected{% endif %}>{{ info.raw_name }}</option>
                     {% endfor %}
-                    <option value="{{ info.name }}"> --</option>
-                    <option value="{{ info.name }}"> View All Files</option>
                   </select>
                 </fieldset>
               </form>
@@ -104,6 +102,7 @@
         <div class="col-md-12">
           {% if h_risk_traits %}
           <div id="container_highest_risks"></div>
+
           <a href="{% url apps.riskreport.views.show_all %}"><button class="btn btn-info" data-step="6" data-intro="{% trans "To see all the disease risks and/or compare two genomes, click here!" %}"><span class="glyphicon glyphicon-zoom-in"></span> {% trans "Show more" %}</button></a>
 
           <a href="{% url apps.riskreport.views.export %}?file_name={{ tmp_info.name }}"><button class="btn btn-info"><span class="glyphicon glyphicon-cloud-download"></span> {% trans "Download" %}</button></a>
@@ -161,6 +160,30 @@
     </div>
   </div>
 </div>
+
+<div class="row">
+  <div class="col-md-6">
+    <div class="content-box">
+      <div class="content-box-header">
+        <span class="glyphicon glyphicon-flag"></span>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <ul>
+            <li>
+              <a href="{% url apps.riskreport.views.export %}"><span class="glyphicon glyphicon-cloud-download"></span> {% trans "Download all reports" %}</a>
+            </li>
+            <!-- <li> -->
+            <!--   ... -->
+            <!-- </li> -->
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 {% endif %}
 
 

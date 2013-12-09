@@ -41,7 +41,7 @@ class RiskReport(object):
         riskreport = self.db['riskreport'][file_uuid]
         return riskreport
 
-    def write_riskreport(self, user_id, file_infos, ext='tsv'):
+    def write_riskreport(self, user_id, file_infos, ext='tsv', force_uptade=False):
         """Write out riskreport(.tsv|.csv) as .zip
         """
 
@@ -51,45 +51,53 @@ class RiskReport(object):
         traits, traits_ja, traits_category, _ = gwascatalog.get_traits_infos(as_dict=True)
         today = str(datetime.date.today())
 
-        for file_info in file_infos:
-            # Get risk reports
-            tmp_riskreport = self.db['riskreport'][file_info['file_uuid']]
+        log.info('Try to write {0} file(s)...'.format(len(file_infos)))
 
-            # Write out
-            user_dir = os.path.join(settings.UPLOAD_DIR, user_id)
-            if not os.path.exists(user_dir):
-                os.makedirs(user_dir)
-            fout_name = 'RR-{file_name}-{today}.{ext}'.format(file_name=file_info['name'], today=today, ext=ext)
-            fout_path = os.path.join(user_dir, fout_name)
+        for file_info in file_infos:
+            RR_dir = os.path.join(settings.UPLOAD_DIR, user_id, 'RR')
+            if not os.path.exists(RR_dir):
+                os.makedirs(RR_dir)
+            fout_name = 'RR-{file_name}.{ext}'.format(file_name=file_info['name'], ext=ext)
+            fout_path = os.path.join(RR_dir, fout_name)
             fout_paths.append(fout_path)
+
+            # Skip writing if file already exists
+            if os.path.exists(fout_path) and not force_uptade:
+                continue
+
+            tmp_riskreport = self.db['riskreport'][file_info['file_uuid']]
 
             with open(fout_path, 'w') as fout:
                 header = ['traits', 'traits_ja', 'traits_category', 'relative risk', 'study', 'snps']
-                header += file_info['name']
                 print >>fout, delimiter[ext].join(header)
 
                 for trait in traits:
-                    print >>fout, delimiter[ext].join([trait, traits_ja[trait], traits_category[trait]]), delimiter[ext],
+                    content = [trait, traits_ja[trait], traits_category[trait]]
 
                     found = tmp_riskreport.find_one({'trait': trait})
                     if found:
-                        snps = ['rs'+str(x['snp']) for x in found['studies'] if x['study'] == found['highest']]
+                        risk = str(found['RR'])
+                        snps = ';'.join(['rs'+str(x['snp']) for x in found['studies'] if x['study'] == found['highest']])
                         gwas = gwascatalog.get_latest_catalog()
                         link = gwas.find_one({'study': found['highest']})['pubmed_link']
-                        print >>fout, delimiter[ext].join([str(found['RR']), link, ';'.join(snps)])
+                        content += [risk, link, snps]
                     else:
-                        print >>fout, delimiter[ext].join(['', '', ''])
+                        content += ['', '', '']
 
-            # Zip (py26)
-            if len(fout_paths) == 1:
-                fout_zip_name = '{file_name}-{today}.zip'.format(file_name=os.path.basename(fout_paths[0]), today=today)
-            else:
-                fout_zip_name = 'RR-{today}.zip'.format(today=today)
-            fout_zip_path = os.path.join(settings.UPLOAD_DIR, user_id, fout_zip_name)
-            fout_zip = zipfile.ZipFile(fout_zip_path, 'w', zipfile.ZIP_DEFLATED)
-            for fout_path in fout_paths:
-                fout_zip.write(fout_path, os.path.join(user_id, os.path.basename(fout_path)))
-            fout_zip.close()
+                    print >>fout, delimiter[ext].join(content)
+
+        # Zip (py26)
+        log.info('Zipping {0} file(s)...'.format(len(fout_paths)))
+
+        if len(fout_paths) == 1:
+            fout_zip_name = '{file_name}.zip'.format(file_name=os.path.basename(fout_paths[0]))
+        else:
+            fout_zip_name = 'RR.zip'
+        fout_zip_path = os.path.join(RR_dir, fout_zip_name)
+        fout_zip = zipfile.ZipFile(fout_zip_path, 'w', zipfile.ZIP_DEFLATED)
+        for fout_path in fout_paths:
+            fout_zip.write(fout_path, os.path.join(user_id, os.path.basename(fout_path)))
+        fout_zip.close()
 
         return fout_zip_path
 

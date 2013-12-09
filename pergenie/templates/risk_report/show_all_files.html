@@ -6,80 +6,65 @@
 {% load i18n %}
 
 {% block main_container %}
-<div id="main_container" class="span14">
-  <section id="main">
-
-    <div class="container">
-
-      <div class="row">
-        <div class="col-md-12">
-          <div class="content-box transparent" data-step="1" data-intro="{% trans "Your disease risk report is shown bellow." %}">
-            <div class="padded">
-              <h2>{% trans "Show All Files" %}</h2>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- alerts -->
-      {% if msg %}
-      <div class="alert alert-info">
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
-        <strong>Information:</strong> {{ msg }}
-      </div>
-      {% endif %}
-
-      {% if err %}
-      <div class="alert alert-error">
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
-        <strong>Error!</strong> {{ err }}
-      </div>
-      {% endif %}
-
-      <!-- risk reports -->
-      {% if not err %}
-      <div class="row">
-        <div class="col-md-12">
-          <div class="content-box" data-step="2" data-intro="{% trans "Information about this genome file is here." %}">
-
-            <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
-
-            <table class="table table-bordered">
-              <thead>
-                <tr>
-                  <th><span class="glyphicon glyphicon-user"></span>{% trans "Genome file" %}</th>
-                  <th><span class="glyphicon glyphicon-globe"></span>{% trans "Population" %}</th>
-                  <th><span class="glyphicon glyphicon-file"></span>{% trans "File Format" %}</th>
-                </tr>
-              </thead>
-              <tbody>
-
-                {% for info in infos %}
-                <tr>
-                  <td class="center">
-                    <form name="form{{ forloop.counter0 }}" onchange="submit(this.form)" class="file_name" action="{% url apps.riskreport.views.index %}" method="post" enctype="multipart/form-data" >
-                      {% csrf_token %}
-                      <a href="" onclick="document.form{{ forloop.counter0 }}.submit(); return false;">{{ info.raw_name }}</a>
-                      <input type="hidden" name="file_name" value="{{ info.name }}">
-                    </form>
-                  </td>
-
-                  <td class="center">{{ info.population }}</td>
-                  <td class="center">{{ info.file_format|file_format }}</td>
-                </tr>
-                {% endfor %}
-
-              </tbody>
-            </table>
-
-          </div>
-        </div>
-      </div>
+<div class="row">
+  <div class="col-md-12">
+    <div class="content-box carving no-box-shadow">
+      <h2>{% trans "Show All Files" %}</h2>
     </div>
-    {% endif %}
-
-  </section>
+  </div>
 </div>
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="content-box" data-step="2" data-intro="{% trans "Information about this genome file is here." %}">
+
+      <a href="{% url apps.riskreport.views.export %}?file_name={{ tmp_info.name }}"><button class="btn btn-info"><span class="glyphicon glyphicon-cloud-download"></span> {% trans "Download" %}</button></a>
+    </div>
+  </div>
+</div>
+<!--       {% if not err %} -->
+<!--       <div class="row"> -->
+<!--         <div class="col-md-12"> -->
+<!--           <div class="content-box" data-step="2" data-intro="{% trans "Information about this genome file is here." %}"> -->
+
+<!--             <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div> -->
+
+<!--             <table class="table table-bordered"> -->
+<!--               <thead> -->
+<!--                 <tr> -->
+<!--                   <th><span class="glyphicon glyphicon-user"></span>{% trans "Genome file" %}</th> -->
+<!--                   <th><span class="glyphicon glyphicon-globe"></span>{% trans "Population" %}</th> -->
+<!--                   <th><span class="glyphicon glyphicon-file"></span>{% trans "File Format" %}</th> -->
+<!--                 </tr> -->
+<!--               </thead> -->
+<!--               <tbody> -->
+
+<!--                 {% for info in infos %} -->
+<!--                 <tr> -->
+<!--                   <td class="center"> -->
+<!--                     <form name="form{{ forloop.counter0 }}" onchange="submit(this.form)" class="file_name" action="{% url apps.riskreport.views.index %}" method="post" enctype="multipart/form-data" > -->
+<!--                       {% csrf_token %} -->
+<!--                       <a href="" onclick="document.form{{ forloop.counter0 }}.submit(); return false;">{{ info.raw_name }}</a> -->
+<!--                       <input type="hidden" name="file_name" value="{{ info.name }}"> -->
+<!--                     </form> -->
+<!--                   </td> -->
+
+<!--                   <td class="center">{{ info.population }}</td> -->
+<!--                   <td class="center">{{ info.file_format|file_format }}</td> -->
+<!--                 </tr> -->
+<!--                 {% endfor %} -->
+
+<!--               </tbody> -->
+<!--             </table> -->
+
+<!--           </div> -->
+<!--         </div> -->
+<!--       </div> -->
+<!--     </div> -->
+<!--     {% endif %} -->
+
+<!--   </section> -->
+<!-- </div> -->
 {% endblock %}
 
 {% block js %}

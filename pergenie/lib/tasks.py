@@ -9,6 +9,8 @@ from django.conf import settings
 from lib.r.r import projection
 from utils import clogging
 log = clogging.getColorLogger(__name__)
+from lib.api.riskreport import RiskReport
+riskreport = RiskReport()
 
 # ref: http://yuku-tech.hatenablog.com/entry/20101112/1289569700
 
@@ -39,7 +41,11 @@ def qimport_variants(info):
 
     # os.remove(file_path)
 
-    # population PCA
+    # Risk Report
+    riskreport.import_riskreport(info)
+    riskreport.write_riskreport(info['user_id'], info['name'], force_uptade=True)
+
+    # Population PCA
     person_xy = [0,0]  # projection(info)
     with MongoClient(host=settings.MONGO_URI) as connection:
         db = connection['pergenie']
