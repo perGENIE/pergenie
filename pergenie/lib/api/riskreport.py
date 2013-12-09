@@ -56,8 +56,11 @@ class RiskReport(object):
             tmp_riskreport = self.db['riskreport'][file_info['file_uuid']]
 
             # Write out
+            user_dir = os.path.join(settings.UPLOAD_DIR, user_id)
+            if not os.path.exists(user_dir):
+                os.makedirs(user_dir)
             fout_name = 'RR-{file_name}-{today}.{ext}'.format(file_name=file_info['name'], today=today, ext=ext)
-            fout_path = os.path.join(settings.UPLOAD_DIR, user_id, fout_name)
+            fout_path = os.path.join(user_dir, fout_name)
             fout_paths.append(fout_path)
 
             with open(fout_path, 'w') as fout:
