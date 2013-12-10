@@ -6,13 +6,15 @@ import datetime
 import pymongo
 from lib.common import clean_file_name
 from lib.mongo.import_variants import import_variants
+from lib.api.genomes import Genomes
+genomes = Genomes()
 from lib.api.riskreport import RiskReport
 riskreport = RiskReport()
 from utils import clogging
 log = clogging.getColorLogger(__name__)
 
 
-def import_genomes(settings):
+def import_genomes(settings, user_ids=[]):
     """
     This script will be used as cron job:
 
@@ -42,7 +44,7 @@ def import_genomes(settings):
     with pymongo.Connection(host=settings.MONGO_URI) as connection:
         db = connection['pergenie']
 
-        for username in settings.CRON_DIRS.keys():
+        for username in user_ids or settings.CRON_DIRS.keys():
             log.info('===============================')
             log.info('Job for username: %s' % username)
             # Try to import/update files
@@ -57,7 +59,7 @@ def import_genomes(settings):
                         log.debug('filepath: %s' % filepath)
                         last_modified = datetime.datetime.fromtimestamp(os.path.getmtime(filepath))
                         info = {'user_id': username,
-                                'name': clean_file_name(os.path.basename(filepath), fileformat['name']),
+                                'name': clean_file_name(os.path.basename(filepath), fileformat['short_name']),
                                 'raw_name': os.path.basename(filepath),
                                 'date': last_modified,
                                 'population': POPULATION,
@@ -65,6 +67,7 @@ def import_genomes(settings):
                                 'catalog_cover_rate': db['catalog_cover_rate'].find_one({'stats': 'catalog_cover_rate'})['values'][fileformat['name']],
                                 'genome_cover_rate': db['catalog_cover_rate'].find_one({'stats': 'genome_cover_rate'})['values'][fileformat['name']],
                                 'status': float(0.0)}
+                        log.debug(info)
 
                         db_info = db['data_info'].find_one({'user_id': username, 'name': info['name']})
 
@@ -77,19 +80,20 @@ def import_genomes(settings):
                                                  info['file_format'],
                                                  info['user_id']))
 
-                        # if import_variants succeeded
-                        db_info = db['data_info'].find_one({'user_id': username, 'name': info['name']})
+                        # `info` is overwritten in import_variants
+                        new_info = genomes.get_data_info(info['user_id'], info['name'])
 
-                        if db_info.get('status') != -1:
+                        # if import_variants succeeded
+                        if new_info.get('status') != -1:
                             # Riskreport
-                            riskreport.import_riskreport(info)
-                            riskreport.write_riskreport(username, [info], force_uptade=True)
+                            riskreport.import_riskreport(new_info)
+                            riskreport.write_riskreport(username, [new_info], force_uptade=True)
 
                             # population PCA
                             person_xy = [0,0]  # FIXME: projection(info)
-                            db['data_info'].update({'user_id': username, 'name': info['name']},
+                            db['data_info'].update({'user_id': new_info['user_id'], 'name': new_info['name']},
                                                    {"$set": {'pca': {'position': person_xy,
-                                                                     'label': info['user_id'],
+                                                                     'label': new_info['user_id'],
                                                                      'map_label': ''},
                                                              'status': 100}})
             log.info('Import new files done.')

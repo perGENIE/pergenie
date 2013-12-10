@@ -208,62 +208,65 @@ class Command(BaseCommand):
                                       'risk_report_show_level': 'show_all',
                                       'activation_key': ''})
 
-            # Import demo data
-            with MongoClient(host=settings.MONGO_URI) as c:
-                db = c['pergenie']
 
-                # drop old collections of `db.variants.user_id.file_name`
-                olds = []
-                for collection_name in db.collection_names():
-                    if collection_name.startswith('variants.{0}.'.format(settings.DEMO_USER_ID)):
-                        olds.append(collection_name)
+                import_genomes(settings, user_ids=[settings.DEMO_USER_ID])
 
-                for old in olds:
-                    db.drop_collection(old)
-                log.debug('dropped old collections {0}'.format(olds))
+            # # Import demo data
+            # with MongoClient(host=settings.MONGO_URI) as c:
+            #     db = c['pergenie']
 
-                # remove old documents in `data_info`
-                olds = list(db['data_info'].find({'user_id': settings.DEMO_USER_ID}))
-                if olds:
-                    targets_in_data_info = db['data_info'].remove({'user_id': settings.DEMO_USER_ID})
-                log.debug('remove old documents in data_info {0}'.format(olds))
+            #     # drop old collections of `db.variants.user_id.file_name`
+            #     olds = []
+            #     for collection_name in db.collection_names():
+            #         if collection_name.startswith('variants.{0}.'.format(settings.DEMO_USER_ID)):
+            #             olds.append(collection_name)
 
-                # Import new data
-                targets = [settings.DEMO_23ANDME_GENOME_EU_M,
-                           settings.DEMO_23ANDME_GENOME_EU_F,
-                           settings.TOMITA_GENOME]
+                # for old in olds:
+                #     db.drop_collection(old)
+                # log.debug('dropped old collections {0}'.format(olds))
 
-                for target in targets:
-                    if os.path.exists(target['name']):
-                        log.debug('demo data exists {0}'.format(target['name']))
+                # # remove old documents in `data_info`
+                # olds = list(db['data_info'].find({'user_id': settings.DEMO_USER_ID}))
+                # if olds:
+                #     targets_in_data_info = db['data_info'].remove({'user_id': settings.DEMO_USER_ID})
+                # log.debug('remove old documents in data_info {0}'.format(olds))
 
-                        catalog_cover_rate = c['pergenie']['catalog_cover_rate']
-                        info = {'user_id': settings.DEMO_USER_ID,
-                                'name': clean_file_name(os.path.basename(target['name']), target['file_format']),
-                                'raw_name': os.path.basename(target['name']),
-                                'date': datetime.datetime.today(),
-                                'population': target['population'],
-                                'file_format': target['file_format'],
-                                'catalog_cover_rate': catalog_cover_rate.find_one({'stats': 'catalog_cover_rate'})['values'][target['file_format']],
-                                'genome_cover_rate': catalog_cover_rate.find_one({'stats': 'genome_cover_rate'})['values'][target['file_format']],
-                                'status': float(0.0)}
+                # # Import new data
+                # targets = [settings.DEMO_23ANDME_GENOME_EU_M,
+                #            settings.DEMO_23ANDME_GENOME_EU_F,
+                #            settings.TOMITA_GENOME]
 
-                        db = c['pergenie']
-                        db['data_info'].insert(info)
+                # for target in targets:
+                #     if os.path.exists(target['name']):
+                #         log.debug('demo data exists {0}'.format(target['name']))
 
-                        log.debug('start importing ...')
-                        import_variants(file_path=target['name'],
-                                        population=target['population'],
-                                        file_format=target['file_format'],
-                                        user_id=settings.DEMO_USER_ID)
+                #         catalog_cover_rate = c['pergenie']['catalog_cover_rate']
+                #         info = {'user_id': settings.DEMO_USER_ID,
+                #                 'name': clean_file_name(os.path.basename(target['name']), target['file_format']),
+                #                 'raw_name': os.path.basename(target['name']),
+                #                 'date': datetime.datetime.today(),
+                #                 'population': target['population'],
+                #                 'file_format': target['file_format'],
+                #                 'catalog_cover_rate': catalog_cover_rate.find_one({'stats': 'catalog_cover_rate'})['values'][target['file_format']],
+                #                 'genome_cover_rate': catalog_cover_rate.find_one({'stats': 'genome_cover_rate'})['values'][target['file_format']],
+                #                 'status': float(0.0)}
 
-                        # population PCA
-                        person_xy = [0,0]  # FIXME: projection(info)
-                        db['data_info'].update({'user_id': info['user_id'], 'raw_name': info['raw_name']},
-                                               {"$set": {'pca': {'position': person_xy,
-                                                                 'label': info['user_id'],
-                                                                 'map_label': ''},
-                                                         'status': 100}})
+                #         db = c['pergenie']
+                #         db['data_info'].insert(info)
+
+                #         log.debug('start importing ...')
+                #         import_variants(file_path=target['name'],
+                #                         population=target['population'],
+                #                         file_format=target['file_format'],
+                #                         user_id=settings.DEMO_USER_ID)
+
+                #         # population PCA
+                #         person_xy = [0,0]  # FIXME: projection(info)
+                #         db['data_info'].update({'user_id': info['user_id'], 'raw_name': info['raw_name']},
+                #                                {"$set": {'pca': {'position': person_xy,
+                #                                                  'label': info['user_id'],
+                #                                                  'map_label': ''},
+                #                                          'status': 100}})
 
         elif options["bioq"]:
             log.info('Try to import bioq ...')
@@ -283,18 +286,18 @@ class Command(BaseCommand):
             log.info('Try to import population_pca ...')
             import_population_pca(settings)
         elif options["genomes"]:
-            log.info('Try to import genomes (genome data) ...')
+            # log.info('Try to import genomes (genome data) ...')
 
-            pidfile_path = os.path.join(settings.BASE_DIR, 'import_genomes.pid')
-            if os.path.exists(pidfile_path):
-                log.error('Previous process has not finished yet.')
-                sys.exit()
+            # pidfile_path = os.path.join(settings.BASE_DIR, 'import_genomes.pid')
+            # if os.path.exists(pidfile_path):
+            #     log.error('Previous process has not finished yet.')
+            #     sys.exit()
 
-            with open(pidfile_path, 'w') as pidfile:
-                print >>pidfile, os.getpid()
+            # with open(pidfile_path, 'w') as pidfile:
+            #     print >>pidfile, os.getpid()
 
             import_genomes(settings)
-            os.remove(pidfile_path)
+            # os.remove(pidfile_path)
         elif options["mycatalog"]:
             log.info('Try to import mycatalog ...')
             import_mycatalog(options["mycatalog"])

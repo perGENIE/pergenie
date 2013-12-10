@@ -1,4 +1,5 @@
 import sys, os
+from pprint import pformat
 from collections import defaultdict
 from pymongo import MongoClient
 from django.conf import settings
@@ -33,7 +34,9 @@ class Genomes(object):
         with MongoClient(host=settings.MONGO_URI) as c:
             db = c['pergenie']
             data_info = db['data_info']
-            file_uuid = data_info.find_one({'user_id': user_id, 'name': file_name})['file_uuid']
+            found = data_info.find_one({'user_id': user_id, 'name': file_name})
+            log.debug(found)
+            file_uuid = found['file_uuid']
             return file_uuid
 
     def get_variants(self, user_id, file_name):
@@ -48,8 +51,13 @@ class Genomes(object):
             db = c['pergenie']
             all_variants = []
             user_files = self.get_data_infos(user_id)
-            for file_uuid in [x['file_uuid'] for x in user_files]:
-                all_variants.append(db['variants'][file_uuid])
+            for x in user_files:
+                if 'file_uuid' in x:
+                    all_variants.append(db['variants'][x['file_uuid']])
+                else:
+                    log.warn('no file_uuid')
+                    log.warn(x)
+
             return all_variants
 
     def get_freq(self, user_id, locs, loctype='rs', rec=None):

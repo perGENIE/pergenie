@@ -39,6 +39,7 @@ def import_variants(file_path, population, file_format, user_id, minimum_import=
     file_name = os.path.basename(file_path)
     file_name_cleaned = clean_file_name(file_name, file_format)
     log.info('Input file: %s' % file_path)
+    log.debug(file_name_cleaned)
 
     log.info('counting lines...')
     file_lines = int(subprocess.Popen(['wc', '-l', file_path], stdout=subprocess.PIPE).communicate()[0].split()[0])  # py26
@@ -107,6 +108,7 @@ def import_variants(file_path, population, file_format, user_id, minimum_import=
                         users_variants.insert(sub_data)
 
                     if i > 0 and i % 10000 == 0:
+                        log.debug('{i} lines done...'.format(i=i+1))
                         upload_status = int(100 * (i * 0.9 / file_lines) + 1)
                         data_info.update({'user_id': user_id, 'name': file_name_cleaned},
                                          {"$set": {'status': upload_status}})

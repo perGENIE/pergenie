@@ -2,6 +2,7 @@ import sys, os
 import re
 import datetime
 import zipfile
+from pprint import pformat, pprint
 from pymongo import MongoClient
 from django.conf import settings
 from lib.api.gwascatalog import GWASCatalog
@@ -63,6 +64,7 @@ class RiskReport(object):
 
             # Skip writing if file already exists
             if os.path.exists(fout_path) and not force_uptade:
+                log.debug('skip writing (use existing file)')
                 continue
 
             tmp_riskreport = self.db['riskreport'][file_info['file_uuid']]
