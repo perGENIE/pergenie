@@ -67,7 +67,6 @@ def import_genomes(settings, user_ids=[]):
                                 'catalog_cover_rate': db['catalog_cover_rate'].find_one({'stats': 'catalog_cover_rate'})['values'][fileformat['name']],
                                 'genome_cover_rate': db['catalog_cover_rate'].find_one({'stats': 'genome_cover_rate'})['values'][fileformat['name']],
                                 'status': float(0.0)}
-                        log.debug(info)
 
                         db_info = db['data_info'].find_one({'user_id': username, 'name': info['name']})
 

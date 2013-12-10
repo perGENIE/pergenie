@@ -21,15 +21,16 @@ log = clogging.getColorLogger(__name__)
 class Command(BaseCommand):
     option_list = BaseCommand.option_list + (
         make_option(
-            "--variants",
+            "--data",
             action='store_true',
             help=""
         ),
-        make_option(
-            "--riskreports",
-            action='store_true',
-            help=""
-        ),
+        # make_option(
+        #     "-R",
+        #     "--riskreports",
+        #     action='store_true',
+        #     help=""
+        # ),
         make_option(
             "--user",
             action='store_true',
@@ -48,11 +49,12 @@ class Command(BaseCommand):
             db = c['pergenie']
             data_info = db['data_info']
 
-            if options["variants"]:
-                # Drop collection `variants.file_uuid`
+            if options["data"]:
+                # Drop collection `variants.file_uuid` and `riskreport.file_uuid`
                 targets = []
                 for user_id in args:
                     targets += genomes.get_all_variants(user_id)
+                    targets += riskreport.get_all_riskreports(user_id)
 
                 pprint(targets)
                 print '...will be deleted'
@@ -72,19 +74,6 @@ class Command(BaseCommand):
                 if yn == 'y':
                     for target in targets:
                         data_info.remove(target)
-
-            if options["riskreports"]:
-                # Drop collection `riskreport.file_uuid`
-                targets = []
-                for user_id in args:
-                    targets += riskreport.get_all_riskreports(user_id)
-
-                pprint(targets)
-                print '...will be deleted'
-                yn = raw_input('y/n > ')
-                if yn == 'y':
-                    for target in targets:
-                        db.drop_collection(target)
 
             if options["user"]:
                 print 'sorry, not implemented yet...'

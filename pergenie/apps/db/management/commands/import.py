@@ -208,65 +208,8 @@ class Command(BaseCommand):
                                       'risk_report_show_level': 'show_all',
                                       'activation_key': ''})
 
-
-                import_genomes(settings, user_ids=[settings.DEMO_USER_ID])
-
-            # # Import demo data
-            # with MongoClient(host=settings.MONGO_URI) as c:
-            #     db = c['pergenie']
-
-            #     # drop old collections of `db.variants.user_id.file_name`
-            #     olds = []
-            #     for collection_name in db.collection_names():
-            #         if collection_name.startswith('variants.{0}.'.format(settings.DEMO_USER_ID)):
-            #             olds.append(collection_name)
-
-                # for old in olds:
-                #     db.drop_collection(old)
-                # log.debug('dropped old collections {0}'.format(olds))
-
-                # # remove old documents in `data_info`
-                # olds = list(db['data_info'].find({'user_id': settings.DEMO_USER_ID}))
-                # if olds:
-                #     targets_in_data_info = db['data_info'].remove({'user_id': settings.DEMO_USER_ID})
-                # log.debug('remove old documents in data_info {0}'.format(olds))
-
-                # # Import new data
-                # targets = [settings.DEMO_23ANDME_GENOME_EU_M,
-                #            settings.DEMO_23ANDME_GENOME_EU_F,
-                #            settings.TOMITA_GENOME]
-
-                # for target in targets:
-                #     if os.path.exists(target['name']):
-                #         log.debug('demo data exists {0}'.format(target['name']))
-
-                #         catalog_cover_rate = c['pergenie']['catalog_cover_rate']
-                #         info = {'user_id': settings.DEMO_USER_ID,
-                #                 'name': clean_file_name(os.path.basename(target['name']), target['file_format']),
-                #                 'raw_name': os.path.basename(target['name']),
-                #                 'date': datetime.datetime.today(),
-                #                 'population': target['population'],
-                #                 'file_format': target['file_format'],
-                #                 'catalog_cover_rate': catalog_cover_rate.find_one({'stats': 'catalog_cover_rate'})['values'][target['file_format']],
-                #                 'genome_cover_rate': catalog_cover_rate.find_one({'stats': 'genome_cover_rate'})['values'][target['file_format']],
-                #                 'status': float(0.0)}
-
-                #         db = c['pergenie']
-                #         db['data_info'].insert(info)
-
-                #         log.debug('start importing ...')
-                #         import_variants(file_path=target['name'],
-                #                         population=target['population'],
-                #                         file_format=target['file_format'],
-                #                         user_id=settings.DEMO_USER_ID)
-
-                #         # population PCA
-                #         person_xy = [0,0]  # FIXME: projection(info)
-                #         db['data_info'].update({'user_id': info['user_id'], 'raw_name': info['raw_name']},
-                #                                {"$set": {'pca': {'position': person_xy,
-                #                                                  'label': info['user_id'],
-                #                                                  'map_label': ''},
-                #                                          'status': 100}})
+            #
+            import_genomes(settings, user_ids=[settings.DEMO_USER_ID])
 
         elif options["bioq"]:
             log.info('Try to import bioq ...')
