@@ -59,7 +59,7 @@ def import_genomes(settings, user_ids=[]):
                         log.debug('filepath: %s' % filepath)
                         last_modified = datetime.datetime.fromtimestamp(os.path.getmtime(filepath))
                         info = {'user_id': username,
-                                'name': clean_file_name(os.path.basename(filepath), fileformat['short_name']),
+                                'name': clean_file_name(os.path.basename(filepath), fileformat['name']),
                                 'raw_name': os.path.basename(filepath),
                                 'date': last_modified,
                                 'population': POPULATION,
