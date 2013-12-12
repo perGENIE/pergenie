@@ -191,6 +191,7 @@ def import_catalog(path_to_gwascatalog):
                 data['is_in_andme'] = False
                 data['is_in_iontargetseq'] = False
                 data['population'] = _population(data['initial_sample_size'])
+                data['notes'] = ''
 
                 if data['chr_id'] and data['chr_pos'] and fa:
                     data['ref'] = fa._slice_fasta({23: 'X', 24: 'Y', 25: 'M'}.get(data['chr_id'], data['chr_id']), data['chr_pos'], data['chr_pos'])
@@ -200,12 +201,14 @@ def import_catalog(path_to_gwascatalog):
                 if (not data['snps']) or (not data['strongest_snp_risk_allele']):
                     log.warn('absence of "snps" or "strongest_snp_risk_allele" {0} {1}. pubmed_id:{2}'.format(data['snps'], data['strongest_snp_risk_allele'], data['pubmed_id']))
                     data['snps'], data['strongest_snp_risk_allele'], data['risk_allele'] = 'na', 'na', 'na'
+                    data['notes'] = 'absence of snps or strongest_snp_risk_allele'
                     catalog.insert(data)
                     continue
 
-                rs, data['risk_allele'] = _risk_allele(data)
+                rs, data['risk_allele'], data['notes'] = _risk_allele(data)
                 if data['snps'] != rs:
                     log.warn('"snps" != "risk_allele": {0} != {1}'.format(data['snps'], rs))
+                    data['notes'] = 'snps != risk_allele'
                     catalog.insert(data)
                     continue
 
@@ -591,27 +594,29 @@ def _risk_allele(data):
     * Consistency check based on allele frequency in BioQ (dbSNP).
 
     """
+    notes = ''
+
     # Parse `strongest_snp_risk_allele`
     if not data['strongest_snp_risk_allele']:
-        return None, None
+        return None, None, 'no strongest_snp_risk_allele'
 
     _risk_allele = re.compile('rs(\d+)\-(\S+)')
     try:
         rs, risk_allele = _risk_allele.findall(data['strongest_snp_risk_allele'])[0]
     except (ValueError, IndexError):
         log.warn('failed to parse "strongest_snp_risk_allele": {0}'.format(data))
-        return None, None
+        return None, None, 'failed to parse strongest_snp_risk_allele'
 
     if risk_allele == '?':
-        return int(rs), risk_allele
+        return int(rs), risk_allele, 'risk_allele == ?'
 
     if not risk_allele in ('A', 'T', 'G', 'C'):
         log.warn('allele is not in (A,T,G,C): {0}'.format(data))
-        return int(rs), None
+        return int(rs), None, 'not risk_allele in A, T, G, C'
 
     if not data['risk_allele_frequency']:
         log.warn('GWAS Catalog freq not found')
-        return int(rs), risk_allele + '?'
+        return int(rs), risk_allele + '?', 'no risk_allele_frequency'
 
     # Strand checks (if BioQ is available)
     if bq:
@@ -624,27 +629,44 @@ def _risk_allele(data):
         freqs = allele_freqs[population]
         freq = freqs.get(risk_allele)
 
-        if freq:
-            if abs(freq['freq'] - data['risk_allele_frequency']) > 0.5:
+        if not freq:
+            log.warn('BioQ freq not found')
+            notes = 'BioQ freq not found'
+
+        else:
+            # debuging_pubmed_id = [20453841,
+            #                       21505073,
+            #                       21844665,
+            #                       22446963,
+            #                       23028356]
+            # if data['pubmed_id'] in debuging_pubmed_id:
+            #     log.debug("dbSNP freq")
+            #     log.debug(freq['freq'])
+            #     log.debug("Catalog freq")
+            #     log.debug(data['risk_allele_frequency'])
+            #     log.debug(abs(freq['freq'] - data['risk_allele_frequency']))
+
+            if abs(freq['freq'] - data['risk_allele_frequency']) > 0.3:
                 log.warn('Inconsistence between GWAS Catalog and BioQ')
                 log.debug('Catalog:{0} BioQ:{1}'.format(freq['freq'], data['risk_allele_frequency']))
+                notes = 'Inconsistence between GWAS Catalog and BioQ'
 
                 # Re-try with reversed allele
                 freq = freqs.get(RV[risk_allele])
                 if not freq:
                     log.warn('BioQ freq not found')
-                    log.debug(pformat(data))
-                    return int(rs), risk_allele + '?'
+                    # log.debug(pformat(data))
+                    return int(rs), risk_allele + '?', notes + ', but BioQ freq not found'
 
                 if abs(freq['freq'] - data['risk_allele_frequency']) > 0.5:
                     log.warn('Could not solve inconsistence')
-                    log.debug(pformat(data))
-                    return int(rs), risk_allele + '?'
+                    # log.debug(pformat(data))
+                    return int(rs), risk_allele + '?', notes + ', but abs(freq["freq"] - data["risk_allele_frequency"]) > 0.5'
 
                 log.info('Inconsistence solved with reversed allele')
-                return int(rs), RV[risk_allele]
+                return int(rs), RV[risk_allele], notes + ', and solved with reversed allele'
 
-    return int(rs), risk_allele
+    return int(rs), risk_allele, notes
 
 
 def _p_value(text):
