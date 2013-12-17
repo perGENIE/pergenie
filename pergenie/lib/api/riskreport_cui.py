@@ -37,13 +37,14 @@ class CUIRiskReport(object):
 
     - No Django dependency
     - No MongoDB dependency
+
+    Instead of using databases,
+
+    - Load GWAS Catalog everytime
+    - Load Genomes everytime
     """
 
-    def __init__(self, path_to_gwascatalog='gwascatalog.pergenie.txt'):
-        # Load GWAS Catalog
-        with file(path_to_gwascatalog, 'r') as gwascatalog:
-            self.gwascatalog_uniq_snps = set([201752861])
-
+    def __init__(self):
         self.FILEFORMATS = [
             {'name': 'vcf_whole_genome',
              'extention': '*.vcf',
@@ -62,9 +63,26 @@ class CUIRiskReport(object):
              'region_file': 'andme_region'},
         ]
 
+        self.POPULATION = ['unknown', 'European', 'African', 'Asian', 'Japanese']
+
+    def load_gwascatalog(self, population):
+        """Load GWAS Catalog
+
+        - for each `population`
+        - only `highest reliability rank`
+        - with `is_is_region`
+        """
+
+        path_to_gwascatalog = 'gwascatalog.pergenie.{population}.txt'.format(population=population)
+        log.info('Loading: %s' % path_to_gwascatalog)
+
+        with file(path_to_gwascatalog, 'r') as gwascatalog:
+            self.gwascatalog_uniq_snps = set([201752861])
+
 
     def load_genome(self, file_path, file_format):
-        """Load variants (genotypes)"""
+        """Load variants (genotypes)
+        """
 
         variants = defaultdict(int)
 
@@ -118,10 +136,8 @@ class CUIRiskReport(object):
         pass
 
 
-        # if info['user_id'].startswith(settings.DEMO_USER_ID): info['user_id'] = settings.DEMO_USER_ID
-
         # # Get GWAS Catalog records for this population
-        # population = 'population:{0}'.format('+'.join(settings.POPULATION_MAP[info['population']]))
+        # population =
         # catalog_records = gwascatalog.search_catalog_by_query(population, None).sort('trait', 1)
         # catalog_map = {}
         # found_id = 0
@@ -301,7 +317,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='')
     parser.add_argument('-I', '--infile', help='infile', required=True)
     parser.add_argument('-F', '--file-format', help='', required=True, choices=[x['name'] for x in r.FILEFORMATS])
-    parser.add_argument('-P', '--population', help='population', default='unknown', choices=['unknown', 'European', 'African', 'Asian', 'Japanese'])
+    parser.add_argument('-P', '--population', help='population', default='unknown', choices=r.POPULATION)
     args = parser.parse_args()
 
+    r.load_gwascatalog(args.population)
     r.write_riskreport(args.infile, args.file_format)
