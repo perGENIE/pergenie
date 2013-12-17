@@ -233,7 +233,7 @@ class RiskReportBase(object):
         try:
             return {0:'..', 1:'R.', 2:'RR'}[genotype.count(risk_allele)]
         except TypeError:
-            log.warn('genotype?? genotype:{0} risk-allele {1} '.format(genotype, risk_allele))  ###
+            print 'genotype?? genotype:{0} risk-allele {1} '.format(genotype, risk_allele)  ###
             return '..'
 
     def _relative_risk_to_general_population(self, freq, OR, zygosities):
