@@ -17,12 +17,10 @@ class GWASCatalog(object):
         self.db_select = settings.DB_SELECT['gwascatalog']
 
     def check_gwascatalog_imported(self):
-        #
-        if self.db_select == 'mongodb':
-            with MongoClient(host=settings.MONGO_URI) as c:
-                catalog_stats = c['pergenie']['catalog_stats']
-                if catalog_stats.count() == 0:
-                    raise Exception, 'GWASCatalog is not imported correctly.'
+        with MongoClient(host=settings.MONGO_URI) as c:
+            catalog_stats = c['pergenie']['catalog_stats']
+            if catalog_stats.count() == 0:
+                raise Exception, 'GWASCatalog is not imported correctly.'
 
 
     def get_catalog_records(self, rs):
@@ -118,65 +116,60 @@ class GWASCatalog(object):
                 yield '', ''
 
     def get_latest_catalog(self):
-        if self.db_select == 'mongodb':
-            with MongoClient(host=settings.MONGO_URI) as c:
-                latest_document = c['pergenie']['catalog_info'].find_one({'status': 'latest'})  # -> {'date': datetime.datetime(2012, 12, 12, 0, 0),}
+        with MongoClient(host=settings.MONGO_URI) as c:
+            latest_document = c['pergenie']['catalog_info'].find_one({'status': 'latest'})  # -> {'date': datetime.datetime(2012, 12, 12, 0, 0),}
 
-                if latest_document:
-                    latest_date = str(latest_document['date'].date()).replace('-', '_')  # -> '2012_12_12'
-                    catalog = c['pergenie']['catalog'][latest_date]
-                else:
-                    log.error('latest does not exist in catalog_info!')
+            if latest_document:
+                latest_date = str(latest_document['date'].date()).replace('-', '_')  # -> '2012_12_12'
+                catalog = c['pergenie']['catalog'][latest_date]
+            else:
+                log.error('latest does not exist in catalog_info!')
 
         return catalog
 
     def get_latest_catalog_date(self):
-        if self.db_select == 'mongodb':
-            with MongoClient(host=settings.MONGO_URI) as c:
-                catalog_info = c['pergenie']['catalog_info']
-                latest_catalog_date = catalog_info.find_one({'status': 'latest'})['date']
+        with MongoClient(host=settings.MONGO_URI) as c:
+            catalog_info = c['pergenie']['catalog_info']
+            latest_catalog_date = catalog_info.find_one({'status': 'latest'})['date']
 
         return latest_catalog_date
 
     def get_latest_added_date(self):
-        if self.db_select == 'mongodb':
-            with MongoClient(host=settings.MONGO_URI) as c:
-                catalog_stats = c['pergenie']['catalog_stats']
+        with MongoClient(host=settings.MONGO_URI) as c:
+            catalog_stats = c['pergenie']['catalog_stats']
 
-                # NOTE: If catalog is under importing, this date may not be correct. But it's ok.
-                latest_datetime = list(catalog_stats.find({'field': 'added'}).sort('value', DESCENDING))[0]['value']
-                latest_date = latest_datetime.date()
+            # NOTE: If catalog is under importing, this date may not be correct. But it's ok.
+            latest_datetime = list(catalog_stats.find({'field': 'added'}).sort('value', DESCENDING))[0]['value']
+            latest_date = latest_datetime.date()
 
         return latest_date
 
     def get_recent_catalog_records(self):
-        if self.db_select == 'mongodb':
-            with MongoClient(host=settings.MONGO_URI) as c:
-                catalog = self.get_latest_catalog()
-                recent_date = list(catalog.find().sort('added', DESCENDING))[0]['added']
-                recent_records = list(catalog.find({'added': recent_date}))
+        with MongoClient(host=settings.MONGO_URI) as c:
+            catalog = self.get_latest_catalog()
+            recent_date = list(catalog.find().sort('added', DESCENDING))[0]['added']
+            recent_records = list(catalog.find({'added': recent_date}))
 
-                uniq_studies, uniq_ids = list(), set()
-                for record in recent_records:
-                    if not record['pubmed_id'] in uniq_ids:
-                        uniq_studies.append(record)
-                        uniq_ids.update([record['pubmed_id']])
+            uniq_studies, uniq_ids = list(), set()
+            for record in recent_records:
+                if not record['pubmed_id'] in uniq_ids:
+                    uniq_studies.append(record)
+                    uniq_ids.update([record['pubmed_id']])
 
-                        # limit to 3 studies
-                        if len(uniq_ids) == 3:
-                            break
+                    # limit to 3 studies
+                    if len(uniq_ids) == 3:
+                        break
 
         return uniq_studies
 
     def get_traits_infos(self, as_dict=False):
-        if self.db_select == 'mongodb':
-            with MongoClient(host=settings.MONGO_URI) as c:
-                trait_info = c['pergenie']['trait_info']
+        with MongoClient(host=settings.MONGO_URI) as c:
+            trait_info = c['pergenie']['trait_info']
 
-                founds = trait_info.find({})
-                traits = set([found['eng'] for found in founds])
-                traits_ja = [trait_info.find_one({'eng': trait})['ja'] for trait in traits]
-                traits_category = [trait_info.find_one({'eng': trait})['category'] for trait in traits]
+            founds = trait_info.find({})
+            traits = set([found['eng'] for found in founds])
+            traits_ja = [trait_info.find_one({'eng': trait})['ja'] for trait in traits]
+            traits_category = [trait_info.find_one({'eng': trait})['category'] for trait in traits]
 
         traits_wiki_url_en = list()
         for trait in traits:
@@ -194,55 +187,80 @@ class GWASCatalog(object):
             return traits, dict(zip(traits, traits_ja)), dict(zip(traits, traits_category)), dict(zip(traits, traits_wiki_url_en))
 
     def get_uniq_snps_list(self):
-        if self.db_select == 'mongodb':
-            with MongoClient(host=settings.MONGO_URI) as c:
-                catalog_stats = c['pergenie']['catalog_stats']
+        with MongoClient(host=settings.MONGO_URI) as c:
+            catalog_stats = c['pergenie']['catalog_stats']
         return sorted(list(set([rec['value'] for rec in list(catalog_stats.find({'field': 'snps'}))])))
 
     def get_summary(self):
         results = dict()
 
-        if self.db_select == 'mongodb':
-            with MongoClient(host=settings.MONGO_URI) as c:
-                catalog_stats = c['pergenie']['catalog_stats']
+        with MongoClient(host=settings.MONGO_URI) as c:
+            catalog_stats = c['pergenie']['catalog_stats']
 
-                # Chart. Field: Context
-                stats = defaultdict(float)
-                records = list(catalog_stats.find({'field': 'context'}).sort('count', DESCENDING))
-                for rec in records:
-                    index = re.split('(;|; | ; | ;)', str(rec['value']))[0]
-                    stats[index] += rec['count']
-                # As percentage
-                for k,v in stats.items():
-                    stats[k] = round(100 * v / sum(stats.values()))
-                # Sort
-                sorted_stats = sorted(stats.items(), key=lambda x:x[1], reverse=True)
-                results['context'] = sorted_stats
+            # Chart. Field: Context
+            stats = defaultdict(float)
+            records = list(catalog_stats.find({'field': 'context'}).sort('count', DESCENDING))
+            for rec in records:
+                index = re.split('(;|; | ; | ;)', str(rec['value']))[0]
+                stats[index] += rec['count']
+            # As percentage
+            for k,v in stats.items():
+                stats[k] = round(100 * v / sum(stats.values()))
+            # Sort
+            sorted_stats = sorted(stats.items(), key=lambda x:x[1], reverse=True)
+            results['context'] = sorted_stats
 
 
-                catalog = self.get_latest_catalog()
-                # Table. Top 10 reported disease/trait
-                # print catalog.aggregate([])
+            catalog = self.get_latest_catalog()
+            # Table. Top 10 reported disease/trait
+            # print catalog.aggregate([])
 
-                # Table. Top 10 reported SNPs
+            # Table. Top 10 reported SNPs
 
-                # Table. (Top 10 has-many-association SNPs)
+            # Table. (Top 10 has-many-association SNPs)
 
-                # Chart. Odds Ratio v.s. risk allle frequency
+            # Chart. Odds Ratio v.s. risk allle frequency
 
         return results['context']
 
     def get_total_number_of_publications(self):
         results = dict()
 
-        if self.db_select == 'mongodb':
-            catalog = self.get_latest_catalog()
+        catalog = self.get_latest_catalog()
 
-            this_year = datetime.date.today().year
-            years = range(2005, this_year + 1)
-            for year in years:
-                records = catalog.find({'date': {"$lte": datetime.datetime(year,12,31)}})
-                results[year] = {'snps': records.count(),
-                                 # 'uniq_snps': len(records.distinct('snp_id_current')),
-                                 'publications': len(records.distinct('pubmed_id'))}
+        this_year = datetime.date.today().year
+        years = range(2005, this_year + 1)
+        for year in years:
+            records = catalog.find({'date': {"$lte": datetime.datetime(year,12,31)}})
+            results[year] = {'snps': records.count(),
+                             # 'uniq_snps': len(records.distinct('snp_id_current')),
+                             'publications': len(records.distinct('pubmed_id'))}
         return results
+
+    def export_gwascatalog(self):
+        """Export GWAS Catalog
+
+        (for CUI version of RiskReport)
+        """
+
+        catalog = self.get_latest_catalog()
+        catalog_keys = [u'first_author', u'chr_pos', u'replication_sample_size', u'date', u'upstream_gene', u'OR_or_beta', u'initial_sample_size', u'snp_genes', u'p_value_text', u'p_value_mlog', u'mapped_genes', u'platform', u'upstream_gene_distance', u'pubmed_id', u'eng2ja', u'downstream_gene_distance', u'downstream_gene', u'ref', u'merged', u'cnv', u'intergenc', u'added', u'chr_id', u'snps', u'trait', u'snp_id_current', u'is_in_andme', u'jornal', u'reported_genes', u'CI_95', u'population', u'dbsnp_link', u'p_value', u'pubmed_link', u'risk_allele', u'notes', u'region', u'context', u'is_in_iontargetseq', u'strongest_snp_risk_allele', u'risk_allele_frequency', u'study', u'is_in_truseq']
+
+        populations = settings.POPULATION_MAP.keys()
+        for population in populations:
+            log.info(population)
+
+            query = 'population:{0}'.format('+'.join(settings.POPULATION_MAP[population]))
+            catalog_records = self.search_catalog_by_query(query, None).sort('trait', 1)
+
+            # TODO:
+            # only highest rank
+
+            path_to_gwascatalog = 'gwascatalog.pergenie.{population}.txt'.format(population=population)
+            with file(path_to_gwascatalog, 'w') as catalog:
+                print >>catalog, '\t'.join(catalog_keys)
+                for i,record in enumerate(catalog_records):
+                    row = '\t'.join([str(record[k]) for k in catalog_keys])
+                    print >>catalog, row
+
+        log.info('done!')
