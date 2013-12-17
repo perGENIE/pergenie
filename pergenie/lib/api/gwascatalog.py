@@ -238,10 +238,55 @@ class GWASCatalog(object):
                              'publications': len(records.distinct('pubmed_id'))}
         return results
 
+    def _get_highest_priority_study(self, studies):
+        """
+        >>> data = [{'study': 'a', 'rank': '**'}, \
+                    {'study': 'b', 'rank': '*'}]
+        >>> get_highest_priority_study(data)
+        {'study': 'a', 'rank': '**'}
+
+        >>> data = [{'study': 'a', 'rank': 'm**'}, \
+                    {'study': 'b', 'rank': '*'}]
+        >>> get_highest_priority_study(data)
+        {'study': 'a', 'rank': 'm**'}
+
+        >>> data = [{'study': 'a', 'rank': 'm**'}, \
+                    {'study': 'b', 'rank': 'm*'}]
+        >>> get_highest_priority_study(data)
+        {'study': 'a', 'rank': 'm**'}
+
+        >>> data = [{'study': 'a', 'rank': '**'}, \
+                    {'study': 'b', 'rank': 'm*'}]
+        >>> get_highest_priority_study(data)
+        {'study': 'b', 'rank': 'm*'}
+
+        """
+
+        highest = None
+
+        for record in studies:
+            if not highest:
+                highest = record
+
+            elif record['rank'].count('*') > highest['rank'].count('*'):
+                if ('m' in highest['rank']) and (not 'm' in record['rank']):
+                    pass
+                else:
+                    highest = record
+            elif (not 'm' in highest['rank']) and ('m' in record['rank']):
+                highest = record
+
+        return highest
+
     def export_gwascatalog(self):
         """Export GWAS Catalog
 
-        (for CUI version of RiskReport)
+        for CUI version of RiskReport
+
+        - only diseases
+        - only highest reriability study
+        - as pickle file
+        - for each population
         """
 
         catalog = self.get_latest_catalog()
@@ -250,15 +295,26 @@ class GWASCatalog(object):
         for population in populations:
             log.info(population)
 
+            catalog_records = list()
+
             query = 'population:{0}'.format('+'.join(settings.POPULATION_MAP[population]))
-            catalog_records = list(self.search_catalog_by_query(query, None).sort('trait', 1))
+            found = list(self.search_catalog_by_query(query, None).sort('trait', 1))
 
-            # TODO:
-            # only highest rank
+            traits, _, traits_category, _  = self.get_traits_infos(as_dict=True)
+            diseases = [trait for trait, category in traits_category.items() if category == 'Disease']
 
-            # Remove unused key '_id'
-            for record in catalog_records:
-                record.pop('_id')
+            for disease in diseases:
+                # Only diseases
+                tmp_records = [record for record in found if record['trait'] == disease and 'rank' in record.keys()]
+
+                if tmp_records:
+                    # Only highest reriability study
+                    highest_rank_record = self._get_highest_priority_study(tmp_records)
+
+                    # Remove unused key '_id'
+                    highest_rank_record.pop('_id')
+
+                    catalog_records.append(highest_rank_record)
 
             path_to_gwascatalog = 'gwascatalog.pergenie.{population}.p'.format(population=population)
             pickle_dump_obj(catalog_records, path_to_gwascatalog)

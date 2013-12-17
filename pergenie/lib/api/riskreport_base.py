@@ -1,5 +1,5 @@
 import re
-
+# from lib.utils.deprecated_decorator import deprecated
 
 class RiskReportBase(object):
     """
@@ -105,6 +105,7 @@ class RiskReportBase(object):
 
         return results
 
+    # @deprecated()
     def _calc_reliability_rank(self, record):
         """
         >>> record = {'study': 'a', 'p_value': '1e-10'}
@@ -175,6 +176,7 @@ class RiskReportBase(object):
 
         return r_rank
 
+    # @deprecated()
     def _get_highest_priority_study(self, studies):
         """
         >>> data = [{'study': 'a', 'rank': '**', 'RR': 1.0}, \

@@ -196,30 +196,8 @@ class CUIRiskReport(RiskReportBase):
         # pprint(risk_store)
         pprint(risk_report)
 
-        # # Set reliability rank
-        # tmp_risk_reports = dict()
-        # for trait,studies in risk_reports.items():
-        #     tmp_risk_reports[trait] = {}
-
-        #     for study,value in studies.items():
-        #         record = risk_store[trait][study].values()[0]['catalog_map']
-        #         r_rank = self._calc_reliability_rank(record)
-        #         tmp_risk_reports[trait].update({study: [r_rank, value]})
-        # risk_reports = tmp_risk_reports
-
-        # # Import riskreport into MongoDB
-        # file_uuid = self.get_file_uuid(info['user_id'], info['name'])
-        # users_reports = self.db['riskreport'][file_uuid]
-        # if users_reports.find_one():
-        #     self.db.drop_collection(users_reports)
 
         # for trait, study_level_rank_and_values in risk_reports.items():
-        #     # Get highest reriability study
-        #     studies = list()
-        #     for study, rank_and_values in study_level_rank_and_values.items():
-        #         studies.append(dict(study=study, rank=rank_and_values[0], RR=rank_and_values[1]))
-        #     highest = self._get_highest_priority_study(studies)
-
         #     # Get SNP level infos (RR, genotype, etc...)
         #     snp_level_records = list()
         #     for study, snp_level_sotres in risk_store[trait].items():
