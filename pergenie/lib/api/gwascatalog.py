@@ -6,6 +6,7 @@ import shlex
 import datetime
 from pymongo import MongoClient, DESCENDING, ASCENDING
 from django.conf import settings
+from lib.utils.io import pickle_dump_obj
 from lib.utils import clogging
 log = clogging.getColorLogger(__name__)
 
@@ -244,23 +245,20 @@ class GWASCatalog(object):
         """
 
         catalog = self.get_latest_catalog()
-        catalog_keys = [u'first_author', u'chr_pos', u'replication_sample_size', u'date', u'upstream_gene', u'OR_or_beta', u'initial_sample_size', u'snp_genes', u'p_value_text', u'p_value_mlog', u'mapped_genes', u'platform', u'upstream_gene_distance', u'pubmed_id', u'eng2ja', u'downstream_gene_distance', u'downstream_gene', u'ref', u'merged', u'cnv', u'intergenc', u'added', u'chr_id', u'snps', u'trait', u'snp_id_current', u'is_in_andme', u'jornal', u'reported_genes', u'CI_95', u'population', u'dbsnp_link', u'p_value', u'pubmed_link', u'risk_allele', u'notes', u'region', u'context', u'is_in_iontargetseq', u'strongest_snp_risk_allele', u'risk_allele_frequency', u'study', u'is_in_truseq']
-
         populations = settings.POPULATION_MAP.keys()
+
         for population in populations:
             log.info(population)
 
             query = 'population:{0}'.format('+'.join(settings.POPULATION_MAP[population]))
-            catalog_records = self.search_catalog_by_query(query, None).sort('trait', 1)
+            catalog_records = list(self.search_catalog_by_query(query, None).sort('trait', 1))
 
             # TODO:
             # only highest rank
 
-            path_to_gwascatalog = 'gwascatalog.pergenie.{population}.txt'.format(population=population)
-            with file(path_to_gwascatalog, 'w') as catalog:
-                print >>catalog, '\t'.join(catalog_keys)
-                for i,record in enumerate(catalog_records):
-                    row = '\t'.join([str(record[k]) for k in catalog_keys])
-                    print >>catalog, row
+            # Remove unused key '_id'
+            for record in catalog_records:
+                record.pop('_id')
 
-        log.info('done!')
+            path_to_gwascatalog = 'gwascatalog.pergenie.{population}.p'.format(population=population)
+            pickle_dump_obj(catalog_records, path_to_gwascatalog)

@@ -226,9 +226,7 @@ class RiskReport(RiskReportBase):
             catalog_cover_rate_for_this_population = round(100 * n_available / len(uniq_snps))
 
         # Calculate risk
-        risk_store, risk_reports = self.risk_calculation(catalog_map, variants_map,
-                                                         settings.POPULATION_MAP[info['population']],
-                                                         info['user_id'], info['name'], False)
+        risk_store, risk_reports = self.risk_calculation(catalog_map, variants_map)
 
         # Set reliability rank
         tmp_risk_reports = dict()

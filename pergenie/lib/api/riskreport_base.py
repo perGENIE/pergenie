@@ -9,7 +9,7 @@ class RiskReportBase(object):
     - No MongoDB dependency
     """
 
-    def risk_calculation(self, catalog_map, variants_map, population, user_id, file_name, is_LD_block_clustered):
+    def risk_calculation(self, catalog_map, variants_map):
         """
         Calculate risk
 

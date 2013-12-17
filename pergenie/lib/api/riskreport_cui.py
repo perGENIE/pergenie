@@ -6,32 +6,30 @@ import re
 import subprocess
 import datetime
 import zipfile
+import logging
 from pprint import pformat, pprint
 from collections import defaultdict
+try:
+    import cPickle as pickle
+except ImportError:
+    import pickle
 
 sys.path.append('../')
-
-# Parser
 from mongo.parser.VCFParser import VCFParser, VCFParseError
 from mongo.parser.andmeParser import andmeParser, andmeParseError
+from riskreport_base import RiskReportBase
 
 # Logger
-try:
-    # Require `termcolor`
-    from utils import clogging
-    log = clogging.getColorLogger(__name__)
-except ImportError:
-    import logging
-    log = logging.getLogger()
-    log.setLevel(logging.DEBUG)
-    formatter = logging.Formatter('%(asctime)s [%(levelname)s] %(message)s')
-    sh = logging.StreamHandler()
-    sh.setLevel(logging.DEBUG)
-    sh.setFormatter(formatter)
-    log.addHandler(sh)
+log = logging.getLogger()
+log.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(asctime)s [%(levelname)s] %(message)s')
+sh = logging.StreamHandler()
+sh.setLevel(logging.DEBUG)
+sh.setFormatter(formatter)
+log.addHandler(sh)
 
 
-class CUIRiskReport(object):
+class CUIRiskReport(RiskReportBase):
     """
     CUI version of RiskReport
 
@@ -63,7 +61,14 @@ class CUIRiskReport(object):
              'region_file': 'andme_region'},
         ]
 
-        self.POPULATION = ['unknown', 'European', 'African', 'Asian', 'Japanese']
+        self.POPULATION_MAP = {'African': ['African'],
+                               'European': ['European'],
+                               'Asian': ['Asian'],
+                               'Japanese': ['Japanese'],
+                               'unknown': ['']}
+
+        self.POPULATION = self.POPULATION_MAP.keys()
+
 
     def load_gwascatalog(self, population):
         """Load GWAS Catalog
@@ -73,10 +78,13 @@ class CUIRiskReport(object):
         - with `is_is_region`
         """
 
-        path_to_gwascatalog = 'gwascatalog.pergenie.{population}.txt'.format(population=population)
+        path_to_gwascatalog = 'gwascatalog.pergenie.{population}.p'.format(population=population)
         log.info('Loading: %s' % path_to_gwascatalog)
 
-        with file(path_to_gwascatalog, 'r') as gwascatalog:
+        with file(path_to_gwascatalog, 'rb') as fin:
+            self.gwascatalog_records = pickle.load(fin)
+
+            #
             self.gwascatalog_uniq_snps = set([201752861])
 
 
@@ -125,82 +133,68 @@ class CUIRiskReport(object):
         """Write out riskreport(.tsv|.csv) as .zip
         """
 
-        # Load Genome
+        # Load GWAS Catalog -> catalog_map
+        catalog_records = self.gwascatalog_records
+        catalog_map = {}
+        found_id = 0
+        snps_all = set()
+        for record in catalog_records:
+            if record['snps'] != 'na':
+                snps_all.update([record['snps']])
+
+                found_id += 1
+                reported_genes = ', '.join([gene['gene_symbol'] for gene in record['reported_genes']])
+                mapped_genes = ', '.join([gene['gene_symbol'] for gene in record['mapped_genes']])
+                catalog_map[found_id] = record
+                catalog_map[found_id].update({'rs': record['snps'],
+                                              'reported_genes': reported_genes,
+                                              'mapped_genes': mapped_genes,
+                                              'chr': record['chr_id'],
+                                              'freq': record['risk_allele_frequency'],
+                                              'added': record['added'].date(),
+                                              'date': record['date'].date()})
+
+        # Load Genome -> variants_map
         variants = self.load_genome(infile, file_format)
-        print variants
+        variants_map = defaultdict(int)
 
-        # Get GWAS Catalog records
+        for _id, _catalog in catalog_map.items():
+            rs = _catalog['rs']
+            if rs and rs != 'na':
+                found = variants.get(rs)
 
+                # Case1: in catalog & in variants
+                if found:
+                    variants_map[rs] = found['genotype']
 
-        # Risk Calculation
-        pass
+                # Case2: in catalog, but not in variants. so genotype is homozygous of `ref` or `na`.
+                else:
+                    ref = _catalog['ref']
+                    na = 'na'
+                    if file_format == 'andme':
+                        genotype = na
 
+                    elif file_format == 'vcf_whole_genome':
+                        genotype = ref * 2
 
-        # # Get GWAS Catalog records for this population
-        # population =
-        # catalog_records = gwascatalog.search_catalog_by_query(population, None).sort('trait', 1)
-        # catalog_map = {}
-        # found_id = 0
-        # snps_all = set()
-        # for record in catalog_records:
-        #     if record['snps'] != 'na':
-        #         snps_all.update([record['snps']])
+                    elif file_format == 'vcf_exome_truseq':
+                        if rec['is_in_truseq']:
+                            genotype = ref * 2
+                        else:
+                            genotype = na
 
-        #         found_id += 1
-        #         reported_genes = ', '.join([gene['gene_symbol'] for gene in record['reported_genes']])
-        #         mapped_genes = ', '.join([gene['gene_symbol'] for gene in record['mapped_genes']])
-        #         catalog_map[found_id] = record
-        #         catalog_map[found_id].update({'rs': record['snps'],
-        #                                       'reported_genes': reported_genes,
-        #                                       'mapped_genes': mapped_genes,
-        #                                       'chr': record['chr_id'],
-        #                                       'freq': record['risk_allele_frequency'],
-        #                                       'added': record['added'].date(),
-        #                                       'date': record['date'].date()})
+                    elif file_format == 'vcf_exome_iontargetseq':
+                        if rec['is_in_iontargetseq']:
+                            genotype = ref * 2
+                        else:
+                            genotype = na
 
-        # # Get genotypes for these GWAS Catalog records
-        # # Case1: in catalog & in variants
-        # variants_map = genomes.get_genotypes(info['user_id'], info['name'], info['file_format'], list(snps_all), 'rs',
-        #                                      check_ref_or_not=False)
+                    variants_map[rs] = genotype
 
-        # # Case2: in catalog, but not in variants. so genotype is homozygous of `ref` or `na`.
-        # for _id, _catalog in catalog_map.items():
-        #     rs = _catalog['rs']
-        #     if rs and rs != 'na' and (not rs in variants_map):
-        #         variants_map[rs] = genomes._ref_or_na(rs, 'rs', info['file_format'], rec=_catalog)
-
-        # # Case3: TODO:
-
-        # # Get number of uniq studies for this population
-        # # & Get cover rate of GWAS Catalog for this population
-        # uniq_studies, uniq_snps = set(), set()
-        # n_available = 0
-        # for record in catalog_map.values():
-        #     if not record['pubmed_id'] in uniq_studies:
-        #         uniq_studies.update([record['pubmed_id']])
-
-        #     if record['snp_id_current'] and record['snp_id_current'] not in uniq_snps:
-        #         uniq_snps.update([record['snp_id_current']])
-
-        #         if info['file_format'] == 'vcf_exome_truseq' and record['is_in_truseq']:
-        #             n_available += 1
-        #         elif info['file_format'] == 'vcf_exome_iontargetseq' and record['is_in_iontargetseq']:
-        #             n_available += 1
-        #         elif info['file_format'] == 'andme' and record['is_in_andme']:
-        #             n_available += 1
-
-        # log.debug('n_available: %s' % n_available)
-
-        # n_studies = len(uniq_studies)
-        # if info['file_format'] == 'vcf_whole_genome':
-        #     catalog_cover_rate_for_this_population = 100
-        # else:
-        #     catalog_cover_rate_for_this_population = round(100 * n_available / len(uniq_snps))
-
-        # # Calculate risk
-        # risk_store, risk_reports = self.risk_calculation(catalog_map, variants_map,
-        #                                                  settings.POPULATION_MAP[info['population']],
-        #                                                  info['user_id'], info['name'], False)
+        #
+        risk_store, risk_report = self.risk_calculation(catalog_map, variants_map)
+        # pprint(risk_store)
+        pprint(risk_report)
 
         # # Set reliability rank
         # tmp_risk_reports = dict()
@@ -242,14 +236,6 @@ class CUIRiskReport(object):
         #                               rank=highest['rank'],
         #                               highest=highest['study'],
         #                               studies=snp_level_records), upsert=True)
-
-        # # Update data_info
-        # self.data_info.update({'user_id': info['user_id'], 'name': info['name']},
-        #                       {"$set": {'riskreport': datetime.datetime.today(),
-        #                                 'n_studies': n_studies,
-        #                                 'catalog_cover_rate_for_this_population': catalog_cover_rate_for_this_population}}, upsert=True)
-
-
 
 
         # fout_paths = []
