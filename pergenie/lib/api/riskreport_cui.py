@@ -7,6 +7,7 @@ import subprocess
 import datetime
 import zipfile
 from pprint import pformat, pprint
+from collections import defaultdict
 
 sys.path.append('../')
 
@@ -29,76 +30,6 @@ except ImportError:
     sh.setFormatter(formatter)
     log.addHandler(sh)
 
-FILEFORMATS = [
-    {'name': 'vcf_whole_genome',
-     'extention': '*.vcf',
-     'long_name': 'VCF (Whole Genome)',
-     'short_name': 'wg',
-     'region_file': ''},
-    {'name': 'vcf_exome_truseq',
-     'extention': '*.vcf',
-     'long_name': 'VCF (TruSeq Exome)',
-     'short_name': 'truseq',
-     'region_file': 'TruSeq-Exome-Targeted-Regions-BED-file'},
-    {'name': 'andme',
-     'extention': '*.txt',
-     'long_name': '23andMe',
-     'short_name': 'andme',
-     'region_file': 'andme_region'},
-]
-
-
-def load_genome(file_path, file_format):
-    """Load variants (genotypes) file.
-    """
-
-    log.info('Input file: %s' % file_path)
-    # file_name = os.path.basename(file_path)
-
-    log.info('counting lines...')
-    file_lines = int(subprocess.Popen(['wc', '-l', file_path], stdout=subprocess.PIPE).communicate()[0].split()[0])  # py26
-    log.info('#lines: %s' % file_lines)
-
-    log.info('Start importing ...')
-    # uniq_snps = set(gwascatalog.get_uniq_snps_list())
-    uniq_snps = set([3])
-
-    with open(file_path, 'rb') as fin:
-        try:
-            p = {'vcf_whole_genome': VCFParser,
-                 'vcf_exome_truseq': VCFParser,
-                 'vcf_exome_iontargetseq': VCFParser,
-                 'andme': andmeParser}[file_format](fin)
-
-            for i,data in enumerate(p.parse_lines()):
-                if file_format in [x['name'] for x in FILEFORMATS if x['extention'] == '*.vcf']:
-                    # TODO: handling multi-sample .vcf file
-                    # currently, choose first sample from multi-sample .vcf
-                    tmp_genotypes = data['genotype']
-                    data['genotype'] = tmp_genotypes[p.sample_names[0]]
-
-                if data['rs']:
-
-                    # Minimum import
-                    if not data['rs'] in uniq_snps:
-                        continue
-
-                    # sub_data = {k: data[k] for k in ('chrom', 'pos', 'rs', 'genotype')}  # py27
-                    sub_data = dict((k, data[k]) for k in ('chrom', 'pos', 'rs', 'genotype'))  # py26
-
-                    print sub_data
-                    # users_variants.insert(sub_data)
-
-                if i > 0 and i % 10000 == 0:
-                    log.debug('{i} lines done...'.format(i=i+1))
-
-            log.info('done!')
-            return
-
-        except (VCFParseError, andmeParseError), e:
-            log.error('ParseError: %s' % e.error_code)
-            return e.error_code
-
 
 class CUIRiskReport(object):
     """
@@ -111,14 +42,74 @@ class CUIRiskReport(object):
     def __init__(self, path_to_gwascatalog='gwascatalog.pergenie.txt'):
         # Load GWAS Catalog
         with file(path_to_gwascatalog, 'r') as gwascatalog:
-            pass
+            self.gwascatalog_uniq_snps = set([201752861])
+
+        self.FILEFORMATS = [
+            {'name': 'vcf_whole_genome',
+             'extention': '*.vcf',
+             'long_name': 'VCF (Whole Genome)',
+             'short_name': 'wg',
+             'region_file': ''},
+            {'name': 'vcf_exome_truseq',
+             'extention': '*.vcf',
+             'long_name': 'VCF (TruSeq Exome)',
+             'short_name': 'truseq',
+             'region_file': 'TruSeq-Exome-Targeted-Regions-BED-file'},
+            {'name': 'andme',
+             'extention': '*.txt',
+             'long_name': '23andMe',
+             'short_name': 'andme',
+             'region_file': 'andme_region'},
+        ]
+
+
+    def load_genome(self, file_path, file_format):
+        """Load variants (genotypes)"""
+
+        variants = defaultdict(int)
+
+        log.info('Input file: %s' % file_path)
+        file_lines = int(subprocess.Popen(['wc', '-l', file_path], stdout=subprocess.PIPE).communicate()[0].split()[0])  # py26
+        log.info('#lines: %s' % file_lines)
+        log.info('Start importing ...')
+
+        with open(file_path, 'rb') as fin:
+            try:
+                p = {'vcf_whole_genome': VCFParser,
+                     'vcf_exome_truseq': VCFParser,
+                     'vcf_exome_iontargetseq': VCFParser,
+                     'andme': andmeParser}[file_format](fin)
+
+                for i,data in enumerate(p.parse_lines()):
+                    if file_format in [x['name'] for x in self.FILEFORMATS if x['extention'] == '*.vcf']:
+                        # TODO: handling multi-sample .vcf file
+                        # currently, choose first sample from multi-sample .vcf
+                        tmp_genotypes = data['genotype']
+                        data['genotype'] = tmp_genotypes[p.sample_names[0]]
+
+                    # Minimum load
+                    if data['rs'] and data['rs'] in self.gwascatalog_uniq_snps:
+                        variants[data['rs']] = dict((k, data[k]) for k in ('chrom', 'pos', 'genotype'))  # py26
+                        #                      {k: data[k] for k in ('chrom', 'pos', 'rs', 'genotype')}  # py27
+
+                    if i > 0 and i % 10000 == 0:
+                        log.debug('{i} lines done...'.format(i=i+1))
+
+                log.info('done!')
+                return variants
+
+            except (VCFParseError, andmeParseError), e:
+                log.error('ParseError: %s' % e.error_code)
+                return e.error_code
+
 
     def write_riskreport(self, infile, file_format, ext='tsv'):
         """Write out riskreport(.tsv|.csv) as .zip
         """
 
         # Load Genome
-        load_genome(infile, file_format)
+        variants = self.load_genome(infile, file_format)
+        print variants
 
         # Get GWAS Catalog records
 
@@ -305,11 +296,12 @@ class CUIRiskReport(object):
 
 if __name__ == '__main__':
     import argparse
+    r = CUIRiskReport()
+
     parser = argparse.ArgumentParser(description='')
     parser.add_argument('-I', '--infile', help='infile', required=True)
-    parser.add_argument('-F', '--file-format', help='', required=True, choices=[x['name'] for x in FILEFORMATS])
+    parser.add_argument('-F', '--file-format', help='', required=True, choices=[x['name'] for x in r.FILEFORMATS])
     parser.add_argument('-P', '--population', help='population', default='unknown', choices=['unknown', 'European', 'African', 'Asian', 'Japanese'])
     args = parser.parse_args()
 
-    r = CUIRiskReport()
     r.write_riskreport(args.infile, args.file_format)
