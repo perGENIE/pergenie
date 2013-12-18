@@ -129,7 +129,7 @@ class CUIRiskReport(RiskReportBase):
                 return e.error_code
 
 
-    def write_riskreport(self, infile, file_format, ext='tsv'):
+    def write_riskreport(self, infile, file_format, outfile):
         """Write out riskreport(.tsv|.csv) as .zip
         """
 
@@ -191,34 +191,39 @@ class CUIRiskReport(RiskReportBase):
 
                     variants_map[rs] = genotype
 
-        #
+        # Risk Calculation -> risk_store, risk_report
         risk_store, risk_report = self.risk_calculation(catalog_map, variants_map)
         # pprint(risk_store)
-        pprint(risk_report)
+        # pprint(risk_report)
 
 
-        # for trait, study_level_rank_and_values in risk_reports.items():
+        # Write out Risk Report -> outfile (or stdout)
+        if outfile:
+            out = open(outfile, 'w')
+        else:
+            out = sys.stdout
+
+        # for trait, record in risk_report.items():
         #     # Get SNP level infos (RR, genotype, etc...)
         #     snp_level_records = list()
         #     for study, snp_level_sotres in risk_store[trait].items():
         #         for snp, snp_level_sotre in snp_level_sotres.items():
-        #             snp_level_records.append(dict(snp=snp,
-        #                                           RR=snp_level_sotre['RR'],  # snp-level
-        #                                           genotype=snp_level_sotre['variant_map'],  # snp-level
-        #                                           study=study,
-        #                                           rank=study_level_rank_and_values.get(study, ['na'])[0]  # study-level  # FIXME: why key-error occur?
-        #                                       ))
+        #             print study, snp# , snp_level_sotre
+                    # snp_level_records.append(dict(snp=snp,
+                    #                               RR=snp_level_sotre['RR'],  # snp-level
+                    #                               genotype=snp_level_sotre['variant_map'],  # snp-level
+                    #                               study=study))
 
-        #     users_reports.insert(dict(trait=trait,
-        #                               RR=highest['RR'],
-        #                               rank=highest['rank'],
-        #                               highest=highest['study'],
-        #                               studies=snp_level_records), upsert=True)
+                    # users_reports.insert(dict(trait=trait,
+                    #                           RR=record[study]
+                    #                           rank=['rank'],
+                    #                           highest=highest['study'],
+                    #                           studies=snp_level_records), upsert=True)
 
 
         # fout_paths = []
 
-        # delimiter = {'tsv': '\t'}  # 'csv': ','
+        # delimiter = {'tsv': '\t'}
         # traits, traits_ja, traits_category, _ = gwascatalog.get_traits_infos(as_dict=True)
         # today = str(datetime.date.today())
 
@@ -239,24 +244,29 @@ class CUIRiskReport(RiskReportBase):
 
         #     tmp_riskreport = self.db['riskreport'][file_info['file_uuid']]
 
-        #     with open(fout_path, 'w') as fout:
-        #         header = ['traits', 'traits_ja', 'traits_category', 'relative risk', 'study', 'snps']
-        #         print >>fout, delimiter[ext].join(header)
 
-        #         for trait in traits:
-        #             content = [trait, traits_ja[trait], traits_category[trait]]
+        for row in risk_report:
+            print >>out, row
 
-        #             found = tmp_riskreport.find_one({'trait': trait})
-        #             if found:
-        #                 risk = str(found['RR'])
-        #                 snps = ';'.join(['rs'+str(x['snp']) for x in found['studies'] if x['study'] == found['highest']])
-        #                 gwas = gwascatalog.get_latest_catalog()
-        #                 link = gwas.find_one({'study': found['highest']})['pubmed_link']
-        #                 content += [risk, link, snps]
-        #             else:
-        #                 content += ['', '', '']
 
-        #             print >>fout, delimiter[ext].join(content)
+
+                # header = ['traits', 'traits_ja', 'traits_category', 'relative risk', 'study', 'snps']
+                # print >>fout, delimiter[ext].join(header)
+
+                # for trait in traits:
+                #     content = [trait, traits_ja[trait], traits_category[trait]]
+
+                #     found = tmp_riskreport.find_one({'trait': trait})
+                #     if found:
+                #         risk = str(found['RR'])
+                #         snps = ';'.join(['rs'+str(x['snp']) for x in found['studies'] if x['study'] == found['highest']])
+                #         gwas = gwascatalog.get_latest_catalog()
+                #         link = gwas.find_one({'study': found['highest']})['pubmed_link']
+                #         content += [risk, link, snps]
+                #     else:
+                #         content += ['', '', '']
+
+                #     print >>fout, delimiter[ext].join(content)
 
         # # Zip (py26)
         # log.info('Zipping {0} file(s)...'.format(len(fout_paths)))
@@ -279,10 +289,11 @@ if __name__ == '__main__':
     r = CUIRiskReport()
 
     parser = argparse.ArgumentParser(description='')
-    parser.add_argument('-I', '--infile', help='infile', required=True)
+    parser.add_argument('-I', '--infile', help='', required=True)
+    parser.add_argument('-O', '--outfile', help='', default=None)
     parser.add_argument('-F', '--file-format', help='', required=True, choices=[x['name'] for x in r.FILEFORMATS])
-    parser.add_argument('-P', '--population', help='population', default='unknown', choices=r.POPULATION)
+    parser.add_argument('-P', '--population', help='', default='unknown', choices=r.POPULATION)
     args = parser.parse_args()
 
     r.load_gwascatalog(args.population)
-    r.write_riskreport(args.infile, args.file_format)
+    r.write_riskreport(args.infile, args.file_format, args.outfile)
