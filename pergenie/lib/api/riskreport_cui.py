@@ -84,9 +84,9 @@ class CUIRiskReport(RiskReportBase):
         with file(path_to_gwascatalog, 'rb') as fin:
             self.gwascatalog_records = pickle.load(fin)
 
-            #
-            self.gwascatalog_uniq_snps = set([201752861])
-
+            self.gwascatalog_uniq_snps = set()
+            for x in self.gwascatalog_records:
+                self.gwascatalog_uniq_snps.update([x['snps']])
 
     def load_genome(self, file_path, file_format):
         """Load variants (genotypes)
@@ -117,9 +117,6 @@ class CUIRiskReport(RiskReportBase):
                     if data['rs'] and data['rs'] in self.gwascatalog_uniq_snps:
                         variants[data['rs']] = dict((k, data[k]) for k in ('chrom', 'pos', 'genotype'))  # py26
                         #                      {k: data[k] for k in ('chrom', 'pos', 'rs', 'genotype')}  # py27
-
-                    if i > 0 and i % 10000 == 0:
-                        log.debug('{i} lines done...'.format(i=i+1))
 
                 log.info('done!')
                 return variants
