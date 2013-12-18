@@ -143,16 +143,17 @@ class CUIRiskReport(RiskReportBase):
                 snps_all.update([record['snps']])
 
                 found_id += 1
-                reported_genes = ', '.join([gene['gene_symbol'] for gene in record['reported_genes']])
-                mapped_genes = ', '.join([gene['gene_symbol'] for gene in record['mapped_genes']])
+                # reported_genes = ', '.join([gene['gene_symbol'] for gene in record['reported_genes']])
+                # mapped_genes = ', '.join([gene['gene_symbol'] for gene in record['mapped_genes']])
                 catalog_map[found_id] = record
                 catalog_map[found_id].update({'rs': record['snps'],
-                                              'reported_genes': reported_genes,
-                                              'mapped_genes': mapped_genes,
+                                              # 'reported_genes': reported_genes,
+                                              # 'mapped_genes': mapped_genes,
                                               'chr': record['chr_id'],
                                               'freq': record['risk_allele_frequency'],
-                                              'added': record['added'].date(),
-                                              'date': record['date'].date()})
+                                              # 'added': record['added'].date(),
+                                              # 'date': record['date'].date()})
+                                              })
 
         # Load Genome -> variants_map
         variants = self.load_genome(infile, file_format)
@@ -203,85 +204,25 @@ class CUIRiskReport(RiskReportBase):
         else:
             out = sys.stdout
 
-        # for trait, record in risk_report.items():
-        #     # Get SNP level infos (RR, genotype, etc...)
-        #     snp_level_records = list()
-        #     for study, snp_level_sotres in risk_store[trait].items():
-        #         for snp, snp_level_sotre in snp_level_sotres.items():
-        #             print study, snp# , snp_level_sotre
-                    # snp_level_records.append(dict(snp=snp,
-                    #                               RR=snp_level_sotre['RR'],  # snp-level
-                    #                               genotype=snp_level_sotre['variant_map'],  # snp-level
-                    #                               study=study))
+        results = list()
+        for trait, record in risk_report.items():
+            RR = record.values()[0]
+            snps = list()
+            for study, snp_level_sotres in risk_store[trait].items():
+                for snp, snp_level_sotre in snp_level_sotres.items():
+                    snps.append(snp)
 
-                    # users_reports.insert(dict(trait=trait,
-                    #                           RR=record[study]
-                    #                           rank=['rank'],
-                    #                           highest=highest['study'],
-                    #                           studies=snp_level_records), upsert=True)
+            results.append(dict(disease=trait,
+                                RR=RR,
+                                snps=','.join(['rs'+str(snp) for snp in snps]),
+                                pubmed_link=snp_level_sotre['catalog_map']['pubmed_link'],
+                                rank=snp_level_sotre['catalog_map']['rank']
+                            ))
 
-
-        # fout_paths = []
-
-        # delimiter = {'tsv': '\t'}
-        # traits, traits_ja, traits_category, _ = gwascatalog.get_traits_infos(as_dict=True)
-        # today = str(datetime.date.today())
-
-        # log.info('Try to write {0} file(s)...'.format(len(file_infos)))
-
-        # for file_info in file_infos:
-        #     RR_dir = os.path.join(settings.UPLOAD_DIR, user_id, 'RR')
-        #     if not os.path.exists(RR_dir):
-        #         os.makedirs(RR_dir)
-        #     fout_name = 'RR-{file_name}.{ext}'.format(file_name=file_info['name'], ext=ext)
-        #     fout_path = os.path.join(RR_dir, fout_name)
-        #     fout_paths.append(fout_path)
-
-        #     # Skip writing if file already exists
-        #     if os.path.exists(fout_path) and not force_uptade:
-        #         log.debug('skip writing (use existing file)')
-        #         continue
-
-        #     tmp_riskreport = self.db['riskreport'][file_info['file_uuid']]
-
-
-        for row in risk_report:
-            print >>out, row
-
-
-
-                # header = ['traits', 'traits_ja', 'traits_category', 'relative risk', 'study', 'snps']
-                # print >>fout, delimiter[ext].join(header)
-
-                # for trait in traits:
-                #     content = [trait, traits_ja[trait], traits_category[trait]]
-
-                #     found = tmp_riskreport.find_one({'trait': trait})
-                #     if found:
-                #         risk = str(found['RR'])
-                #         snps = ';'.join(['rs'+str(x['snp']) for x in found['studies'] if x['study'] == found['highest']])
-                #         gwas = gwascatalog.get_latest_catalog()
-                #         link = gwas.find_one({'study': found['highest']})['pubmed_link']
-                #         content += [risk, link, snps]
-                #     else:
-                #         content += ['', '', '']
-
-                #     print >>fout, delimiter[ext].join(content)
-
-        # # Zip (py26)
-        # log.info('Zipping {0} file(s)...'.format(len(fout_paths)))
-
-        # if len(fout_paths) == 1:
-        #     fout_zip_name = '{file_name}.zip'.format(file_name=os.path.basename(fout_paths[0]))
-        # else:
-        #     fout_zip_name = 'RR.zip'
-        # fout_zip_path = os.path.join(RR_dir, fout_zip_name)
-        # fout_zip = zipfile.ZipFile(fout_zip_path, 'w', zipfile.ZIP_DEFLATED)
-        # for fout_path in fout_paths:
-        #     fout_zip.write(fout_path, os.path.join(user_id, os.path.basename(fout_path)))
-        # fout_zip.close()
-
-        # return fout_zip_path
+        header = ['disease', 'RR', 'pubmed_link', 'rank', 'snps']
+        print >>out, '\t'.join(header)
+        for row in results:
+            print >>out, '\t'.join([str(row[x]) for x in header])
 
 
 if __name__ == '__main__':

@@ -308,13 +308,18 @@ class GWASCatalog(object):
                 tmp_records = [record for record in found if record['trait'] == disease and 'rank' in record.keys()]
 
                 if tmp_records:
+
                     # Only highest reriability study
                     highest_rank_record = self._get_highest_priority_study(tmp_records)
+                    highest_study = highest_rank_record['study']
 
-                    # Remove unused key '_id'
-                    highest_rank_record.pop('_id')
-
-                    catalog_records.append(highest_rank_record)
+                    # # Remove unused key '_id'
+                    # highest_rank_record.pop('_id')
+                    tmp_studies = [record for record in found if record['study'] == highest_study]
+                    for x in tmp_studies:
+                        if '_id' in x.keys():
+                            x.pop('_id')
+                    catalog_records += tmp_studies
 
             path_to_gwascatalog = 'gwascatalog.pergenie.{population}.p'.format(population=population)
             pickle_dump_obj(catalog_records, path_to_gwascatalog)
