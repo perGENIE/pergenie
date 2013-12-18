@@ -176,13 +176,13 @@ class CUIRiskReport(RiskReportBase):
                         genotype = ref * 2
 
                     elif file_format == 'vcf_exome_truseq':
-                        if rec['is_in_truseq']:
+                        if _catalog['is_in_truseq']:
                             genotype = ref * 2
                         else:
                             genotype = na
 
                     elif file_format == 'vcf_exome_iontargetseq':
-                        if rec['is_in_iontargetseq']:
+                        if _catalog['is_in_iontargetseq']:
                             genotype = ref * 2
                         else:
                             genotype = na
