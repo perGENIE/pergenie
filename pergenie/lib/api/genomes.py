@@ -130,6 +130,50 @@ class Genomes(object):
 
         return genotypes
 
+    def get_data_infos(self, user_id):
+        if user_id.startswith(settings.DEMO_USER_ID): user_id = settings.DEMO_USER_ID
+
+        if self.db_select == 'mongodb':
+            with MongoClient(host=settings.MONGO_URI) as c:
+                data_info = c['pergenie']['data_info']
+                infos = list(data_info.find({'user_id': user_id}))
+
+        return infos
+
+    def get_data_info(self, user_id, file_name):
+        if user_id.startswith(settings.DEMO_USER_ID): user_id = settings.DEMO_USER_ID
+
+        if self.db_select == 'mongodb':
+            with MongoClient(host=settings.MONGO_URI) as c:
+                data_info = c['pergenie']['data_info']
+                info = data_info.find_one({'user_id': user_id, 'name': file_name})
+
+        return info
+
+    def search_data_info(self, user_id, query):
+        """
+        Example:
+          query = {'rs': xxxx, 'genotype': 'XX'}
+
+        Returns:
+          # people who have genotypes of 'XX' for rs xxxx
+          ['personA', 'personC']
+
+        """
+        people = set()
+
+        # FIXME: "get data_info then, get_vatiants" is redundant (searching database twice)...
+        with MongoClient(host=settings.MONGO_URI) as c:
+            data_info = c['pergenie']['data_info']
+            infos = list(data_info.find({'user_id': user_id}))
+            for info in infos:
+                variants = self.get_variants(user_id, info['name'])
+                records = list(variants.find(query))
+                if records:
+                    people.update([info['raw_name']])
+
+        return list(people)
+
     def _ref_or_na(self, loc, loctype, file_format, rec=None):
         """
         Determine if genotype is `reference` or `N/A`.
@@ -187,47 +231,3 @@ class Genomes(object):
                 return ref * 2
             else:
                 return na
-
-    def get_data_infos(self, user_id):
-        if user_id.startswith(settings.DEMO_USER_ID): user_id = settings.DEMO_USER_ID
-
-        if self.db_select == 'mongodb':
-            with MongoClient(host=settings.MONGO_URI) as c:
-                data_info = c['pergenie']['data_info']
-                infos = list(data_info.find({'user_id': user_id}))
-
-        return infos
-
-    def get_data_info(self, user_id, file_name):
-        if user_id.startswith(settings.DEMO_USER_ID): user_id = settings.DEMO_USER_ID
-
-        if self.db_select == 'mongodb':
-            with MongoClient(host=settings.MONGO_URI) as c:
-                data_info = c['pergenie']['data_info']
-                info = data_info.find_one({'user_id': user_id, 'name': file_name})
-
-        return info
-
-    def search_data_info(self, user_id, query):
-        """
-        Example:
-          query = {'rs': xxxx, 'genotype': 'XX'}
-
-        Returns:
-          # people who have genotypes of 'XX' for rs xxxx
-          ['personA', 'personC']
-
-        """
-        people = set()
-
-        # FIXME: "get data_info then, get_vatiants" is redundant (searching database twice)...
-        with MongoClient(host=settings.MONGO_URI) as c:
-            data_info = c['pergenie']['data_info']
-            infos = list(data_info.find({'user_id': user_id}))
-            for info in infos:
-                variants = self.get_variants(user_id, info['name'])
-                records = list(variants.find(query))
-                if records:
-                    people.update([info['raw_name']])
-
-        return list(people)
