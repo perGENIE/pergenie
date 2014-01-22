@@ -97,7 +97,8 @@ def index(request):
 
                         break
                     else:
-                        err = _('%(file_name)s is in importing, please wait for seconds...') % {'file_name': file_name}
+                        # err = _('%(file_name)s is in importing, please wait for seconds...') % {'file_name': file_name}
+                        err = _('Your files are in importing, please wait for seconds...')
 
             if err:
                 break
