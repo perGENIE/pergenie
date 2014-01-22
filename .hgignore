@@ -8,6 +8,7 @@ syntax: glob
 *.pyc
 *.orig
 *_flymake.py
+*.snpedia
 
 # Documents (Sphix)
 web-documentation/_build

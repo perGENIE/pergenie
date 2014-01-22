@@ -13,6 +13,7 @@ try:
     import cPickle as pickle
 except ImportError:
     import pickle
+import gzip
 
 sys.path.append('../')
 from mongo.parser.VCFParser import VCFParser, VCFParseError
@@ -88,45 +89,52 @@ class CUIRiskReport(RiskReportBase):
             for x in self.gwascatalog_records:
                 self.gwascatalog_uniq_snps.update([x['snps']])
 
-    def load_genome(self, file_path, file_format):
+    def load_genome(self, file_path, file_format, compress=None):
         """Load variants (genotypes)
         """
 
         variants = defaultdict(int)
 
-        log.info('Input file: %s' % file_path)
-        file_lines = int(subprocess.Popen(['wc', '-l', file_path], stdout=subprocess.PIPE).communicate()[0].split()[0])  # py26
-        log.info('#lines: %s' % file_lines)
+        # log.info('Input file: %s' % file_path)
+        # file_lines = int(subprocess.Popen(['wc', '-l', file_path], stdout=subprocess.PIPE).communicate()[0].split()[0])  # py26
+        # log.info('#lines: %s' % file_lines)
         log.info('Start importing ...')
 
-        with open(file_path, 'rb') as fin:
-            try:
-                p = {'vcf_whole_genome': VCFParser,
-                     'vcf_exome_truseq': VCFParser,
-                     'vcf_exome_iontargetseq': VCFParser,
-                     'andme': andmeParser}[file_format](fin)
+        if compress == 'gzip':
+            fin = gzip.open(file_path, 'rb')  # py27 or later, `with gzip.open()`
+        else:
+            fin = open(file_path, 'rb')
 
-                for i,data in enumerate(p.parse_lines()):
-                    if file_format in [x['name'] for x in self.FILEFORMATS if x['extention'] == '*.vcf']:
-                        # TODO: handling multi-sample .vcf file
-                        # currently, choose first sample from multi-sample .vcf
-                        tmp_genotypes = data['genotype']
-                        data['genotype'] = tmp_genotypes[p.sample_names[0]]
+        # try:
+        p = {'vcf_whole_genome': VCFParser,
+             'vcf_exome_truseq': VCFParser,
+             'vcf_exome_iontargetseq': VCFParser,
+             'andme': andmeParser}[file_format](fin)
 
-                    # Minimum load
-                    if data['rs'] and data['rs'] in self.gwascatalog_uniq_snps:
-                        variants[data['rs']] = dict((k, data[k]) for k in ('chrom', 'pos', 'genotype'))  # py26
-                        #                      {k: data[k] for k in ('chrom', 'pos', 'rs', 'genotype')}  # py27
+        for i,data in enumerate(p.parse_lines()):
+            if file_format in [x['name'] for x in self.FILEFORMATS if x['extention'] == '*.vcf']:
+                # TODO: handling multi-sample .vcf file
+                # currently, choose first sample from multi-sample .vcf
+                tmp_genotypes = data['genotype']
+                data['genotype'] = tmp_genotypes[p.sample_names[0]]
 
-                log.info('done!')
-                return variants
+            # Minimum load
+            if data['rs'] and data['rs'] in self.gwascatalog_uniq_snps:
+                variants[data['rs']] = dict((k, data[k]) for k in ('chrom', 'pos', 'genotype'))  # py26
+                #                      {k: data[k] for k in ('chrom', 'pos', 'rs', 'genotype')}  # py27
 
-            except (VCFParseError, andmeParseError), e:
-                log.error('ParseError: %s' % e.error_code)
-                return e.error_code
+        log.info('done!')
+        self.genome = variants
+        self.file_format = file_format
+        # return variants
 
+        # except (VCFParseError, andmeParseError), e:
+        #     log.error('ParseError: %s' % e.error_code)
+            # return e.error_code
 
-    def write_riskreport(self, infile, file_format, outfile):
+        fin.close()
+
+    def write_riskreport(self, outfile=None):
         """Write out riskreport(.tsv|.csv) as .zip
         """
 
@@ -153,7 +161,8 @@ class CUIRiskReport(RiskReportBase):
                                               })
 
         # Load Genome -> variants_map
-        variants = self.load_genome(infile, file_format)
+        variants = self.genome
+        file_format = self.file_format
         variants_map = defaultdict(int)
 
         for _id, _catalog in catalog_map.items():
@@ -231,7 +240,9 @@ if __name__ == '__main__':
     parser.add_argument('-O', '--outfile', help='', default=None)
     parser.add_argument('-F', '--file-format', help='', required=True, choices=[x['name'] for x in r.FILEFORMATS])
     parser.add_argument('-P', '--population', help='', default='unknown', choices=r.POPULATION)
+    parser.add_argument('--compress', help='Compress type of infile (-I/--infile)', choices=['gzip'])
     args = parser.parse_args()
 
     r.load_gwascatalog(args.population)
-    r.write_riskreport(args.infile, args.file_format, args.outfile)
+    r.load_genome(args.infile, args.file_format, compress=args.compress)
+    r.write_riskreport(outfile=args.outfile)
