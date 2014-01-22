@@ -278,7 +278,7 @@ class GWASCatalog(object):
 
         return highest
 
-    def export_gwascatalog(self):
+    def export_gwascatalog(self, text=True):
         """Export GWAS Catalog
 
         for CUI version of RiskReport
@@ -323,3 +323,10 @@ class GWASCatalog(object):
 
             path_to_gwascatalog = 'gwascatalog.pergenie.{population}.p'.format(population=population)
             pickle_dump_obj(catalog_records, path_to_gwascatalog)
+
+            if text:
+                log.info('writing as csv...')
+                with open(path_to_gwascatalog + '.csv', 'w') as fout_text:
+                    print >>fout_text, '\t'.join(sorted(record.keys()))
+                    for record in catalog_records:
+                        print >>fout_text, '\t'.join([str(record[key]) for key in sorted(record.keys())])

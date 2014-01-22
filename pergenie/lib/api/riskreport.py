@@ -60,6 +60,7 @@ class RiskReport(RiskReportBase):
         traits, traits_ja, traits_category, _ = gwascatalog.get_traits_infos(as_dict=True)
         today = str(datetime.date.today())
 
+        log.debug(file_infos)
         log.info('Try to write {0} file(s)...'.format(len(file_infos)))
 
         for file_info in file_infos:
@@ -71,28 +72,39 @@ class RiskReport(RiskReportBase):
             fout_paths.append(fout_path)
 
             # Skip writing if file already exists
-            if os.path.exists(fout_path) and not force_uptade:
-                log.debug('skip writing (use existing file)')
-                continue
+            # if os.path.exists(fout_path) and not force_uptade:
+            #     log.debug('skip writing (use existing file)')
+            #     continue
 
             tmp_riskreport = self.db['riskreport'][file_info['file_uuid']]
 
             with open(fout_path, 'w') as fout:
-                header = ['traits', 'traits_ja', 'traits_category', 'relative risk', 'study', 'snps']
+                header = ['traits', 'RR', 'pubmed_link', 'snps']
                 print >>fout, delimiter[ext].join(header)
 
                 for trait in traits:
-                    content = [trait, traits_ja[trait], traits_category[trait]]
+                    content = [trait]
+                    #       = [trait, traits_ja[trait], traits_category[trait]]
 
+                    gwas = gwascatalog.get_latest_catalog()  ##
                     found = tmp_riskreport.find_one({'trait': trait})
                     if found:
                         risk = str(found['RR'])
                         snps = ';'.join(['rs'+str(x['snp']) for x in found['studies'] if x['study'] == found['highest']])
-                        gwas = gwascatalog.get_latest_catalog()
                         link = gwas.find_one({'study': found['highest']})['pubmed_link']
-                        content += [risk, link, snps]
                     else:
-                        content += ['', '', '']
+                        risk = ''
+                        snps = ''
+                        link = ''
+
+                    content += [risk, link, snps]
+
+                    # Write out only diseases
+                    if traits_category[trait] != 'Disease':
+                        continue
+                    # Write out only if RR exists
+                    if not risk:
+                        continue
 
                     print >>fout, delimiter[ext].join(content)
 

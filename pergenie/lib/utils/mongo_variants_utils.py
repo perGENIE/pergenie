@@ -35,7 +35,7 @@ def _main():
             # `collection` of variant
             targets = []
             data_infos = data_info.find({'user_id': args.drop})
-            if data_infos:
+            if list(data_infos):
                 for info in data_infos:
                     collection_name = db['variants'][info['file_uuid']].name
                     targets.append(collection_name)

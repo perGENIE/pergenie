@@ -43,7 +43,10 @@ def qimport_variants(info):
 
     # Risk Report
     riskreport.import_riskreport(info)
-    riskreport.write_riskreport(info['user_id'], info['name'], force_uptade=True)
+
+    log.debug('write riskreport...')
+    file_infos = genomes.get_data_infos(info['user_id'])
+    riskreport.write_riskreport(info['user_id'], file_infos, force_uptade=True)
 
     # Population PCA
     person_xy = [0,0]  # projection(info)
