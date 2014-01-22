@@ -2,7 +2,7 @@
 
 import csv
 import re
-
+import gzip
 
 class VCFParseError(Exception):
     def __init__(self, error_code):
