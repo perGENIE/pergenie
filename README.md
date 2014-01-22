@@ -83,6 +83,15 @@ To build documentation locally, install `omake` and run
 in `perGENIE/web-documentation` directory.
 
 
+### Export GWAS Catalog
+
+To export GWAS Catalog records,
+
+    $ python manage.py export --gwascatalog
+
+then, pickled files for each population `gwascatalog.pergenie.{#population}.p` will be generated.
+
+
 ## Notice
 
 * Theme
