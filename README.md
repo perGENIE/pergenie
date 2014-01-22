@@ -70,6 +70,22 @@ To delete genome data (data_info in DB, user_id.variants in DB, and genome file)
    $ lib/mongo/utils/mongo_variants_utils.py --drop user_id
 
 
+### Risk Report
+
+To get risk report (.csv),
+
+1. Set up GWAS Catalog data. (Generate portable version of GWAS Catalog records)
+
+   $ ../../manage.py export --gwascatalog
+
+2. Them, calculate risk estimation.
+
+   $ lib/api/riskreport_cui.py \
+   -I DRA000583.vcf \
+   -F vcf_whole_genome \
+   -O DRA000583.csv \
+   -P Japanese
+
 
 ## Web-documentation
 
