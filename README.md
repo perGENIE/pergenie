@@ -78,7 +78,7 @@ To get risk report (.csv),
 
    $ ../../manage.py export --gwascatalog
 
-2. Them, calculate risk estimation.
+2. Then, calculate risk estimation.
 
    $ lib/api/riskreport_cui.py \
    -I DRA000583.vcf \
