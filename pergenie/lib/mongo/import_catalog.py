@@ -660,7 +660,7 @@ def _platform(text):
 
     return sorted(list(result))
 
-def _risk_allele(data):
+def _risk_allele(data, thrs=None, bioq=None):
     """Use strongest_snp_risk_allele in GWAS Catalog as risk allele, e.g., rs331615-T -> T
 
     Following checks will be done if available.
@@ -668,7 +668,10 @@ def _risk_allele(data):
     * Consistency check based on allele frequency in BioQ (dbSNP).
 
     """
+    log.debug('thrs: {thrs}'.format(thrs=thrs))
+
     notes = ''
+    thrs = thrs or settings.GWASCATALOG_INCONSISTENCE_THRS
 
     # Parse `strongest_snp_risk_allele`
     if not data['strongest_snp_risk_allele']:
@@ -693,54 +696,45 @@ def _risk_allele(data):
         return int(rs), risk_allele + '?', 'no risk_allele_frequency'
 
     # Strand checks (if BioQ is available)
-    if bq:
+    bioq = bioq or bq
+    if bioq:
         RV = {'A': 'T', 'T': 'A', 'G': 'C', 'C': 'G'}
         population = data['population'][0] if data['population'] else 'European'
         rs = int(rs)
         # snp_summary = bq.get_snp_summary(rs)
         # ref = snp_summary['ancestral_alleles']
-        allele_freqs, _ = bq.get_allele_freqs(rs)
+        allele_freqs, _ = bioq.get_allele_freqs(rs)
         freqs = allele_freqs[population]
-        freq = freqs.get(risk_allele)
 
+        # < Risk allele freq. X in BioQ ? >
+        freq = freqs.get(risk_allele)
+        if freq:
+            # < |freq_catalog(X) - freq_dbsnp(X))| <= thrs ? >
+            diff = abs(freq['freq'] - data['risk_allele_frequency'])
+            log.debug('diff: {diff}'.format(diff=diff))
+            if diff <= thrs:
+                return int(rs), risk_allele, 'ok'
+            else:
+                log.warn('Inconsistence between GWAS Catalog and BioQ')
+                notes = 'Inconsistence between GWAS Catalog and BioQ'
+        else:
+            notes = 'BioQ freq for X not found'
+
+        # < Reversed risk allele freq. rev(X) in BioQ ? >
+        freq = freqs.get(RV[risk_allele])
         if not freq:
             log.warn('BioQ freq not found')
-            notes = 'BioQ freq not found'
+            return int(rs), risk_allele + '?', notes + ', but BioQ freq for rev(X) not found'
 
+        # < |freq_catalog(rev(X)) - freq_dbsnp(rev(X)))| <= thrs ? >
+        diff = abs(freq['freq'] - data['risk_allele_frequency'])
+        log.debug('diff: {diff}'.format(diff=diff))
+        if diff <= thrs:
+            log.info(', and solved with rev(X)')
+            return int(rs), RV[risk_allele], notes + ', and solved with rev(X)'
         else:
-            # debuging_pubmed_id = [20453841,
-            #                       21505073,
-            #                       21844665,
-            #                       22446963,
-            #                       23028356]
-            # if data['pubmed_id'] in debuging_pubmed_id:
-            #     log.debug("dbSNP freq")
-            #     log.debug(freq['freq'])
-            #     log.debug("Catalog freq")
-            #     log.debug(data['risk_allele_frequency'])
-            #     log.debug(abs(freq['freq'] - data['risk_allele_frequency']))
-
-            if abs(freq['freq'] - data['risk_allele_frequency']) > 0.3:
-                log.warn('Inconsistence between GWAS Catalog and BioQ')
-                log.debug('Catalog:{0} BioQ:{1}'.format(freq['freq'], data['risk_allele_frequency']))
-                notes = 'Inconsistence between GWAS Catalog and BioQ'
-
-                # Re-try with reversed allele
-                freq = freqs.get(RV[risk_allele])
-                if not freq:
-                    log.warn('BioQ freq not found')
-                    # log.debug(pformat(data))
-                    return int(rs), risk_allele + '?', notes + ', but BioQ freq not found'
-
-                if abs(freq['freq'] - data['risk_allele_frequency']) > 0.5:
-                    log.warn('Could not solve inconsistence')
-                    # log.debug(pformat(data))
-                    return int(rs), risk_allele + '?', notes + ', but abs(freq["freq"] - data["risk_allele_frequency"]) > 0.5'
-
-                log.info('Inconsistence solved with reversed allele')
-                return int(rs), RV[risk_allele], notes + ', and solved with reversed allele'
-
-    return int(rs), risk_allele, notes
+            log.warn(', but not solved with rev(X)')
+            return int(rs), risk_allele + '?', notes + ', but not solved with rev(X)'
 
 
 def _p_value(text):
