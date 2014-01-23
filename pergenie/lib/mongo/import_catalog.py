@@ -668,10 +668,8 @@ def _risk_allele(data, thrs=None, bioq=None):
     * Consistency check based on allele frequency in BioQ (dbSNP).
 
     """
-    log.debug('thrs: {thrs}'.format(thrs=thrs))
-
     notes = ''
-    thrs = thrs or settings.GWASCATALOG_INCONSISTENCE_THRS
+    gwascatalog_inconsistence_thrs = thrs or settings.GWASCATALOG_INCONSISTENCE_THRS
 
     # Parse `strongest_snp_risk_allele`
     if not data['strongest_snp_risk_allele']:
@@ -712,24 +710,26 @@ def _risk_allele(data, thrs=None, bioq=None):
             # < |freq_catalog(X) - freq_dbsnp(X))| <= thrs ? >
             diff = abs(freq['freq'] - data['risk_allele_frequency'])
             log.debug('diff: {diff}'.format(diff=diff))
-            if diff <= thrs:
+            if diff <= gwascatalog_inconsistence_thrs:
+                log.debug('ok')
                 return int(rs), risk_allele, 'ok'
             else:
                 log.warn('Inconsistence between GWAS Catalog and BioQ')
                 notes = 'Inconsistence between GWAS Catalog and BioQ'
         else:
+            log.warn('BioQ freq for X not found')
             notes = 'BioQ freq for X not found'
 
         # < Reversed risk allele freq. rev(X) in BioQ ? >
         freq = freqs.get(RV[risk_allele])
         if not freq:
-            log.warn('BioQ freq not found')
+            log.warn(', but BioQ freq for rev(X) not found')
             return int(rs), risk_allele + '?', notes + ', but BioQ freq for rev(X) not found'
 
         # < |freq_catalog(rev(X)) - freq_dbsnp(rev(X)))| <= thrs ? >
         diff = abs(freq['freq'] - data['risk_allele_frequency'])
         log.debug('diff: {diff}'.format(diff=diff))
-        if diff <= thrs:
+        if diff <= gwascatalog_inconsistence_thrs:
             log.info(', and solved with rev(X)')
             return int(rs), RV[risk_allele], notes + ', and solved with rev(X)'
         else:
