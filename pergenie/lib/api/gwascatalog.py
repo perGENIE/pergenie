@@ -278,19 +278,19 @@ class GWASCatalog(object):
 
         return highest
 
-    def export_gwascatalog(self, text=True):
+    def export_gwascatalog(self, only_diseases=True, only_highest_rank=True, pickle=True, text=True, each_populations=True):
         """Export GWAS Catalog
 
         for CUI version of RiskReport
 
-        - only diseases
-        - only highest reriability study
-        - as pickle file
+        - *only* diseases
+        - *only* highest reriability study
+        - as pickle file, and csv file
         - for each population
         """
 
         catalog = self.get_latest_catalog()
-        populations = settings.POPULATION_MAP.keys()
+        populations = settings.POPULATION_MAP.keys() if each_populations else ['unknown']
 
         for population in populations:
             log.info(population)
@@ -299,34 +299,39 @@ class GWASCatalog(object):
 
             query = 'population:{0}'.format('+'.join(settings.POPULATION_MAP[population]))
             found = list(self.search_catalog_by_query(query, None).sort('trait', 1))
+            traits, _, traits_category, _  = self.get_traits_infos(as_dict=True)  # only in `settings.PATH_TO_ENG2JA`
 
-            traits, _, traits_category, _  = self.get_traits_infos(as_dict=True)
-            diseases = [trait for trait, category in traits_category.items() if category == 'Disease']
+            if only_diseases:
+                ok_traits = [trait for trait, category in traits_category.items() if category == 'Disease']
+            else:
+                ok_traits = traits
 
-            for disease in diseases:
-                # Only diseases
-                tmp_records = [record for record in found if record['trait'] == disease and 'rank' in record.keys()]
+            if only_highest_rank:
+                for ok_trait in ok_traits:
+                    tmp_records = [record for record in found if record['trait'] == ok_trait and 'rank' in record.keys()]
+                    if tmp_records:
+                        highest_rank_record = self._get_highest_priority_study(tmp_records)
+                        highest_study = highest_rank_record['study']
 
-                if tmp_records:
+                        tmp_study_records = [record for record in found if record['study'] == highest_study]
+                        catalog_records += tmp_study_records
+            else:
+                for ok_trait in ok_traits:
+                    catalog_records += [record for record in found if record['trait'] == ok_trait]
 
-                    # Only highest reriability study
-                    highest_rank_record = self._get_highest_priority_study(tmp_records)
-                    highest_study = highest_rank_record['study']
+            # Remove key '_id'
+            for x in catalog_records:
+                if '_id' in x.keys():
+                    x.pop('_id')
 
-                    # # Remove unused key '_id'
-                    # highest_rank_record.pop('_id')
-                    tmp_studies = [record for record in found if record['study'] == highest_study]
-                    for x in tmp_studies:
-                        if '_id' in x.keys():
-                            x.pop('_id')
-                    catalog_records += tmp_studies
-
-            path_to_gwascatalog = 'gwascatalog.pergenie.{population}.p'.format(population=population)
-            pickle_dump_obj(catalog_records, path_to_gwascatalog)
+            if pickle:
+                path_to_gwascatalog = 'gwascatalog.pergenie.{population}.p'.format(population=population)
+                pickle_dump_obj(catalog_records, path_to_gwascatalog)
 
             if text:
-                log.info('writing as csv...')
                 with open(path_to_gwascatalog + '.csv', 'w') as fout_text:
-                    print >>fout_text, '\t'.join(sorted(record.keys()))
-                    for record in catalog_records:
-                        print >>fout_text, '\t'.join([str(record[key]) for key in sorted(record.keys())])
+                    keys = sorted(catalog_records[0].keys())
+                    print >>fout_text, '\t'.join(keys)
+                    for catalog_record in catalog_records:
+                        assert len(keys) == len(catalog_record.keys()), set(keys) ^ set(catalog_record.keys())
+                        print >>fout_text, '\t'.join([str(catalog_record[key]) for key in keys])

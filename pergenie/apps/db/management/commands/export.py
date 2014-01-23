@@ -28,12 +28,20 @@ class Command(BaseCommand):
             action='store_true',
             help=""
         ),
+        make_option(
+            "--gwascatalog-all",
+            action='store_true',
+        ),
     )
 
     def handle(self, *args, **options):
         if options["gwascatalog"]:
             log.info('Try to export gwascatalog...')
-            gwascatalog.export_gwascatalog()
+            gwascatalog.export_gwascatalog(only_diseases=True, only_highest_rank=True, pickle=True, text=True, each_populations=True)
+
+        elif options["gwascatalog_all"]:
+            log.info('Try to export gwascatalog...')
+            gwascatalog.export_gwascatalog(only_diseases=False, only_highest_rank=False, pickle=True, text=True, each_populations=True)
 
         elif options["hgmd"]:
             log.info('Try to export HGMD...')

@@ -192,6 +192,8 @@ def import_catalog(path_to_gwascatalog):
                 data['is_in_iontargetseq'] = False
                 data['population'] = _population(data['initial_sample_size'])
                 data['notes'] = ''
+                data['OR'] = None
+                data['rank'] = None
 
                 if data['chr_id'] and data['chr_pos'] and fa:
                     data['ref'] = fa._slice_fasta({23: 'X', 24: 'Y', 25: 'M'}.get(data['chr_id'], data['chr_id']), data['chr_pos'], data['chr_pos'])
