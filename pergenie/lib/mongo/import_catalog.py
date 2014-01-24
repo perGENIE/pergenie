@@ -248,6 +248,18 @@ def import_catalog(path_to_gwascatalog):
         log.info('# of documents in catalog (after): {0}'.format(catalog.count()))
         log.info('REVERSED_STATS: {0}'.format(pformat(REVERSED_STATS)))
 
+        # ==========
+        # Validation
+        # ==========
+        log.info('Validation...')
+        gwascatalog_rsid_map = dict()
+        for x in list(catalog.find()):
+            chr_pos = (chr_id2chrom(x['chr_id']), int(x['chr_pos']))
+            if chr_pos in self.gwascatalog_rsid_map:
+                if self.gwascatalog_rsid_map[chr_pos] != x['snps']:
+                    log.warn('Same pos but different rsID: {0}'.format(x))
+                gwascatalog_rsid_map.update({chr_pos: x['snps']})
+        log.info('...done')
 
         # ==========
         # Statistics

@@ -18,6 +18,7 @@ import gzip
 sys.path.append('../')
 from mongo.parser.VCFParser import VCFParser, VCFParseError
 from mongo.parser.andmeParser import andmeParser, andmeParseError
+from utils.genome import chr_id2chrom
 from riskreport_base import RiskReportBase
 
 # Logger
@@ -85,19 +86,38 @@ class CUIRiskReport(RiskReportBase):
         with file(path_to_gwascatalog, 'rb') as fin:
             self.gwascatalog_records = pickle.load(fin)
 
+            self.gwascatalog_rsid_map = dict()  # (chrom, pos) => rsID
             self.gwascatalog_uniq_snps = set()
+
             for x in self.gwascatalog_records:
+                chr_pos = (chr_id2chrom(x['chr_id']), int(x['chr_pos']))
+                if chr_pos in self.gwascatalog_rsid_map:
+                    if self.gwascatalog_rsid_map[chr_pos] != x['snps']:
+                        log.warn('Same pos but different rsID: {0}'.format(x))
+                self.gwascatalog_rsid_map.update({chr_pos: x['snps']})
+
                 self.gwascatalog_uniq_snps.update([x['snps']])
+
+    def get_rs(self, chrom, pos):
+        """
+        Get rs ID from GWAS Catalog
+
+        Args:
+
+        - chrom <str> 1..22 X Y
+        - pos <int>
+
+        Returns:
+
+        - rsid <int>
+        """
+        return self.gwascatalog_rsid_map.get((chrom, pos))
 
     def load_genome(self, file_path, file_format, compress=None):
         """Load variants (genotypes)
         """
 
         variants = defaultdict(int)
-
-        # log.info('Input file: %s' % file_path)
-        # file_lines = int(subprocess.Popen(['wc', '-l', file_path], stdout=subprocess.PIPE).communicate()[0].split()[0])  # py26
-        # log.info('#lines: %s' % file_lines)
         log.info('Start importing ...')
 
         if compress == 'gzip':
@@ -105,7 +125,6 @@ class CUIRiskReport(RiskReportBase):
         else:
             fin = open(file_path, 'rb')
 
-        # try:
         p = {'vcf_whole_genome': VCFParser,
              'vcf_exome_truseq': VCFParser,
              'vcf_exome_iontargetseq': VCFParser,
@@ -113,10 +132,15 @@ class CUIRiskReport(RiskReportBase):
 
         for i,data in enumerate(p.parse_lines()):
             if file_format in [x['name'] for x in self.FILEFORMATS if x['extention'] == '*.vcf']:
-                # TODO: handling multi-sample .vcf file
-                # currently, choose first sample from multi-sample .vcf
                 tmp_genotypes = data['genotype']
                 data['genotype'] = tmp_genotypes[p.sample_names[0]]
+
+            # Add rs ID (if not exist)
+            # TODO: Or force to set rs ID for each positions
+            if not data['rs']:
+                data['rs'] = self.get_rs(data['chrom'], data['pos'])
+                if data['rs']:
+                    log.info('mapped pos: {0} => rsID: {1}'.format((data['chrom'], data['pos']), data['rs']))
 
             # Minimum load
             if data['rs'] and data['rs'] in self.gwascatalog_uniq_snps:
@@ -126,11 +150,6 @@ class CUIRiskReport(RiskReportBase):
         log.info('done!')
         self.genome = variants
         self.file_format = file_format
-        # return variants
-
-        # except (VCFParseError, andmeParseError), e:
-        #     log.error('ParseError: %s' % e.error_code)
-            # return e.error_code
 
         fin.close()
 
@@ -200,9 +219,6 @@ class CUIRiskReport(RiskReportBase):
 
         # Risk Calculation -> risk_store, risk_report
         risk_store, risk_report = self.risk_calculation(catalog_map, variants_map)
-        # pprint(risk_store)
-        # pprint(risk_report)
-
 
         # Write out Risk Report -> outfile (or stdout)
         if outfile:
