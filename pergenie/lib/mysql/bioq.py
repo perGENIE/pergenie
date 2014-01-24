@@ -109,6 +109,9 @@ class Bioq(object):
         return ref
 
     def get_allele_freqs(self, rs):
+        """
+        """
+
         rows = self._allele_freqs(rs)
 
         allele_freqs = {'Asian':{}, 'European':{}, 'African':{}, 'Japanese': {}}

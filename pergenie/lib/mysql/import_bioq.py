@@ -9,7 +9,14 @@ log = clogging.getColorLogger(__name__)
 def import_bioq(settings):
     # tables = ['Allele', 'AlleleFreqBySsPop', 'b137_ContigInfo', 'b137_SNPContigLoc', 'b137_SNPContigLocusId', 'b137_SNPMapInfo', 'FreqSummaryBySsPop', 'GeneIdToName', 'GtyFreqBySsPop', 'LocTypeCode', 'OrganismTax', 'Pedigree', 'PopLine', 'Population', 'SNP', 'SNPAncestralAllele', 'SnpClassCode', 'SnpFunctionCode', 'SNPSubSNPLink', 'SnpValidationCode', 'SNP_HGVS', 'UniGty', 'UniVariation', '_loc_allele_freqs', '_loc_classification_ref', '_loc_functional_representative', '_loc_genotype_freqs', '_loc_maf', '_loc_sample_information', '_loc_snp_gene_list_ref', '_loc_snp_gene_ref', '_loc_snp_gene_rep_ref', '_loc_snp_summary', '_loc_table_log', '_loc_unique_mappings_ref', '_loc_validation']
 
-    mintables = ['_loc_allele_freqs', '_loc_snp_summary', 'b137_SNPContigLoc', 'GeneIdToName', '_loc_unique_mappings_ref', 'SNP']
+    mintables = ['_loc_allele_freqs',        # Allele frequencies observed in various samples.
+                 '_loc_snp_summary',         # Summary SNP information.
+                 'b137_SNPContigLoc',        # Information on the mapping of variants onto various reference genomes.
+                 'GeneIdToName',             # Reference table with gene symbol information for NCBI (Entrez) gene IDs.
+                 '_loc_unique_mappings_ref', # Genomic coordinates for variants mapping to unique locations.
+                 'SNP',                      # Summary information on reference SNPs.
+                 'SubSNP'                    # General information on submitted variants.
+    ]
     tables = mintables
 
     for table in tables:

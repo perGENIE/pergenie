@@ -8,7 +8,7 @@ from collections import defaultdict
 # from collections import Counter  # py27
 from utils.Counter import Counter  # py26 (//code.activestate.com/recipes/576611/)
 from pprint import pformat
-from pprint import pprint as pp
+# from pprint import pprint as pp
 import pymongo
 import HTMLParser
 h = HTMLParser.HTMLParser()
@@ -20,6 +20,7 @@ log = clogging.getColorLogger(__name__)
 
 from extract_region import extract_region
 from lib.mongo.mutate_fasta import MutateFasta
+from lib.utils.genome import chr_id2chrom
 from lib.mysql.bioq import Bioq
 bq = Bioq(settings.DATABASES['bioq']['HOST'],
           settings.DATABASES['bioq']['USER'],
@@ -36,8 +37,6 @@ except Exception:
 
 _g_gene_symbol_map = {}  # { Gene Symbol => (Entrez Gene ID, OMIM Gene ID) }
 _g_gene_id_map = {}      # { Entrez Gene ID => (Gene Symbol, OMIM Gene ID) }
-
-REVERSED_STATS = {'GMAF': 0, 'RV': 0}
 
 
 def import_catalog(path_to_gwascatalog):
@@ -246,7 +245,7 @@ def import_catalog(path_to_gwascatalog):
             catalog_stats.create_index('field')
 
         log.info('# of documents in catalog (after): {0}'.format(catalog.count()))
-        log.info('REVERSED_STATS: {0}'.format(pformat(REVERSED_STATS)))
+
 
         # ==========
         # Validation
@@ -254,12 +253,14 @@ def import_catalog(path_to_gwascatalog):
         log.info('Validation...')
         gwascatalog_rsid_map = dict()
         for x in list(catalog.find()):
-            chr_pos = (chr_id2chrom(x['chr_id']), int(x['chr_pos']))
-            if chr_pos in self.gwascatalog_rsid_map:
-                if self.gwascatalog_rsid_map[chr_pos] != x['snps']:
-                    log.warn('Same pos but different rsID: {0}'.format(x))
-                gwascatalog_rsid_map.update({chr_pos: x['snps']})
+            if x['chr_id'] and x['chr_pos']:
+                chr_pos = (chr_id2chrom(x['chr_id']), int(x['chr_pos']))
+                if chr_pos in gwascatalog_rsid_map:
+                    if gwascatalog_rsid_map[chr_pos] != x['snps']:
+                        log.warn('Same pos but different rsID: {0}'.format(x))
+                    gwascatalog_rsid_map.update({chr_pos: x['snps']})
         log.info('...done')
+
 
         # ==========
         # Statistics
