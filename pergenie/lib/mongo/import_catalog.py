@@ -21,6 +21,8 @@ log = clogging.getColorLogger(__name__)
 from extract_region import extract_region
 from lib.mongo.mutate_fasta import MutateFasta
 from lib.utils.genome import chr_id2chrom
+
+# BioQ (dbSNP)
 from lib.mysql.bioq import Bioq
 bq = Bioq(settings.DATABASES['bioq']['HOST'],
           settings.DATABASES['bioq']['USER'],
@@ -33,6 +35,13 @@ except Exception:
     log.warn('BioQ not available ...')
     log.warn('======================')
     bq = None
+
+# 1000 Genomes
+from lib.mysql.snps import Snps
+snpdb = Snps(settings.DATABASES['snps']['HOST'],
+             settings.DATABASES['snps']['USER'],
+             settings.DATABASES['snps']['PASSWORD'],
+             settings.DATABASES['snps']['NAME'])
 
 
 _g_gene_symbol_map = {}  # { Gene Symbol => (Entrez Gene ID, OMIM Gene ID) }
@@ -673,12 +682,12 @@ def _platform(text):
 
     return sorted(list(result))
 
-def _risk_allele(data, thrs=None, bioq=None):
+def _risk_allele(data, thrs=None, snps=None):
     """Use strongest_snp_risk_allele in GWAS Catalog as risk allele, e.g., rs331615-T -> T
 
     Following checks will be done if available.
 
-    * Consistency check based on allele frequency in BioQ (dbSNP).
+    * Consistency check based on allele frequency in SNPs database (dbSNP or 1000Genomes).
 
     """
     notes = ''
@@ -706,18 +715,18 @@ def _risk_allele(data, thrs=None, bioq=None):
         log.warn('GWAS Catalog freq not found')
         return int(rs), risk_allele + '?', 'no risk_allele_frequency'
 
-    # Strand checks (if BioQ is available)
-    bioq = bioq or bq
-    if bioq:
+    # Strand checks (if database is available)
+    snp_database = snps or snpdb or bq
+    if snpdb:
         RV = {'A': 'T', 'T': 'A', 'G': 'C', 'C': 'G'}
-        population = data['population'][0] if data['population'] else 'European'
+        population = data['population'][0] if data['population'] else 'European'  ## TODO: May be cause freq mismatch.
         rs = int(rs)
         # snp_summary = bq.get_snp_summary(rs)
         # ref = snp_summary['ancestral_alleles']
-        allele_freqs, _ = bioq.get_allele_freqs(rs)
+        allele_freqs, _ = snp_database.get_allele_freqs(rs, population=population)
         freqs = allele_freqs[population]
 
-        # < Risk allele freq. X in BioQ ? >
+        # < Risk allele freq. X in Snpdb ? >
         freq = freqs.get(risk_allele)
         if freq:
             # < |freq_catalog(X) - freq_dbsnp(X))| <= thrs ? >
@@ -727,17 +736,17 @@ def _risk_allele(data, thrs=None, bioq=None):
                 log.debug('ok')
                 return int(rs), risk_allele, 'ok'
             else:
-                log.warn('Inconsistence between GWAS Catalog and BioQ')
-                notes = 'Inconsistence between GWAS Catalog and BioQ'
+                log.warn('Inconsistence between GWAS Catalog and Snpdb')
+                notes = 'Inconsistence between GWAS Catalog and Snpdb'
         else:
-            log.warn('BioQ freq for X not found')
-            notes = 'BioQ freq for X not found'
+            log.warn('Snpdb freq for X not found')
+            notes = 'Snpdb freq for X not found'
 
-        # < Reversed risk allele freq. rev(X) in BioQ ? >
+        # < Reversed risk allele freq. rev(X) in Snpdb ? >
         freq = freqs.get(RV[risk_allele])
         if not freq:
-            log.warn(', but BioQ freq for rev(X) not found')
-            return int(rs), risk_allele + '?', notes + ', but BioQ freq for rev(X) not found'
+            log.warn(', but Snpdb freq for rev(X) not found')
+            return int(rs), risk_allele + '?', notes + ', but Snpdb freq for rev(X) not found'
 
         # < |freq_catalog(rev(X)) - freq_dbsnp(rev(X)))| <= thrs ? >
         diff = abs(freq['freq'] - data['risk_allele_frequency'])

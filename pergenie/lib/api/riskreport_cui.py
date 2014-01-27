@@ -89,14 +89,15 @@ class CUIRiskReport(RiskReportBase):
             self.gwascatalog_rsid_map = dict()  # (chrom, pos) => rsID
             self.gwascatalog_uniq_snps = set()
 
+            # Map chrom & pos to rsID (only refSnps in GWAS Catalog)
             for x in self.gwascatalog_records:
-                chr_pos = (chr_id2chrom(x['chr_id']), int(x['chr_pos']))
-                if chr_pos in self.gwascatalog_rsid_map:
-                    if self.gwascatalog_rsid_map[chr_pos] != x['snps']:
-                        log.warn('Same pos but different rsID: {0}'.format(x))
-                self.gwascatalog_rsid_map.update({chr_pos: x['snps']})
-
-                self.gwascatalog_uniq_snps.update([x['snps']])
+                if x['chr_id'] and x['chr_pos']:
+                    chr_pos = (chr_id2chrom(x['chr_id']), int(x['chr_pos']))
+                    if chr_pos in self.gwascatalog_rsid_map:
+                        if self.gwascatalog_rsid_map[chr_pos] != x['snps']:
+                            log.warn('Same pos but different rsID: {0}'.format(x))
+                    self.gwascatalog_rsid_map.update({chr_pos: x['snps']})
+                    self.gwascatalog_uniq_snps.update([x['snps']])
 
     def get_rs(self, chrom, pos):
         """

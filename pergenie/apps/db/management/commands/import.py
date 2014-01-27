@@ -20,6 +20,7 @@ from lib.mongo.import_catalog import import_catalog
 from lib.mongo.import_population_pca import import_population_pca
 from lib.mongo.import_genomes import import_genomes
 from lib.mongo.import_mycatalog import import_mycatalog
+from lib.mongo.import_snp_freq import import_snp_freq
 
 from lib.common import clean_file_name
 from lib.mongo.import_variants import import_variants
@@ -88,7 +89,12 @@ class Command(BaseCommand):
             dest="mycatalog",
             help=colored("Import my catalog into database", "green")
         ),
-
+        make_option(
+            "--snp-freq",
+            action="store_true",
+            # dest="snp_freq",
+            help=colored("Import SNP frequency data into database", "green")
+        ),
     )
 
     def handle(self, *args, **options):
@@ -244,6 +250,9 @@ class Command(BaseCommand):
         elif options["mycatalog"]:
             log.info('Try to import mycatalog ...')
             import_mycatalog(options["mycatalog"])
+        elif options["snp_freq"]:
+            log.info('Try to import snp_freq ...')
+            import_snp_freq()
 
         else:
             self.print_help("import", "help")

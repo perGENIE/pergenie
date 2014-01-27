@@ -11,7 +11,7 @@ for zyg in CC CG GG NA; do \
          -I rs519113_testcase/rs519113_${zyg}${src} \
          -F vcf_whole_genome \
          -O tmp/${zyg}.out \
-         -P Japanese
+         -P Asian
         grep Alz tmp/$zyg.out > tmp/$zyg.Alz.out
         diff tmp/$zyg.Alz.out rs519113_testcase/true_outputs/$zyg.Alz.out
     done
@@ -26,11 +26,11 @@ for zyg in CC CG GG NA; do \
          -I rs519113_testcase/rs519113_${zyg}${src} \
          -F vcf_whole_genome \
          -O tmp/${zyg}.out \
-         -P Japanese \
+         -P Asian \
          --compress gzip
         grep Alz tmp/$zyg.out > tmp/$zyg.Alz.out
         diff tmp/$zyg.Alz.out rs519113_testcase/true_outputs/$zyg.Alz.out
     done
 done
 
-rm -r tmp
+# rm -r tmp

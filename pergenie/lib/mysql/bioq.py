@@ -3,6 +3,7 @@ import sys
 import string
 from pprint import pprint as pp
 from django.conf import settings
+from lib.utils.deprecated_decorator import deprecated
 from lib.mongo.mutate_fasta import MutateFasta
 from lib.utils import clogging
 log = clogging.getColorLogger(__name__)
@@ -108,7 +109,8 @@ class Bioq(object):
 
         return ref
 
-    def get_allele_freqs(self, rs):
+    @deprecated()
+    def get_allele_freqs(self, rs, population='unkown'):
         """
         """
 
@@ -116,6 +118,10 @@ class Bioq(object):
 
         allele_freqs = {'Asian':{}, 'European':{}, 'African':{}, 'Japanese': {}}
 
+        #
+        # WARNING!!!
+        # This allele strand fixing is buggy. Altanatively, use lib.mysql.snps.Snps.
+        #
         # Consider allele strands
         for row in rows:
             _snp_contig = self._SNPContigLoc(rs)
