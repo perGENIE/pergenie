@@ -66,7 +66,7 @@ class CUIRiskReport(RiskReportBase):
         self.POPULATION_MAP = {'African': ['African'],
                                'European': ['European'],
                                'Asian': ['Asian'],
-                               'Japanese': ['Japanese'],
+                               # 'Japanese': ['Japanese'],
                                'unknown': ['']}
 
         self.POPULATION = self.POPULATION_MAP.keys()

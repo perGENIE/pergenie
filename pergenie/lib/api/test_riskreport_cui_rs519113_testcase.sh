@@ -33,4 +33,4 @@ for zyg in CC CG GG NA; do \
     done
 done
 
-# rm -r tmp
+rm -r tmp

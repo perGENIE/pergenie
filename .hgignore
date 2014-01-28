@@ -9,6 +9,7 @@ syntax: glob
 *.orig
 *_flymake.py
 *.snpedia
+.~lock*
 
 # Documents (Sphix)
 web-documentation/_build
@@ -31,6 +32,7 @@ nosetests.xml
 # DB, pickle
 *.sqlite3
 *.p
+*.p.csv
 mongo.dump.*
 mysql.dump.*
 

@@ -1,4 +1,4 @@
-eng	ja	category	is_drug_response
+eng	ja	category
 5-HTT brain serotonin transporter levels	脳内セロトニントランスポーター(5-HTT)密度	Trait_med
 AB1-42	AB1-42	Trait_med
 AIDS	AIDS	Disease
@@ -576,7 +576,7 @@ Psoriatic arthritis	乾癬性関節炎	Disease
 Pulmonary function	肺機能	Trait_med
 Pulmonary function decline	肺機能の低下	Trait_med
 QT interval	QT間隔(心電図用語)	Trait_med
-Quantitative traits	量的形質
+Quantitative traits	量的形質	NA
 RR interval (heart rate)	R-R間隔 (heart rate)	Trait_med
 Radiation response	放射線反応	Trait_med
 Reasoning	推論力	Trait_easy
@@ -644,7 +644,7 @@ Schizophrenia (treatment refractory) 	統合失調症 (treatment refractory)	Dis
 Schizophrenia, bipolar disorder and depression (combined)	統合失調症・双極性障害・うつ病 (combined)	Disease
 Sclerosing cholangitis and ulcerative colitis (combined)	硬化性胆管炎と潰瘍性大腸炎 (combined)	Disease
 Scoliosis	脊柱側弯症	Disease
-Select biomarker traits	Select biomarker traits
+Select biomarker traits	Select biomarker traits	NA
 Self-rated health	自己評価健康状態	Trait_med
 Serologic markers in systemic lupus erythematosus	全身性紅斑性狼瘡における血清マーカー	Trait_med
 Sex hormone-binding globulin levels	性ホルモン結合グロブリン濃度	Trait_med
@@ -691,9 +691,9 @@ Tardive dyskinesia 	遅発性ジスキネジア	Disease
 Telomere length	テロメア長	Trait_med
 Temperament	気質	Trait_med
 Temperament (bipolar disorder)	双極性障害における気質	Trait_med
-Testicular cancer	精巣がん(睾丸がん)	Disease		M	Cancer
-Testicular dysgenesis syndrome 	睾丸形成異常症候群	Disease		M
-Testicular germ cell cancer	精巣胚細胞性がん	Disease		M
+Testicular cancer	精巣がん(睾丸がん)	Disease
+Testicular dysgenesis syndrome 	睾丸形成異常症候群	Disease
+Testicular germ cell cancer	精巣胚細胞性がん	Disease
 Testicular germ cell tumor	精巣胚細胞腫瘍	Disease
 Testosterone levels	テストステロン(男性ホルモン)濃度	Trait_med
 Thoracic aortic aneurysms and dissections	胸部大動脈瘤と切開	Disease
@@ -725,7 +725,7 @@ Uric acid levels	尿酸濃度	Trait_med
 Urinary albumin excretion	尿中アルブミン排泄	Trait_med
 Urinary bladder cancer	膀胱がん	Disease
 Urinary metabolites	尿中代謝物	Trait_med
-Uterine fibroids	子宮筋腫	Disease	F
+Uterine fibroids	子宮筋腫	Disease
 Vaccine-related adverse events 	ワクチン関連有害事象	Disease
 Vascular dementia	血管性認知症	Disease
 Vascular endothelial growth factor levels	血管内皮成長因子	Trait_med
