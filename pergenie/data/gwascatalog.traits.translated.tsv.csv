@@ -1,760 +1,760 @@
-eng	ja	category
-5-HTT brain serotonin transporter levels	脳内セロトニントランスポーター(5-HTT)密度	Trait_med
-AB1-42	AB1-42	Trait_med
-AIDS	AIDS	Disease
-AIDS progression	AIDS進行	Disease
-Abdominal aortic aneurysm	腹部大動脈瘤	Disease
-Acenocoumarol maintenance dosage	アセノクマロール維持量	Trait_med
-Activated partial thromboplastin time	活性化部分トロンボプラスチン時間	Trait_med
-Acute graft versus host disease	急性移植片対宿主病(GVHD)	Disease
-Acute lung injury	急性肺障害	Disease
-Acute lymphoblastic leukemia (childhood)	急性リンパ芽球性白血病(小児期)	Disease
-Addiction	中毒	NA
-Adiponectin levels	アディポネクチンレベル	Trait_med
-Adiposity	肥満	Disease
-Adverse response to aromatase inhibitors	アロマターゼ阻害剤への有害反応	Trait_med
-Adverse response to carbamapezine	カルバマゼピンへの有害反応	Trait_med
-Adverse response to lamotrigine and phenytoin	ラモトリジンとフェニトインへの有害反応	Trait_med
-Age-related macular degeneration	加齢黄斑変性症	Disease
-Age-related macular degeneration (CNV vs. GA)	加齢黄斑変性症 (CNV vs. GA)	Disease
-Age-related macular degeneration (CNV)	加齢黄斑変性症 (CNV)	Disease
-Age-related macular degeneration (GA)	加齢黄斑変性症 (GA)	Disease
-Age-related macular degeneration (wet)	加齢黄斑変性症 (wet)	Disease
-Aging	加齢	Trait_med
-Aging (time to death)	加齢 (time to death)	Trait_med
-Aging (time to event)	加齢 (time to event)	Trait_med
-Aging traits	老化形質	Trait_med
-Airflow obstruction	気流閉塞	Disease
-Alcohol and nictotine co-dependence	アルコールとニコチンの共依存	Trait_med
-Alcohol consumption	アルコール消費量	Trait_easy
-Alcohol dependence	アルコール依存症	Disease
-Alcohol withdrawal symptoms	アルコール禁断症状	Disease
-Alcoholism (12-month weekly alcohol consumption)	アルコール依存症 (12-month weekly alcohol consumption)	Disease
-Alcoholism (alcohol dependence factor score)	アルコール依存症 (alcohol dependence factor score)	Disease
-Alcoholism (alcohol use disorder factor score)	アルコール依存症 (alcohol use disorder factor score)	Disease
-Alcoholism (heaviness of drinking)	アルコール依存症 (heaviness of drinking)	Disease
-Allergic rhinitis	慢性アレルギー性鼻炎	Disease
-Alopecia areata	円形脱毛症	Trait_easy
-Alzheimer's disease	アルツハイマー病	Disease
-Alzheimer's disease (age of onset)	アルツハイマー病 (発症年齢)	Disease
-Alzheimer's disease (late onset)	アルツハイマー病 (遅発型)	Disease
-Alzheimer's disease biomarkers	アルツハイマー病バイオマーカー	Trait_med
-Amygdala reactivity	扁桃体の反応性	Trait_med
-Amyloid A Levels	アミロイドAタンパク質濃度	Trait_med
-Amyotrophic lateral sclerosis	筋萎縮性側索硬化症	Disease
-Amyotrophic lateral sclerosis (age of onset)	筋萎縮性側索硬化症 (発症年齢)	Disease
-Amyotrophic lateral sclerosis (interaction)	筋萎縮性側索硬化症 (interaction)	Disease
-Androgen levels	アンドロゲン濃度	Trait_med
-Angiotensin-converting enzyme activity	アンジオテンシン変換酵素活性	Trait_med
-Ankle-brachial index 	足関節・上腕血圧指数(ABI)	Trait_med
-Ankylosing spondylitis	強直性脊椎炎	Disease
-Anorexia nervosa	拒食症	Disease
-Anthropometric traits	人体計測的な形質	Trait_easy
-Anti-cyclic Citrullinated Peptide Antibody	抗環状シトルリン化ペプチド抗体	Trait_med
-Anticoagulant levels	抗凝固薬レベル	Trait_med
-Antineutrophil cytoplasmic antibody-associated vasculitis 	抗好中球細胞質抗体(ANCA)関連血管炎	Disease
-Antipsychotic drug-induced weight gain	抗精神病薬誘発性の体重増加	Trait_med
-Antipsychotic-induced QTc interval prolongation	抗精神病薬誘発性のQT間隔延長	Trait_med
-Aortic root size	大動脈根の大きさ	Trait_med
-Aortic stiffness	大動脈の剛性	Trait_med
-Arsenic metabolism 	ヒ素の代謝	Trait_med
-Arterial stiffness	動脈壁の剛性	Trait_med
-Arthritis (juvenile idiopathic)	関節炎 (若年性特発性)	Disease
-Aspartate aminotransferase 	アスパラギン酸アミノ基転移酵素(AST)	Trait_med
-Asperger disorder	アスペルガー障害	Disease
-Asthma	喘息	Disease
-Asthma (aspirin-intolerant) 	喘息 (aspirin-intolerant)	Disease
-Asthma (bronchodilator response)	喘息 (bronchodilator response)	Disease
-Asthma (childhood onset)	喘息 (childhood onset)	Disease
-Asthma (toluene diisocyanate-induced)	喘息 (toluene diisocyanate-induced)	Disease
-Asthma treatment response	喘息 treatment response	Disease
-Atopic dermatitis	アトピー性皮膚炎	Disease
-Atopy	アトピー	Disease
-Atrial fibrillation	心房細動	Trait_med
-Atrial fibrillation/atrial flutter	心房細動, 心房粗動	Trait_med
-Atrioventricular conduction	房室伝導	Trait_med
-Attention deficit hyperactivity disorder	注意欠陥多動性障害(ADHD)	Disease
-Attention deficit hyperactivity disorder (time to onset)	注意欠陥多動性障害(ADHD) (発症年齢)	Disease
-Attention deficit hyperactivity disorder and conduct disorder	注意欠陥多動性障害(ADHD)と行為障害	Disease
-Attention deficit hyperactivity disorder motor coordination	注意欠陥多動性障害(ADHD)運動協調性	Disease
-Attention deficit hyperactivity disorder symptoms (interaction)	注意欠陥多動性障害(ADHD)の症状 (interaction)	Disease
-Autism	自閉症	Disease
-Barrett's esophagus	バレット食道	Disease
-Basal cell carcinoma 	基底細胞癌	Disease
-Behcet's disease	ベーチェット病	Disease
-Beta thalassemia/hemoglobin E disease	ベータサラセミア, ヘモグロビンＥ症	Disease
-Biliary atresia	胆道閉鎖症	Disease
-Bilirubin levels	ビリルビン濃度	Trait_med
-Biochemical measures	生化学的測定	Trait_med
-Biomedical quantitative traits	生化学的量的形質	Trait_med
-Bipolar disorder	双極性障害	Disease
-Bipolar disorder (Negative mood delusions)	双極性障害 (Negative mood delusions)	Disease
-Bipolar disorder (age of onset and psychomotor symptoms)	双極性障害 (age of onset and psychomotor symptoms)	Disease
-Bipolar disorder and major depressive disorder (combined)	双極性障害と大うつ病性障害 (combined)	Disease
-Bipolar disorder and schizophrenia	双極性障害と精神分裂病	Disease
-Birth weight	出生時体重	Trait_easy
-Bitter taste response	苦味への応答	Trait_easy
-Black vs. blond hair color	黒髪vs.金髪	Trait_easy
-Black vs. red hair color	黒髪vs.赤毛	Trait_easy
-Bladder cancer	膀胱癌	Disease
-Bleomycin sensitivity	ブレオマイシン感受性	Trait_med
-Blond vs. brown hair color	金髪vs.茶髪	Trait_easy
-Blood pressure	血圧	Trait_easy
-Blue vs. brown eyes	目の色(青色vs.茶色)	Trait_easy
-Blue vs. green eyes	目の色(青色vs.緑色)	Trait_easy
-Body mass (lean)	除脂肪体重(LBM)	Trait_easy
-Body mass in chronic obstructive pulmonary disease	慢性閉塞性肺疾患(COPD)における体重	Trait_med
-Body mass index	肥満指数(BMI)	Trait_easy
-Body mass index and cholesterol (psychopharmacological treatment)	肥満指数(BMI)とコレステロール (精神薬理学治療)	Trait_med
-Body mass index and fat mass	肥満指数(BMI)と体脂肪量	Trait_easy
-Bone mineral density	骨密度	Trait_easy
-Bone mineral density (hip)	骨密度 (hip)	Trait_easy
-Bone mineral density (interaction)	骨密度 (interaction)	Trait_easy
-Bone mineral density (spine)	骨密度 (spine)	Trait_easy
-Brachial circumference	上腕周囲長	Trait_easy
-Brain development	脳発生	Trait_med
-Brain imaging	脳画像診断	Trait_med
-Brain imaging in schizophrenia (interaction)	統合失調症における脳画像診断 (interaction)	Trait_med
-Brain lesion load	脳障害の負荷	Trait_med
-Brain structure	脳構造	Trait_med
-Breast cancer	乳がん	Disease
-Breast cancer (male) 	乳がん (男性)	Disease
-Breast cancer (prognosis)	乳がん (予後)	Disease
-Breast cancer (survival)	乳がん (survival)	Disease
-Breast size	胸の大きさ	Trait_easy
-Bronchopulmonary dysplasia	気管支肺異形成症(BPD)	Disease
-Burning and freckling	日焼けとそばかすの発生	Trait_easy
-Butyrylcholinesterase levels	ブチリルコリンエステラーゼ濃度	Trait_med
-C-reactive protein	C反応性タンパク質(CRP)	Trait_med
-C-reactive protein and white blood cell count	C反応性タンパク質(CRP)と白血球数	Trait_med
-C4b binding protein levels	C4b結合タンパク質濃度	Trait_med
-CD4:CD8 lymphocyte ratio	CD4-CD8リンパ球比	Trait_med
-CYP3A4 enzyme activity	CYP3A4酵素活性	Trait_med
-Caffeine consumption	カフェイン消費	Trait_easy
-Calcium levels	カルシウム濃度	Trait_easy
-Cannabis dependence	大麻依存	Disease
-Cannbis use (initiation)	大麻使用 (initiation)	Disease
-Capecitabine sensitivity	カペシタビン感受性	Trait_med
-Cardiac hypertrophy	心臓肥大	Disease
-Cardiac repolarization	心臓の再分極	Disease
-Cardiac structure and function	心臓の構造と機能	Trait_med
-Cardiovascular disease risk factors	心血管疾患(CVD)危険因子	Trait_med
-Carotenoid and tocopherol levels	カロチノイドとトコフェロール濃度	Trait_med
-Carotid atherosclerosis in HIV infection	HIV感染症における頸動脈硬化症	Disease
-Carotid intima media thickness	頸動脈の内膜中膜複合体厚(IMT)	Trait_med
-Cataracts in type 2 diabetes	2型糖尿病性白内障	Disease
-Caudate nucleus volume	尾状核の体積	Trait_med
-Celiac disease	セリアック病	Disease
-Celiac disease and Rheumatoid arthritis	セリアック病と関節リウマチ(RA)	Disease
-Central corneal thickness	中心角膜厚	Trait_med
-Chemerin levels	ケマリン濃度	Trait_med
-Chemotherapeutic susceptibility	化学療法感受性	Trait_med
-Cholelithiasis-related traits in sickle cell anemia	鎌状赤血球貧血における胆石症関連形質	Trait_med
-Cholesterol	コレステロール	Trait_med
-Cholesterol, total	コレステロール総量	Trait_med
-Chronic Hepatitis C infection	C型慢性肝炎の感染	Disease
-Chronic fatigue syndrome	慢性疲労症候群(CFS)	Disease
-Chronic kidney disease	慢性腎疾患(CKD)	Disease
-Chronic kidney disease and serum creatinine levels	慢性腎疾患(CKD)と血清クレアチニン濃度	Trait_med
-Chronic lymphocytic leukemia	慢性リンパ性白血病(CLL)	Disease
-Chronic myeloid leukemia	慢性骨髄性白血病	Disease
-Chronic obstructive pulmonary disease	慢性閉塞性肺疾患(COPD)	Disease
-Circulating cell-free DNA	循環細胞フリーDNA, セルフリーDNA(ccfDNA)	Trait_med
-Cleft lip	口唇裂	Disease
-Coagulation factor levels	凝固因子濃度	Trait_med
-Coffee consumption	コーヒーの消費	Trait_easy
-Cognitive ability	認知能力	Trait_med
-Cognitive decline	認知低下	Trait_med
-Cognitive function	認知機能	Trait_med
-Cognitive performance	認知パフォーマンス	Trait_med
-Cognitive test performance	認知機能テストのパフォーマンス	Trait_med
-Colorectal cancer	大腸がん	Disease
-Common traits (Other)	Common traits (Other)	NA
-Common variable immunodeficiency	分類不能型免疫不全	Disease
-Complement C3 and C4 levels	血清補体C3とC4の濃度	Trait_med
-Comprehensive strength and appendicular lean mass	圧縮強度と四肢筋肉量低下?	Trait_med
-Conduct disorder (case status)	行動障害 (case status)	Disease
-Conduct disorder (interaction)	行動障害 (interaction)	Disease
-Conduct disorder (symptom count)	行動障害 (symptom count)	Disease
-Corneal astigmatism	角膜乱視	Disease
-Corneal curvature	角膜曲率	Trait_med
-Corneal structure	角膜構造	Trait_med
-Coronary artery calcification	冠動脈石灰化	Disease
-Coronary heart disease	冠(状)動脈(性心)疾患	Disease
-Coronary restenosis	冠(状)動脈再狭窄	Disease
-Coronary spasm	冠動脈れん縮	Disease
-Cortical structure	皮質の構造	Trait_med
-Cortical thickness	皮質厚	Trait_med
-Cortisol secretion	コルチゾールの分泌	Trait_med
-Creatinine levels	クレアチニン濃度	Trait_med
-Creutzfeldt-Jakob disease	クロイツフェルト・ヤコブ病	Disease
-Creutzfeldt-Jakob disease (variant)	クロイツフェルト・ヤコブ病 (variant)	Disease
-Crohn's disease	クローン病	Disease
-Crohn's disease and celiac disease	クローン病と小児脂肪便症(セリアック病)	Disease
-Crohn's disease and psoriasis	クローン病と乾癬	Disease
-Crohn's disease and sarcoidosis (combined)	クローン病とサルコイドーシス(類肉腫症) (combined)	Disease
-Cutaneous nevi	皮膚性の母斑症	Disease
-Cystatin C	シスタチンC	Trait_med
-Cystic fibrosis (meconium ileus) 	嚢胞性繊維症 (胎便による腸閉塞(胎便性イレウス))	Disease
-Cystic fibrosis severity	嚢胞性繊維症の重症度	Disease
-Cytomegalovirus antibody response	サイトメガロウイルス抗体反応	Trait_med
-D-dimer levels	Dダイマー濃度	Trait_med
-Dehydroepiandrosterone sulphate levels	デヒドロエアピンドロステロン硫酸塩濃度	Trait_med
-Dengue shock syndrome 	デング熱ショック症候群	Disease
-Dental caries	う蝕(虫歯)	Disease
-Depression (age of onset)	うつ病 (age of onset)	Disease
-Depression (quantitative trait)	うつ病 (quantitative trait)	Disease
-Depression and alcohol dependence	うつ病とアルコール依存	Disease
-Diabetes (gestational)	糖尿病 (gestational)	Disease
-Diabetes (incident)	糖尿病 (incident)	Disease
-Diabetes related insulin traits	糖尿病関連のインシュリン形質	Trait_med
-Diabetic retinopathy 	糖尿病性網膜症	Disease
-Dialysis-related mortality	透析関連の死亡率	Trait_med
-Diastolic blood pressure	拡張期血圧 (最低血圧)	Trait_easy
-Digit length ratio	指の長さの比	Trait_easy
-Dilated cardiomyopathy	拡張型心筋症	Disease
-Disc degeneration (lumbar)	腰椎椎間板変性	Disease
-Drinking behavior	飲水行動	Trait_med
-Drug-induced liver injury 	薬物性肝障害	Disease
-Drug-induced liver injury (amoxicillin-clavulanate)	薬物性肝障害 (amoxicillin-clavulanate)	Disease
-Drug-induced liver injury (flucloxacillin)	薬物性肝障害 (flucloxacillin)	Disease
-Duodenal ulcer 	十二指腸潰瘍	Disease
-Dupuytren's disease	デュピュイトラン病	Disease
-E-selectin levels	Eセレクチン濃度	Trait_med
-Eating disorders	摂食障害	Disease
-Echocardiographic traits	心エコーの特徴	Trait_med
-Economic and political preferences	経済的・政治的な選択(好み)	Trait_easy
-Economic and political preferences (environmentalism)	経済的・政治的な選択(好み) (environmentalism)	Trait_easy
-Economic and political preferences (fairness)	経済的・政治的な選択(好み) (fairness)	Trait_easy
-Economic and political preferences (feminism/equality)	経済的・政治的な選択(好み) (feminism/equality)	Trait_easy
-Economic and political preferences (immigration/crime)	経済的・政治的な選択(好み) (immigration/crime)	Trait_easy
-Economic and political preferences (time)	経済的・政治的な選択(好み) (time)	Trait_easy
-Educational attainment	学歴	Trait_easy
-Electrocardiographic conduction measures	心電図の伝導測定?	Trait_med
-Electrocardiographic traits	心電図の特徴	Trait_med
-Electroencephalogram traits	脳波図の特徴	Trait_med
-Electroencephalographic traits in alcoholism	アルコール依存症における脳波図の特徴	Trait_med
-Emphysema-related traits	肺気腫関連の形質	Trait_med
-End-stage renal disease	末期腎不全	Disease
-End-stage renal disease (non-diabetic)	末期腎不全 (non-diabetic)	Disease
-Endometrial cancer	子宮内膜がん	Disease
-Endometriosis	子宮内膜症	Disease
-Endothelial function traits	内皮機能の形質	Trait_med
-Entorhinal cortical thickness	嗅内皮質の厚み	Trait_med
-Environmental confusion in the home	家における環境の乱雑さ?	Trait_easy
-Eosinophil counts	好酸球の数	Trait_med
-Eosinophilic esophagitis (pediatric)	好酸球性食道炎 (pediatric)	Disease
-Epilepsy	てんかん	Disease
-Epilepsy (generalized)	てんかん (generalized)	Disease
-Epirubicin-induced leukopenia 	エピルビシン誘導の白血球減少症	Disease
-Episodic memory	エピソード記憶	Trait_med
-Erectile dysfunction	勃起不全	Disease
-Erectile dysfunction and prostate cancer treatment	勃起不全と前立腺癌治療	Disease
-Erythrocyte sedimentation rate	赤血球沈降速度	Trait_med
-Esophageal cancer	食道がん	Disease
-Esophageal cancer  (alcohol interaction)	食道がん  (alcohol interaction)	Disease
-Esophageal cancer (squamous cell)	食道がん (squamous cell)	Disease
-Esophageal cancer and gastric cancer	食道がんと胃がん	Disease
-Essential tremor	特発性振戦	Disease
-Estradiol levels	エストラジオール濃度	Trait_med
-Event-related brain oscillations	事象関連脳波振動	Trait_med
-Ewing sarcoma	ユーイング肉腫	Disease
-Exercise (leisure time)	余暇における運動	Trait_easy
-Exercise treadmill test traits	トレッドミル運動負荷試験における特性	Trait_med
-Eye color	眼色	Trait_easy
-Eye color traits	眼色形質	Trait_easy
-F-cell distribution	F細胞の分布	Trait_med
-Facial morphology	顔の形態	Trait_med
-Factor VII	第VII因子(血清プロトロンビン転化促進因子)	Trait_med
-Factor XI	第XI因子(血漿トロンボプラスチン前駆物質)	Trait_med
-Fasting glucose-related traits	空腹時血糖関連形質	Trait_med
-Fasting glucose-related traits (interaction with BMI)	空腹時血糖関連形質 (BMIとの相互作用)	Trait_med
-Fasting insulin-related traits	空腹時インシュリン関連形質	Trait_med
-Fasting insulin-related traits (interaction with BMI)	空腹時インシュリン関連形質 (BMIとの相互作用)	Trait_med
-Fasting plasma glucose	空腹時血糖値	Trait_med
-Femoral neck bone geometry	大腿骨頸部の骨形状	Trait_med
-Fetal hemoglobin levels	胎児性ヘモグロビン濃度	Trait_med
-Fibrinogen	フィブリノーゲン	Trait_med
-Fluorouracil treatment response in colorectal cancer	大腸がんにおけるフルオロウラシル投与への応答	Trait_med
-Folate pathway vitamin levels	葉酸パスウェイにおけるビタミン濃度?	Trait_med
-Follicular lymphoma	濾胞性リンパ腫	Disease
-Formal thought disorder in schizophrenia	精神分裂病における思考障害	Disease
-Fracture-related traits	骨折関連形質	Trait_med
-Freckles	そばかす(Freckles)	Trait_easy
-Freckling	そばかす(Freckling)	Trait_easy
-Frontotemporal lobar degeneration	前頭側頭葉変性症	Disease
-Fuchs's corneal dystrophy	フックス角膜内皮変性症	Disease
-Functional MRI	機能的MRI(磁気共鳴画像法)	Trait_med
-Gallbladder cancer	胆嚢がん	Disease
-Gallstones	胆石症	Disease
-Gambling	賭博	Trait_easy
-Gamma gluatamyl transferase levels	ガンマグルタミン酸転移酵素濃度	Trait_med
-Gamma gluatamyl transferase levels (interaction with age)	ガンマグルタミン酸転移酵素濃度 (年齢との相互作用)	Trait_med
-Gamma glutamyl transpeptidase	ガンマグルタミン酸転移酵素	Trait_med
-Gastric cancer	胃がん	Disease
-Gaucher disease severity	ゴーシェ病の重症度	Disease
-General cognitive ability	一般的な認知能力	Trait_med
-Glaucoma	緑内障	Disease
-Glaucoma (exfoliation)	緑内障 (剥離)	Disease
-Glaucoma (primary open-angle)	緑内障 (primary open-angle)	Disease
-Glioblastoma	グリア芽腫 (神経膠芽細胞腫)	Disease
-Glioma	グリオーマ (膠腫)	Disease
-Glioma (high-grade)	グリオーマ (膠腫) (high-grade)	Disease
-Glomerulosclerosis	糸球体硬化	Disease
-Glycated hemoglobin levels	糖化ヘモグロビン濃度	Trait_med
-Glycemic control in type 1 diabetes (HbA1c)	1型糖尿病における血糖コントロール (HbA1c)	Trait_med
-Gout	痛風	Disease
-Graves' disease	グレーブス病 (眼球突出性甲状腺腫) 	Disease
-HDL Cholesterol - Triglycerides (HDLC-TG)	HDLコレステロール - トリグリセリド (HDLC-TG)	Trait_med
-HDL cholesterol	HDLコレステロール	Trait_med
-HIV (mother-to-child transmission)	HIV (母子感染)	Disease
-HIV-1 control	HIV-1の制御	Trait_med
-HIV-1 progression	HIV-1の進行	Trait_med
-HIV-1 replication	HIV-1の複製	Trait_med
-HIV-1 susceptibility	HIV-1の感受性	Trait_med
-HIV-1 viral setpoint	HIV-1のセットポイント	Trait_med
-HIV-associated dementia 	HIV関連性の痴呆	Disease
-HPV seropositivity	HPV血清陽性	Trait_med
-Hair color	毛髪色	Trait_easy
-Hair morphology	毛髪の形態	Trait_easy
-Handedness in dyslexia	失読症における利き手	Trait_med
-Haptoglobin levels	ハプトグロビン濃度	Trait_med
-Head circumference (infant)	頭囲 (乳児)	Trait_med
-Hearing impairment	難聴	Disease
-Heart failure	心不全	Disease
-Heart rate variability traits	心拍数変動性形質	Trait_med
-Height	身長	Trait_easy
-Hematocrit	ヘマトクリット値 (血液中の赤血球の割合)	Trait_med
-Hematological parameters	血液学的なパラメータ	Trait_med
-Hematology traits	血液学形質	Trait_med
-Hemoglobin	ヘモグロビン	Trait_med
-Hemoglobin levels	ヘモグロビン濃度	Trait_med
-Hemostatic factors and hematological phenotypes	止血因子と血液学的な表現型	Trait_med
-Hepatitis B	B型肝炎	Disease
-Hepatitis B (viral clearance)	B型肝炎 (ウイルス排除)	Disease
-Hepatitis B vaccine response	B型肝炎のワクチン応答	Trait_med
-Hepatitis C induced liver fibrosis	C型肝炎誘発性の肝線維症	Disease
-Hepatocellular carcinoma	肝細胞がん	Disease
-Hepcidin levels	ヘプシジン(肝臓由来の抗菌ペプチドホルモン)濃度	Trait_med
-Heroin addiction	ヘロイン中毒	Disease
-Hip bone size	寛骨(腰骨)の大きさ	Trait_med
-Hip geometry	腰の形状	Trait_med
-Hippocampal atrophy	海馬萎縮	Disease
-Hippocampal volume	海馬の体積	Trait_med
-Hirschsprung's disease	ヒルシュスプルング病	Disease
-Hoarding	溜め込み症	Disease
-Hodgkin's lymphoma	ホジキンリンパ腫	Disease
-Homocysteine levels	ホモシステイン濃度	Trait_med
-Hyperactive-impulsive symptoms	多動性・衝動性の症状	Disease
-Hypertension	高血圧	Disease
-Hypertension (young onset)	高血圧 (young onset)	Disease
-Hypertension risk in short sleep duration	高血圧 (短時間睡眠の継続によるリスク)	Disease
-Hypertriglyceridemia	高トリグリセリド血症	Disease
-Hypospadias	尿道下裂	Disease
-Hypothyroidism	甲状腺機能低下症	Disease
-IFN-related cytopenia	IFN関連血球減少症	Disease
-Idiopathic pulmonary fibrosis	特発性肺線維症	Disease
-IgA levels	IgA(免疫グロブリンA)濃度	Trait_med
-IgA nephropathy	IgA(免疫グロブリンA)腎症	Disease
-IgE grass sensitization	IgE grass sensitization?	Trait_med
-IgE levels 	IgE 濃度	Trait_med
-IgG levels	IgG 濃度	Trait_med
-Ileal carcinoids	回腸カルチノイド	Trait_med
-Immune reponse to smallpox (secreted IFN-alpha)	天然痘(ほうそう)への免疫応答 (secreted IFN-alpha)	Trait_med
-Immune reponse to smallpox (secreted IL-10)	天然痘(ほうそう)への免疫応答 (secreted IL-10)	Trait_med
-Immune reponse to smallpox (secreted IL-12p40)	天然痘(ほうそう)への免疫応答 (secreted IL-12p40)	Trait_med
-Immune reponse to smallpox (secreted IL-1beta)	天然痘(ほうそう)への免疫応答 (secreted IL-1beta)	Trait_med
-Immune reponse to smallpox (secreted IL-2)	天然痘(ほうそう)への免疫応答 (secreted IL-2)	Trait_med
-Immune reponse to smallpox (secreted TNF-alpha)	天然痘(ほうそう)への免疫応答 (secreted TNF-alpha)	Trait_med
-Immune response to anthrax vaccine 	炭疽ワクチンへの免疫応答	Trait_med
-Immune response to smallpox vaccine (IL-6)	天然痘(ほうそう)ワクチンへの免疫応答 (IL-6)	Trait_med
-Immunoglobulin A 	免疫グロブリンA	Trait_med
-Inattentive symptoms	注意欠陥障害	Disease
-Infantile hypertrophic pyloric stenosis	乳児肥厚性幽門狭窄症	Disease
-Inflammatory biomarkers	炎症のバイオマーカー	Trait_med
-Inflammatory bowel disease	炎症性腸疾患	Disease
-Inflammatory bowel disease (early onset)	炎症性腸疾患 (early onset)	Disease
-Influenza (severity)	インフルエンザの重症度	Disease
-Information processing speed	情報処理の速度	Trait_easy
-Insomnia (caffeine-induced)	不眠症 (カフェイン誘導性の)	Disease
-Insulin resistance/response	インシュリン抵抗・応答性	Trait_med
-Insulin-like growth factors	インシュリン様成長因子	Trait_med
-Insulin-related traits	インシュリン関連形質	Trait_med
-Intelligence	知能	Trait_easy
-Interleukin-18 levels	インターロイキン18濃度	Trait_med
-Interstitial lung disease 	間質性肺疾患	Disease
-Intracranial aneurysm	頭蓋内動脈瘤	Disease
-Intracranial volume	頭蓋内体積	Trait_med
-Intraocular pressure	眼内圧	Trait_med
-Iris characteristics	虹彩の特徴	Trait_easy
-Iris color	虹彩の色	Trait_easy
-Iron levels	鉄濃度	Trait_med
-Iron status biomarkers	鉄の状態のバイオマーカー	Trait_med
-Kawasaki disease	川崎病	Disease
-Keloid	ケロイド(蟹足腫)	Disease
-Kidney stones	腎結石	Disease
-Knee osteoarthritis	膝関節症	Disease
-LDL cholesterol	LDLコレステロール	Trait_med
-Lapatinib-induced hepatotoxicity	ラパチニブ誘導性の肝臓毒性	Trait_med
-Large B-cell lymphoma	大細胞型B細胞性リンパ腫	Disease
-Lean body mass and age at menarche (combined)	除脂肪体重と月経開始 (combined)	Trait_med
-Left ventricular mass	左室体積	Trait_med
-Lentiform nucleus volume 	レンズ核体積	Trait_med
-Leprosy	らい(癩)病 (ハンセン病)	Disease
-Life threatening arrhythmia	致命的な不整脈	Disease
-Lipid levels in hepatitis C treatment	C型肝炎治療における脂質濃度	Trait_med
-Lipid metabolism phenotypes	脂質代謝の表現型	Trait_med
-Lipid traits	脂質の形質	Trait_med
-Lipoprotein-associated phospholipase A2 activity and mass	リポタンパク質関連ホスホリパーゼA2の活性と量	Trait_med
-Liver enzyme levels	肝臓酵素濃度	Trait_med
-Liver enzyme levels (alanine transaminase)	肝臓酵素濃度 (alanine transaminase)	Trait_med
-Liver enzyme levels (alkaline phosphatase)	肝臓酵素濃度 (alkaline phosphatase)	Trait_med
-Liver enzyme levels (gamma-glutamyl transferase)	肝臓酵素濃度 (gamma-glutamyl transferase)	Trait_med
-Longevity	寿命	Trait_easy
-Lp (a) levels	リポタンパク質(a)濃度	Trait_med
-Lumiracoxib-related liver injury	ルミラコキシブ関連の肝臓損傷	Disease
-Lung adenocarcinoma	肺腺がん	Disease
-Lung adenocarcinoma (clinical stage)	肺腺がん (clinical stage)	Disease
-Lung cancer	肺がん	Disease
-Lung cancer-asbestos exposure interaction	肺がんとアスベスト曝露の相互作用	Disease
-Lupus	ループス(狼瘡)	Disease
-Lymphocyte counts	リンパ球量	Trait_med
-MRI atrophy measures	MRIによる萎縮測定	Trait_med
-Magnesium levels	マグネシウム濃度	Trait_med
-Major CVD	主要な心血管疾患	Disease
-Major depressive disorder	大うつ病性障害	Disease
-Major depressive disorder (broad)	大うつ病性障害 (broad)	Disease
-Major mood disorders	主要な気分障害	Disease
-Malaria	マラリア	Disease
-Male fertility	雄性稔性(生殖能)	Disease
-Male infertility	男性不妊症	Disease
-Male-pattern baldness	男性型脱毛症	Disease
-Mammographic density	乳房X線撮影の密度	Trait_med
-Mathematical ability	数理能力	Trait_easy
-Matrix metalloproteinase levels	マトリックスメタロプロテアーゼ濃度	Trait_med
-Mean corpuscular hemoglobin	平均赤血球ヘモグロビン量	Trait_med
-Mean corpuscular volume	平均赤血球容積	Trait_med
-Mean forced vital capacity from 2 exams	平均努力肺活量 (2つの検査による)	Trait_med
-Mean platelet volume	平均血小板容積	Trait_med
-Melanoma	メラノーマ(悪性黒色腫)	Disease
-Memory (short-term)	短期記憶	Trait_easy
-Memory performance	記憶能力	Trait_easy
-Menarche (age at onset)	月経開始期 (age at onset)	Trait_med
-Menarche and menopause (age at onset)	月経開始期と閉経 (age at onset)	Trait_med
-Meningioma 	髄膜腫 (脳膜腫)	Disease
-Meningococcal disease	髄膜炎菌性疾患	Disease
-Menopause (age at onset)	閉経 (age at onset)	Trait_med
-Metabolic syndrome	メタボリックシンドローム	Disease
-Metabolic syndrome (bivariate traits)	メタボリックシンドローム (二変量の形質)	Disease
-Metabolic traits	代謝の形質	Trait_med
-Metabolite levels	代謝物質濃度	Trait_med
-Methamphetamine dependence	メタンフェタミン依存症	Disease
-Migraine	偏頭痛	Disease
-Migraine in bipolar disorder	双極性障害における偏頭痛	Disease
-Monocyte chemoattractant protein-1 	単球走化性タンパク質-1	Trait_med
-Monocyte early outgrowth colony forming units	単核細胞の早期増殖コロニーフォーミングユニット	Trait_med
-Morbidity-free survival	罹患なしの生存	Trait_med
-Mortality among heart failure patients	心不全患者における死亡率	Disease
-Moyamoya disease	もやもや病(ウィリス動脈輪閉塞症)	Disease
-Multiple myeloma	多発性骨髄腫	Disease
-Multiple sclerosis	多発性硬化症	Disease
-Multiple sclerosis (age of onset)	多発性硬化症 (age of onset)	Disease
-Multiple sclerosis (severity)	多発性硬化症の重症度	Disease
-Multiple sclerosis--Brain Glutamate Levels	多発性硬化症と脳グルタミン酸濃度	Trait_med
-Myasthenia gravis 	重症筋無力症	Disease
-Myeloproliferative neoplasms	骨髄増殖性腫瘍	Disease
-Myocardial infarction	心筋梗塞	Disease
-Myocardial infarction (early onset)	心筋梗塞 (early onset)	Disease
-Myopia (pathological)	近視 (病理的な)	Disease
-N-glycan levels	N-グリカン濃度	Trait_med
-Naphthyl-keratin adduct levels 	ナフチル角質付加物濃度	Trait_med
-Narcolepsy	睡眠発作(ナルコレプシー)	Disease
-Nasopharyngeal carcinoma	鼻咽頭がん	Disease
-Natriuretic peptide levels	ナトリウム利尿ペプチド濃度	Trait_med
-Neonatal lupus	新生児ループス	Disease
-Nephrolithiasis	腎石症	Disease
-Nephropathy	腎障害	Disease
-Nephropathy (idiopathic membranous)	特発性膜性腎症	Disease
-Nephrotic syndrome (acquired)	後天性ネフローゼ症候群	Disease
-Neural processing (facial expression)	神経処理 (顔面表情)	Trait_med
-Neuranatomic and neurocognitive phenotypes	神経解剖学的・認知神経科学的な表現型	Trait_med
-Neuroblastoma	神経芽細胞腫(ニューロブラストーマ)	Disease
-Neuroblastoma (high-risk)	神経芽細胞腫(ニューロブラストーマ)の高いリスク	Disease
-Neuromyelitis optica	視神経脊髄炎	Disease
-Neuroticism	神経質(ニューロティシズム)	Disease
-Neutrophil count	好中球数	Trait_med
-Nevirapine-induced rash	ネビラピン誘発性の発疹	Disease
-Nevus count	母斑数	Trait_med
-Nicotine dependence	ニコチン依存症	Disease
-Nodular sclerosis Hodgkin lymphoma	結節硬化型ホジキンリンパ腫	Disease
-Non-albumin protein levels 	非アルブミンタンパク濃度	Trait_med
-Non-alcoholic fatty liver disease histology (AST)	非アルコール性脂肪性肝疾患の組織学 (AST)	Trait_med
-Non-alcoholic fatty liver disease histology (lobular)	非アルコール性脂肪性肝疾患の組織学 (lobular)	Trait_med
-Non-alcoholic fatty liver disease histology (other)	非アルコール性脂肪性肝疾患の組織学 (other)	Trait_med
-Non-obstructive azoospermia	非閉塞性無精子症	Disease
-Non-small cell lung cancer	非小細胞肺がん	Disease
-Nonalcoholic fatty liver disease	非アルコール性脂肪性肝疾患	Disease
-Normalized brain volume	標準脳容積	Trait_med
-Obesity	肥満症	Disease
-Obesity (early onset extreme)	肥満症 (early onset extreme)	Disease
-Obesity (extreme)	肥満症 (極度の)	Disease
-Obesity and blood pressure	肥満症と血圧	Trait_med
-Obesity and osteoporosis	肥満症と骨粗鬆症	Disease
-Obesity-related traits	肥満関連形質	Trait_med
-Obsessive-compulsive disorder	強迫性障害	Disease
-Odorant perception	臭気物質知覚力	Trait_med
-Optic disc parameters	視神経円板パラメータ	Trait_med
-Optic disc size (cup)	視神経円板の大きさ (cup)	Trait_med
-Optic disc size (disc)	視神経円板の大きさ (disc)	Trait_med
-Optic disc size (rim)	視神経円板の大きさ (rim)	Trait_med
-Oral cancers (chewing tobacco related)	口腔がん (噛みたばこ関連の)	Disease
-Orofacial clefts	口唇裂・口蓋裂	Disease
-Osteoarthritis	骨関節炎	Disease
-Osteonecrosis of the jaw	顎骨壊死	Disease
-Osteoporosis	骨粗鬆症	Disease
-Osteoporosis-related phenotypes	骨粗鬆症関連形質	Trait_med
-Other erythrocyte phenotypes	その他の赤血球表現型	Trait_med
-Otosclerosis	耳硬化症	Disease
-Ovarian cancer	卵巣がん	Disease
-Ovarian reserve	卵巣予備能	Trait_med
-P-tau181p	リン酸化タウ(P-tau181p)	Trait_med
-PR interval	PR間隔	Trait_med
-Paclitaxel-induced neuropathy	パクリタキセル誘導性の神経障害	Disease
-Paget's disease	乳房ページェット病	Disease
-Pain	疼痛(痛み)	Trait_med
-Pancreatic cancer	膵臓がん	Disease
-Panic disorder	パニック障害	Disease
-Parkinson's disease	パーキンソン病	Disease
-Parkinson's disease (age of onset)	パーキンソン病 (age of onset)	Disease
-Parkinson's disease (familial)	パーキンソン病 (familial)	Disease
-Parkinson's disease (interaction with coffee consumption)	パーキンソン病 (interaction with coffee consumption)	Disease
-Parkinson's disease (motor and cognition)	パーキンソン病 (motor and cognition)	Disease
-Partial epilepsies	部分的なてんかん	Disease
-Pelvic organ prolapse	骨盤臓器脱	Disease
-Pemphigus vulgaris	尋常性天疱瘡	Disease
-Pericardial fat	心膜脂肪	Trait_med
-Periodontal microbiota	歯周微生物叢	Trait_med
-Periodontitis	歯周炎	Disease
-Peripartum cardiomyopathy	周産期心筋症	Disease
-Peripheral artery disease	末梢動脈疾患	Disease
-Permanent tooth development	永久歯の発育	Trait_med
-Personality dimensions	人格の次元	Trait_med
-Personality disorders	パーソナリティ障害	Disease
-Phospholipid levels (plasma)	リン脂質濃度 (血しょう)	Trait_med
-Phosphorus levels	リン濃度	Trait_med
-Phytosterol levels	フィトステロール(植物性ステロール)濃度	Trait_med
-Plasminogen activator inhibitor type 1 levels (PAI-1)	1型プラスミノーゲン活性化因子インヒビター(PAI-1)濃度	Trait_med
-Platelet aggregation	血小板凝固	Trait_med
-Platelet counts	血小板数	Trait_med
-Platelet function and related traits	血小板機能と関連形質	Trait_med
-Podoconiosis	象皮病	Disease
-Polycystic ovary syndrome	多嚢胞性卵巣症候群	Disease
-Polyunsaturated fatty acid levels	多価不飽和脂肪酸濃度	Trait_med
-Post- traumatic stress disorder	心的外傷後ストレス障害(PTSD)	Disease
-Postoperative nausea and vomiting 	術後悪心嘔吐	Disease
-Postoperative ventricular dysfunction 	術後心室機能不全	Disease
-Preeclampsia	子癇前症(妊娠高血圧腎症)	Disease
-Premature ovarian failure	早期卵巣機能不全(早発閉経)	Disease
-Primary biliary cirrhosis	原発性胆汁性肝硬変	Disease
-Primary sclerosing cholangitis	原発性硬化性胆管炎	Disease
-Primary tooth development (number of teeth)	乳歯の発育 (歯の数)	Trait_med
-Primary tooth development (time to first tooth eruption)	乳歯の発育 (初めの歯が現れる時期)	Trait_med
-Prion diseases	プリオン病	Disease
-Progranulin levels	プログラヌリン濃度	Trait_med
-Progressive supranuclear palsy	進行性核上麻痺	Disease
-Proinsulin levels	プロインシュリン濃度	Trait_med
-Prostate cancer	前立腺がん	Disease
-Prostate cancer (gene x gene interaction)	前立腺がん (遺伝子間相互作用)	Disease
-Prostate cancer mortality	前立腺がん (死亡率)	Disease
-Prostate-specific antigen levels	前立腺特異抗原濃度	Trait_med
-Protein C levels	プロテインC濃度	Trait_med
-Protein quantitative trait loci	タンパク質量的形質遺伝子座	Trait_med
-Prothrombin time	プロトロンビン時間(血液の凝固因子に関する指標の1つ)	Trait_med
-Pseudoexfoliation syndrome	水晶体落屑症候群	Disease
-Psoriasis	乾癬	Disease
-Psoriatic arthritis	乾癬性関節炎	Disease
-Pulmonary function	肺機能	Trait_med
-Pulmonary function decline	肺機能の低下	Trait_med
-QT interval	QT間隔(心電図用語)	Trait_med
-Quantitative traits	量的形質	NA
-RR interval (heart rate)	R-R間隔 (heart rate)	Trait_med
-Radiation response	放射線反応	Trait_med
-Reasoning	推論力	Trait_easy
-Recombination rate (females)	組換え率 (女性)	Trait_med
-Recombination rate (males)	組換え率 (男性)	Trait_med
-Red blood cell traits	赤血球の形質	Trait_med
-Red vs non-red hair color	赤毛と非赤毛(Red vs non-red hair color)	Trait_easy
-Red vs. non-red hair color	赤毛と非赤毛(Red vs. non-red hair color)	Trait_easy
-Refractive error	屈折異常	Disease
-Renal cell carcinoma	腎細胞がん	Disease
-Renal function and chronic kidney disease	胃機能と慢性腎臓病	Disease
-Renal function-related traits (BUN)	胃機能関連形質 (BUN)	Trait_med
-Renal function-related traits (eGRFcrea)	胃機能関連形質 (eGRFcrea)	Trait_med
-Renal function-related traits (sCR)	胃機能関連形質 (sCR)	Trait_med
-Renal function-related traits (urea)	胃機能関連形質 (urea)	Trait_med
-Renal sinus fat 	腎洞脂肪	Trait_med
-Resistin levels 	レジスチン濃度	Trait_med
-Response to TNF antagonist treatment	TNF拮抗薬治療への応答	Trait_med
-Response to TNF-alpha inhibitors in rheumatoid arthritis	関節リウマチにおけるTNF-alpha阻害剤への応答	Trait_med
-Response to Vitamin E supplementation	ビタミンE補給への応答	Trait_med
-Response to acetaminophen (hepatotoxicity)	アセトアミノフェン(肝毒性)への応答	Trait_med
-Response to amphetamines	アンフェタミン(合成覚せい剤)への応答	Trait_med
-Response to angiotensin II receptor blocker therapy	アンジオテンシンII受容体拮抗薬療法への応答	Trait_med
-Response to angiotensin II receptor blocker therapy (opposite direction w/ diuretic therapy)	アンジオテンシンII受容体拮抗薬療法への応答 (opposite direction w/ diuretic therapy)	Trait_med
-Response to antidepressant treatment	抗うつ薬治療への応答	Trait_med
-Response to antidepressants	抗うつ薬への応答	Trait_med
-Response to antineoplastic agents	抗腫瘍薬への応答	Trait_med
-Response to antipsychotic therapy (extrapyramidal side effects)	統合失調症治療薬治療への応答 (錐体外路症状)	Trait_med
-Response to antipsychotic treatment	統合失調症治療への応答	Trait_med
-Response to cerivastatin	セリバスタチン(高脂血症治療薬)への応答	Trait_med
-Response to citalopram treatment	シタロプラム(抗うつ薬)療法への応答	Trait_med
-Response to clopidogrel therapy	クロピドグレル(血小板凝集抑制薬)療法への応答	Trait_med
-Response to diuretic therapy	利尿剤治療への応答	Trait_med
-Response to fenofibrate	フェノフィブラート(抗脂質血症薬)への応答	Trait_med
-Response to gemcitabine in pancreatic cancer 	膵臓がんにおけるゲムシタビン(抗がん剤)への応答	Trait_med
-Response to hepatitis C treatment	C型肝炎治療への応答	Trait_med
-Response to iloperidone treatment (PANSS-T score)	イロペリドン(統合失調症治療薬)療法への応答 (PANSS-T score)	Trait_med
-Response to iloperidone treatment (QT prolongation)	イロペリドン(統合失調症治療薬)療法への応答 (QT延長)	Trait_med
-Response to interferon beta therapy	インターフェロンベータ(抗ウイルス耐性誘導タンパク質)療法への応答	Trait_med
-Response to irinotecan in non-small-cell lung cancer	非小細胞肺がんにおけるイリノテカン(抗がん剤)への応答	Trait_med
-Response to lithium treatment in bipolar disorder	双極性障害におけるリチウム療法への応答	Trait_med
-Response to metformin	メトホルミン(抗糖尿病薬)への応答	Trait_med
-Response to methylphenidate treatment	メチルフェニデート(中枢神経興奮薬・ナルコレプシー治療)治療への応答	Trait_med
-Response to platinum-based agents	白金製剤への応答	Trait_med
-Response to platinum-based chemotherapy in non-small-cell lung cancer	非小細胞肺がんにおける白金製剤化学療法への応答	Trait_med
-Response to platinum-based chemotherapy in small cell and non-small cell lung cancers	小細胞と非小細胞肺がんにおける白金製剤化学療法への応答	Trait_med
-Response to platinum-based chemotherapy in small-cell lung cancer	小細胞肺がんにおける白金製剤化学療法への応答	Trait_med
-Response to statin therapy	スタチン療法(高コレステロール血症の薬物治療)への応答	Trait_med
-Response to statin therapy (LDL-C)	スタチン療法(高コレステロール血症の薬物治療)への応答 (LDL-C)	Trait_med
-Response to tamoxifen in breast cancer	乳がんにおけるタモキシフェン(抗がん剤)への応答	Trait_med
-Response to taxane treatment (docetaxel)	タキサン(抗がん剤)療法への応答 (docetaxel)	Trait_med
-Response to taxane treatment (placlitaxel)	タキサン(抗がん剤)療法への応答 (placlitaxel)	Trait_med
-Response to tocilizumab in rheumatoid arthritis	関節リウマチにおけるトシリズマブへの応答	Trait_med
-Response to treatment for acute lymphoblastic leukemia	急性リンパ芽球性白血病治療への応答	Trait_med
-Response to ximelagatran treatment	キシメラガトラン療法への応答	Trait_med
-Resting heart rate	安静時心拍数	Trait_med
-Restless legs syndrome	下肢静止不能症候群	Disease
-Retinal vascular caliber	網膜脈管口径	Trait_med
-Retinol levels	レチノール濃度	Trait_med
-Rheumatoid arthritis	関節リウマチ	Disease
-Ribavirin-induced anemia	リバビリン誘導性の貧血	Disease
-Sarcoidosis	サルコイドーシス(類肉腫症)	Disease
-Schizophrenia	統合失調症	Disease
-Schizophrenia (treatment refractory) 	統合失調症 (treatment refractory)	Disease
-Schizophrenia, bipolar disorder and depression (combined)	統合失調症・双極性障害・うつ病 (combined)	Disease
-Sclerosing cholangitis and ulcerative colitis (combined)	硬化性胆管炎と潰瘍性大腸炎 (combined)	Disease
-Scoliosis	脊柱側弯症	Disease
-Select biomarker traits	Select biomarker traits	NA
-Self-rated health	自己評価健康状態	Trait_med
-Serologic markers in systemic lupus erythematosus	全身性紅斑性狼瘡における血清マーカー	Trait_med
-Sex hormone-binding globulin levels	性ホルモン結合グロブリン濃度	Trait_med
-Sex ratio at birth	出生性比	Trait_med
-Sexual dysfunction (SSRI/SNRI-related)	性機能不全 (SSRI/SNRI-related)	Disease
-Sexual dysfunction (female)	性機能不全 (女性)	Disease
-Sick sinus syndrome	洞結節不全症候群	Disease
-Sickle cell anemia (severity)	鎌状赤血球貧血 (重症度)	Disease
-Skin pigmentation	皮膚色素沈着	Trait_med
-Skin sensitivity to sun	太陽への皮膚感受性	Trait_med
-Sleep duration	睡眠時間	Trait_easy
-Sleepiness	眠気	Trait_easy
-Small-cell lung cancer	小細胞肺がん	Disease
-Smoking behavior	喫煙行動	Trait_easy
-Smoking cessation	禁煙	Trait_easy
-Social and Non-Social Autistic-Like Traits	社会的・非社会的な自閉症様の形質	Disease
-Soluble E-selectin levels	可溶性Eセレクチン濃度	Trait_med
-Soluble ICAM-1	可溶性ICAM-1	Trait_med
-Soluble leptin receptor levels	可溶性レプチンレセプター濃度	Trait_med
-Soluble levels of adhesion molecules	接着分子の可溶度	Trait_med
-Speech perception in dyslexia	失読症における言語知覚	Trait_med
-Sphingolipid levels	スフィンゴ脂質濃度	Trait_med
-Spine bone size	脊椎骨の大きさ	Trait_med
-Stevens-Johnson syndrome	スティーブンス・ジョンソン症候群(薬物の副作用による眼を中心にした皮膚粘膜障害)	Disease
-Stevens-Johnson syndrome and toxic epidermal necrolysis (SJS-TEN)	スティーブンス・ジョンソン症候群(薬物の副作用による眼を中心にした皮膚粘膜障害)と中毒性表皮壊死症(全身性の副作用) (SJS-TEN)	Disease
-Stroke	脈拍	Trait_med
-Stroke (ischemic)	脈拍 (虚血性の)	Trait_med
-Stroke (pediatric)	脈拍 (小児科の)	Trait_med
-Subarachnoid aneurysmal hemorrhage	動脈瘤性くも膜下出血	Disease
-Subclinical atherosclerosis traits (other)	無症状アテローム性動脈硬化症形質 (その他)	Disease
-Subclinical brain infarct	無症状脳梗塞	Disease
-Subcutaneous adipose tissue	皮下脂肪組織	Trait_med
-Substance dependence	物質依存症	Disease
-Sudden cardiac arrest	心突然死	Disease
-Suicidal ideation	希死念慮(自殺念慮)	Trait_med
-Suicide attempts in bipolar disorder	双極性障害における自殺企図	Trait_med
-Systemic lupus erythematosus	全身性エリテマトーデス	Disease
-Systemic sclerosis	全身性硬化症	Disease
-Systolic blood pressure	最高血圧(収縮期血圧)	Trait_med
-T-tau	T-tau	Trait_med
-TP53 carriage	p53遺伝子産物(TP53)の輸送	Trait_med
-Tanning	日焼け	Trait_med
-Tardive dyskinesia 	遅発性ジスキネジア	Disease
-Telomere length	テロメア長	Trait_med
-Temperament	気質	Trait_med
-Temperament (bipolar disorder)	双極性障害における気質	Trait_med
-Testicular cancer	精巣がん(睾丸がん)	Disease
-Testicular dysgenesis syndrome 	睾丸形成異常症候群	Disease
-Testicular germ cell cancer	精巣胚細胞性がん	Disease
-Testicular germ cell tumor	精巣胚細胞腫瘍	Disease
-Testosterone levels	テストステロン(男性ホルモン)濃度	Trait_med
-Thoracic aortic aneurysms and dissections	胸部大動脈瘤と切開	Disease
-Thyroid cancer	甲状腺がん	Disease
-Thyroid function	甲状腺機能	Trait_med
-Thyroid stimulating hormone	甲状腺刺激ホルモン	Trait_med
-Thyroid volume	甲状腺容積	Trait_med
-Thyrotoxic hypokalemic periodic paralysis	甲状腺中毒性低カリウム性周期性麻痺	Disease
-Tonometry	眼圧測定	Trait_med
-Total ventricular volume	総心室容積	Trait_med
-Tourette syndrome	トゥレット障害	Disease
-Treatment response for severe sepsis 	重症敗血症の治療への応答	Trait_med
-Triglycerides	トリグリセリド(中性脂肪)	Trait_med
-Triglycerides-Blood Pressure (TG-BP)	トリグリセリド(中性脂肪)-血圧 (TG-BP)	Trait_med
-Tuberculosis	結核	Disease
-Two-hour glucose challenge	ブドウ糖負荷試験(糖尿病の診断方法のひとつ)	Trait_med
-Type 1 diabetes	1型糖尿病	Disease
-Type 1 diabetes autoantibodies	1型糖尿病の自己抗体	Disease
-Type 1 diabetes nephropathy	1型糖尿病性腎障害	Disease
-Type 2 diabetes	2型糖尿病	Disease
-Type 2 diabetes and 6 quantitative traits	2型糖尿病と6つの量的形質	Disease
-Type 2 diabetes and gout	2型糖尿病と痛風	Disease
-Type 2 diabetes and other traits	2型糖尿病その他の形質	Disease
-Type 2 diabetes nephropathy	2型糖尿病性腎障害	Disease
-Ulcerative colitis	潰瘍性大腸炎	Disease
-Upper aerodigestive tract cancers	頭頚部がん?	Disease
-Urate levels	尿酸塩濃度	Trait_med
-Uric acid levels	尿酸濃度	Trait_med
-Urinary albumin excretion	尿中アルブミン排泄	Trait_med
-Urinary bladder cancer	膀胱がん	Disease
-Urinary metabolites	尿中代謝物	Trait_med
-Uterine fibroids	子宮筋腫	Disease
-Vaccine-related adverse events 	ワクチン関連有害事象	Disease
-Vascular dementia	血管性認知症	Disease
-Vascular endothelial growth factor levels	血管内皮成長因子	Trait_med
-Vaspin levels	バスピン濃度	Trait_med
-Venous thromboembolism	静脈血栓塞栓症	Disease
-Ventricular conduction	心室内伝導	Trait_med
-Ventricular fibrillation	心室細動	Trait_med
-Vertical cup-disc ratio	垂直C/D比(眼底画像の特徴量・緑内障の診察に用いられる)	Trait_med
-Visceral adipose tissue adjusted for BMI	BMIに合わせた内臓脂肪組織	Trait_med
-Visceral adipose tissue/subcutaneous adipose tissue ratio	内臓脂肪組織と皮下脂肪組織の比率	Trait_med
-Visceral fat	内臓脂肪	Trait_med
-Vitamin B12 levels	ビタミンB12濃度	Trait_med
-Vitamin D insufficiency	ビタミンD不足	Trait_med
-Vitamin D levels	ビタミンD濃度	Trait_med
-Vitamin E levels	ビタミンE濃度	Trait_easy
-Vitiligo	白斑(皮膚病)	Disease
-Volumetric brain MRI	MRIにおける脳容積計測	Trait_med
-Waist Circumference - Triglycerides (WC-TG)	胴囲 – トリグリセリド(中性脂肪) (WC-TG)	Trait_easy
-Waist circumference	胴囲	Trait_easy
-Waist circumference and related phenotypes	胴囲とその関連する表現型	Trait_easy
-Waist-hip ratio	ウエスト・ヒップ比	Trait_easy
-Warfarin maintenance dose	ワルファリン(経口抗凝固薬)維持量	Trait_med
-Weight	体重	Trait_easy
-White blood cell count	白血球数	Trait_med
-White blood cell types	白血球の型	Trait_med
-White matter hyperintensity burden	白質病変?	Disease
-White matter integrity	白質病変	Disease
-Wilms tumor	ウィルムス腫瘍	Trait_med
-Working memory	ワーキングメモリー(作業記憶)	Trait_med
-Wrist bone mass	手根骨容積	Trait_med
-YKL-40 levels	YKL-40(バイオマーカー)濃度	Trait_med
-vWF and FVIII levels	vWFとFVIIIの濃度	Trait_med
+eng	ja	category	sex
+5-HTT brain serotonin transporter levels	脳内セロトニントランスポーター(5-HTT)密度	Trait_med	
+AB1-42	AB1-42	Trait_med	
+AIDS	AIDS	Disease	
+AIDS progression	AIDS進行	Disease	
+Abdominal aortic aneurysm	腹部大動脈瘤	Disease	
+Acenocoumarol maintenance dosage	アセノクマロール維持量	Trait_med	
+Activated partial thromboplastin time	活性化部分トロンボプラスチン時間	Trait_med	
+Acute graft versus host disease	急性移植片対宿主病(GVHD)	Disease	
+Acute lung injury	急性肺障害	Disease	
+Acute lymphoblastic leukemia (childhood)	急性リンパ芽球性白血病(小児期)	Disease	
+Addiction	中毒	NA	
+Adiponectin levels	アディポネクチンレベル	Trait_med	
+Adiposity	肥満	Disease	
+Adverse response to aromatase inhibitors	アロマターゼ阻害剤への有害反応	Trait_med	
+Adverse response to carbamapezine	カルバマゼピンへの有害反応	Trait_med	
+Adverse response to lamotrigine and phenytoin	ラモトリジンとフェニトインへの有害反応	Trait_med	
+Age-related macular degeneration	加齢黄斑変性症	Disease	
+Age-related macular degeneration (CNV vs. GA)	加齢黄斑変性症 (CNV vs. GA)	Disease	
+Age-related macular degeneration (CNV)	加齢黄斑変性症 (CNV)	Disease	
+Age-related macular degeneration (GA)	加齢黄斑変性症 (GA)	Disease	
+Age-related macular degeneration (wet)	加齢黄斑変性症 (wet)	Disease	
+Aging	加齢	Trait_med	
+Aging (time to death)	加齢 (time to death)	Trait_med	
+Aging (time to event)	加齢 (time to event)	Trait_med	
+Aging traits	老化形質	Trait_med	
+Airflow obstruction	気流閉塞	Disease	
+Alcohol and nictotine co-dependence	アルコールとニコチンの共依存	Trait_med	
+Alcohol consumption	アルコール消費量	Trait_easy	
+Alcohol dependence	アルコール依存症	Disease	
+Alcohol withdrawal symptoms	アルコール禁断症状	Disease	
+Alcoholism (12-month weekly alcohol consumption)	アルコール依存症 (12-month weekly alcohol consumption)	Disease	
+Alcoholism (alcohol dependence factor score)	アルコール依存症 (alcohol dependence factor score)	Disease	
+Alcoholism (alcohol use disorder factor score)	アルコール依存症 (alcohol use disorder factor score)	Disease	
+Alcoholism (heaviness of drinking)	アルコール依存症 (heaviness of drinking)	Disease	
+Allergic rhinitis	慢性アレルギー性鼻炎	Disease	
+Alopecia areata	円形脱毛症	Trait_easy	
+Alzheimer's disease	アルツハイマー病	Disease	
+Alzheimer's disease (age of onset)	アルツハイマー病 (発症年齢)	Disease	
+Alzheimer's disease (late onset)	アルツハイマー病 (遅発型)	Disease	
+Alzheimer's disease biomarkers	アルツハイマー病バイオマーカー	Trait_med	
+Amygdala reactivity	扁桃体の反応性	Trait_med	
+Amyloid A Levels	アミロイドAタンパク質濃度	Trait_med	
+Amyotrophic lateral sclerosis	筋萎縮性側索硬化症	Disease	
+Amyotrophic lateral sclerosis (age of onset)	筋萎縮性側索硬化症 (発症年齢)	Disease	
+Amyotrophic lateral sclerosis (interaction)	筋萎縮性側索硬化症 (interaction)	Disease	
+Androgen levels	アンドロゲン濃度	Trait_med	
+Angiotensin-converting enzyme activity	アンジオテンシン変換酵素活性	Trait_med	
+Ankle-brachial index 	足関節・上腕血圧指数(ABI)	Trait_med	
+Ankylosing spondylitis	強直性脊椎炎	Disease	
+Anorexia nervosa	拒食症	Disease	
+Anthropometric traits	人体計測的な形質	Trait_easy	
+Anti-cyclic Citrullinated Peptide Antibody	抗環状シトルリン化ペプチド抗体	Trait_med	
+Anticoagulant levels	抗凝固薬レベル	Trait_med	
+Antineutrophil cytoplasmic antibody-associated vasculitis 	抗好中球細胞質抗体(ANCA)関連血管炎	Disease	
+Antipsychotic drug-induced weight gain	抗精神病薬誘発性の体重増加	Trait_med	
+Antipsychotic-induced QTc interval prolongation	抗精神病薬誘発性のQT間隔延長	Trait_med	
+Aortic root size	大動脈根の大きさ	Trait_med	
+Aortic stiffness	大動脈の剛性	Trait_med	
+Arsenic metabolism 	ヒ素の代謝	Trait_med	
+Arterial stiffness	動脈壁の剛性	Trait_med	
+Arthritis (juvenile idiopathic)	関節炎 (若年性特発性)	Disease	
+Aspartate aminotransferase 	アスパラギン酸アミノ基転移酵素(AST)	Trait_med	
+Asperger disorder	アスペルガー障害	Disease	
+Asthma	喘息	Disease	
+Asthma (aspirin-intolerant) 	喘息 (aspirin-intolerant)	Disease	
+Asthma (bronchodilator response)	喘息 (bronchodilator response)	Disease	
+Asthma (childhood onset)	喘息 (childhood onset)	Disease	
+Asthma (toluene diisocyanate-induced)	喘息 (toluene diisocyanate-induced)	Disease	
+Asthma treatment response	喘息 treatment response	Disease	
+Atopic dermatitis	アトピー性皮膚炎	Disease	
+Atopy	アトピー	Disease	
+Atrial fibrillation	心房細動	Trait_med	
+Atrial fibrillation/atrial flutter	心房細動, 心房粗動	Trait_med	
+Atrioventricular conduction	房室伝導	Trait_med	
+Attention deficit hyperactivity disorder	注意欠陥多動性障害(ADHD)	Disease	
+Attention deficit hyperactivity disorder (time to onset)	注意欠陥多動性障害(ADHD) (発症年齢)	Disease	
+Attention deficit hyperactivity disorder and conduct disorder	注意欠陥多動性障害(ADHD)と行為障害	Disease	
+Attention deficit hyperactivity disorder motor coordination	注意欠陥多動性障害(ADHD)運動協調性	Disease	
+Attention deficit hyperactivity disorder symptoms (interaction)	注意欠陥多動性障害(ADHD)の症状 (interaction)	Disease	
+Autism	自閉症	Disease	
+Barrett's esophagus	バレット食道	Disease	
+Basal cell carcinoma 	基底細胞癌	Disease	
+Behcet's disease	ベーチェット病	Disease	
+Beta thalassemia/hemoglobin E disease	ベータサラセミア, ヘモグロビンＥ症	Disease	
+Biliary atresia	胆道閉鎖症	Disease	
+Bilirubin levels	ビリルビン濃度	Trait_med	
+Biochemical measures	生化学的測定	Trait_med	
+Biomedical quantitative traits	生化学的量的形質	Trait_med	
+Bipolar disorder	双極性障害	Disease	
+Bipolar disorder (Negative mood delusions)	双極性障害 (Negative mood delusions)	Disease	
+Bipolar disorder (age of onset and psychomotor symptoms)	双極性障害 (age of onset and psychomotor symptoms)	Disease	
+Bipolar disorder and major depressive disorder (combined)	双極性障害と大うつ病性障害 (combined)	Disease	
+Bipolar disorder and schizophrenia	双極性障害と精神分裂病	Disease	
+Birth weight	出生時体重	Trait_easy	
+Bitter taste response	苦味への応答	Trait_easy	
+Black vs. blond hair color	黒髪vs.金髪	Trait_easy	
+Black vs. red hair color	黒髪vs.赤毛	Trait_easy	
+Bladder cancer	膀胱癌	Disease	
+Bleomycin sensitivity	ブレオマイシン感受性	Trait_med	
+Blond vs. brown hair color	金髪vs.茶髪	Trait_easy	
+Blood pressure	血圧	Trait_easy	
+Blue vs. brown eyes	目の色(青色vs.茶色)	Trait_easy	
+Blue vs. green eyes	目の色(青色vs.緑色)	Trait_easy	
+Body mass (lean)	除脂肪体重(LBM)	Trait_easy	
+Body mass in chronic obstructive pulmonary disease	慢性閉塞性肺疾患(COPD)における体重	Trait_med	
+Body mass index	肥満指数(BMI)	Trait_easy	
+Body mass index and cholesterol (psychopharmacological treatment)	肥満指数(BMI)とコレステロール (精神薬理学治療)	Trait_med	
+Body mass index and fat mass	肥満指数(BMI)と体脂肪量	Trait_easy	
+Bone mineral density	骨密度	Trait_easy	
+Bone mineral density (hip)	骨密度 (hip)	Trait_easy	
+Bone mineral density (interaction)	骨密度 (interaction)	Trait_easy	
+Bone mineral density (spine)	骨密度 (spine)	Trait_easy	
+Brachial circumference	上腕周囲長	Trait_easy	
+Brain development	脳発生	Trait_med	
+Brain imaging	脳画像診断	Trait_med	
+Brain imaging in schizophrenia (interaction)	統合失調症における脳画像診断 (interaction)	Trait_med	
+Brain lesion load	脳障害の負荷	Trait_med	
+Brain structure	脳構造	Trait_med	
+Breast cancer	乳がん	Disease	
+Breast cancer (male) 	乳がん (男性)	Disease	
+Breast cancer (prognosis)	乳がん (予後)	Disease	
+Breast cancer (survival)	乳がん (survival)	Disease	
+Breast size	胸の大きさ	Trait_easy	
+Bronchopulmonary dysplasia	気管支肺異形成症(BPD)	Disease	
+Burning and freckling	日焼けとそばかすの発生	Trait_easy	
+Butyrylcholinesterase levels	ブチリルコリンエステラーゼ濃度	Trait_med	
+C-reactive protein	C反応性タンパク質(CRP)	Trait_med	
+C-reactive protein and white blood cell count	C反応性タンパク質(CRP)と白血球数	Trait_med	
+C4b binding protein levels	C4b結合タンパク質濃度	Trait_med	
+CD4:CD8 lymphocyte ratio	CD4-CD8リンパ球比	Trait_med	
+CYP3A4 enzyme activity	CYP3A4酵素活性	Trait_med	
+Caffeine consumption	カフェイン消費	Trait_easy	
+Calcium levels	カルシウム濃度	Trait_easy	
+Cannabis dependence	大麻依存	Disease	
+Cannbis use (initiation)	大麻使用 (initiation)	Disease	
+Capecitabine sensitivity	カペシタビン感受性	Trait_med	
+Cardiac hypertrophy	心臓肥大	Disease	
+Cardiac repolarization	心臓の再分極	Disease	
+Cardiac structure and function	心臓の構造と機能	Trait_med	
+Cardiovascular disease risk factors	心血管疾患(CVD)危険因子	Trait_med	
+Carotenoid and tocopherol levels	カロチノイドとトコフェロール濃度	Trait_med	
+Carotid atherosclerosis in HIV infection	HIV感染症における頸動脈硬化症	Disease	
+Carotid intima media thickness	頸動脈の内膜中膜複合体厚(IMT)	Trait_med	
+Cataracts in type 2 diabetes	2型糖尿病性白内障	Disease	
+Caudate nucleus volume	尾状核の体積	Trait_med	
+Celiac disease	セリアック病	Disease	
+Celiac disease and Rheumatoid arthritis	セリアック病と関節リウマチ(RA)	Disease	
+Central corneal thickness	中心角膜厚	Trait_med	
+Chemerin levels	ケマリン濃度	Trait_med	
+Chemotherapeutic susceptibility	化学療法感受性	Trait_med	
+Cholelithiasis-related traits in sickle cell anemia	鎌状赤血球貧血における胆石症関連形質	Trait_med	
+Cholesterol	コレステロール	Trait_med	
+Cholesterol, total	コレステロール総量	Trait_med	
+Chronic Hepatitis C infection	C型慢性肝炎の感染	Disease	
+Chronic fatigue syndrome	慢性疲労症候群(CFS)	Disease	
+Chronic kidney disease	慢性腎疾患(CKD)	Disease	
+Chronic kidney disease and serum creatinine levels	慢性腎疾患(CKD)と血清クレアチニン濃度	Trait_med	
+Chronic lymphocytic leukemia	慢性リンパ性白血病(CLL)	Disease	
+Chronic myeloid leukemia	慢性骨髄性白血病	Disease	
+Chronic obstructive pulmonary disease	慢性閉塞性肺疾患(COPD)	Disease	
+Circulating cell-free DNA	循環細胞フリーDNA, セルフリーDNA(ccfDNA)	Trait_med	
+Cleft lip	口唇裂	Disease	
+Coagulation factor levels	凝固因子濃度	Trait_med	
+Coffee consumption	コーヒーの消費	Trait_easy	
+Cognitive ability	認知能力	Trait_med	
+Cognitive decline	認知低下	Trait_med	
+Cognitive function	認知機能	Trait_med	
+Cognitive performance	認知パフォーマンス	Trait_med	
+Cognitive test performance	認知機能テストのパフォーマンス	Trait_med	
+Colorectal cancer	大腸がん	Disease	
+Common traits (Other)	Common traits (Other)	NA	
+Common variable immunodeficiency	分類不能型免疫不全	Disease	
+Complement C3 and C4 levels	血清補体C3とC4の濃度	Trait_med	
+Comprehensive strength and appendicular lean mass	圧縮強度と四肢筋肉量低下?	Trait_med	
+Conduct disorder (case status)	行動障害 (case status)	Disease	
+Conduct disorder (interaction)	行動障害 (interaction)	Disease	
+Conduct disorder (symptom count)	行動障害 (symptom count)	Disease	
+Corneal astigmatism	角膜乱視	Disease	
+Corneal curvature	角膜曲率	Trait_med	
+Corneal structure	角膜構造	Trait_med	
+Coronary artery calcification	冠動脈石灰化	Disease	
+Coronary heart disease	冠(状)動脈(性心)疾患	Disease	
+Coronary restenosis	冠(状)動脈再狭窄	Disease	
+Coronary spasm	冠動脈れん縮	Disease	
+Cortical structure	皮質の構造	Trait_med	
+Cortical thickness	皮質厚	Trait_med	
+Cortisol secretion	コルチゾールの分泌	Trait_med	
+Creatinine levels	クレアチニン濃度	Trait_med	
+Creutzfeldt-Jakob disease	クロイツフェルト・ヤコブ病	Disease	
+Creutzfeldt-Jakob disease (variant)	クロイツフェルト・ヤコブ病 (variant)	Disease	
+Crohn's disease	クローン病	Disease	
+Crohn's disease and celiac disease	クローン病と小児脂肪便症(セリアック病)	Disease	
+Crohn's disease and psoriasis	クローン病と乾癬	Disease	
+Crohn's disease and sarcoidosis (combined)	クローン病とサルコイドーシス(類肉腫症) (combined)	Disease	
+Cutaneous nevi	皮膚性の母斑症	Disease	
+Cystatin C	シスタチンC	Trait_med	
+Cystic fibrosis (meconium ileus) 	嚢胞性繊維症 (胎便による腸閉塞(胎便性イレウス))	Disease	
+Cystic fibrosis severity	嚢胞性繊維症の重症度	Disease	
+Cytomegalovirus antibody response	サイトメガロウイルス抗体反応	Trait_med	
+D-dimer levels	Dダイマー濃度	Trait_med	
+Dehydroepiandrosterone sulphate levels	デヒドロエアピンドロステロン硫酸塩濃度	Trait_med	
+Dengue shock syndrome 	デング熱ショック症候群	Disease	
+Dental caries	う蝕(虫歯)	Disease	
+Depression (age of onset)	うつ病 (age of onset)	Disease	
+Depression (quantitative trait)	うつ病 (quantitative trait)	Disease	
+Depression and alcohol dependence	うつ病とアルコール依存	Disease	
+Diabetes (gestational)	糖尿病 (gestational)	Disease	
+Diabetes (incident)	糖尿病 (incident)	Disease	
+Diabetes related insulin traits	糖尿病関連のインシュリン形質	Trait_med	
+Diabetic retinopathy 	糖尿病性網膜症	Disease	
+Dialysis-related mortality	透析関連の死亡率	Trait_med	
+Diastolic blood pressure	拡張期血圧 (最低血圧)	Trait_easy	
+Digit length ratio	指の長さの比	Trait_easy	
+Dilated cardiomyopathy	拡張型心筋症	Disease	
+Disc degeneration (lumbar)	腰椎椎間板変性	Disease	
+Drinking behavior	飲水行動	Trait_med	
+Drug-induced liver injury 	薬物性肝障害	Disease	
+Drug-induced liver injury (amoxicillin-clavulanate)	薬物性肝障害 (amoxicillin-clavulanate)	Disease	
+Drug-induced liver injury (flucloxacillin)	薬物性肝障害 (flucloxacillin)	Disease	
+Duodenal ulcer 	十二指腸潰瘍	Disease	
+Dupuytren's disease	デュピュイトラン病	Disease	
+E-selectin levels	Eセレクチン濃度	Trait_med	
+Eating disorders	摂食障害	Disease	
+Echocardiographic traits	心エコーの特徴	Trait_med	
+Economic and political preferences	経済的・政治的な選択(好み)	Trait_easy	
+Economic and political preferences (environmentalism)	経済的・政治的な選択(好み) (environmentalism)	Trait_easy	
+Economic and political preferences (fairness)	経済的・政治的な選択(好み) (fairness)	Trait_easy	
+Economic and political preferences (feminism/equality)	経済的・政治的な選択(好み) (feminism/equality)	Trait_easy	
+Economic and political preferences (immigration/crime)	経済的・政治的な選択(好み) (immigration/crime)	Trait_easy	
+Economic and political preferences (time)	経済的・政治的な選択(好み) (time)	Trait_easy	
+Educational attainment	学歴	Trait_easy	
+Electrocardiographic conduction measures	心電図の伝導測定?	Trait_med	
+Electrocardiographic traits	心電図の特徴	Trait_med	
+Electroencephalogram traits	脳波図の特徴	Trait_med	
+Electroencephalographic traits in alcoholism	アルコール依存症における脳波図の特徴	Trait_med	
+Emphysema-related traits	肺気腫関連の形質	Trait_med	
+End-stage renal disease	末期腎不全	Disease	
+End-stage renal disease (non-diabetic)	末期腎不全 (non-diabetic)	Disease	
+Endometrial cancer	子宮内膜がん	Disease	F
+Endometriosis	子宮内膜症	Disease	F
+Endothelial function traits	内皮機能の形質	Trait_med	
+Entorhinal cortical thickness	嗅内皮質の厚み	Trait_med	
+Environmental confusion in the home	家における環境の乱雑さ?	Trait_easy	
+Eosinophil counts	好酸球の数	Trait_med	
+Eosinophilic esophagitis (pediatric)	好酸球性食道炎 (pediatric)	Disease	
+Epilepsy	てんかん	Disease	
+Epilepsy (generalized)	てんかん (generalized)	Disease	
+Epirubicin-induced leukopenia 	エピルビシン誘導の白血球減少症	Disease	
+Episodic memory	エピソード記憶	Trait_med	
+Erectile dysfunction	勃起不全	Disease	M
+Erectile dysfunction and prostate cancer treatment	勃起不全と前立腺癌治療	Disease	M
+Erythrocyte sedimentation rate	赤血球沈降速度	Trait_med	
+Esophageal cancer	食道がん	Disease	
+Esophageal cancer  (alcohol interaction)	食道がん  (alcohol interaction)	Disease	
+Esophageal cancer (squamous cell)	食道がん (squamous cell)	Disease	
+Esophageal cancer and gastric cancer	食道がんと胃がん	Disease	
+Essential tremor	特発性振戦	Disease	
+Estradiol levels	エストラジオール濃度	Trait_med	
+Event-related brain oscillations	事象関連脳波振動	Trait_med	
+Ewing sarcoma	ユーイング肉腫	Disease	
+Exercise (leisure time)	余暇における運動	Trait_easy	
+Exercise treadmill test traits	トレッドミル運動負荷試験における特性	Trait_med	
+Eye color	眼色	Trait_easy	
+Eye color traits	眼色形質	Trait_easy	
+F-cell distribution	F細胞の分布	Trait_med	
+Facial morphology	顔の形態	Trait_med	
+Factor VII	第VII因子(血清プロトロンビン転化促進因子)	Trait_med	
+Factor XI	第XI因子(血漿トロンボプラスチン前駆物質)	Trait_med	
+Fasting glucose-related traits	空腹時血糖関連形質	Trait_med	
+Fasting glucose-related traits (interaction with BMI)	空腹時血糖関連形質 (BMIとの相互作用)	Trait_med	
+Fasting insulin-related traits	空腹時インシュリン関連形質	Trait_med	
+Fasting insulin-related traits (interaction with BMI)	空腹時インシュリン関連形質 (BMIとの相互作用)	Trait_med	
+Fasting plasma glucose	空腹時血糖値	Trait_med	
+Femoral neck bone geometry	大腿骨頸部の骨形状	Trait_med	
+Fetal hemoglobin levels	胎児性ヘモグロビン濃度	Trait_med	
+Fibrinogen	フィブリノーゲン	Trait_med	
+Fluorouracil treatment response in colorectal cancer	大腸がんにおけるフルオロウラシル投与への応答	Trait_med	
+Folate pathway vitamin levels	葉酸パスウェイにおけるビタミン濃度?	Trait_med	
+Follicular lymphoma	濾胞性リンパ腫	Disease	
+Formal thought disorder in schizophrenia	精神分裂病における思考障害	Disease	
+Fracture-related traits	骨折関連形質	Trait_med	
+Freckles	そばかす(Freckles)	Trait_easy	
+Freckling	そばかす(Freckling)	Trait_easy	
+Frontotemporal lobar degeneration	前頭側頭葉変性症	Disease	
+Fuchs's corneal dystrophy	フックス角膜内皮変性症	Disease	
+Functional MRI	機能的MRI(磁気共鳴画像法)	Trait_med	
+Gallbladder cancer	胆嚢がん	Disease	
+Gallstones	胆石症	Disease	
+Gambling	賭博	Trait_easy	
+Gamma gluatamyl transferase levels	ガンマグルタミン酸転移酵素濃度	Trait_med	
+Gamma gluatamyl transferase levels (interaction with age)	ガンマグルタミン酸転移酵素濃度 (年齢との相互作用)	Trait_med	
+Gamma glutamyl transpeptidase	ガンマグルタミン酸転移酵素	Trait_med	
+Gastric cancer	胃がん	Disease	
+Gaucher disease severity	ゴーシェ病の重症度	Disease	
+General cognitive ability	一般的な認知能力	Trait_med	
+Glaucoma	緑内障	Disease	
+Glaucoma (exfoliation)	緑内障 (剥離)	Disease	
+Glaucoma (primary open-angle)	緑内障 (primary open-angle)	Disease	
+Glioblastoma	グリア芽腫 (神経膠芽細胞腫)	Disease	
+Glioma	グリオーマ (膠腫)	Disease	
+Glioma (high-grade)	グリオーマ (膠腫) (high-grade)	Disease	
+Glomerulosclerosis	糸球体硬化	Disease	
+Glycated hemoglobin levels	糖化ヘモグロビン濃度	Trait_med	
+Glycemic control in type 1 diabetes (HbA1c)	1型糖尿病における血糖コントロール (HbA1c)	Trait_med	
+Gout	痛風	Disease	
+Graves' disease	グレーブス病 (眼球突出性甲状腺腫) 	Disease	
+HDL Cholesterol - Triglycerides (HDLC-TG)	HDLコレステロール - トリグリセリド (HDLC-TG)	Trait_med	
+HDL cholesterol	HDLコレステロール	Trait_med	
+HIV (mother-to-child transmission)	HIV (母子感染)	Disease	
+HIV-1 control	HIV-1の制御	Trait_med	
+HIV-1 progression	HIV-1の進行	Trait_med	
+HIV-1 replication	HIV-1の複製	Trait_med	
+HIV-1 susceptibility	HIV-1の感受性	Trait_med	
+HIV-1 viral setpoint	HIV-1のセットポイント	Trait_med	
+HIV-associated dementia 	HIV関連性の痴呆	Disease	
+HPV seropositivity	HPV血清陽性	Trait_med	
+Hair color	毛髪色	Trait_easy	
+Hair morphology	毛髪の形態	Trait_easy	
+Handedness in dyslexia	失読症における利き手	Trait_med	
+Haptoglobin levels	ハプトグロビン濃度	Trait_med	
+Head circumference (infant)	頭囲 (乳児)	Trait_med	
+Hearing impairment	難聴	Disease	
+Heart failure	心不全	Disease	
+Heart rate variability traits	心拍数変動性形質	Trait_med	
+Height	身長	Trait_easy	
+Hematocrit	ヘマトクリット値 (血液中の赤血球の割合)	Trait_med	
+Hematological parameters	血液学的なパラメータ	Trait_med	
+Hematology traits	血液学形質	Trait_med	
+Hemoglobin	ヘモグロビン	Trait_med	
+Hemoglobin levels	ヘモグロビン濃度	Trait_med	
+Hemostatic factors and hematological phenotypes	止血因子と血液学的な表現型	Trait_med	
+Hepatitis B	B型肝炎	Disease	
+Hepatitis B (viral clearance)	B型肝炎 (ウイルス排除)	Disease	
+Hepatitis B vaccine response	B型肝炎のワクチン応答	Trait_med	
+Hepatitis C induced liver fibrosis	C型肝炎誘発性の肝線維症	Disease	
+Hepatocellular carcinoma	肝細胞がん	Disease	
+Hepcidin levels	ヘプシジン(肝臓由来の抗菌ペプチドホルモン)濃度	Trait_med	
+Heroin addiction	ヘロイン中毒	Disease	
+Hip bone size	寛骨(腰骨)の大きさ	Trait_med	
+Hip geometry	腰の形状	Trait_med	
+Hippocampal atrophy	海馬萎縮	Disease	
+Hippocampal volume	海馬の体積	Trait_med	
+Hirschsprung's disease	ヒルシュスプルング病	Disease	
+Hoarding	溜め込み症	Disease	
+Hodgkin's lymphoma	ホジキンリンパ腫	Disease	
+Homocysteine levels	ホモシステイン濃度	Trait_med	
+Hyperactive-impulsive symptoms	多動性・衝動性の症状	Disease	
+Hypertension	高血圧	Disease	
+Hypertension (young onset)	高血圧 (young onset)	Disease	
+Hypertension risk in short sleep duration	高血圧 (短時間睡眠の継続によるリスク)	Disease	
+Hypertriglyceridemia	高トリグリセリド血症	Disease	
+Hypospadias	尿道下裂	Disease	
+Hypothyroidism	甲状腺機能低下症	Disease	
+IFN-related cytopenia	IFN関連血球減少症	Disease	
+Idiopathic pulmonary fibrosis	特発性肺線維症	Disease	
+IgA levels	IgA(免疫グロブリンA)濃度	Trait_med	
+IgA nephropathy	IgA(免疫グロブリンA)腎症	Disease	
+IgE grass sensitization	IgE grass sensitization?	Trait_med	
+IgE levels 	IgE 濃度	Trait_med	
+IgG levels	IgG 濃度	Trait_med	
+Ileal carcinoids	回腸カルチノイド	Trait_med	
+Immune reponse to smallpox (secreted IFN-alpha)	天然痘(ほうそう)への免疫応答 (secreted IFN-alpha)	Trait_med	
+Immune reponse to smallpox (secreted IL-10)	天然痘(ほうそう)への免疫応答 (secreted IL-10)	Trait_med	
+Immune reponse to smallpox (secreted IL-12p40)	天然痘(ほうそう)への免疫応答 (secreted IL-12p40)	Trait_med	
+Immune reponse to smallpox (secreted IL-1beta)	天然痘(ほうそう)への免疫応答 (secreted IL-1beta)	Trait_med	
+Immune reponse to smallpox (secreted IL-2)	天然痘(ほうそう)への免疫応答 (secreted IL-2)	Trait_med	
+Immune reponse to smallpox (secreted TNF-alpha)	天然痘(ほうそう)への免疫応答 (secreted TNF-alpha)	Trait_med	
+Immune response to anthrax vaccine 	炭疽ワクチンへの免疫応答	Trait_med	
+Immune response to smallpox vaccine (IL-6)	天然痘(ほうそう)ワクチンへの免疫応答 (IL-6)	Trait_med	
+Immunoglobulin A 	免疫グロブリンA	Trait_med	
+Inattentive symptoms	注意欠陥障害	Disease	
+Infantile hypertrophic pyloric stenosis	乳児肥厚性幽門狭窄症	Disease	
+Inflammatory biomarkers	炎症のバイオマーカー	Trait_med	
+Inflammatory bowel disease	炎症性腸疾患	Disease	
+Inflammatory bowel disease (early onset)	炎症性腸疾患 (early onset)	Disease	
+Influenza (severity)	インフルエンザの重症度	Disease	
+Information processing speed	情報処理の速度	Trait_easy	
+Insomnia (caffeine-induced)	不眠症 (カフェイン誘導性の)	Disease	
+Insulin resistance/response	インシュリン抵抗・応答性	Trait_med	
+Insulin-like growth factors	インシュリン様成長因子	Trait_med	
+Insulin-related traits	インシュリン関連形質	Trait_med	
+Intelligence	知能	Trait_easy	
+Interleukin-18 levels	インターロイキン18濃度	Trait_med	
+Interstitial lung disease 	間質性肺疾患	Disease	
+Intracranial aneurysm	頭蓋内動脈瘤	Disease	
+Intracranial volume	頭蓋内体積	Trait_med	
+Intraocular pressure	眼内圧	Trait_med	
+Iris characteristics	虹彩の特徴	Trait_easy	
+Iris color	虹彩の色	Trait_easy	
+Iron levels	鉄濃度	Trait_med	
+Iron status biomarkers	鉄の状態のバイオマーカー	Trait_med	
+Kawasaki disease	川崎病	Disease	
+Keloid	ケロイド(蟹足腫)	Disease	
+Kidney stones	腎結石	Disease	
+Knee osteoarthritis	膝関節症	Disease	
+LDL cholesterol	LDLコレステロール	Trait_med	
+Lapatinib-induced hepatotoxicity	ラパチニブ誘導性の肝臓毒性	Trait_med	
+Large B-cell lymphoma	大細胞型B細胞性リンパ腫	Disease	
+Lean body mass and age at menarche (combined)	除脂肪体重と月経開始 (combined)	Trait_med	
+Left ventricular mass	左室体積	Trait_med	
+Lentiform nucleus volume 	レンズ核体積	Trait_med	
+Leprosy	らい(癩)病 (ハンセン病)	Disease	
+Life threatening arrhythmia	致命的な不整脈	Disease	
+Lipid levels in hepatitis C treatment	C型肝炎治療における脂質濃度	Trait_med	
+Lipid metabolism phenotypes	脂質代謝の表現型	Trait_med	
+Lipid traits	脂質の形質	Trait_med	
+Lipoprotein-associated phospholipase A2 activity and mass	リポタンパク質関連ホスホリパーゼA2の活性と量	Trait_med	
+Liver enzyme levels	肝臓酵素濃度	Trait_med	
+Liver enzyme levels (alanine transaminase)	肝臓酵素濃度 (alanine transaminase)	Trait_med	
+Liver enzyme levels (alkaline phosphatase)	肝臓酵素濃度 (alkaline phosphatase)	Trait_med	
+Liver enzyme levels (gamma-glutamyl transferase)	肝臓酵素濃度 (gamma-glutamyl transferase)	Trait_med	
+Longevity	寿命	Trait_easy	
+Lp (a) levels	リポタンパク質(a)濃度	Trait_med	
+Lumiracoxib-related liver injury	ルミラコキシブ関連の肝臓損傷	Disease	
+Lung adenocarcinoma	肺腺がん	Disease	
+Lung adenocarcinoma (clinical stage)	肺腺がん (clinical stage)	Disease	
+Lung cancer	肺がん	Disease	
+Lung cancer-asbestos exposure interaction	肺がんとアスベスト曝露の相互作用	Disease	
+Lupus	ループス(狼瘡)	Disease	
+Lymphocyte counts	リンパ球量	Trait_med	
+MRI atrophy measures	MRIによる萎縮測定	Trait_med	
+Magnesium levels	マグネシウム濃度	Trait_med	
+Major CVD	主要な心血管疾患	Disease	
+Major depressive disorder	大うつ病性障害	Disease	
+Major depressive disorder (broad)	大うつ病性障害 (broad)	Disease	
+Major mood disorders	主要な気分障害	Disease	
+Malaria	マラリア	Disease	
+Male fertility	雄性稔性(生殖能)	Disease	
+Male infertility	男性不妊症	Disease	
+Male-pattern baldness	男性型脱毛症	Disease	
+Mammographic density	乳房X線撮影の密度	Trait_med	
+Mathematical ability	数理能力	Trait_easy	
+Matrix metalloproteinase levels	マトリックスメタロプロテアーゼ濃度	Trait_med	
+Mean corpuscular hemoglobin	平均赤血球ヘモグロビン量	Trait_med	
+Mean corpuscular volume	平均赤血球容積	Trait_med	
+Mean forced vital capacity from 2 exams	平均努力肺活量 (2つの検査による)	Trait_med	
+Mean platelet volume	平均血小板容積	Trait_med	
+Melanoma	メラノーマ(悪性黒色腫)	Disease	
+Memory (short-term)	短期記憶	Trait_easy	
+Memory performance	記憶能力	Trait_easy	
+Menarche (age at onset)	月経開始期 (age at onset)	Trait_med	
+Menarche and menopause (age at onset)	月経開始期と閉経 (age at onset)	Trait_med	
+Meningioma 	髄膜腫 (脳膜腫)	Disease	
+Meningococcal disease	髄膜炎菌性疾患	Disease	
+Menopause (age at onset)	閉経 (age at onset)	Trait_med	
+Metabolic syndrome	メタボリックシンドローム	Disease	
+Metabolic syndrome (bivariate traits)	メタボリックシンドローム (二変量の形質)	Disease	
+Metabolic traits	代謝の形質	Trait_med	
+Metabolite levels	代謝物質濃度	Trait_med	
+Methamphetamine dependence	メタンフェタミン依存症	Disease	
+Migraine	偏頭痛	Disease	
+Migraine in bipolar disorder	双極性障害における偏頭痛	Disease	
+Monocyte chemoattractant protein-1 	単球走化性タンパク質-1	Trait_med	
+Monocyte early outgrowth colony forming units	単核細胞の早期増殖コロニーフォーミングユニット	Trait_med	
+Morbidity-free survival	罹患なしの生存	Trait_med	
+Mortality among heart failure patients	心不全患者における死亡率	Disease	
+Moyamoya disease	もやもや病(ウィリス動脈輪閉塞症)	Disease	
+Multiple myeloma	多発性骨髄腫	Disease	
+Multiple sclerosis	多発性硬化症	Disease	
+Multiple sclerosis (age of onset)	多発性硬化症 (age of onset)	Disease	
+Multiple sclerosis (severity)	多発性硬化症の重症度	Disease	
+Multiple sclerosis--Brain Glutamate Levels	多発性硬化症と脳グルタミン酸濃度	Trait_med	
+Myasthenia gravis 	重症筋無力症	Disease	
+Myeloproliferative neoplasms	骨髄増殖性腫瘍	Disease	
+Myocardial infarction	心筋梗塞	Disease	
+Myocardial infarction (early onset)	心筋梗塞 (early onset)	Disease	
+Myopia (pathological)	近視 (病理的な)	Disease	
+N-glycan levels	N-グリカン濃度	Trait_med	
+Naphthyl-keratin adduct levels 	ナフチル角質付加物濃度	Trait_med	
+Narcolepsy	睡眠発作(ナルコレプシー)	Disease	
+Nasopharyngeal carcinoma	鼻咽頭がん	Disease	
+Natriuretic peptide levels	ナトリウム利尿ペプチド濃度	Trait_med	
+Neonatal lupus	新生児ループス	Disease	
+Nephrolithiasis	腎石症	Disease	
+Nephropathy	腎障害	Disease	
+Nephropathy (idiopathic membranous)	特発性膜性腎症	Disease	
+Nephrotic syndrome (acquired)	後天性ネフローゼ症候群	Disease	
+Neural processing (facial expression)	神経処理 (顔面表情)	Trait_med	
+Neuranatomic and neurocognitive phenotypes	神経解剖学的・認知神経科学的な表現型	Trait_med	
+Neuroblastoma	神経芽細胞腫(ニューロブラストーマ)	Disease	
+Neuroblastoma (high-risk)	神経芽細胞腫(ニューロブラストーマ)の高いリスク	Disease	
+Neuromyelitis optica	視神経脊髄炎	Disease	
+Neuroticism	神経質(ニューロティシズム)	Disease	
+Neutrophil count	好中球数	Trait_med	
+Nevirapine-induced rash	ネビラピン誘発性の発疹	Disease	
+Nevus count	母斑数	Trait_med	
+Nicotine dependence	ニコチン依存症	Disease	
+Nodular sclerosis Hodgkin lymphoma	結節硬化型ホジキンリンパ腫	Disease	
+Non-albumin protein levels 	非アルブミンタンパク濃度	Trait_med	
+Non-alcoholic fatty liver disease histology (AST)	非アルコール性脂肪性肝疾患の組織学 (AST)	Trait_med	
+Non-alcoholic fatty liver disease histology (lobular)	非アルコール性脂肪性肝疾患の組織学 (lobular)	Trait_med	
+Non-alcoholic fatty liver disease histology (other)	非アルコール性脂肪性肝疾患の組織学 (other)	Trait_med	
+Non-obstructive azoospermia	非閉塞性無精子症	Disease	
+Non-small cell lung cancer	非小細胞肺がん	Disease	
+Nonalcoholic fatty liver disease	非アルコール性脂肪性肝疾患	Disease	
+Normalized brain volume	標準脳容積	Trait_med	
+Obesity	肥満症	Disease	
+Obesity (early onset extreme)	肥満症 (early onset extreme)	Disease	
+Obesity (extreme)	肥満症 (極度の)	Disease	
+Obesity and blood pressure	肥満症と血圧	Trait_med	
+Obesity and osteoporosis	肥満症と骨粗鬆症	Disease	
+Obesity-related traits	肥満関連形質	Trait_med	
+Obsessive-compulsive disorder	強迫性障害	Disease	
+Odorant perception	臭気物質知覚力	Trait_med	
+Optic disc parameters	視神経円板パラメータ	Trait_med	
+Optic disc size (cup)	視神経円板の大きさ (cup)	Trait_med	
+Optic disc size (disc)	視神経円板の大きさ (disc)	Trait_med	
+Optic disc size (rim)	視神経円板の大きさ (rim)	Trait_med	
+Oral cancers (chewing tobacco related)	口腔がん (噛みたばこ関連の)	Disease	
+Orofacial clefts	口唇裂・口蓋裂	Disease	
+Osteoarthritis	骨関節炎	Disease	
+Osteonecrosis of the jaw	顎骨壊死	Disease	
+Osteoporosis	骨粗鬆症	Disease	
+Osteoporosis-related phenotypes	骨粗鬆症関連形質	Trait_med	
+Other erythrocyte phenotypes	その他の赤血球表現型	Trait_med	
+Otosclerosis	耳硬化症	Disease	
+Ovarian cancer	卵巣がん	Disease	
+Ovarian reserve	卵巣予備能	Trait_med	
+P-tau181p	リン酸化タウ(P-tau181p)	Trait_med	
+PR interval	PR間隔	Trait_med	
+Paclitaxel-induced neuropathy	パクリタキセル誘導性の神経障害	Disease	
+Paget's disease	乳房ページェット病	Disease	
+Pain	疼痛(痛み)	Trait_med	
+Pancreatic cancer	膵臓がん	Disease	
+Panic disorder	パニック障害	Disease	
+Parkinson's disease	パーキンソン病	Disease	
+Parkinson's disease (age of onset)	パーキンソン病 (age of onset)	Disease	
+Parkinson's disease (familial)	パーキンソン病 (familial)	Disease	
+Parkinson's disease (interaction with coffee consumption)	パーキンソン病 (interaction with coffee consumption)	Disease	
+Parkinson's disease (motor and cognition)	パーキンソン病 (motor and cognition)	Disease	
+Partial epilepsies	部分的なてんかん	Disease	
+Pelvic organ prolapse	骨盤臓器脱	Disease	
+Pemphigus vulgaris	尋常性天疱瘡	Disease	
+Pericardial fat	心膜脂肪	Trait_med	
+Periodontal microbiota	歯周微生物叢	Trait_med	
+Periodontitis	歯周炎	Disease	
+Peripartum cardiomyopathy	周産期心筋症	Disease	
+Peripheral artery disease	末梢動脈疾患	Disease	
+Permanent tooth development	永久歯の発育	Trait_med	
+Personality dimensions	人格の次元	Trait_med	
+Personality disorders	パーソナリティ障害	Disease	
+Phospholipid levels (plasma)	リン脂質濃度 (血しょう)	Trait_med	
+Phosphorus levels	リン濃度	Trait_med	
+Phytosterol levels	フィトステロール(植物性ステロール)濃度	Trait_med	
+Plasminogen activator inhibitor type 1 levels (PAI-1)	1型プラスミノーゲン活性化因子インヒビター(PAI-1)濃度	Trait_med	
+Platelet aggregation	血小板凝固	Trait_med	
+Platelet counts	血小板数	Trait_med	
+Platelet function and related traits	血小板機能と関連形質	Trait_med	
+Podoconiosis	象皮病	Disease	
+Polycystic ovary syndrome	多嚢胞性卵巣症候群	Disease	
+Polyunsaturated fatty acid levels	多価不飽和脂肪酸濃度	Trait_med	
+Post- traumatic stress disorder	心的外傷後ストレス障害(PTSD)	Disease	
+Postoperative nausea and vomiting 	術後悪心嘔吐	Disease	
+Postoperative ventricular dysfunction 	術後心室機能不全	Disease	
+Preeclampsia	子癇前症(妊娠高血圧腎症)	Disease	
+Premature ovarian failure	早期卵巣機能不全(早発閉経)	Disease	
+Primary biliary cirrhosis	原発性胆汁性肝硬変	Disease	
+Primary sclerosing cholangitis	原発性硬化性胆管炎	Disease	
+Primary tooth development (number of teeth)	乳歯の発育 (歯の数)	Trait_med	
+Primary tooth development (time to first tooth eruption)	乳歯の発育 (初めの歯が現れる時期)	Trait_med	
+Prion diseases	プリオン病	Disease	
+Progranulin levels	プログラヌリン濃度	Trait_med	
+Progressive supranuclear palsy	進行性核上麻痺	Disease	
+Proinsulin levels	プロインシュリン濃度	Trait_med	
+Prostate cancer	前立腺がん	Disease	M
+Prostate cancer (gene x gene interaction)	前立腺がん (遺伝子間相互作用)	Disease	M
+Prostate cancer mortality	前立腺がん (死亡率)	Disease	M
+Prostate-specific antigen levels	前立腺特異抗原濃度	Trait_med	M
+Protein C levels	プロテインC濃度	Trait_med	
+Protein quantitative trait loci	タンパク質量的形質遺伝子座	Trait_med	
+Prothrombin time	プロトロンビン時間(血液の凝固因子に関する指標の1つ)	Trait_med	
+Pseudoexfoliation syndrome	水晶体落屑症候群	Disease	
+Psoriasis	乾癬	Disease	
+Psoriatic arthritis	乾癬性関節炎	Disease	
+Pulmonary function	肺機能	Trait_med	
+Pulmonary function decline	肺機能の低下	Trait_med	
+QT interval	QT間隔(心電図用語)	Trait_med	
+Quantitative traits	量的形質	NA	
+RR interval (heart rate)	R-R間隔 (heart rate)	Trait_med	
+Radiation response	放射線反応	Trait_med	
+Reasoning	推論力	Trait_easy	
+Recombination rate (females)	組換え率 (女性)	Trait_med	
+Recombination rate (males)	組換え率 (男性)	Trait_med	
+Red blood cell traits	赤血球の形質	Trait_med	
+Red vs non-red hair color	赤毛と非赤毛(Red vs non-red hair color)	Trait_easy	
+Red vs. non-red hair color	赤毛と非赤毛(Red vs. non-red hair color)	Trait_easy	
+Refractive error	屈折異常	Disease	
+Renal cell carcinoma	腎細胞がん	Disease	
+Renal function and chronic kidney disease	胃機能と慢性腎臓病	Disease	
+Renal function-related traits (BUN)	胃機能関連形質 (BUN)	Trait_med	
+Renal function-related traits (eGRFcrea)	胃機能関連形質 (eGRFcrea)	Trait_med	
+Renal function-related traits (sCR)	胃機能関連形質 (sCR)	Trait_med	
+Renal function-related traits (urea)	胃機能関連形質 (urea)	Trait_med	
+Renal sinus fat 	腎洞脂肪	Trait_med	
+Resistin levels 	レジスチン濃度	Trait_med	
+Response to TNF antagonist treatment	TNF拮抗薬治療への応答	Trait_med	
+Response to TNF-alpha inhibitors in rheumatoid arthritis	関節リウマチにおけるTNF-alpha阻害剤への応答	Trait_med	
+Response to Vitamin E supplementation	ビタミンE補給への応答	Trait_med	
+Response to acetaminophen (hepatotoxicity)	アセトアミノフェン(肝毒性)への応答	Trait_med	
+Response to amphetamines	アンフェタミン(合成覚せい剤)への応答	Trait_med	
+Response to angiotensin II receptor blocker therapy	アンジオテンシンII受容体拮抗薬療法への応答	Trait_med	
+Response to angiotensin II receptor blocker therapy (opposite direction w/ diuretic therapy)	アンジオテンシンII受容体拮抗薬療法への応答 (opposite direction w/ diuretic therapy)	Trait_med	
+Response to antidepressant treatment	抗うつ薬治療への応答	Trait_med	
+Response to antidepressants	抗うつ薬への応答	Trait_med	
+Response to antineoplastic agents	抗腫瘍薬への応答	Trait_med	
+Response to antipsychotic therapy (extrapyramidal side effects)	統合失調症治療薬治療への応答 (錐体外路症状)	Trait_med	
+Response to antipsychotic treatment	統合失調症治療への応答	Trait_med	
+Response to cerivastatin	セリバスタチン(高脂血症治療薬)への応答	Trait_med	
+Response to citalopram treatment	シタロプラム(抗うつ薬)療法への応答	Trait_med	
+Response to clopidogrel therapy	クロピドグレル(血小板凝集抑制薬)療法への応答	Trait_med	
+Response to diuretic therapy	利尿剤治療への応答	Trait_med	
+Response to fenofibrate	フェノフィブラート(抗脂質血症薬)への応答	Trait_med	
+Response to gemcitabine in pancreatic cancer 	膵臓がんにおけるゲムシタビン(抗がん剤)への応答	Trait_med	
+Response to hepatitis C treatment	C型肝炎治療への応答	Trait_med	
+Response to iloperidone treatment (PANSS-T score)	イロペリドン(統合失調症治療薬)療法への応答 (PANSS-T score)	Trait_med	
+Response to iloperidone treatment (QT prolongation)	イロペリドン(統合失調症治療薬)療法への応答 (QT延長)	Trait_med	
+Response to interferon beta therapy	インターフェロンベータ(抗ウイルス耐性誘導タンパク質)療法への応答	Trait_med	
+Response to irinotecan in non-small-cell lung cancer	非小細胞肺がんにおけるイリノテカン(抗がん剤)への応答	Trait_med	
+Response to lithium treatment in bipolar disorder	双極性障害におけるリチウム療法への応答	Trait_med	
+Response to metformin	メトホルミン(抗糖尿病薬)への応答	Trait_med	
+Response to methylphenidate treatment	メチルフェニデート(中枢神経興奮薬・ナルコレプシー治療)治療への応答	Trait_med	
+Response to platinum-based agents	白金製剤への応答	Trait_med	
+Response to platinum-based chemotherapy in non-small-cell lung cancer	非小細胞肺がんにおける白金製剤化学療法への応答	Trait_med	
+Response to platinum-based chemotherapy in small cell and non-small cell lung cancers	小細胞と非小細胞肺がんにおける白金製剤化学療法への応答	Trait_med	
+Response to platinum-based chemotherapy in small-cell lung cancer	小細胞肺がんにおける白金製剤化学療法への応答	Trait_med	
+Response to statin therapy	スタチン療法(高コレステロール血症の薬物治療)への応答	Trait_med	
+Response to statin therapy (LDL-C)	スタチン療法(高コレステロール血症の薬物治療)への応答 (LDL-C)	Trait_med	
+Response to tamoxifen in breast cancer	乳がんにおけるタモキシフェン(抗がん剤)への応答	Trait_med	
+Response to taxane treatment (docetaxel)	タキサン(抗がん剤)療法への応答 (docetaxel)	Trait_med	
+Response to taxane treatment (placlitaxel)	タキサン(抗がん剤)療法への応答 (placlitaxel)	Trait_med	
+Response to tocilizumab in rheumatoid arthritis	関節リウマチにおけるトシリズマブへの応答	Trait_med	
+Response to treatment for acute lymphoblastic leukemia	急性リンパ芽球性白血病治療への応答	Trait_med	
+Response to ximelagatran treatment	キシメラガトラン療法への応答	Trait_med	
+Resting heart rate	安静時心拍数	Trait_med	
+Restless legs syndrome	下肢静止不能症候群	Disease	
+Retinal vascular caliber	網膜脈管口径	Trait_med	
+Retinol levels	レチノール濃度	Trait_med	
+Rheumatoid arthritis	関節リウマチ	Disease	
+Ribavirin-induced anemia	リバビリン誘導性の貧血	Disease	
+Sarcoidosis	サルコイドーシス(類肉腫症)	Disease	
+Schizophrenia	統合失調症	Disease	
+Schizophrenia (treatment refractory) 	統合失調症 (treatment refractory)	Disease	
+Schizophrenia, bipolar disorder and depression (combined)	統合失調症・双極性障害・うつ病 (combined)	Disease	
+Sclerosing cholangitis and ulcerative colitis (combined)	硬化性胆管炎と潰瘍性大腸炎 (combined)	Disease	
+Scoliosis	脊柱側弯症	Disease	
+Select biomarker traits	Select biomarker traits	NA	
+Self-rated health	自己評価健康状態	Trait_med	
+Serologic markers in systemic lupus erythematosus	全身性紅斑性狼瘡における血清マーカー	Trait_med	
+Sex hormone-binding globulin levels	性ホルモン結合グロブリン濃度	Trait_med	
+Sex ratio at birth	出生性比	Trait_med	
+Sexual dysfunction (SSRI/SNRI-related)	性機能不全 (SSRI/SNRI-related)	Disease	
+Sexual dysfunction (female)	性機能不全 (女性)	Disease	
+Sick sinus syndrome	洞結節不全症候群	Disease	
+Sickle cell anemia (severity)	鎌状赤血球貧血 (重症度)	Disease	
+Skin pigmentation	皮膚色素沈着	Trait_med	
+Skin sensitivity to sun	太陽への皮膚感受性	Trait_med	
+Sleep duration	睡眠時間	Trait_easy	
+Sleepiness	眠気	Trait_easy	
+Small-cell lung cancer	小細胞肺がん	Disease	
+Smoking behavior	喫煙行動	Trait_easy	
+Smoking cessation	禁煙	Trait_easy	
+Social and Non-Social Autistic-Like Traits	社会的・非社会的な自閉症様の形質	Disease	
+Soluble E-selectin levels	可溶性Eセレクチン濃度	Trait_med	
+Soluble ICAM-1	可溶性ICAM-1	Trait_med	
+Soluble leptin receptor levels	可溶性レプチンレセプター濃度	Trait_med	
+Soluble levels of adhesion molecules	接着分子の可溶度	Trait_med	
+Speech perception in dyslexia	失読症における言語知覚	Trait_med	
+Sphingolipid levels	スフィンゴ脂質濃度	Trait_med	
+Spine bone size	脊椎骨の大きさ	Trait_med	
+Stevens-Johnson syndrome	スティーブンス・ジョンソン症候群(薬物の副作用による眼を中心にした皮膚粘膜障害)	Disease	
+Stevens-Johnson syndrome and toxic epidermal necrolysis (SJS-TEN)	スティーブンス・ジョンソン症候群(薬物の副作用による眼を中心にした皮膚粘膜障害)と中毒性表皮壊死症(全身性の副作用) (SJS-TEN)	Disease	
+Stroke	脈拍	Trait_med	
+Stroke (ischemic)	脈拍 (虚血性の)	Trait_med	
+Stroke (pediatric)	脈拍 (小児科の)	Trait_med	
+Subarachnoid aneurysmal hemorrhage	動脈瘤性くも膜下出血	Disease	
+Subclinical atherosclerosis traits (other)	無症状アテローム性動脈硬化症形質 (その他)	Disease	
+Subclinical brain infarct	無症状脳梗塞	Disease	
+Subcutaneous adipose tissue	皮下脂肪組織	Trait_med	
+Substance dependence	物質依存症	Disease	
+Sudden cardiac arrest	心突然死	Disease	
+Suicidal ideation	希死念慮(自殺念慮)	Trait_med	
+Suicide attempts in bipolar disorder	双極性障害における自殺企図	Trait_med	
+Systemic lupus erythematosus	全身性エリテマトーデス	Disease	
+Systemic sclerosis	全身性硬化症	Disease	
+Systolic blood pressure	最高血圧(収縮期血圧)	Trait_med	
+T-tau	T-tau	Trait_med	
+TP53 carriage	p53遺伝子産物(TP53)の輸送	Trait_med	
+Tanning	日焼け	Trait_med	
+Tardive dyskinesia 	遅発性ジスキネジア	Disease	
+Telomere length	テロメア長	Trait_med	
+Temperament	気質	Trait_med	
+Temperament (bipolar disorder)	双極性障害における気質	Trait_med	
+Testicular cancer	精巣がん(睾丸がん)	Disease	
+Testicular dysgenesis syndrome 	睾丸形成異常症候群	Disease	
+Testicular germ cell cancer	精巣胚細胞性がん	Disease	
+Testicular germ cell tumor	精巣胚細胞腫瘍	Disease	
+Testosterone levels	テストステロン(男性ホルモン)濃度	Trait_med	
+Thoracic aortic aneurysms and dissections	胸部大動脈瘤と切開	Disease	
+Thyroid cancer	甲状腺がん	Disease	
+Thyroid function	甲状腺機能	Trait_med	
+Thyroid stimulating hormone	甲状腺刺激ホルモン	Trait_med	
+Thyroid volume	甲状腺容積	Trait_med	
+Thyrotoxic hypokalemic periodic paralysis	甲状腺中毒性低カリウム性周期性麻痺	Disease	
+Tonometry	眼圧測定	Trait_med	
+Total ventricular volume	総心室容積	Trait_med	
+Tourette syndrome	トゥレット障害	Disease	
+Treatment response for severe sepsis 	重症敗血症の治療への応答	Trait_med	
+Triglycerides	トリグリセリド(中性脂肪)	Trait_med	
+Triglycerides-Blood Pressure (TG-BP)	トリグリセリド(中性脂肪)-血圧 (TG-BP)	Trait_med	
+Tuberculosis	結核	Disease	
+Two-hour glucose challenge	ブドウ糖負荷試験(糖尿病の診断方法のひとつ)	Trait_med	
+Type 1 diabetes	1型糖尿病	Disease	
+Type 1 diabetes autoantibodies	1型糖尿病の自己抗体	Disease	
+Type 1 diabetes nephropathy	1型糖尿病性腎障害	Disease	
+Type 2 diabetes	2型糖尿病	Disease	
+Type 2 diabetes and 6 quantitative traits	2型糖尿病と6つの量的形質	Disease	
+Type 2 diabetes and gout	2型糖尿病と痛風	Disease	
+Type 2 diabetes and other traits	2型糖尿病その他の形質	Disease	
+Type 2 diabetes nephropathy	2型糖尿病性腎障害	Disease	
+Ulcerative colitis	潰瘍性大腸炎	Disease	
+Upper aerodigestive tract cancers	頭頚部がん?	Disease	
+Urate levels	尿酸塩濃度	Trait_med	
+Uric acid levels	尿酸濃度	Trait_med	
+Urinary albumin excretion	尿中アルブミン排泄	Trait_med	
+Urinary bladder cancer	膀胱がん	Disease	
+Urinary metabolites	尿中代謝物	Trait_med	
+Uterine fibroids	子宮筋腫	Disease	F
+Vaccine-related adverse events 	ワクチン関連有害事象	Disease	
+Vascular dementia	血管性認知症	Disease	
+Vascular endothelial growth factor levels	血管内皮成長因子	Trait_med	
+Vaspin levels	バスピン濃度	Trait_med	
+Venous thromboembolism	静脈血栓塞栓症	Disease	
+Ventricular conduction	心室内伝導	Trait_med	
+Ventricular fibrillation	心室細動	Trait_med	
+Vertical cup-disc ratio	垂直C/D比(眼底画像の特徴量・緑内障の診察に用いられる)	Trait_med	
+Visceral adipose tissue adjusted for BMI	BMIに合わせた内臓脂肪組織	Trait_med	
+Visceral adipose tissue/subcutaneous adipose tissue ratio	内臓脂肪組織と皮下脂肪組織の比率	Trait_med	
+Visceral fat	内臓脂肪	Trait_med	
+Vitamin B12 levels	ビタミンB12濃度	Trait_med	
+Vitamin D insufficiency	ビタミンD不足	Trait_med	
+Vitamin D levels	ビタミンD濃度	Trait_med	
+Vitamin E levels	ビタミンE濃度	Trait_easy	
+Vitiligo	白斑(皮膚病)	Disease	
+Volumetric brain MRI	MRIにおける脳容積計測	Trait_med	
+Waist Circumference - Triglycerides (WC-TG)	胴囲 – トリグリセリド(中性脂肪) (WC-TG)	Trait_easy	
+Waist circumference	胴囲	Trait_easy	
+Waist circumference and related phenotypes	胴囲とその関連する表現型	Trait_easy	
+Waist-hip ratio	ウエスト・ヒップ比	Trait_easy	
+Warfarin maintenance dose	ワルファリン(経口抗凝固薬)維持量	Trait_med	
+Weight	体重	Trait_easy	
+White blood cell count	白血球数	Trait_med	
+White blood cell types	白血球の型	Trait_med	
+White matter hyperintensity burden	白質病変?	Disease	
+White matter integrity	白質病変	Disease	
+Wilms tumor	ウィルムス腫瘍	Trait_med	
+Working memory	ワーキングメモリー(作業記憶)	Trait_med	
+Wrist bone mass	手根骨容積	Trait_med	
+YKL-40 levels	YKL-40(バイオマーカー)濃度	Trait_med	
+vWF and FVIII levels	vWFとFVIIIの濃度	Trait_med	
