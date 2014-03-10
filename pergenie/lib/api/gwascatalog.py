@@ -21,8 +21,7 @@ class GWASCatalog(object):
         with MongoClient(host=settings.MONGO_URI) as c:
             catalog_stats = c['pergenie']['catalog_stats']
             if catalog_stats.count() == 0:
-                raise Exception, 'GWASCatalog is not imported correctly.'
-
+                raise Exception, 'GWASCatalog is not imported correctly in MongoDB.'
 
     def get_catalog_records(self, rs):
         catalog = self.get_latest_catalog()
