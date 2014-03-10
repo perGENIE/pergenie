@@ -104,17 +104,7 @@ def _main():
     arg_parser.add_argument('--fasta', help='path to reference genome')
     args = arg_parser.parse_args()
 
-    # TODO: remove this paths.
-    if os.path.exists('/Volumes/iodata_1T'):
-        LARGE_REFERENCE_DIR = '/Volumes/iodata_1T/reference_files/'
-    elif os.path.exists('/Volumes/'):
-        LARGE_REFERENCE_DIR = '/Volumes/Macintosh HD 2/reference/'
-
-    PATH_TO_REFERENCE_FASTA = os.path.join(LARGE_REFERENCE_DIR, 'human_g1k_v37.fasta')
-
-    # PATH_TO_REFERENCE_FASTA = 'test.fasta'
-
-    m = MutateFasta(fasta=PATH_TO_REFERENCE_FASTA)
+    m = MutateFasta(fasta=args.fasta)
 
     records = [{'chrom': '1', 'pos': 5, 'ref': 'N', 'alt': 'A'},
                {'chrom': '1', 'pos': 6, 'ref': 'N', 'alt': 'T'}]

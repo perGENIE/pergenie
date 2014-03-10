@@ -7,13 +7,24 @@ from django.utils import translation
 from django.utils.translation import ugettext as _
 from models import *
 from django.conf import settings
+from lib.utils import clogging
+log = clogging.getColorLogger(__name__)
+
 from lib.mysql.bioq import Bioq
 bq = Bioq(settings.DATABASES['bioq']['HOST'],
           settings.DATABASES['bioq']['USER'],
           settings.DATABASES['bioq']['PASSWORD'],
           settings.DATABASES['bioq']['NAME'])
+
 from lib.mongo.mutate_fasta import MutateFasta
-fa = MutateFasta(settings.PATH_TO_REFERENCE_FASTA)
+try:
+    fa = MutateFasta(settings.PATH_TO_REFERENCE_FASTA)
+except Exception:
+    log.warn('================================================')
+    log.warn('Human Reference Genome (Fasta) not available ...')
+    log.warn('================================================')
+    fa = None
+
 from lib.utils.io import pickle_load_obj
 from lib.api.gwascatalog import GWASCatalog
 gwascatalog = GWASCatalog()
@@ -183,9 +194,13 @@ def snps(request, rs):
     if ref in alleles:
         alleles.remove(ref)
     alts = list(alleles)
-    seq = fa._slice_fasta(bq_snp_summary['unique_chr'],
-                          bq_snp_summary['unique_pos_bp'],
-                          bq_snp_summary['unique_pos_bp'])
+
+    if fa:
+        seq = fa._slice_fasta(bq_snp_summary['unique_chr'],
+                              bq_snp_summary['unique_pos_bp'],
+                              bq_snp_summary['unique_pos_bp'])
+    else:
+        seq = ''
 
     # Context
     # is in a gene
