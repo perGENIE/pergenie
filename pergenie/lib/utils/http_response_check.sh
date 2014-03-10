@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 TO=numakura@sb.ecei.tohoku.ac.jp
-URL=https://pergenie.org
+URL=http://pergenie.org
 LOG=/tmp/pergenie_http_response.html
 STAT=/tmp/pergenie_http_response.stat
 
