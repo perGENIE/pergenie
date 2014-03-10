@@ -39,6 +39,9 @@ mysql.dump.*
 # Log
 *.log
 
+#
+*.memo.md
+
 # settings
 pergenie/settings/develop*.py*
 pergenie/settings/staging*.py*
