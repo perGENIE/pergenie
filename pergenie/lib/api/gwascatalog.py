@@ -23,6 +23,8 @@ class GWASCatalog(object):
             if catalog_stats.count() == 0:
                 raise Exception, 'GWASCatalog is not imported correctly in MongoDB.'
 
+
+
     def get_catalog_records(self, rs):
         catalog = self.get_latest_catalog()
         return list(catalog.find({'snps': rs}).sort('date', DESCENDING))
@@ -119,13 +121,12 @@ class GWASCatalog(object):
         with MongoClient(host=settings.MONGO_URI) as c:
             latest_document = c['pergenie']['catalog_info'].find_one({'status': 'latest'})  # -> {'date': datetime.datetime(2012, 12, 12, 0, 0),}
 
-            if latest_document:
-                latest_date = str(latest_document['date'].date()).replace('-', '_')  # -> '2012_12_12'
-                catalog = c['pergenie']['catalog'][latest_date]
-            else:
-                log.error('latest does not exist in catalog_info!')
+            if not latest_document:
+                raise Exception, 'latest does not exist in catalog_info!'
 
-        return catalog
+            latest_date = str(latest_document['date'].date()).replace('-', '_')  # -> '2012_12_12'
+            catalog = c['pergenie']['catalog'][latest_date]
+            return catalog
 
     def get_latest_catalog_date(self):
         with MongoClient(host=settings.MONGO_URI) as c:

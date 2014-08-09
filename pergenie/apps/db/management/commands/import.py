@@ -20,7 +20,7 @@ from lib.mongo.import_catalog import import_catalog
 from lib.mongo.import_population_pca import import_population_pca
 from lib.mongo.import_genomes import import_genomes
 from lib.mongo.import_mycatalog import import_mycatalog
-from lib.mongo.import_snp_freq import import_snp_freq
+# from lib.mongo.import_snp_freq import import_snp_freq
 
 from lib.common import clean_file_name
 from lib.mongo.import_variants import import_variants

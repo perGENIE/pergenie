@@ -58,6 +58,7 @@ static/vendor
 _static/
 misc
 cui_dest_*
+web-documentation
 
 *.pid
 

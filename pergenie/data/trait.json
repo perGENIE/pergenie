@@ -1,0 +1,26 @@
+{
+    'trait': 'Alcohol flush reaction',
+    'trait_ja': 'アルコール紅潮反応',
+    'snps': ['rs671'],
+    'genotypes': {'GG': 'no',
+                  'AG': 'moderate',
+                  'AA': 'strong'},
+    'references': [{'study name': 'Interaction between the functional polymorphisms of the alcohol-metabolism genes in protection against alcoholism.',
+                    'journal': 'Am J Hum Genet.',
+                    'first author': 'Chen CC',
+                    'date': 1999,
+                    'pubmed': 10441588}]
+},
+{
+    'trait': 'Eye color',
+    'trait_ja': '',
+    'snps': ['rs12913832'],
+    'genotypes': {'': '',
+                  '': '',
+                  '': ''},
+    'references': [{'study name': 'A single SNP in an evolutionary conserved region within intron 86 of the HERC2 gene determines human blue-brown eye color.',
+                    'journal': 'Am J Hum Genet.',
+                    'first author': 'Sturm RA',
+                    'date': 2008,
+                    'pubmed': 18252222}]
+},

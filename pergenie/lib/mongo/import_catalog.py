@@ -37,11 +37,11 @@ except Exception:
     bq = None
 
 # 1000 Genomes
-from lib.mysql.snps import Snps
-snpdb = Snps(settings.DATABASES['snps']['HOST'],
-             settings.DATABASES['snps']['USER'],
-             settings.DATABASES['snps']['PASSWORD'],
-             settings.DATABASES['snps']['NAME'])
+# from lib.mysql.snps import Snps
+# snpdb = Snps(settings.DATABASES['snps']['HOST'],
+#              settings.DATABASES['snps']['USER'],
+#              settings.DATABASES['snps']['PASSWORD'],
+#              settings.DATABASES['snps']['NAME'])
 
 
 _g_gene_symbol_map = {}  # { Gene Symbol => (Entrez Gene ID, OMIM Gene ID) }
@@ -85,7 +85,7 @@ def import_catalog(path_to_gwascatalog):
                     #
                     ja = unicode(record['ja'], 'utf-8') or record['eng']
                     category = record['category'] or 'NA'
-                    is_drug_response = record['is_drug_response'] or 'NA'
+                    sex = record['sex'] or 'NA'
                     wiki_url_en = disease2wiki.get(record['eng'], '')
 
                     eng2ja[record['eng']] = ja
@@ -93,7 +93,7 @@ def import_catalog(path_to_gwascatalog):
 
                     clean_record = dict(eng=record['eng'], ja=ja,
                                         category=category,
-                                        is_drug_response=is_drug_response,
+                                        # is_drug_response=is_drug_response,
                                         wiki_url_en=wiki_url_en)
 
                     trait_info.insert(clean_record, upsert=True)  # insert if not exist
@@ -717,7 +717,11 @@ def _risk_allele(data, thrs=None, snps=None):
 
     # Strand checks (if database is available)
     snp_database = snps or snpdb or bq
-    if snpdb:
+
+    if not snp_database:
+        return int(rs), risk_allele, 'no validation'
+
+    else:
         RV = {'A': 'T', 'T': 'A', 'G': 'C', 'C': 'G'}
         population = data['population'][0] if data['population'] else 'European'  ## TODO: May be cause freq mismatch.
         rs = int(rs)
