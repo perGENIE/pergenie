@@ -76,8 +76,9 @@ if settings.IS_REGISTERABLE:
 if 'apps.upload' in settings.INSTALLED_APPS:
     urlpatterns += patterns('',
         url(r'^upload/$', 'apps.upload.views.index'),
-        url(r'^upload/delete', 'apps.upload.views.delete'),
-        url(r'^upload/status', 'apps.upload.views.status'),                         )
+        url(r'^upload/delete$', 'apps.upload.views.delete'),
+        url(r'^upload/status$', 'apps.upload.views.status'),
+    )
 
 if 'apps.population' in settings.INSTALLED_APPS:
     urlpatterns += patterns('',

@@ -1,7 +1,7 @@
 import sys, os
 import datetime
 import pymongo
-import magic
+
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, Http404
 from django.shortcuts import redirect, render
@@ -17,6 +17,14 @@ from lib.tasks import qimport_variants
 from utils import clogging
 log = clogging.getColorLogger(__name__)
 
+try:
+    import magic
+    isMagicInstalled = True
+except Exception:
+    isMagicInstalled = False
+    log.warn("==========================================================================")
+    log.warn("python-magic (Filetype identification using libmagic) is not available ...")
+    log.warn("==========================================================================")
 
 @require_http_methods(['GET', 'POST'])
 @login_required
@@ -112,17 +120,18 @@ def index(request):
                             fout.write(chunk)
 
                     # Filetype identification using libmagic via python-magic
-                    m = magic.Magic(mime_encoding=True)
-                    magic_filetype = m.from_file(uploaded_file_path)
-                    log.debug('magic_filetype {0}'.format(magic_filetype))
-                    if not magic_filetype in ('us-ascii'):
-                        errs.append(_('file type not allowed, or encoding not allowed') + ': ' + call_file.name)
-                        try:
-                            os.remove(uploaded_file_path)
-                        except OSError:
-                            log.debug('[ERROR] could not remove invalid uploaded file')
+                    if isMagicInstalled:
+                        m = magic.Magic(mime_encoding=True)
+                        magic_filetype = m.from_file(uploaded_file_path)
+                        log.debug('magic_filetype {0}'.format(magic_filetype))
+                        if not magic_filetype in ('us-ascii'):
+                            errs.append(_('file type not allowed, or encoding not allowed') + ': ' + call_file.name)
+                            try:
+                                os.remove(uploaded_file_path)
+                            except OSError:
+                                log.debug('[ERROR] could not remove invalid uploaded file')
 
-                        continue
+                            continue
 
                     msg = _('%(file_name)s uploaded.') % {'file_name': call_file.name}
 
