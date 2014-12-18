@@ -43,8 +43,8 @@ mysql.dump.*
 *.memo.md
 
 # settings
-pergenie/settings/develop*.py*
-pergenie/settings/staging*.py*
+pergenie/settings/develop*.py
+pergenie/settings/staging*.py
 pergenie/fabfiles/etc/
 pergenie/fabfiles/passwd/
 

@@ -1,0 +1,173 @@
+# coding: utf-8
+from common import *
+
+SESSION_COOKIE_SECURE = False
+
+DEBUG = True
+TEMPLATE_DEBUG = DEBUG
+
+ADMINS = (
+    # ('Your Name', 'your_email@example.com'),
+)
+
+SUPPORT_EMAIL = 'support@example.com'
+
+MANAGERS = ADMINS
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'USER': '',
+        'PASSWORD': '',
+        'HOST': '',
+        'PORT': '',
+    },
+    'bioq': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'bioq_dbsnp_human_137',
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST': 'localhost',
+        'PORT': '',
+    },
+    'snps': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'snps',
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST': 'localhost',
+        'PORT': '',
+    },
+
+}
+
+## Credentials
+SECRET_KEY = 'secret'
+
+# MongoDB
+MONGO_HOST = "localhost"
+MONGO_PORT = 27017
+MONGO_USER = ""
+MONGO_PASSWORD = ""
+# MONGO_URI = "mongodb://{USER}:{PASSWORD}@{HOST}:{PORT}".format(USER=MONGO_USER,
+#                                                                PASSWORD=MONGO_PASSWORD,
+#                                                                HOST=MONGO_HOST,
+#                                                                PORT=MONGO_PORT)
+MONGO_URI = "mongodb://{HOST}:{PORT}".format(HOST=MONGO_HOST,
+                                             PORT=MONGO_PORT)
+
+# Celery
+BROKER_HOST = "localhost"
+BROKER_PORT = 5672
+BROKER_USER = "guest"
+BROKER_PASSWORD = "guest"
+BROKER_VHOST = "/"
+CELERY_RESULT_BACKEND = "amqp"
+CELERYD_LOG_FILE = "/tmp/celeryd.log"
+CELERYD_LOG_LEVEL = "INFO" # DEBUG, INFO, WARNING, ERROR or CRITICAL
+
+# Gmail
+# EMAIL_USE_TLS = True
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_HOST_USER = 'hostmaster@example.com'
+# EMAIL_HOST_PASSWORD = 'password'
+# EMAIL_PORT = 587
+
+# Outlook
+# EMAIL_USE_TLS = True
+# EMAIL_HOST = 'smtp-mail.outlook.com'
+# EMAIL_HOST_USER = 'hostmaster@example.con'
+# EMAIL_HOST_PASSWORD = 'password'
+# EMAIL_PORT = 587
+# DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+# 23andMe API
+# CLIENT_ID = "xxx"
+# CLIENT_SECRET = "yyy"
+# CALLBACK_URL = "http://x.x.x.x/auth/callback/"
+#
+# SCOPE_RS_LIST = []
+# SCOPE = "basic names" + " ".join(SCOPE_RS_LIST)
+
+
+## App settings
+DEFAULT_POPULATION = 'European'
+
+INSTALLED_APPS += ('apps.upload',
+)
+
+SET_TWEET_BUTTON = True
+
+#
+FILEFORMATS += [
+    # {'name': 'vcf_exome_iontargetseq',
+    #  'extention': '*.vcf',
+    #  'long_name': 'VCF (IonTargetSeq Exome)',
+    #  'short_name': 'iontargetseq',
+    #  'region_file': 'Ion-TargetSeq-Exome-50Mb-hg19'},
+    # {'name': 'vcf_exome_sureselect_v5_plus',
+    #  'extention': '*.vcf',
+    #  'long_name': 'VCF (SureSelect Exome)',
+    #  'short_name': 'sureselect_v5_plus',
+    #  'region_file': 'ExomeV5Cover_plus_regulatory'}
+]
+
+# Uploaded users data
+UPLOAD_DIR = '/tmp/pergenie/uploaded'
+UPLOAD_GENOMEFILE_COUNT = 10000
+
+#
+IS_DEMO_ONLY = False
+if IS_DEMO_ONLY:
+    IS_REGISTERABLE = False
+
+
+## Reference files
+
+# Path to large reference dir
+LARGE_REFERENCE_DIR = '/path'
+
+# Referance FASTA
+PATH_TO_REFERENCE_FASTA = os.path.join(LARGE_REFERENCE_DIR, 'human_g1k_v37.fasta')
+REFGENOME_VERSION = 'GRCh37/hg19'
+REFGENOME_LINK = 'http://www.ncbi.nlm.nih.gov/projects/genome/assembly/grc/human/index.shtml#GRCh37'
+
+# dbSNP
+PATH_TO_DBSNP = os.path.join(LARGE_REFERENCE_DIR, 'dbsnp_137.b37.vcf')
+DBSNP_VERSION = 'B137'
+
+# Strand db
+# STRAND_DB_DIR = os.path.join(LARGE_REFERENCE_DIR, 'Genotyping_chips_strand_and_build_files/www.well.ox.ac.uk/~wrayner/strand')
+
+# BioQ
+BIOQ_DIR = os.path.join(LARGE_REFERENCE_DIR, 'bioq', 'B137')
+
+# Refflat
+# PATH_TO_REFFLAT = os.path.join(BASE_DIR, 'data', 'large_dbs', 'ucsc_refFlat', 'refFlat.txt')
+
+# Interval list
+PATH_TO_INTERVAL_LIST_DIR = os.path.join(BASE_DIR, 'data', 'large_dbs', 'interval_lists')
+
+# OMIM
+# PATH_TO_OMIMTXT = os.path.join(BASE_DIR, 'data', 'large_dbs', 'OMIM', 'omim.txt')
+# OMIM_APIKEY = 'xxx'
+# PATH_TO_MIM2GENE = os.path.join(BASE_DIR, 'data', 'large_dbs', 'OMIM', 'mim2gene.txt')
+
+# Popucation PCA data
+# PATH_TO_POPULATION_PCA = os.path.join(BASE_DIR, 'data', 'large_dbs', 'population_pca')
+
+# PDB
+# PATH_TO_PDB = os.path.join(LARGE_REFERENCE_DIR, 'pdb')
+# RSYNC_PDB = False
+
+# Demo data
+DEMO_23ANDME_GENOME_EU_M = {'name': '/path/to/andme/genome_Greg_Mendel_Dad__Full_20121008014520.txt',
+                            'population': 'European',
+                            'file_format': 'andme'}
+DEMO_23ANDME_GENOME_EU_F = {'name': '/path/to/andme/genome_Lilly_Mendel_Mom__Full_20121008014333.txt',
+                            'population': 'European',
+                            'file_format': 'andme'}
+TOMITA_GENOME = {'name': '/path/to/vcf/tomita/DRA000583.decoy.bwa.BOTH.filtered.out.vcf',
+                 'population': 'Japanese',
+                 'file_format': 'vcf_whole_genome'}
