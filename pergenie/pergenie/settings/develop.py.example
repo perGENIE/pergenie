@@ -31,14 +31,14 @@ DATABASES = {
         'HOST': 'localhost',
         'PORT': '',
     },
-    'snps': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'snps',
-        'USER': 'root',
-        'PASSWORD': '',
-        'HOST': 'localhost',
-        'PORT': '',
-    },
+    # 'snps': {
+    #     'ENGINE': 'django.db.backends.mysql',
+    #     'NAME': 'snps',
+    #     'USER': 'root',
+    #     'PASSWORD': '',
+    #     'HOST': 'localhost',
+    #     'PORT': '',
+    # },
 
 }
 
