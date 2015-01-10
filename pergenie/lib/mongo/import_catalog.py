@@ -5,10 +5,8 @@ import datetime
 import time
 import json
 from collections import defaultdict
-# from collections import Counter  # py27
-from utils.Counter import Counter  # py26 (//code.activestate.com/recipes/576611/)
+from collections import Counter
 from pprint import pformat
-# from pprint import pprint as pp
 import pymongo
 import HTMLParser
 h = HTMLParser.HTMLParser()
