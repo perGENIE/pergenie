@@ -29,8 +29,6 @@
               <form class="form-horizontal" action="{% url apps.upload.views.index %}" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
 		        <fieldset>
-                  <a href="{% url apps.faq.views.index%}#versions_of_reference_files">[FAQ] What versions of reference files are used?</a>
-                  <hr>
                   <div class="control-group" data-step="2" data-intro="First, selcet your genome file.">
                     <label class="control-label" title="see help?"><a data-toggle="modal" href="#uploadModal">Genome File <span class="glyphicon glyphicon-question-sign"></span></a></label>
                     <div class="controls">
@@ -274,9 +272,21 @@
 {% endblock %}
 
 {% block js %}
+
+{% if do_intro %}
 <link href="{% static 'css/introjs.css' %}" rel="stylesheet">
 <script type="text/javascript" src="{% static 'js/intro.js' %}"></script>
-{% if do_intro %}<script type="text/javascript">introJs().start()</script>{% endif %}
+<script type="text/javascript">
+  if (window.localStorage) {
+    var doIntro = window.localStorage.getItem("app.upload.doIntro");
+
+    if (doIntro != "false") {
+      window.localStorage.setItem("app.upload.doIntro", "false");
+      introJs().start();
+    }
+  }
+</script>
+{% endif %}
 
 <script type="text/javascript">window.upload_status_url = "{% url apps.upload.views.status %}";</script>
 <script type="text/javascript" src="{% static 'js/upload.js' %}"></script>
