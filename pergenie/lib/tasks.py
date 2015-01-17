@@ -1,11 +1,14 @@
-import sys, os
+import sys
+import os
 from pprint import pformat
-from pymongo import MongoClient
 
+from pymongo import MongoClient
+from pymongo_genomes import import_genome
 from celery.task import Task
 from celery.decorators import task
-from mongo.import_variants import import_variants
 from django.conf import settings
+
+# from mongo.import_variants import import_variants
 from lib.r.r import projection
 from utils import clogging
 log = clogging.getColorLogger(__name__)
@@ -27,34 +30,20 @@ def qimport_variants(info):
     logger.info('qimporting ...')
     logger.info(pformat(info))
 
-    file_path = os.path.join(settings.UPLOAD_DIR,
-                             info['user_id'],
-                             info['file_format'],
-                             info['raw_name'])
-    log.info(import_variants(file_path,
-                             info['population'],
-                             info['file_format'],
-                             info['user_id']))
+    file_path = os.path.join(settings.UPLOAD_DIR, info['owner'], info['file_name'])
 
-    # if import_error_state:
-    #     err = ', but import failed...' + import_error_state
+    import_genome(file_path,
+                  owner=info['owner'],
+                  file_format=info['file_format'],
+                  mongo_uri=settings.MONGO_URI)
 
-    # os.remove(file_path)
-
+    # TODO:
     # Risk Report
-    riskreport.import_riskreport(info)
+    # riskreport.import_riskreport(info)
 
-    log.debug('write riskreport...')
-    file_infos = genomes.get_data_infos(info['user_id'])
-    riskreport.write_riskreport(info['user_id'], file_infos, force_uptade=True)
+    # log.debug('write riskreport...')
+    # file_infos = genomes.get_data_infos(info['user_id'])
+    # riskreport.write_riskreport(info['user_id'], file_infos, force_uptade=True)
 
-    # Population PCA
-    person_xy = [0,0]  # projection(info)
-    with MongoClient(host=settings.MONGO_URI) as connection:
-        db = connection['pergenie']
-        data_info = db['data_info']
-        data_info.update({'user_id': info['user_id'], 'name': info['name']},
-                         {"$set": {'pca': {'position': person_xy,
-                                           'label': info['user_id'],
-                                           'map_label': ''},
-                                   'status': 100}})
+    # TODO: Catch Exceptions
+    # os.remove(file_path)
