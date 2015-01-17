@@ -25,11 +25,11 @@ psutil==0.7.1
 psycopg2==2.4.5
 pycrypto==2.6
 pyfasta==0.5.2
-pymongo==2.5
+pymongo==2.7
 python-daemon==1.6
 python-dateutil==1.5
 python-magic==0.4.6
 python-memcached==1.51
 requests==1.1.0
 termcolor==1.1.0
-wsgiref==0.1.2
+git+https://github.com/knmkr/pymongo_genomes.git
