@@ -44,105 +44,66 @@ def index(request):
             form = UploadForm(request.POST, request.FILES)
 
             if not form.is_valid():
-                err = _('Invalid request')
+                errs = form.errors.values
                 break
 
-            call_files = request.FILES.getlist('call')
+            upload_files = request.FILES.getlist('upload_files')
             population = form.cleaned_data.get('population')
-            # gender = form.cleaned_data.get('gender')
             file_format = form.cleaned_data['file_format']
+            # gender = form.cleaned_data.get('gender')
 
-            # TODO: migrate validations to form.py
-
-            # Validate: Forms are filled with valid value
-            if not call_files:
-                err = _('Select data file.')
+            # Ensure not to exceed the limits of upload file count.
+            if len(my_genomes) + len(upload_files) > settings.MAX_UPLOAD_GENOMEFILE_COUNT:
+                errs.append(_('Too many files.'))
                 break
 
-            if not population or population not in ('unknown', 'Asian', 'European', 'Japanese'):
-                err = _('Select population.')
+            # Ensure same file is not exist.
+            exists_filenames = set([x.name for x in upload_files]) & set([x['file_name'] for x in my_genomes])
+            if exists_filenames:
+                errs.append(_('Same file name exists. If you want to overwrite it, please delete old one.' + ' ' + ' '.join(exists_filenames)))
                 break
 
-            fileformats = [x['name'] for x in settings.FILEFORMATS]
-            if not file_format or file_format not in fileformats:
-                err = _('Select file format.')
-                break
+            # Ensure upload dir exists.
+            tmp_upload_dir = os.path.join(settings.UPLOAD_DIR, user_id)
+            if not os.path.exists(tmp_upload_dir):
+                os.makedirs(tmp_upload_dir)
 
-            if len(call_files) > settings.UPLOAD_GENOMEFILE_COUNT:
-                err = _('Too many files.')
-                break
-
-            if len(my_genomes) + len(call_files) > settings.UPLOAD_GENOMEFILE_COUNT:
-                err = _('Too many files.')
-                break
-
-            # Validate: Uploaded file is valid
-            for call_file in call_files:
-                if call_file.size > settings.UPLOAD_GENOMEFILE_SIZE_LIMIT:
-                    errs.append(_('too large file size') + ': ' + call_file.name)
-                    continue
-
-                call_file_ext = os.path.splitext(call_file.name)[1].lower()[1:]
-
-                if call_file_ext not in ('csv', 'txt', 'vcf'):
-                    errs.append(_('file extension not allowed') + ': ' + call_file.name)
-                    continue
-
-                log.debug('content_type: {0}'.format(call_file.content_type))
-
-                if call_file.content_type == 'text/plain':
-                    pass
-                elif call_file.content_type in ('text/directory', 'text/vcard') and call_file_ext == 'vcf':
-                    pass
-                else:
-                    errs.append(_('file type not allowed') + ': ' + call_file.name)
-                    continue
-
-                # Still need to validate that the file contains the content that the content-type header claims -- "trust but verify".
-
-                # # Ensure same file is not exist.
-                # if True in [x['file_name'] == call_file.name for x in my_genomes]:
-                #     errs.append(_('Same file name exists. If you want to overwrite it, please delete old one.') + ': ' + call_file.name)
-                #     continue
-
-                # Ensure upload dir exists.
-                tmp_upload_dir = os.path.join(settings.UPLOAD_DIR, user_id)
-                if not os.path.exists(tmp_upload_dir):
-                    os.makedirs(tmp_upload_dir)
-
-                # Convert UploadedFile object to a filel
-                uploaded_file_path = os.path.join(tmp_upload_dir, call_file.name)
+            for upload_file in upload_files:
+                # Convert UploadedFile object to a file
+                uploaded_file_path = os.path.join(tmp_upload_dir, upload_file.name)
                 with open(uploaded_file_path, 'wb') as fout:
-                    for chunk in call_file.chunks():
+                    for chunk in upload_file.chunks():
                         fout.write(chunk)
 
+                # Ensure the file contains the content that the content-type header claims -- "trust but verify".
                 # Filetype identification using libmagic via python-magicl
                 if isMagicInstalled:
                     m = magic.Magic(mime_encoding=True)
                     magic_filetype = m.from_file(uploaded_file_path)
-                    log.debug('magic_filetype {0}'.format(magic_filetype))
+                    log.info('magic_filetype {0}'.format(magic_filetype))
                     if not magic_filetype in ('us-ascii'):
-                        errs.append(_('file type not allowed, or encoding not allowed') + ': ' + call_file.name)
+                        errs.append(_('file type not allowed, or encoding not allowed') + ': ' + upload_file.name)
                         try:
                             os.remove(uploaded_file_path)
                         except OSError:
-                            log.debug('[ERROR] could not remove invalid uploaded file')
+                            log.error('Could not remove invalid uploaded file')
 
                         continue
 
+                # Validation passed. Upsert genome info.
                 info = {'owner': user_id,
-                        'file_name': call_file.name,
+                        'file_name': upload_file.name,
                         'file_format': file_format,
                         'population': population,
-                        'gender': gender,
+                        # 'gender': gender,
                         'date': datetime.datetime.today(),
                         'status': 0.0}
                 genome_info.collection.update({'owner': info['owner'], 'file_name': info['file_name']},
                                               {"$set": info}, upsert=True)
 
-                msg = _('%(file_name)s uploaded.') % {'file_name': call_file.name}
+                msg = _('%(file_name)s uploaded.') % {'file_name': upload_file.name}
 
-                # Run background job: Import genome into DB
+                # Import genome into DB as background job.
                 qimport_variants.delay(info)
                 msg += _(', and now importing...')
 
