@@ -1,4 +1,4 @@
 import psutil
 
 def is_up(ps_name):
-    return True in [ps.name in ps_name for ps in psutil.get_process_list()]
+    return True in [psutil.Process(pid).name() == ps_name for pid in psutil.get_pid_list()]

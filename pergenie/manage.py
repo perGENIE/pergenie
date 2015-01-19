@@ -2,7 +2,6 @@
 import sys, os
 import getpass
 import socket
-import psutil
 from lib.utils.service import is_up
 from lib.utils import clogging
 log = clogging.getColorLogger(__name__)
