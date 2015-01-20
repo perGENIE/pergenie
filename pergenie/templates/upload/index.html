@@ -79,34 +79,13 @@
                     </div>
                   </div>
 
-                  {% if msg %}
-                  <div class="alert alert-success">
-                    {{ msg }}
-                  </div>
-                  {% endif %}
-
-                  {% if msgs %}
-                  {% for m in msgs %}
-                  <div class="alert alert-success">
-                    {{ m }}
+                  {% if messages %}
+                  {% for message in messages %}
+                  <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                    {{ message }}
                   </div>
                   {% endfor %}
                   {% endif %}
-
-                  {% if err %}
-                  <div class="alert alert-error">
-                    {{ err }}
-                  </div>
-                  {% endif %}
-
-                  {% if errs %}
-                  {% for e in errs %}
-                  <div class="alert alert-error">
-                    {{ e }}
-                  </div>
-                  {% endfor %}
-                  {% endif %}
-
                 </fieldset>
 
               </form>
@@ -188,9 +167,8 @@
               <tbody>
                 {% if uploadeds %}
                 {% for uploaded in uploadeds %}
-
                 <tr class="uploaded_file">
-                  <td class="dataname">{{ uploaded.raw_name }}</td>
+                  <td class="dataname">{{ uploaded.file_name }}</td>
                   <td class="center">{{ uploaded.date }}</td>
                   <td class="center">
                     <span class="label label-success">{{ uploaded.population }}</span>
@@ -218,11 +196,9 @@
 
                   <td class="center">
                     <!-- Delete  -->
-                    <!-- {% if uploaded.status %} -->
                     <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#deleteModal{{ forloop.counter0 }}">
-                      <span class="glyphicon glyphicon-trash"></span>Delete
+                      <span class="glyphicon glyphicon-trash"></span>
                     </button>
-                    <!-- {% endif %} -->
 
                     <!-- deleteModal -->
                     <div class="modal fade" id="deleteModal{{ forloop.counter0 }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
@@ -233,12 +209,12 @@
                             <h4 class="modal-title" id="deleteModalLabel">Modal title</h4>
                           </div>
                           <div class="modal-body">
-                            Really delete "{{ uploaded.name }}"?
+                            Really delete "{{ uploaded.file_name }}"?
                           </div>
                           <div class="modal-footer">
 			                <form action="{% url apps.upload.views.delete %}" method="POST" enctype="multipart/form-data">
                               {% csrf_token %}
-			                  <input type="hidden" name="name" value="{{ uploaded.name }}">
+			                  <input type="hidden" name="name" value="{{ uploaded.file_name }}">
 			                  <button class="btn btn-default" data-dismiss="modal">No.</button>
 			                  <button class="btn btn-primary" href="#" type="submit">Yes, delete this data.</button>
 			                </form>
