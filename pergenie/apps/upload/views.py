@@ -32,9 +32,7 @@ except Exception:
 @login_required
 def index(request):
     user_id = request.user.username
-
     genome_info = GenomeInfo(mongo_uri=settings.MONGO_URI)
-    my_genomes = genome_info.get_infos_by_owner(user_id)
 
     if request.method == 'POST':
         while True:
@@ -46,11 +44,9 @@ def index(request):
                 break
 
             upload_files = request.FILES.getlist('upload_files')
-            population = form.cleaned_data.get('population')
-            file_format = form.cleaned_data['file_format']
-            # gender = form.cleaned_data.get('gender')
 
             # Ensure not to exceed the limits of upload file count.
+            my_genomes = genome_info.get_infos_by_owner(user_id)
             if len(my_genomes) + len(upload_files) > settings.MAX_UPLOAD_GENOMEFILE_COUNT:
                 messages.error(request, _('Too many files.'))
                 break
@@ -58,7 +54,8 @@ def index(request):
             # Ensure same file is not exist.
             exists_filenames = set([x.name for x in upload_files]) & set([x['file_name'] for x in my_genomes])
             if exists_filenames:
-                messages.error(request, _('Same file name exists. If you want to overwrite it, please delete old one.' + ' ' + ' '.join(exists_filenames)))
+                exists_filenames_text = ', '.join(str(x) for x in exists_filenames)
+                messages.error(request, _('Same file name exists. If you want to overwrite it, please delete old one: %(file_name)s' % {'file_name': exists_filenames_text}))
                 break
 
             # Ensure upload dir exists.
@@ -80,20 +77,21 @@ def index(request):
                     magic_filetype = m.from_file(uploaded_file_path)
                     log.info('magic_filetype {0}'.format(magic_filetype))
                     if not magic_filetype in ('us-ascii'):
-                        messages.error(request, _('file type not allowed, or encoding not allowed') + ': ' + upload_file.name)
+                        messages.error(request, _('File type not allowed, or encoding not allowed. %(file_name)s' % {'file_name': file_name}))
                         try:
                             os.remove(uploaded_file_path)
                         except OSError:
                             log.error('Could not remove invalid uploaded file')
 
+                        messages.error(request, _('Invalid request'))
                         continue
 
                 # Validation passed. Upsert genome info.
                 info = {'owner': user_id,
                         'file_name': upload_file.name,
-                        'file_format': file_format,
-                        'population': population,
-                        # 'gender': gender,
+                        'file_format': form.cleaned_data['file_format'],
+                        'population': form.cleaned_data.get('population'),
+                        # 'gender': form.cleaned_data.get('gender'),
                         'date': datetime.datetime.today(),
                         'status': 0.0}
                 genome_info.collection.update({'owner': info['owner'], 'file_name': info['file_name']},
@@ -109,10 +107,8 @@ def index(request):
 
             break
 
-    my_genomes = genome_info.get_infos_by_owner(user_id)
-
     return render(request, 'upload/index.html',
-                  dict(uploadeds=my_genomes))
+                  {'my_genomes': genome_info.get_infos_by_owner(user_id)})
 
 
 @login_required

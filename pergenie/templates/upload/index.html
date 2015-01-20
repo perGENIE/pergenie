@@ -138,8 +138,8 @@
 </div>
 </div>
 
-<!-- uploadeds -->
-{% if uploadeds %}
+<!-- my_genomes -->
+{% if my_genomes %}
 <div class="row">
   <div class="col-md-12">
 
@@ -165,31 +165,31 @@
               </thead>
 
               <tbody>
-                {% if uploadeds %}
-                {% for uploaded in uploadeds %}
+                {% if my_genomes %}
+                {% for my_genome in my_genomes %}
                 <tr class="uploaded_file">
-                  <td class="dataname">{{ uploaded.file_name }}</td>
-                  <td class="center">{{ uploaded.date }}</td>
+                  <td class="dataname">{{ my_genome.file_name }}</td>
+                  <td class="center">{{ my_genome.date }}</td>
                   <td class="center">
-                    <span class="label label-success">{{ uploaded.population }}</span>
+                    <span class="label label-success">{{ my_genome.population }}</span>
                   </td>
                   <td class="center">
-                    <span class="label label-success">{{ uploaded.file_format|file_format }}</span>
+                    <span class="label label-success">{{ my_genome.file_format|file_format }}</span>
                   </td>
                   <td class="center">
-		            {% if uploaded.status == -1 %}
+		            {% if my_genome.status == -1 %}
                     <div>
                       <p>Failed</p>
 		            </div>
 
-		            {% elif uploaded.status >= 100 %}
+		            {% elif my_genome.status >= 100 %}
                     <div>
                       <p>100&#37;</p>
 		            </div>
 
 		            {% else %}
                     <div class="progress progress-striped progress-success active">
-		              <div class="bar" style="width: {{ uploaded.status }}&#37;;"></div>
+		              <div class="bar" style="width: {{ my_genome.status }}&#37;;"></div>
                     </div>
 		            {% endif %}
                   </td>
@@ -209,12 +209,12 @@
                             <h4 class="modal-title" id="deleteModalLabel">Modal title</h4>
                           </div>
                           <div class="modal-body">
-                            Really delete "{{ uploaded.file_name }}"?
+                            Really delete "{{ my_genome.file_name }}"?
                           </div>
                           <div class="modal-footer">
 			                <form action="{% url apps.upload.views.delete %}" method="POST" enctype="multipart/form-data">
                               {% csrf_token %}
-			                  <input type="hidden" name="name" value="{{ uploaded.file_name }}">
+			                  <input type="hidden" name="name" value="{{ my_genome.file_name }}">
 			                  <button class="btn btn-default" data-dismiss="modal">No.</button>
 			                  <button class="btn btn-primary" href="#" type="submit">Yes, delete this data.</button>
 			                </form>
