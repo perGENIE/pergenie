@@ -2,10 +2,16 @@ import sys
 import os
 import datetime
 
+try:
+    import magic
+    isMagicInstalled = True
+except Exception:
+    log.warn("python-magic is not available.")
+    isMagicInstalled = False
 import pymongo
 from pymongo_genomes import Genome, GenomeInfo, GenomeNotImportedError
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.utils import simplejson
 from django.views.decorators.http import require_http_methods
@@ -14,19 +20,10 @@ from django.utils.translation import ugettext as _
 from django.conf import settings
 
 from apps.upload.forms import UploadForm
-from lib.common import clean_file_name
 from lib.tasks import qimport_variants
 from utils import clogging
 log = clogging.getColorLogger(__name__)
 
-try:
-    import magic
-    isMagicInstalled = True
-except Exception:
-    isMagicInstalled = False
-    log.warn("==========================================================================")
-    log.warn("python-magic (Filetype identification using libmagic) is not available ...")
-    log.warn("==========================================================================")
 
 @require_http_methods(['GET', 'POST'])
 @login_required
