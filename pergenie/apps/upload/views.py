@@ -71,11 +71,11 @@ def index(request):
                         fout.write(chunk)
 
                 # Ensure the file contains the content that the content-type header claims -- "trust but verify".
-                # Filetype identification using libmagic via python-magicl
+                # Filetype identification using libmagic via python-magic
                 if isMagicInstalled:
                     m = magic.Magic(mime_encoding=True)
                     magic_filetype = m.from_file(uploaded_file_path)
-                    log.info('magic_filetype {0}'.format(magic_filetype))
+                    log.info('magic_filetype {}'.format(magic_filetype))
                     if not magic_filetype in ('us-ascii'):
                         messages.error(request, _('File type not allowed, or encoding not allowed. %(file_name)s' % {'file_name': file_name}))
                         try:
