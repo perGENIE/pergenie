@@ -29,12 +29,10 @@
               <form class="form-horizontal" action="{% url apps.upload.views.index %}" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
 		        <fieldset>
-                  <a href="{% url apps.faq.views.index%}#versions_of_reference_files">[FAQ] What versions of reference files are used?</a>
-                  <hr>
                   <div class="control-group" data-step="2" data-intro="First, selcet your genome file.">
                     <label class="control-label" title="see help?"><a data-toggle="modal" href="#uploadModal">Genome File <span class="glyphicon glyphicon-question-sign"></span></a></label>
                     <div class="controls">
-                      <input type="file" name="call" class="multi" maxlength="{{ allowed_upload_genomefile_count }}">
+                      <input type="file" name="upload_files" class="multi" maxlength="{{ allowed_upload_genomefile_count }}">
                     </div>
                   </div>
 
@@ -66,10 +64,8 @@
                       <label class="control-label" title="see help?"><a data-toggle="modal" href="#uploadModal">File Format <span class="glyphicon glyphicon-question-sign"></span></a></label>
                       <div class="controls">
                         <select name="file_format">
+                          <option value="vcf">VCF (Whole Genome)</option>
                           <option value="andme">23andMe</option>
-                          <option value="vcf_whole_genome">VCF (Whole Genome)</option>
-                          <option value="vcf_exome_truseq">VCF (TruSeq Exome)</option>
-                          <option value="vcf_exome_iontargetseq">VCF (IonTargetSeq Exome)</option>
                         </select>
                       </div>
                     </div>
@@ -83,34 +79,13 @@
                     </div>
                   </div>
 
-                  {% if msg %}
-                  <div class="alert alert-success">
-                    {{ msg }}
-                  </div>
-                  {% endif %}
-
-                  {% if msgs %}
-                  {% for m in msgs %}
-                  <div class="alert alert-success">
-                    {{ m }}
+                  {% if messages %}
+                  {% for message in messages %}
+                  <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                    {{ message }}
                   </div>
                   {% endfor %}
                   {% endif %}
-
-                  {% if err %}
-                  <div class="alert alert-error">
-                    {{ err }}
-                  </div>
-                  {% endif %}
-
-                  {% if errs %}
-                  {% for e in errs %}
-                  <div class="alert alert-error">
-                    {{ e }}
-                  </div>
-                  {% endfor %}
-                  {% endif %}
-
                 </fieldset>
 
               </form>
@@ -163,8 +138,8 @@
 </div>
 </div>
 
-<!-- uploadeds -->
-{% if uploadeds %}
+<!-- my_genomes -->
+{% if my_genomes %}
 <div class="row">
   <div class="col-md-12">
 
@@ -190,43 +165,40 @@
               </thead>
 
               <tbody>
-                {% if uploadeds %}
-                {% for uploaded in uploadeds %}
-
+                {% if my_genomes %}
+                {% for my_genome in my_genomes %}
                 <tr class="uploaded_file">
-                  <td class="dataname">{{ uploaded.raw_name }}</td>
-                  <td class="center">{{ uploaded.date }}</td>
+                  <td class="dataname">{{ my_genome.file_name }}</td>
+                  <td class="center">{{ my_genome.date }}</td>
                   <td class="center">
-                    <span class="label label-success">{{ uploaded.population }}</span>
+                    <span class="label label-success">{{ my_genome.population }}</span>
                   </td>
                   <td class="center">
-                    <span class="label label-success">{{ uploaded.file_format|file_format }}</span>
+                    <span class="label label-success">{{ my_genome.file_format|file_format_long_name }}</span>
                   </td>
                   <td class="center">
-		            {% if uploaded.status == -1 %}
+		            {% if my_genome.status == -1 %}
                     <div>
                       <p>Failed</p>
 		            </div>
 
-		            {% elif uploaded.status >= 100 %}
+		            {% elif my_genome.status >= 100 %}
                     <div>
                       <p>100&#37;</p>
 		            </div>
 
 		            {% else %}
                     <div class="progress progress-striped progress-success active">
-		              <div class="bar" style="width: {{ uploaded.status }}&#37;;"></div>
+		              <div class="bar" style="width: {{ my_genome.status }}&#37;;"></div>
                     </div>
 		            {% endif %}
                   </td>
 
                   <td class="center">
                     <!-- Delete  -->
-                    <!-- {% if uploaded.status %} -->
                     <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#deleteModal{{ forloop.counter0 }}">
-                      <span class="glyphicon glyphicon-trash"></span>Delete
+                      <span class="glyphicon glyphicon-trash"></span>
                     </button>
-                    <!-- {% endif %} -->
 
                     <!-- deleteModal -->
                     <div class="modal fade" id="deleteModal{{ forloop.counter0 }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
@@ -237,12 +209,12 @@
                             <h4 class="modal-title" id="deleteModalLabel">Modal title</h4>
                           </div>
                           <div class="modal-body">
-                            Really delete "{{ uploaded.name }}"?
+                            Really delete "{{ my_genome.file_name }}"?
                           </div>
                           <div class="modal-footer">
 			                <form action="{% url apps.upload.views.delete %}" method="POST" enctype="multipart/form-data">
                               {% csrf_token %}
-			                  <input type="hidden" name="name" value="{{ uploaded.name }}">
+			                  <input type="hidden" name="name" value="{{ my_genome.file_name }}">
 			                  <button class="btn btn-default" data-dismiss="modal">No.</button>
 			                  <button class="btn btn-primary" href="#" type="submit">Yes, delete this data.</button>
 			                </form>
@@ -274,9 +246,21 @@
 {% endblock %}
 
 {% block js %}
+
+{% if do_intro %}
 <link href="{% static 'css/introjs.css' %}" rel="stylesheet">
 <script type="text/javascript" src="{% static 'js/intro.js' %}"></script>
-{% if do_intro %}<script type="text/javascript">introJs().start()</script>{% endif %}
+<script type="text/javascript">
+  if (window.localStorage) {
+    var doIntro = window.localStorage.getItem("app.upload.doIntro");
+
+    if (doIntro != "false") {
+      window.localStorage.setItem("app.upload.doIntro", "false");
+      introJs().start();
+    }
+  }
+</script>
+{% endif %}
 
 <script type="text/javascript">window.upload_status_url = "{% url apps.upload.views.status %}";</script>
 <script type="text/javascript" src="{% static 'js/upload.js' %}"></script>

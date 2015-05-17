@@ -1,18 +1,19 @@
-import sys, os
+import sys
+import os
 import datetime
-import pymongo
 
+import pymongo
+from pymongo_genomes import Genome, GenomeInfo
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.utils import simplejson
 from django.views.decorators.http import require_http_methods
+from django.contrib import messages
 from django.utils.translation import ugettext as _
 from django.conf import settings
+
 from apps.upload.forms import UploadForm
-from lib.api.genomes import Genomes
-genomes = Genomes()
-from lib.common import clean_file_name
 from lib.tasks import qimport_variants
 from utils import clogging
 log = clogging.getColorLogger(__name__)
@@ -21,197 +22,126 @@ try:
     import magic
     isMagicInstalled = True
 except Exception:
+    log.warn("python-magic is not available.")
     isMagicInstalled = False
-    log.warn("==========================================================================")
-    log.warn("python-magic (Filetype identification using libmagic) is not available ...")
-    log.warn("==========================================================================")
+
 
 @require_http_methods(['GET', 'POST'])
 @login_required
 def index(request):
     user_id = request.user.username
-    msg, err, msgs, errs = '', '', [], []
-    do_intro = False
+    genome_info = GenomeInfo(mongo_uri=settings.MONGO_URI)
 
-    if user_id.startswith(settings.DEMO_USER_ID):
-        raise Http404
+    if request.method == 'POST':
+        while True:
+            form = UploadForm(request.POST, request.FILES)
 
-    with pymongo.MongoClient(host=settings.MONGO_URI) as connection:
-        db = connection['pergenie']
-        data_info = db['data_info']
-        catalog_cover_rate = db['catalog_cover_rate']
-
-        uploadeds = list(data_info.find({'user_id': user_id}))
-
-        if request.method == 'POST':
-            while True:
-                form = UploadForm(request.POST, request.FILES)
-
-                if not form.is_valid():
-                    err = _('Invalid request')
-                    break
-
-                call_files = request.FILES.getlist('call')
-                population = form.cleaned_data['population']
-                # sex = form.cleaned_data['sex']
-                file_format = form.cleaned_data['file_format']
-
-                # Validate: Forms are filled with valid value
-                if not call_files:
-                    err = _('Select data file.')
-                    break
-
-                if not population or population not in ('unknown', 'Asian', 'European', 'Japanese'):
-                    err = _('Select population.')
-                    break
-
-                fileformats = [x['name'] for x in settings.FILEFORMATS]
-                if not file_format or file_format not in fileformats:
-                    err = _('Select file format.')
-                    break
-
-                if len(call_files) > settings.UPLOAD_GENOMEFILE_COUNT:
-                    err = _('Too many files.')
-                    break
-
-                if len(uploadeds) + len(call_files) > settings.UPLOAD_GENOMEFILE_COUNT:
-                    err = _('Too many files.')
-                    break
-
-                # Validate: Uploaded file is valid
-                for call_file in call_files:
-                    if call_file.size > settings.UPLOAD_GENOMEFILE_SIZE_LIMIT:
-                        errs.append(_('too large file size') + ': ' + call_file.name)
-                        continue
-
-                    call_file_ext = os.path.splitext(call_file.name)[1].lower()[1:]
-
-                    if call_file_ext not in ('csv', 'txt', 'vcf'):
-                        errs.append(_('file extension not allowed') + ': ' + call_file.name)
-                        continue
-
-                    log.debug('content_type: {0}'.format(call_file.content_type))
-
-                    if call_file.content_type == 'text/plain':
-                        pass
-                    elif call_file.content_type in ('text/directory', 'text/vcard') and call_file_ext == 'vcf':
-                        pass
-                    else:
-                        errs.append(_('file type not allowed') + ': ' + call_file.name)
-                        continue
-
-                    # Still need to validate that the file contains the content that the content-type header claims -- "trust but verify."
-
-                    if data_info.find({'user_id': user_id,
-                                       'raw_name': call_file.name,
-                                       'file_format': file_format}).count() > 0:
-                        errs.append(_('Same file name of same genome file format exists. If you want to overwrite it, please delete old one.') + ': ' + call_file.name)
-                        continue
-
-                    # Ensure upload dir exists
-                    tmp_upload_dir = os.path.join(settings.UPLOAD_DIR, user_id, file_format)
-                    if not os.path.exists(tmp_upload_dir):
-                        os.makedirs(tmp_upload_dir)
-
-                    # Convert UploadedFile object to a file
-                    uploaded_file_path = os.path.join(tmp_upload_dir, call_file.name)
-                    with open(uploaded_file_path, 'wb') as fout:
-                        for chunk in call_file.chunks():
-                            fout.write(chunk)
-
-                    # Filetype identification using libmagic via python-magic
-                    if isMagicInstalled:
-                        m = magic.Magic(mime_encoding=True)
-                        magic_filetype = m.from_file(uploaded_file_path)
-                        log.debug('magic_filetype {0}'.format(magic_filetype))
-                        if not magic_filetype in ('us-ascii'):
-                            errs.append(_('file type not allowed, or encoding not allowed') + ': ' + call_file.name)
-                            try:
-                                os.remove(uploaded_file_path)
-                            except OSError:
-                                log.debug('[ERROR] could not remove invalid uploaded file')
-
-                            continue
-
-                    msg = _('%(file_name)s uploaded.') % {'file_name': call_file.name}
-
-                    # TODO: check if celery is alive
-
-                    log.debug('checking done.')
-                    # ------------------------------------
-                    # Variants file passed our validation!
-                    # So, import it into MongoDB.
-                    # ------------------------------------
-
-                    info = {'user_id': user_id,
-                            'name': clean_file_name(call_file.name, file_format),
-                            'raw_name': call_file.name,
-                            'date': datetime.datetime.today(),
-                            'population': population,
-                            'file_format': file_format,
-                            'catalog_cover_rate': catalog_cover_rate.find_one({'stats': 'catalog_cover_rate'})['values'][file_format],
-                            'genome_cover_rate': catalog_cover_rate.find_one({'stats': 'genome_cover_rate'})['values'][file_format],
-                            'status': float(0.0)}
-
-                    data_info.insert(info)
-
-                    # Throw as a background job
-                    qimport_variants.delay(info)
-                    msg += _(', and now importing...')
-
-                    msgs.append(msg)
-                    msg = ''
-
+            if not form.is_valid():
+                for err in form.errors.values():
+                    messages.error(request, err)
                 break
 
-        uploadeds = list(data_info.find({'user_id': user_id}))
+            upload_files = request.FILES.getlist('upload_files')
 
-        if not uploadeds:
-            do_intro = True
+            # Ensure not to exceed the limits of upload file count.
+            my_genomes = genome_info.get_infos_by_owner(user_id)
+            if len(my_genomes) + len(upload_files) > settings.MAX_UPLOAD_GENOMEFILE_COUNT:
+                messages.error(request, _('Too many files.'))
+                break
 
-    # if err:
-    #     log.error('err: {0}'.format(err))
+            # Ensure same file is not exist.
+            exists_filenames = set([x.name for x in upload_files]) & set([x['file_name'] for x in my_genomes])
+            if exists_filenames:
+                exists_filenames_text = ', '.join(str(x) for x in exists_filenames)
+                messages.error(request, _('Same file name exists. If you want to overwrite it, please delete old one: %(file_name)s' % {'file_name': exists_filenames_text}))
+                break
+
+            # Ensure upload dir exists.
+            tmp_upload_dir = os.path.join(settings.UPLOAD_DIR, user_id)
+            if not os.path.exists(tmp_upload_dir):
+                os.makedirs(tmp_upload_dir)
+
+            for upload_file in upload_files:
+                # Convert UploadedFile object to a file
+                uploaded_file_path = os.path.join(tmp_upload_dir, upload_file.name)
+                with open(uploaded_file_path, 'wb') as fout:
+                    for chunk in upload_file.chunks():
+                        fout.write(chunk)
+
+                # Ensure the file contains the content that the content-type header claims -- "trust but verify".
+                # Filetype identification using libmagic via python-magic
+                if isMagicInstalled:
+                    m = magic.Magic(mime_encoding=True)
+                    magic_filetype = m.from_file(uploaded_file_path)
+                    log.info('magic_filetype {}'.format(magic_filetype))
+                    if not magic_filetype in ('us-ascii'):
+                        messages.error(request, _('File type not allowed, or encoding not allowed. %(file_name)s' % {'file_name': file_name}))
+                        try:
+                            os.remove(uploaded_file_path)
+                        except OSError:
+                            log.error('Could not remove invalid uploaded file')
+
+                        messages.error(request, _('Invalid request'))
+                        continue
+
+                # Validation passed. Upsert genome info.
+                info = {'owner': user_id,
+                        'file_name': upload_file.name,
+                        'file_format': form.cleaned_data['file_format'],
+                        'population': form.cleaned_data.get('population'),
+                        # 'gender': form.cleaned_data.get('gender'),
+                        'date': datetime.datetime.today(),
+                        'status': 0.0}
+                genome_info.collection.update({'owner': info['owner'], 'file_name': info['file_name']},
+                                              {"$set": info}, upsert=True)
+
+                msg = _('%(file_name)s uploaded.') % {'file_name': upload_file.name}
+
+                # Import genome into DB as background job.
+                qimport_variants.delay(info)
+                msg += _(', and now importing...')
+
+                messages.success(request, msg)
+
+            break
 
     return render(request, 'upload/index.html',
-                  dict(msg=msg, err=err, msgs=msgs, errs=errs, uploadeds=uploadeds,
-                       do_intro=do_intro,
-                       allowed_upload_genomefile_count=settings.UPLOAD_GENOMEFILE_COUNT))
+                  {'my_genomes': genome_info.get_infos_by_owner(user_id)})
 
 
 @login_required
+@require_http_methods(['POST'])
 def delete(request):
-    user_id = request.user.username
+    file_name = request.POST.get('name')
+    owner = request.user.username
 
-    if user_id.startswith(settings.DEMO_USER_ID):
-        raise Http404
+    genome_info = GenomeInfo(mongo_uri=settings.MONGO_URI)
+    my_genome = genome_info.get_info(owner, file_name)
 
-    name = request.POST.get('name')
+    while True:
+        if not my_genome:
+            messages.error(request, _('Invalid request.'))
+            break
 
-    with pymongo.MongoClient(host=settings.MONGO_URI) as connection:
-        db = connection['pergenie']
-        data_info = db['data_info']
+        # Remove genome data.
+        try:
+            g = Genome(file_name, owner, mongo_uri=settings.MONGO_URI)
+            g.remove()
+        except:
+            messages.error(request, _('Invalid request.'))
+            break
 
-        # delete Mongo Collection
-        target_collection = genomes.get_variants(user_id, name).name
-        log.debug(target_collection)
+        # Remove genome file in upload dir.
+        try:
+            file_path = os.path.join(settings.UPLOAD_DIR, owner, file_name)
+            if os.path.exists(file_path):
+                os.remove(file_path)
+        except IOError:
+            messages.error(request, _('Invalid request.'))
+            break
 
-        log.debug('target is in db {0}'.format(target_collection in db.collection_names()))
-        db.drop_collection(target_collection)
-        log.debug('target is in db {0}'.format(target_collection in db.collection_names()))
-
-        # delete `file`
-        tmp_data_info = data_info.find_one({'user_id': user_id, 'name': name})
-        if tmp_data_info:
-            filepath = os.path.join(settings.UPLOAD_DIR,
-                                    user_id,
-                                    tmp_data_info['file_format'],
-                                    tmp_data_info['raw_name'])
-            if os.path.exists(filepath):
-                os.remove(filepath)
-
-        # delete document `data_info`
-        if data_info.find_one({'user_id': user_id, 'name': name}):
-            data_info.remove({'user_id': user_id, 'name': name})
+        messages.success(request, _('Deleted: %(file_name)s') % {'file_name': file_name})
+        break
 
     return redirect('apps.upload.views.index')
 
@@ -220,26 +150,16 @@ def delete(request):
 def status(request):
     if not request.user or not request.user.username:
         result = {'status': 'error',
-                  'error_message': 'login required',
+                  'error_message': _('login required'),
                   'uploaded_files': []}
 
     else:
-        user_id = request.user.username
-
-        if user_id.startswith(settings.DEMO_USER_ID):
-            raise Http404
-
-        with pymongo.MongoClient(host=settings.MONGO_URI) as connection:
-            db = connection['pergenie']
-            data_info = db['data_info']
-
-            uploaded_files = {}
-            for record in data_info.find({'user_id': user_id}):
-                uploaded_files[record['name']] = record['status']
+        genome_info = GenomeInfo(mongo_uri=settings.MONGO_URI)
+        my_genomes = genome_info.get_infos_by_owner(owner=request.user.username)
 
         result = {'status': 'ok',
                   'error_message': None,
-                  'uploaded_files': uploaded_files}
+                  'uploaded_files': {x['file_name']: x['status'] for x in my_genomes}}
 
     response = HttpResponse(simplejson.dumps(result), mimetype='application/json')
     response['Pragma'] = 'no-cache'
