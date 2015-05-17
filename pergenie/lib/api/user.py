@@ -52,7 +52,7 @@ class User(object):
 
         user = django_User.objects.create_user(user_id, user_id, password)
 
-        for fileformat in settings.FILEFORMATS:
+        for fileformat in settings.GENOME_FILE_FORMATS:
             tmp_upload_dir = os.path.join(settings.UPLOAD_DIR, user_id, fileformat['name'])
             if not os.path.exists(tmp_upload_dir):
                 os.makedirs(tmp_upload_dir)

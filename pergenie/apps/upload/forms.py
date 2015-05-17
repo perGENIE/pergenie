@@ -12,17 +12,13 @@ class UploadForm(forms.Form):
     )
 
     population = forms.ChoiceField(
-        (('unknown', 'unknown'),
-         ('Asian', 'Asian'),
-         ('European', 'European'),
-         ('Japanese', 'Japanese')),
+        zip(settings.POPULATIONS, settings.POPULATIONS),
         error_messages={'required': _('Select population.'),
                         'invalid_choice': _('Select population.')}
     )
 
-    _fileformats = [x['name'] for x in settings.FILEFORMATS]
     file_format = forms.ChoiceField(
-        zip(_fileformats, _fileformats),
+        zip(settings.GENOME_FILE_FORMATS, settings.GENOME_FILE_FORMATS),
         error_messages={'required': _('Select file format.'),
                         'invalid_choice': _('Select file format.')}
     )

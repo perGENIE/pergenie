@@ -2,14 +2,8 @@ import sys
 import os
 import datetime
 
-try:
-    import magic
-    isMagicInstalled = True
-except Exception:
-    log.warn("python-magic is not available.")
-    isMagicInstalled = False
 import pymongo
-from pymongo_genomes import Genome, GenomeInfo, GenomeNotImportedError
+from pymongo_genomes import Genome, GenomeInfo
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
@@ -23,6 +17,13 @@ from apps.upload.forms import UploadForm
 from lib.tasks import qimport_variants
 from utils import clogging
 log = clogging.getColorLogger(__name__)
+
+try:
+    import magic
+    isMagicInstalled = True
+except Exception:
+    log.warn("python-magic is not available.")
+    isMagicInstalled = False
 
 
 @require_http_methods(['GET', 'POST'])
@@ -126,7 +127,7 @@ def delete(request):
         try:
             g = Genome(file_name, owner, mongo_uri=settings.MONGO_URI)
             g.remove()
-        except GenomeNotImportedError:
+        except:
             messages.error(request, _('Invalid request.'))
             break
 
