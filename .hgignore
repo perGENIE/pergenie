@@ -1,70 +1,49 @@
 syntax: glob
 
+# OSX
 .DS_Store
-._.DS_Store
+
+# Emacs
 *~
 \#*
 .\#*
-*.pyc
-*.orig
-*_flymake.py
-*.snpedia
 .~lock*
 
-# Documents (Sphix)
-web-documentation/_build
+# Python
+*.py[cod]
+*_flymake.py
 
-# Packages
-*.egg
-*.egg-info
-build
-dist
-bin
+# Locale
+*.mo
 
-# Tests
-.coverage
-.tox
-nosetests.xml
-
-# # Translations
-# *.mo
-
-# DB, pickle
+# Database
 *.sqlite3
 *.p
-*.p.csv
 mongo.dump.*
 mysql.dump.*
 
-# Log
-*.log
-
-#
-*.memo.md
-
-# settings
+# Settings
 pergenie/settings/common.py
 pergenie/settings/develop.py
 pergenie/settings/staging.py
 pergenie/fabfiles/etc/
 pergenie/fabfiles/passwd/
 
-#
+# Daemon
+*.pid
+*.log
+
+# vendor
+static/vendor
+
+# Large data
 data/gwascatalog.20*
 data/large_dbs/
 data/summary/
 data/mycatalog/
 data/misc
-static/vendor
-_static/
 misc
-cui_dest_*
-web-documentation
-
-*.pid
+*.obj
 
 # pyfasta
 *.gdx
-
-# Population PCA
-*.obj
