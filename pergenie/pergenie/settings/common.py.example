@@ -167,19 +167,20 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 
-    'lib',
+    'apps.landing',
+    # 'lib',
 
-    'apps.api',
-    'apps.login_with_23andme',
+    # 'apps.api',
+    # 'apps.login_with_23andme',
 
     'apps.frontend',
-    'apps.dashboard',
-    'apps.riskreport',
+    # 'apps.dashboard',
+    # 'apps.riskreport',
     # 'apps.mygene',
     # 'apps.traits',
     # 'apps.population',
-    'apps.library',
-    'apps.faq',
+    # 'apps.library',
+    # 'apps.faq',
 
     'apps.templatetags',
     'apps.db'

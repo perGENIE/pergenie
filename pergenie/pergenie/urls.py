@@ -2,8 +2,8 @@ from django.conf.urls import patterns, include, url
 from django.conf import settings
 
 # Uncomment the next two lines to enable the admin:
-from django.contrib import admin
-admin.autodiscover()
+# from django.contrib import admin
+# admin.autodiscover()
 
 import os
 DOCUMENT_ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../static')  ###
@@ -17,7 +17,10 @@ urlpatterns = patterns('',
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     url(r'^static/(?P<path>.*)$', 'django.views.static.serve',{'document_root': DOCUMENT_ROOT}),
-    url(r'^admin/', include(admin.site.urls)),
+    # url(r'^admin/', include(admin.site.urls)),
+
+    #
+    url(r'^landing/', include('apps.landing.urls')),
 
     # # 23andme-api
     # url(r'^auth/callback/$', 'apps.api.views.callback'),
@@ -30,71 +33,71 @@ urlpatterns = patterns('',
     # frontend
     url(r'^$', 'apps.frontend.views.index'),
     # url(r'^terms-of-service/$', 'apps.frontend.views.terms'),
-    url(r'^about-service/$', 'apps.frontend.views.about_service'),
+    # url(r'^about-service/$', 'apps.frontend.views.about_service'),
 
     # demo mode
-    url(r'^trydemo/$', 'apps.frontend.views.trydemo'),
-    url(r'^logoutdemo/$', 'apps.frontend.views.logoutdemo'),
+    # url(r'^trydemo/$', 'apps.frontend.views.trydemo'),
+    # url(r'^logoutdemo/$', 'apps.frontend.views.logoutdemo'),
 
     # contents
-    url(r'^dashboard/$', 'apps.dashboard.views.index'),
+    # url(r'^dashboard/$', 'apps.dashboard.views.index'),
     # url(r'^user_settings/$', 'apps.settings.views.user_settings'),
 
 
 
-    url(r'^riskreport/$', 'apps.riskreport.views.index'),
-    url(r'^riskreport/export/$', 'apps.riskreport.views.export'),
-    url(r'^riskreport/show_all/$', 'apps.riskreport.views.show_all'),
-    url(r'^riskreport/show_all_files/$', 'apps.riskreport.views.show_all_files'),
-    url(r'^riskreport/(?P<trait>[^/]*)/$', 'apps.riskreport.views.trait'),
-    url(r'^riskreport/(?P<trait>[^/]*)/(?P<study>[^/]*)/$', 'apps.riskreport.views.study'),
+    # url(r'^riskreport/$', 'apps.riskreport.views.index'),
+    # url(r'^riskreport/export/$', 'apps.riskreport.views.export'),
+    # url(r'^riskreport/show_all/$', 'apps.riskreport.views.show_all'),
+    # url(r'^riskreport/show_all_files/$', 'apps.riskreport.views.show_all_files'),
+    # url(r'^riskreport/(?P<trait>[^/]*)/$', 'apps.riskreport.views.trait'),
+    # url(r'^riskreport/(?P<trait>[^/]*)/(?P<study>[^/]*)/$', 'apps.riskreport.views.study'),
 
-    url(r'^library/$', 'apps.library.views.index'),
-    url(r'^library/trait/$', 'apps.library.views.trait_index'),
-    url(r'^library/trait/(?P<trait>.*?)/$', 'apps.library.views.trait'),
-    url(r'^library/snps/$', 'apps.library.views.snps_index'),
-    url(r'^library/snps/rs/(?P<rs>.*?)/$', 'apps.library.views.snps'),
-    url(r'^library/summary/$', 'apps.library.views.summary_index'),
+    # url(r'^library/$', 'apps.library.views.index'),
+    # url(r'^library/trait/$', 'apps.library.views.trait_index'),
+    # url(r'^library/trait/(?P<trait>.*?)/$', 'apps.library.views.trait'),
+    # url(r'^library/snps/$', 'apps.library.views.snps_index'),
+    # url(r'^library/snps/rs/(?P<rs>.*?)/$', 'apps.library.views.snps'),
+    # url(r'^library/summary/$', 'apps.library.views.summary_index'),
     # url(r'^library/summary/(?P<field_name>.*?)/$', 'apps.library.views.summary'),
 
-    url(r'^faq/$', 'apps.faq.views.index'),
+    # url(r'^faq/$', 'apps.faq.views.index'),
 )
 
-if not settings.IS_DEMO_ONLY:
-    urlpatterns += patterns('',
-        url(r'^login/$', 'apps.frontend.views.login'),
-        url(r'^logout/$', 'apps.frontend.views.logout'),
-    )
+# if not settings.IS_DEMO_ONLY:
+#     urlpatterns += patterns('',
+#         url(r'^login/$', 'apps.frontend.views.login'),
+#         url(r'^logout/$', 'apps.frontend.views.logout'),
+#     )
 
-if settings.IS_REGISTERABLE:
-    urlpatterns += patterns('',
-        url(r'^register/$', 'apps.frontend.views.register'),
-        url(r'^activation/(?P<activation_key>\w{40})/$', 'apps.frontend.views.activation'),
+# if settings.IS_REGISTERABLE:
+#     urlpatterns += patterns('',
+#         url(r'^register/$', 'apps.frontend.views.register'),
+#         url(r'^activation/(?P<activation_key>\w{40})/$', 'apps.frontend.views.activation'),
 
-    )
+#     )
 
-if 'apps.upload' in settings.INSTALLED_APPS:
-    urlpatterns += patterns('',
-        url(r'^upload/$', 'apps.upload.views.index'),
-        url(r'^upload/delete$', 'apps.upload.views.delete'),
-        url(r'^upload/status$', 'apps.upload.views.status'),
-    )
+# if 'apps.upload' in settings.INSTALLED_APPS:
+#     urlpatterns += patterns('',
+#         url(r'^upload/$', 'apps.upload.views.index'),
+#         url(r'^upload/delete$', 'apps.upload.views.delete'),
+#         url(r'^upload/status$', 'apps.upload.views.status'),
+#     )
 
-if 'apps.population' in settings.INSTALLED_APPS:
-    urlpatterns += patterns('',
-        url(r'^population/$', 'apps.population.views.index'),
-    )
+# if 'apps.population' in settings.INSTALLED_APPS:
+#     urlpatterns += patterns('',
+#         url(r'^population/$', 'apps.population.views.index'),
+#     )
 
-if 'apps.mygene' in settings.INSTALLED_APPS:
-    urlpatterns += patterns('',
-        url(r'^mygene/$', 'apps.mygene.views.index'),
-        url(r'^mygene/(?P<gene>.*?)/$', 'apps.mygene.views.my_gene'),
-    )
+# if 'apps.mygene' in settings.INSTALLED_APPS:
+#     urlpatterns += patterns('',
+#         url(r'^mygene/$', 'apps.mygene.views.index'),
+#         url(r'^mygene/(?P<gene>.*?)/$', 'apps.mygene.views.my_gene'),
+#     )
 
-if 'apps.mycatalog' in settings.INSTALLED_APPS:
-    urlpatterns += patterns('',
-        url(r'^mycatalog/$', 'apps.mycatalog.views.index'),
-    )
+# if 'apps.mycatalog' in settings.INSTALLED_APPS:
+#     urlpatterns += patterns('',
+#         url(r'^mycatalog/$', 'apps.mycatalog.views.index'),
+#     )
 
 
 

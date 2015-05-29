@@ -18,11 +18,6 @@ from utils import clogging
 log = clogging.getColorLogger(__name__)
 
 
-def index(request):
-    return direct_to_template(request, 'frontend/index.html', dict(is_registerable=settings.IS_REGISTERABLE,
-                                                                   is_demo_only=settings.IS_DEMO_ONLY,
-                                                                   set_tweet_button=settings.SET_TWEET_BUTTON))
-
 # def terms(request):
 #     return direct_to_template(request, 'frontend/terms-of-service.html', dict(browser_language=get_language()))
 

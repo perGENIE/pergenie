@@ -23,14 +23,14 @@ DATABASES = {
         'HOST': '',
         'PORT': '',
     },
-    'bioq': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'bioq_dbsnp_human_137',
-        'USER': 'root',
-        'PASSWORD': '',
-        'HOST': 'localhost',
-        'PORT': '',
-    },
+    # 'bioq': {
+    #     'ENGINE': 'django.db.backends.mysql',
+    #     'NAME': 'bioq_dbsnp_human_137',
+    #     'USER': 'root',
+    #     'PASSWORD': '',
+    #     'HOST': 'localhost',
+    #     'PORT': '',
+    # },
     # 'snps': {
     #     'ENGINE': 'django.db.backends.mysql',
     #     'NAME': 'snps',
@@ -94,24 +94,7 @@ CELERYD_LOG_LEVEL = "INFO" # DEBUG, INFO, WARNING, ERROR or CRITICAL
 ## App settings
 DEFAULT_POPULATION = 'European'
 
-INSTALLED_APPS += ('apps.upload',
-)
-
 SET_TWEET_BUTTON = True
-
-#
-FILEFORMATS += [
-    # {'name': 'vcf_exome_iontargetseq',
-    #  'extention': '*.vcf',
-    #  'long_name': 'VCF (IonTargetSeq Exome)',
-    #  'short_name': 'iontargetseq',
-    #  'region_file': 'Ion-TargetSeq-Exome-50Mb-hg19'},
-    # {'name': 'vcf_exome_sureselect_v5_plus',
-    #  'extention': '*.vcf',
-    #  'long_name': 'VCF (SureSelect Exome)',
-    #  'short_name': 'sureselect_v5_plus',
-    #  'region_file': 'ExomeV5Cover_plus_regulatory'}
-]
 
 # Uploaded users data
 UPLOAD_DIR = '/tmp/pergenie/uploaded'

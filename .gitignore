@@ -17,15 +17,11 @@
 # Database
 *.sqlite3
 *.p
-mongo.dump.*
-mysql.dump.*
 
 # Settings
-pergenie/settings/common.py
-pergenie/settings/develop.py
-pergenie/settings/staging.py
-pergenie/fabfiles/etc/
-pergenie/fabfiles/passwd/
+pergenie/pergenie/settings/common.py
+pergenie/pergenie/settings/develop.py
+pergenie/pergenie/settings/staging.py
 
 # Daemon
 *.pid
@@ -33,15 +29,6 @@ pergenie/fabfiles/passwd/
 
 # vendor
 static/vendor
-
-# Large data
-data/gwascatalog.20*
-data/large_dbs/
-data/summary/
-data/mycatalog/
-data/misc
-misc
-*.obj
 
 # pyfasta
 *.gdx
