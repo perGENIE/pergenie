@@ -19,8 +19,8 @@ urlpatterns = patterns('',
     url(r'^static/(?P<path>.*)$', 'django.views.static.serve',{'document_root': DOCUMENT_ROOT}),
     # url(r'^admin/', include(admin.site.urls)),
 
-    #
-    url(r'^landing/', include('apps.landing.urls')),
+    # Landing page
+    url(r'^$', include('apps.landing.urls')),
 
     # # 23andme-api
     # url(r'^auth/callback/$', 'apps.api.views.callback'),
@@ -31,7 +31,6 @@ urlpatterns = patterns('',
     # url(r'^login_with_23andme/$', 'apps.login_with_23andme.views.view'),
 
     # frontend
-    url(r'^$', 'apps.frontend.views.index'),
     # url(r'^terms-of-service/$', 'apps.frontend.views.terms'),
     # url(r'^about-service/$', 'apps.frontend.views.about_service'),
 
