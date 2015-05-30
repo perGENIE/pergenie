@@ -1,19 +1,17 @@
+import os
+
 from django.conf.urls import patterns, include, url
 from django.conf import settings
+from django.contrib import admin
+admin.autodiscover()
 
-# Uncomment the next two lines to enable the admin:
-# from django.contrib import admin
-# admin.autodiscover()
-
-import os
 DOCUMENT_ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../static')  ###
 
-urlpatterns = patterns('',
-    # Uncomment the admin/doc line below to enable admin documentation:
-    # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
+# > How Django processes a request
+# > 3. Django runs through each URL pattern, in order, and stops at the first one that matches the requested URL.
 
+urlpatterns = patterns('',
     url(r'^static/(?P<path>.*)$', 'django.views.static.serve',{'document_root': DOCUMENT_ROOT}),
-    # url(r'^admin/', include(admin.site.urls)),
 
     # Landing page
     url(r'^$', include('apps.landing.urls')),
@@ -55,38 +53,17 @@ urlpatterns = patterns('',
     # url(r'^library/summary/(?P<field_name>.*?)/$', 'apps.library.views.summary'),
 
     # url(r'^faq/$', 'apps.faq.views.index'),
-)
 
-if settings.DEBUG:
-    import debug_toolbar
-    urlpatterns += patterns('',
-        url(r'^__debug__/', include(debug_toolbar.urls)),
-    )
+    # url(r'^upload/$', 'apps.upload.views.index'),
+    # url(r'^upload/delete$', 'apps.upload.views.delete'),
+    # url(r'^upload/status$', 'apps.upload.views.status'),
 
-# if 'apps.upload' in settings.INSTALLED_APPS:
-#     urlpatterns += patterns('',
-#         url(r'^upload/$', 'apps.upload.views.index'),
-#         url(r'^upload/delete$', 'apps.upload.views.delete'),
-#         url(r'^upload/status$', 'apps.upload.views.status'),
-#     )
+    # url(r'^population/$', 'apps.population.views.index'),
 
-# if 'apps.population' in settings.INSTALLED_APPS:
-#     urlpatterns += patterns('',
-#         url(r'^population/$', 'apps.population.views.index'),
-#     )
+    # url(r'^mygene/$', 'apps.mygene.views.index'),
+    # url(r'^mygene/(?P<gene>.*?)/$', 'apps.mygene.views.my_gene'),
 
-# if 'apps.mygene' in settings.INSTALLED_APPS:
-#     urlpatterns += patterns('',
-#         url(r'^mygene/$', 'apps.mygene.views.index'),
-#         url(r'^mygene/(?P<gene>.*?)/$', 'apps.mygene.views.my_gene'),
-#     )
-
-# if 'apps.mycatalog' in settings.INSTALLED_APPS:
-#     urlpatterns += patterns('',
-#         url(r'^mycatalog/$', 'apps.mycatalog.views.index'),
-#     )
-
-
+    # url(r'^mycatalog/$', 'apps.mycatalog.views.index'),
 
     # url(r'^myprotain/$', 'apps.myprotain.views.index'),
     # url(r'^myprotain/pdb/(?P<pdb_id>[a-zA-Z0-9]{4}?)/$', 'apps.myprotain.views.my_pdb'),
@@ -94,11 +71,11 @@ if settings.DEBUG:
     # url(r'^mydys/$', 'apps.mygene.views.my_dys'),
 
     # url(r'^traits/$', 'apps.traits.views.index'),
+)
 
-
-
-
-"""
-How Django processes a request
-3. Django runs through each URL pattern, in order, and stops at the first one that matches the requested URL.
-"""
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns += patterns('',
+        url(r'^__debug__/', include(debug_toolbar.urls)),
+        url(r'^admin/', include(admin.site.urls)),
+    )
