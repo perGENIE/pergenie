@@ -70,7 +70,7 @@ def register(request):
 
             return render(request, 'authentication/registration_completed.html', dict(user_id=user_id))
 
-    return render(request, 'authentication/register.html', dict(browser_language=get_language()))
+    return render(request, 'authentication/register.html')
 
 
 # def activation(request, activation_key):

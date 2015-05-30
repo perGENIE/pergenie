@@ -1,49 +1,55 @@
-{% extends "frontend_layout.html" %}
+{% extends "layout/authentication.html" %}
 {% block title %}Login{% endblock %}
-{% block description %}login{% endblock %}
+{% block description %}{% endblock %}
 {% load staticfiles %}
 {% load extras %}
 {% load i18n %}
 
-{% block main_container %}
-<div class="row">
-  <div class="col-md-12">
-    <div class="content-box centered">
+{% block main %}
+<section id="main">
+  <div class="container">
+    <div class="row-fluid">
+      <div class="span12">
+        <div class="login-container center">
 
-      <div id="main">
-        <form class="form-signin" role="form" action="{% url apps.frontend.views.login %}" method="POST">
-          {% csrf_token %}
+          <div class="title">
+            <a href="#"><img class="login_logo" src="{% static 'img/logo.png' %}"></a>
+          </div>
 
+          <form class="login-form" role="form" action="/login/" method="POST">
+            {% csrf_token %}
 
-        <div class="form-signin-heading">
-          <a href="{% url apps.frontend.views.index %}"><img class="login_logo" src="{% static 'images/logo.png' %}"></a>
+            <ul class="fields-list">
+              <li>
+                <i class="icon-envelope-alt" style="float: left;"></i>
+                <input id="user_id" name="user_id" placeholder="Email" type="email">
+              </li>
+              <li>
+                <i class="icon-key"></i>
+                <input id="password" name="password" placeholder="Password" type="password">
+              </li>
+            </ul>
+
+            <legend></legend>  <!--  -->
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+              {{ message }}
+            </div>
+            {% endfor %}
+            {% endif %}
+
+            <div class="actions clearfix">
+              <input class="btn btn-primary btn-large login-btn" name="commit" type="submit" value="{% trans 'Login' %}">
+            </div>
+
+          </form>
+
+          <a href="/register/">{% trans "Create an account." %}</a>
+
         </div>
-
-          <div class="row user_id">
-            <input type="email" class="form-control" id="user_id" name="user_id" placeholder="Email">
-          </div>
-
-          <div class="row pass">
-        	<input type="password" class="form-control" id="password" name="password" placeholder="Password" />
-          </div>
-
-          {% if err %}
-          <div class="alert alert-danger">
-            <strong>Error!</strong> {{ err }}
-          </div>
-          {% endif %}
-
-          <button type="submit" class="btn btn-lg btn-primary btn-block" name="commit">{% trans "Login" %}</button>
-
-        </form>
-
-        {% if is_registerable %}
-        <a href="{% url apps.frontend.views.register %}">{% trans "Create an account." %}</a>
-        {% endif %}
-
       </div>
-
     </div>
   </div>
-</div>
+</section>
 {% endblock %}
