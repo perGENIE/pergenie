@@ -73,15 +73,15 @@ def register(request):
     return render(request, 'authentication/register.html')
 
 
-# def activation(request, activation_key):
-#     u = pergenie_User()
-#     try:
-#         u.activate(activation_key)
-#     except Exception, e:
-#         log.error(e)
-#         raise Http404
+def activation(request, activation_key):
+    u = pergenie_User()
+    try:
+        u.activate(activation_key)
+    except Exception, e:
+        log.error(e)
+        raise Http404
 
-#     return direct_to_template(request, 'authentication/activation_completed.html')
+    return render(request, 'authentication/activation_completed.html')
 
 
 @require_http_methods(['GET', 'POST'])
