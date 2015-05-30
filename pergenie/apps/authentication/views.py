@@ -18,6 +18,9 @@ from utils import clogging
 log = clogging.getColorLogger(__name__)
 
 
+def about_service(request):
+    return render(request, 'authentication/about_service.html')
+
 @require_http_methods(['GET', 'POST'])
 def register(request):
     auth_logout(request)

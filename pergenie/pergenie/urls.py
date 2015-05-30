@@ -24,9 +24,11 @@ urlpatterns = patterns('',
 
     # Authentication
     url(r'^register/$',                              'apps.authentication.views.register'),
-    # url(r'^activation/(?P<activation_key>\w{40})/$', 'apps.authentication.views.activation'),
+    url(r'^activation/(?P<activation_key>\w{40})/$', 'apps.authentication.views.activation'),
     url(r'^login/$',                                 'apps.authentication.views.login'),
     url(r'^logout/$',                                'apps.authentication.views.logout'),
+    url(r'^about-service/$',                         'apps.authentication.views.about_service'),
+
     # url(r'^trydemo/$',    'apps.frontend.views.trydemo'),
     # url(r'^logoutdemo/$', 'apps.frontend.views.logoutdemo'),
 
