@@ -1,5 +1,6 @@
 import sys, os
-from uuid import uuid4
+import socket
+# from uuid import uuid4
 
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.models import User
@@ -7,19 +8,22 @@ from django.views.decorators.http import require_http_methods
 from django.shortcuts import render, redirect
 from django.utils.translation import ugettext as _
 from django.utils.translation import get_language
-from django.db import IntegrityError
+from django.db import IntegrityError, transaction
 from django.http import Http404
+from django.template import Context
+from django.template.loader import get_template
 from django.contrib import messages
 from django.conf import settings
 
 from apps.authentication.forms import LoginForm, RegisterForm
-from lib.api.user import User as pergenie_User
+from apps.authentication.models import UserActivation
 from utils import clogging
 log = clogging.getColorLogger(__name__)
 
 
 def about_service(request):
     return render(request, 'authentication/about_service.html')
+
 
 @require_http_methods(['GET', 'POST'])
 def register(request):
@@ -48,38 +52,44 @@ def register(request):
                 messages.error(request, _('Passwords do not match.'))
                 break
 
-            u = pergenie_User()
-            try:
-                u.create(user_id, password1)
-            except Exception, e:
-                log.error(e)
-                messages.error(request, _('Invalid request.'))
-                break
-
-            # Registration *without* mail verification
-            if not settings.ACCOUNT_ACTIVATION:
-                user = User.objects.filter(username=user_id)
-                auth_login(request, user)
-                return redirect('apps.dashboard.views.index')
-
             log.debug(user_id)
 
             try:
-                u.send_activation_email(user_id)
+                with transaction.atomic():
+                    user = User.objects.create_user(user_id, user_id, password1)
+                    if settings.ACCOUNT_ACTIVATION_REQUIRED:
+                        user.is_active = False
+                        _send_activation_email(user, request)
+                        user.save()
+                        return render(request, 'authentication/registration_completed.html', dict(user_id=user_id))
+                    else:
+                        user.is_active = True
+                        user.save()
+                        auth_login(request, authenticate(username=user_id, password=password1))
+                        return redirect('apps.dashboard.views.index')
             except Exception, e:
                 log.error(e)
                 messages.error(request, _('Invalid request.'))
                 break
-
-            return render(request, 'authentication/registration_completed.html', dict(user_id=user_id))
 
     return render(request, 'authentication/register.html')
 
 
 def activation(request, activation_key):
-    u = pergenie_User()
     try:
-        u.activate(activation_key)
+        challenging_user = UserActivation.objects.get(activation_key=activation_key)
+        if not challenging_user:
+            raise Exception('Invalid activation_key')
+
+        user = User.objects.get(username__exact=challenging_user.user.username)
+        if user:
+            # TODO: check ACCOUNT_ACTIVATION_KYE_EXPIRE_HOURS
+            # TODO: if expired, show link to re-issue activation key in view
+
+            user.is_active = True
+            user.save()
+            challenging_user.delete()
+            _send_activation_completed_email(user)
     except Exception, e:
         log.error(e)
         raise Http404
@@ -141,34 +151,39 @@ def logout(request):
 
 
 # def trydemo(request):
-#     """Login as DEMO USER (demo@pergenie.org)
-#     """
-
-#     while True:
-#         try:
-#             demo_user_uid = settings.DEMO_USER_ID + '+' + str(uuid4())
-#             user = User.objects.create_user(demo_user_uid, '', settings.DEMO_USER_ID)
-#             user.save()
-#             break
-#         except IntegrityError, e:
-#             pass
-#         except:
-#             return direct_to_template(request, 'authentication/index.html')
-
-#     # create user_info
-#     with MongoClient(host=settings.MONGO_URI) as c:
-#         user_info = c['pergenie']['user_info']
-
-#         user_info.insert({'user_id': demo_user_uid,
-#                           'risk_report_show_level': 'show_all',
-#                           'activation_key': ''})
-
-#     user = authenticate(username=demo_user_uid, password=settings.DEMO_USER_ID)
-#     auth_login(request, user)
-
 #     return redirect('apps.dashboard.views.index')
 
 
 # def logoutdemo(request):
 #     auth_logout(request)
 #     return redirect('apps.authentication.views.index')
+
+
+def _send_activation_email(user, request):
+    activation_key = User.objects.make_random_password(length=settings.ACCOUNT_ACTIVATION_KEY_LENGTH)
+    activation_url = request.build_absolute_uri(os.path.join('..', 'activation', activation_key))
+
+    try:
+        with transaction.atomic():
+            ua = UserActivation(user=user, activation_key=activation_key)
+            ua.save()
+
+            email_template = get_template('authentication/activation_email.html')
+            email_title = _("Welcome to perGENIE")
+            email_body = email_template.render(Context({'activation_url': activation_url, 'support_email': settings.SUPPORT_EMAIL}))
+            user.email_user(subject=email_title, message=email_body)
+    except Exception as e:
+        log.error(e)
+        log.error('send activaton email failed')
+
+        prev_user = User.objects.filter(username=user.username)
+        if prev_user:
+            prev_user.delete()
+
+        raise Exception(_('Invalid mail address assumed.'))
+
+def _send_activation_completed_email(user):
+    email_template = get_template('authentication/activation_completed_email.html')
+    email_title = _('Your account has been activated')
+    email_body = email_template.render(Context({'support_email': settings.SUPPORT_EMAIL}))
+    user.email_user(subject=email_title, message=email_body)

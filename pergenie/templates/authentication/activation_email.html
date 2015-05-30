@@ -1,0 +1,13 @@
+{% load staticfiles %}
+{% load extras %}
+{% load i18n %}
+{% trans 'Welcome to perGENIE!' %}
+
+{% trans 'To complete your registration, please visit following URL:' %}
+
+{{ activation_url }}
+
+{% trans 'If you have problems with signing up, please contact us at' %} {{ support_email }}
+
+
+- {% trans 'perGENIE Team' %}

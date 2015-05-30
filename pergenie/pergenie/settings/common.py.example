@@ -29,20 +29,7 @@ DATABASES = {
         'HOST': '',
         'PORT': '',
     },
-    # 'bioq': {
-    #     'ENGINE': 'django.db.backends.mysql',
-    #     'NAME': 'bioq',
-    #     'USER': '',
-    #     'PASSWORD': '',
-    #     'HOST': '',
-    #     'PORT': '',
-    # }
 }
-
-#
-DB_SELECT = {'genomes': 'mongodb',
-             'gwascatalog': 'mongodb',
-             'riskreport': 'mongodb'}
 
 # CACHES = {
 #     'default': {
@@ -165,13 +152,12 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
 
     'apps.landing',
-    # 'lib',
+    'apps.authentication',
+    'apps.dashboard',
 
+    # 'lib',
     # 'apps.api',
     # 'apps.login_with_23andme',
-
-    'apps.frontend',
-    # 'apps.dashboard',
     # 'apps.riskreport',
     # 'apps.mygene',
     # 'apps.traits',
@@ -223,8 +209,8 @@ LOGIN_URL = '/login/'
 MIN_PASSWORD_LENGTH = 8
 
 # Registration
-ACCOUNT_ACTIVATION = True
-ACCOUNT_ACTIVATION_DAYS = 2
+ACCOUNT_ACTIVATION_REQUIRED = True
+ACCOUNT_ACTIVATION_KYE_EXPIRE_HOURS= 24
 ACCOUNT_ACTIVATION_KEY_LENGTH = 40  # Notice: If you change this, you also have to change url regexp in url.py
 
 # longerusername
@@ -365,14 +351,10 @@ TOMITA_GENOME = {'name': os.path.join(LARGE_REFERENCE_DIR, 'demo_data', 'DRA0005
 
 
 ## Registeration & Login
-SET_TWEET_BUTTON = True
-
-IS_REGISTERABLE = True
 INVALID_USER_ID_CHARACTERS = ['"', "'", "/"]
 
 # if blank, all domains are allowed to register & login
 ALLOWED_EMAIL_DOMAINS = []  # otherwise, set like ['domain.com', 'domain.co.jp']
-
 
 ## Genome data uploading
 

@@ -67,20 +67,8 @@ CELERY_RESULT_BACKEND = "amqp"
 CELERYD_LOG_FILE = "/tmp/celeryd.log"
 CELERYD_LOG_LEVEL = "INFO" # DEBUG, INFO, WARNING, ERROR or CRITICAL
 
-# Gmail
-# EMAIL_USE_TLS = True
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_HOST_USER = 'hostmaster@example.com'
-# EMAIL_HOST_PASSWORD = 'password'
-# EMAIL_PORT = 587
-
-# Outlook
-# EMAIL_USE_TLS = True
-# EMAIL_HOST = 'smtp-mail.outlook.com'
-# EMAIL_HOST_USER = 'hostmaster@example.con'
-# EMAIL_HOST_PASSWORD = 'password'
-# EMAIL_PORT = 587
-# DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+# Email
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # 23andMe API
 # CLIENT_ID = "xxx"
@@ -101,17 +89,9 @@ INSTALLED_APPS += (
 ## App settings
 DEFAULT_POPULATION = 'European'
 
-SET_TWEET_BUTTON = True
-
 # Uploaded users data
 UPLOAD_DIR = '/tmp/pergenie/uploaded'
 UPLOAD_GENOMEFILE_COUNT = 10000
-
-#
-IS_DEMO_ONLY = False
-if IS_DEMO_ONLY:
-    IS_REGISTERABLE = False
-
 
 ## Reference files
 
