@@ -62,6 +62,12 @@ urlpatterns = patterns('',
     # url(r'^faq/$', 'apps.faq.views.index'),
 )
 
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns += patterns('',
+        url(r'^__debug__/', include(debug_toolbar.urls)),
+    )
+
 # if not settings.IS_DEMO_ONLY:
 #     urlpatterns += patterns('',
 #         url(r'^login/$', 'apps.frontend.views.login'),

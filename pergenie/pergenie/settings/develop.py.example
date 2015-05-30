@@ -90,6 +90,13 @@ CELERYD_LOG_LEVEL = "INFO" # DEBUG, INFO, WARNING, ERROR or CRITICAL
 # SCOPE_RS_LIST = []
 # SCOPE = "basic names" + " ".join(SCOPE_RS_LIST)
 
+MIDDLEWARE_CLASSES += (
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+)
+
+INSTALLED_APPS += (
+    'debug_toolbar',
+)
 
 ## App settings
 DEFAULT_POPULATION = 'European'
