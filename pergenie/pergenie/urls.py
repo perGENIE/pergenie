@@ -9,10 +9,6 @@ import os
 DOCUMENT_ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../static')  ###
 
 urlpatterns = patterns('',
-    # Examples:
-    # url(r'^$', 'pergenie.views.home', name='home'),
-    # url(r'^pergenie/', include('pergenie.foo.urls')),
-
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
@@ -28,9 +24,12 @@ urlpatterns = patterns('',
     url(r'^login/$',                                 'apps.authentication.views.login'),
     url(r'^logout/$',                                'apps.authentication.views.logout'),
     url(r'^about-service/$',                         'apps.authentication.views.about_service'),
+    # url(r'^trydemo/$',                               'apps.authentication.views.trydemo'),
+    # url(r'^logoutdemo/$',                            'apps.authentication.views.logoutdemo'),
+    # url(r'^user_settings/$',                         'apps.xxxxxxxxxxxxxx.views.user_settings'),
 
-    # url(r'^trydemo/$',    'apps.frontend.views.trydemo'),
-    # url(r'^logoutdemo/$', 'apps.frontend.views.logoutdemo'),
+    # Dashboard
+    url(r'^dashboard/$', 'apps.dashboard.views.index'),
 
     # # 23andme-api
     # url(r'^auth/callback/$', 'apps.api.views.callback'),
@@ -39,12 +38,6 @@ urlpatterns = patterns('',
     # url(r'^auth/user/$', 'apps.api.views.user'),
     # url(r'^auth/genotype/(?P<snpid>\w+)/$', 'apps.api.views.genotype'),
     # url(r'^login_with_23andme/$', 'apps.login_with_23andme.views.view'),
-
-    # contents
-    # url(r'^dashboard/$', 'apps.dashboard.views.index'),
-    # url(r'^user_settings/$', 'apps.settings.views.user_settings'),
-
-
 
     # url(r'^riskreport/$', 'apps.riskreport.views.index'),
     # url(r'^riskreport/export/$', 'apps.riskreport.views.export'),

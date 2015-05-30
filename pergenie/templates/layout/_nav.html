@@ -1,0 +1,81 @@
+{% load staticfiles %}
+{% load extras %}
+{% load i18n %}
+<!-- Nav -->
+<div class="navbar navbar-fixed-top navbar-inverse top-nav">
+  <div class="navbar-inner">
+
+    <div class="container">
+      <div class="row-fluid">
+        <div class="span12">
+
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+
+          <div class="nav-collapse collapse">
+            <ul class="nav primary">
+              <li class="brand">
+                <span class="title">
+                  <a href="{% url 'apps.dashboard.views.index' %}">
+                    <span class="title">perGENIE</span>
+                  </a>
+              </li>
+
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                  <i class="icon-magic"></i> Components
+                  <b class="caret"></b>
+                </a>
+
+                <ul class="dropdown-menu secondary">
+                  <!-- TODO: list INSTALLED_APP -->
+                  <!-- Dashboard -->
+                  <!-- RiskReport -->
+                  <!-- Population -->
+                  <!-- MyGene -->
+                  <!-- MyCatalog -->
+                  <!-- Upload -->
+                  <!-- Library -->
+                  <!-- FAQ -->
+
+                  <li class="">
+                    <a href="{% url 'apps.dashboard.views.index' %}">
+                      <i class="icon-dashboard"></i> Dashboard
+                    </a>
+                  </li>
+
+                </ul>
+              </li>
+            </ul>
+
+            <ul class="nav pull-right primary">
+              <li class="dropdown profile">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                  <i class="icon-unlock"></i>{{ user_id }}
+                  <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu secondary ">
+                  <li class="">
+                    <a href="#">
+                      <i class="icon-cog"></i> Account settings
+                    </a>
+                  </li>
+                  <li class="divider"></li>
+                  <li class="">
+                    <a href="{% url 'apps.authentication.views.logout' %}">
+                      <i class="icon-off"></i> {% trans "Logout" %}
+                    </a>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
