@@ -1,44 +1,44 @@
-### Getting Started on OS X
+### Getting started with development server
 
 1\. Install requirements
 
-```
-# MongoDB
-$ sudo port install mongodb
-$ sudo port load mongodb
-
-# RabbitMQ
-$ sudo port install rabbitmq-server
-$ sudo port load rabbitmq-server
-
-# Python modules
-$ sudo pip install -r requirements.txt
-```
-
-2\. Settings
+- [Python]() >=2.7,<3
+- [PostgreSQL]()
+- [MongoDB]()
+- [RabbitMQ]()
+- Python packages:
 
 ```
-$ ${EDITOR} pergenie/pergenie/settings/develop.py
+$ pip install -r requirements/requirements.txt
+$ pip install -r requirements/requirements.development.txt
 ```
 
-3\. Initialize
+2\. Configure environments settings
 
 ```
-# FIXME
+$ cp pergenie/pergenie/settings/common.py.example pergenie/pergenie/settings/common.py
+$ cp pergenie/pergenie/settings/develop.py.example pergenie/pergenie/settings/develop.py
 ```
 
-4\. Tests
+3\. Preparing backends
+
+- Run postgres
+- Run mongod
+- Run rabbitmq-server
 
 ```
-# FIXME
-```
-
-5\. Run
-
-```
+$ cd pergenie
+$ python manage.py migrate
 $ python manage.py celeryd_detach
-$ python manage.py runserver 8080
 ```
+
+4.\ Run
+
+```
+$ python manage.py runserver
+```
+
+Browse development server at `http://127.0.0.1:8000/`
 
 
 ## CUI
