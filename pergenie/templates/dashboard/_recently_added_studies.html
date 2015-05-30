@@ -1,0 +1,26 @@
+{% load extras %}
+{% load staticfiles %}
+{% load i18n %}
+<div class="content-box">
+  <div class="content-box-header">
+    <i class="icon-retweet"></i> {% trans "Recently Added Studies" %}
+  </div>
+
+  <div class="row-fluid">
+    <div class="span12">
+      <ul class="latest-comments">
+        <li class="comment-box">
+          <!-- TODO: icons -->
+          <!-- <div class="avatar user1 pull-left"></div> -->
+          <div class="article">
+            <div class="post-info"> Mike, 24 minutes ago </div>
+            <div class="post-content">
+              <b>{% trans "Trait: " %}</b>{{ record.trait }} ({{ record.added|date }})
+              <b>{% trans "Study: " %}</b>{{ record.study }} <a href="{{ record.pubmed_link }}" target="_blank"><span class="label label-info">Pubmed</span></a>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
