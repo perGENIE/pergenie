@@ -52,121 +52,121 @@ class User(object):
 
         user = django_User.objects.create_user(user_id, user_id, password)
 
-        for fileformat in settings.GENOME_FILE_FORMATS:
-            tmp_upload_dir = os.path.join(settings.UPLOAD_DIR, user_id, fileformat['name'])
-            if not os.path.exists(tmp_upload_dir):
-                os.makedirs(tmp_upload_dir)
-                os.chmod(tmp_upload_dir, 777)  # FIXME: how do we deal directory ownership
+        # for fileformat in settings.GENOME_FILE_FORMATS:
+        #     tmp_upload_dir = os.path.join(settings.UPLOAD_DIR, user_id, fileformat['name'])
+        #     if not os.path.exists(tmp_upload_dir):
+        #         os.makedirs(tmp_upload_dir)
+        #         os.chmod(tmp_upload_dir, 777)  # FIXME: how do we deal directory ownership
 
-        # TODO: move to mysql
-        # create user_info
-        with MongoClient(host=settings.MONGO_URI) as c:
-            user_info = c['pergenie']['user_info']
+        # # TODO: move to mysql
+        # # create user_info
+        # with MongoClient(host=settings.MONGO_URI) as c:
+        #     user_info = c['pergenie']['user_info']
 
-            # Ensure old one does not exist
-            if user_info.find_one({'user_id': user_id}): user_info.remove({'user_id': user_id})
+        #     # Ensure old one does not exist
+        #     if user_info.find_one({'user_id': user_id}): user_info.remove({'user_id': user_id})
 
-            user_info.insert({'user_id': user_id,
-                              'risk_report_show_level': 'show_all',
-                              'activation_key': ''})
+        #     user_info.insert({'user_id': user_id,
+        #                       'risk_report_show_level': 'show_all',
+        #                       'activation_key': ''})
 
-            if account_activation:
-                # Generate unique activation_key
-                while True:
-                    activation_key = django_User.objects.make_random_password(length=settings.ACCOUNT_ACTIVATION_KEY_LENGTH)
-                    if not user_info.find_one({'activation_key': activation_key}): break
+        #     if account_activation:
+        #         # Generate unique activation_key
+        #         while True:
+        #             activation_key = django_User.objects.make_random_password(length=settings.ACCOUNT_ACTIVATION_KEY_LENGTH)
+        #             if not user_info.find_one({'activation_key': activation_key}): break
 
-                # add activation_key info to mongodb.user_info
-                user_info.update({'user_id': user_id},
-                                 {"$set": {'activation_key': activation_key}},
-                                 upsert=True)
+        #         # add activation_key info to mongodb.user_info
+        #         user_info.update({'user_id': user_id},
+        #                          {"$set": {'activation_key': activation_key}},
+        #                          upsert=True)
 
-                # Deactivate user activation
-                user.is_active = False
+        #         # Deactivate user activation
+        #         user.is_active = False
 
         user.save()
 
 
-    def send_activation_email(self, user_id):
-        with MongoClient(host=settings.MONGO_URI) as c:
-            user_info = c['pergenie']['user_info']
-            tmp_user_info = user_info.find_one({'user_id': user_id})
-            if tmp_user_info:
-                activation_key = tmp_user_info['activation_key']
-            else:
-                log.error('Such user does not exist: %s' % user_id)
-                raise Exception(_('Such user does not exist.'))
+#     def send_activation_email(self, user_id):
+#         with MongoClient(host=settings.MONGO_URI) as c:
+#             user_info = c['pergenie']['user_info']
+#             tmp_user_info = user_info.find_one({'user_id': user_id})
+#             if tmp_user_info:
+#                 activation_key = tmp_user_info['activation_key']
+#             else:
+#                 log.error('Such user does not exist: %s' % user_id)
+#                 raise Exception(_('Such user does not exist.'))
 
-        # Send email with activation_key
-        hostname = socket.gethostname()
-        activation_url_base = 'http://' + hostname
-        activation_url = os.path.join(activation_url_base, 'activation', activation_key)
-        if not activation_url.endswith(os.path.sep):
-            activation_url += os.path.sep
+#         # Send email with activation_key
+#         hostname = socket.gethostname()
+#         activation_url_base = 'http://' + hostname
+#         activation_url = os.path.join(activation_url_base, 'activation', activation_key)
+#         if not activation_url.endswith(os.path.sep):
+#             activation_url += os.path.sep
 
-        email_title = _("Welcome to perGENIE")
-        email_body = _("""Welcome to perGENIE!
+#         email_title = _("Welcome to perGENIE")
+#         email_body = _("""Welcome to perGENIE!
 
-To complete your registration, please visit following URL:
+# To complete your registration, please visit following URL:
 
-%(activation_url)s
+# %(activation_url)s
 
-If you have problems with signing up, please contact us at %(support_email)s
-
-
-- perGENIE Team
-
-""") % {'activation_url': activation_url, 'support_email': settings.SUPPORT_EMAIL}
-
-        try:
-            user = django_User.objects.filter(username=user_id)[0]
-            user.email_user(subject=email_title, message=email_body)
-        except Exception as e:  # SMTPException
-            log.error(e)
-            # Send activation_key faild, so delete user
-            with MongoClient(host=settings.MONGO_URI) as c:
-                user_info = c['pergenie']['user_info']
-                user_info.remove({'user_id': user_id})
-            user = django_User.objects.filter(username=user_id)[0]
-            user.delete()
-            log.error('send activaton email failed')
-            raise Exception(_('Invalid mail address assumed.'))
+# If you have problems with signing up, please contact us at %(support_email)s
 
 
-    def activate(self, activation_key):
-        with MongoClient(host=settings.MONGO_URI) as c:
-            user_info = c['pergenie']['user_info']
+# - perGENIE Team
 
-            # Find the user who has this activation key
-            challenging_user_info = user_info.find_one({'activation_key': activation_key})
-            if not challenging_user_info:
-                raise Exception('Invalid activation_key')
+# """) % {'activation_url': activation_url, 'support_email': settings.SUPPORT_EMAIL}
 
-            challenging_user = django_User.objects.get(username__exact=challenging_user_info['user_id'])
-            if challenging_user.is_active:
-                raise Exception('Already activated')
-
-            # Activate
-            challenging_user.is_active = True
-            challenging_user.save()
-
-            # Delete activation_key in mongodb
-            user_info.update({'user_id': challenging_user_info['user_id']},
-                             {"$set": {'activation_key': ''}})
-
-            # Send email notification that 'your account has been activated.'
-            try:
-                challenging_user.email_user(subject=_('Your account has been activated'),
-                                            message=_("""Your perGENIE account has been activated!
-
-If this account activation is not intended by you, please contact us at %(support_email)s
+#         try:
+#             user = django_User.objects.filter(username=user_id)[0]
+#             user.email_user(subject=email_title, message=email_body)
+#         except Exception as e:  # SMTPException
+#             log.error(e)
+#             # Send activation_key faild, so delete user
+#             with MongoClient(host=settings.MONGO_URI) as c:
+#                 user_info = c['pergenie']['user_info']
+#                 user_info.remove({'user_id': user_id})
+#             user = django_User.objects.filter(username=user_id)[0]
+#             user.delete()
+#             log.error('send activaton email failed')
+#             raise Exception(_('Invalid mail address assumed.'))
 
 
-- perGENIE Team
+#     def activate(self, activation_key):
+#         with MongoClient(host=settings.MONGO_URI) as c:
+#             user_info = c['pergenie']['user_info']
 
-""")  % {'support_email': settings.SUPPORT_EMAIL})
-            except:
-                log.error('Failed to send notification. %s' % challenging_user_info['user_id'])
+#             # Find the user who has this activation key
+#             challenging_user_info = user_info.find_one({'activation_key': activation_key})
+#             if not challenging_user_info:
+#                 raise Exception('Invalid activation_key')
+
+#             challenging_user = django_User.objects.get(username__exact=challenging_user_info['user_id'])
+#             if challenging_user.is_active:
+#                 raise Exception('Already activated')
+
+#             # Activate
+#             challenging_user.is_active = True
+#             challenging_user.save()
+
+#             # Delete activation_key in mongodb
+#             user_info.update({'user_id': challenging_user_info['user_id']},
+#                              {"$set": {'activation_key': ''}})
+
+#             # Send email notification that 'your account has been activated.'
+#             try:
+#                 challenging_user.email_user(subject=_('Your account has been activated'),
+#                                             message=_("""Your perGENIE account has been activated!
+
+# If this account activation is not intended by you, please contact us at %(support_email)s
+
+
+# - perGENIE Team
+
+# """)  % {'support_email': settings.SUPPORT_EMAIL})
+#             except:
+#                 log.error('Failed to send notification. %s' % challenging_user_info['user_id'])
 
 
     def delete(self, user_id):
@@ -174,39 +174,39 @@ If this account activation is not intended by you, please contact us at %(suppor
         user = django_User.objects.filter(username=user_id)
         user.delete()
 
-        # Delete user_info
-        with MongoClient(host=settings.MONGO_URI) as c:
-            user_info = c['pergenie']['user_info']
-            user_info.remove({'user_id': user_id})
+        # # Delete user_info
+        # with MongoClient(host=settings.MONGO_URI) as c:
+        #     user_info = c['pergenie']['user_info']
+        #     user_info.remove({'user_id': user_id})
 
         # TODO:
         # Delete genome data in upload directory
         # Delete mongo.variants
         # Delete mongo.riskreport
 
-    def get_user_info(self, user_id):
-        with MongoClient(host=settings.MONGO_URI) as c:
-            user_info = c['pergenie']['user_info']
-            info = user_info.find_one({'user_id': user_id})
+    # def get_user_info(self, user_id):
+    #     with MongoClient(host=settings.MONGO_URI) as c:
+    #         user_info = c['pergenie']['user_info']
+    #         info = user_info.find_one({'user_id': user_id})
 
-            return info
+    #         return info
 
-    def set_user_last_viewed_file(self, user_id, file_name):
-        with MongoClient(host=settings.MONGO_URI) as c:
-            user_info = c['pergenie']['user_info']
-            user_info.update({'user_id': user_id},
-                             {"$set": {'last_viewed_file': file_name}}, upsert=True)
+    # def set_user_last_viewed_file(self, user_id, file_name):
+    #     with MongoClient(host=settings.MONGO_URI) as c:
+    #         user_info = c['pergenie']['user_info']
+    #         user_info.update({'user_id': user_id},
+    #                          {"$set": {'last_viewed_file': file_name}}, upsert=True)
 
-    def set_user_data_population(self, user_id, file_name, population):
-        if user_id.startswith(settings.DEMO_USER_ID): user_id = settings.DEMO_USER_ID
-        with MongoClient(host=settings.MONGO_URI) as c:
-            user_info = c['pergenie']['data_info']
-            user_info.update({'user_id': user_id,
-                              'name': file_name},
-                             {"$set": {'population': population}})
+    # def set_user_data_population(self, user_id, file_name, population):
+    #     if user_id.startswith(settings.DEMO_USER_ID): user_id = settings.DEMO_USER_ID
+    #     with MongoClient(host=settings.MONGO_URI) as c:
+    #         user_info = c['pergenie']['data_info']
+    #         user_info.update({'user_id': user_id,
+    #                           'name': file_name},
+    #                          {"$set": {'population': population}})
 
-    def set_user_viewed_riskreport_showall_done(self, user_id):
-        with MongoClient(host=settings.MONGO_URI) as c:
-            user_info = c['pergenie']['user_info']
-            user_info.update({'user_id': user_id},
-                             {"$set": {'viewed_riskreport_showall': True}}, upsert=True)
+    # def set_user_viewed_riskreport_showall_done(self, user_id):
+    #     with MongoClient(host=settings.MONGO_URI) as c:
+    #         user_info = c['pergenie']['user_info']
+    #         user_info.update({'user_id': user_id},
+    #                          {"$set": {'viewed_riskreport_showall': True}}, upsert=True)

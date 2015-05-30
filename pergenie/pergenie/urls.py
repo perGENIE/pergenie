@@ -22,6 +22,14 @@ urlpatterns = patterns('',
     # Landing page
     url(r'^$', include('apps.landing.urls')),
 
+    # Authentication
+    url(r'^register/$',                              'apps.authentication.views.register'),
+    # url(r'^activation/(?P<activation_key>\w{40})/$', 'apps.authentication.views.activation'),
+    url(r'^login/$',                                 'apps.authentication.views.login'),
+    url(r'^logout/$',                                'apps.authentication.views.logout'),
+    # url(r'^trydemo/$',    'apps.frontend.views.trydemo'),
+    # url(r'^logoutdemo/$', 'apps.frontend.views.logoutdemo'),
+
     # # 23andme-api
     # url(r'^auth/callback/$', 'apps.api.views.callback'),
     # url(r'^auth/logout/$', 'apps.api.views.logout'),
@@ -29,14 +37,6 @@ urlpatterns = patterns('',
     # url(r'^auth/user/$', 'apps.api.views.user'),
     # url(r'^auth/genotype/(?P<snpid>\w+)/$', 'apps.api.views.genotype'),
     # url(r'^login_with_23andme/$', 'apps.login_with_23andme.views.view'),
-
-    # frontend
-    # url(r'^terms-of-service/$', 'apps.frontend.views.terms'),
-    # url(r'^about-service/$', 'apps.frontend.views.about_service'),
-
-    # demo mode
-    # url(r'^trydemo/$', 'apps.frontend.views.trydemo'),
-    # url(r'^logoutdemo/$', 'apps.frontend.views.logoutdemo'),
 
     # contents
     # url(r'^dashboard/$', 'apps.dashboard.views.index'),
@@ -67,19 +67,6 @@ if settings.DEBUG:
     urlpatterns += patterns('',
         url(r'^__debug__/', include(debug_toolbar.urls)),
     )
-
-# if not settings.IS_DEMO_ONLY:
-#     urlpatterns += patterns('',
-#         url(r'^login/$', 'apps.frontend.views.login'),
-#         url(r'^logout/$', 'apps.frontend.views.logout'),
-#     )
-
-# if settings.IS_REGISTERABLE:
-#     urlpatterns += patterns('',
-#         url(r'^register/$', 'apps.frontend.views.register'),
-#         url(r'^activation/(?P<activation_key>\w{40})/$', 'apps.frontend.views.activation'),
-
-#     )
 
 # if 'apps.upload' in settings.INSTALLED_APPS:
 #     urlpatterns += patterns('',

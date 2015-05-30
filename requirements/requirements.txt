@@ -8,9 +8,6 @@ pymongo>=2.7
 # RabbitMQ
 django-celery
 
-# upload file validation
-python-magic
-
 # bio, statistics
 pyfasta
 # numpy
@@ -19,13 +16,14 @@ pyfasta
 requests
 git+https://github.com/knmkr/pymongo_genomes.git
 
-# logging
-termcolor
-psutil
+# others
+termcolor     # logging
+psutil        # logging
+python-magic  # upload file validation
+LEPL          # email validation
 
 # TODO: add comments
 # Jinja2
-# LEPL
 # Pygments
 # Werkzeug
 # distribute
