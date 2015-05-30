@@ -28,7 +28,7 @@ pergenie/pergenie/settings/staging.py
 *.log
 
 # vendor
-static/vendor
+pergenie/static/vendor
 
 # pyfasta
 *.gdx
