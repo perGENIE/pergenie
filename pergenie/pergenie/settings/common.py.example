@@ -1,143 +1,12 @@
-# -*- coding: utf-8 -*-
+# coding: utf-8
 
 import sys, os
 
-dirname = os.path.dirname
-BASE_DIR = dirname(dirname(dirname(os.path.abspath(__file__))))
-
-# Must be True if SSL(HTTPS) is used.
-SESSION_COOKIE_SECURE = False  # Default: False
-
-DEBUG = True
-TEMPLATE_DEBUG = DEBUG
-
-# People who get code error notifications when DEBUG=False.
-ADMINS = (
-)
-
-# Send an email to the MANAGERS each time somebody visits a Django-powered page
-# that is 404ed with a non-empty referer (i.e., a broken link).
-# SEND_BROKEN_LINK_EMAILS = True
-# MANAGERS = ADMINS
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'db.sqlite3',
-        'USER': '',
-        'PASSWORD': '',
-        'HOST': '',
-        'PORT': '',
-    },
-}
-
-# CACHES = {
-#     'default': {
-#         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-#         'LOCATION': [
-#             '127.0.0.1:11211',
-#         ],
-#     }
-# }
-
-SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
-SESSION_SAVE_EVERY_REQUEST = True  # Default: False
-SESSION_COOKIE_HTTPONLY = True  # Default: True
-
-X_FRAME_OPTIONS = 'DENY'
-
-TIME_ZONE = 'Asia/Tokyo'
-LANGUAGE_CODE = 'en'  # 'ja'
-
-SITE_ID = 1
-
-# Internationalization (Translation)
-LANGUAGES = (
-    ('en', u'English'),
-    ('ja', u'日本語'),
-)
-
-LOCALE_PATHS = (
-    os.path.join(BASE_DIR, 'locale'),
-)
-
-# load the internationalization machinery
-USE_I18N = True
-
-# format dates, numbers and calendars according to the current locale
-USE_L10N = True
-
-# use timezone-aware datetimes
-USE_TZ = True
-
-# Absolute filesystem path to the directory that will hold user-uploaded files.
-# Example: "/home/media/media.lawrence.com/media/"
-MEDIA_ROOT = ''
-
-# URL that handles the media served from MEDIA_ROOT. Make sure to use a
-# trailing slash.
-# Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
-MEDIA_URL = ''
-
-# Absolute path to the directory static files should be collected to.
-# Don't put anything in this directory yourself; store your static files
-# in apps' "static/" subdirectories and in STATICFILES_DIRS.
-# Example: "/home/media/media.lawrence.com/static/"
-STATIC_ROOT = ''
-
-# URL prefix for static files.
-# Example: "http://media.lawrence.com/static/"
-STATIC_URL = '/static/'
-
-# Additional locations of static files
-STATICFILES_DIRS = (
-    # Put strings here, like "/home/html/static" or "C:/www/django/static".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-    os.path.join(BASE_DIR, 'static'),
-)
-
-# List of finder classes that know how to find static files in
-# various locations.
-STATICFILES_FINDERS = (
-    'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
-)
-
-# Make this unique, and don't share it with anybody.
-SECRET_KEY = 'secret'
-
-# List of callables that know how to import templates from various sources.
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
-)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.append(os.path.join(BASE_DIR, 'lib'))
 
 
-MIDDLEWARE_CLASSES = (
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.locale.LocaleMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    # Uncomment the next line for simple clickjacking protection:
-    # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
-)
-
-ROOT_URLCONF = 'pergenie.urls'
-
-# Python dotted path to the WSGI application used by Django's runserver.
-WSGI_APPLICATION = 'pergenie.wsgi.application'
-
-TEMPLATE_DIRS = (
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-    os.path.join(BASE_DIR, 'templates'),
-)
+# Application definition
 
 INSTALLED_APPS = (
     'django.contrib.admin',
@@ -157,19 +26,118 @@ INSTALLED_APPS = (
     'apps.authentication',
     'apps.dashboard',
 
-    # 'lib',
-    # 'apps.api',
-    # 'apps.login_with_23andme',
-    # 'apps.riskreport',
-    # 'apps.mygene',
-    # 'apps.traits',
-    # 'apps.population',
-    # 'apps.library',
-    # 'apps.faq',
-
     'apps.templatetags',
     'apps.db'
 )
+
+MIDDLEWARE_CLASSES = (
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.security.SecurityMiddleware',
+)
+
+ROOT_URLCONF = 'pergenie.urls'
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
+
+WSGI_APPLICATION = 'pergenie.wsgi.application'
+
+SITE_ID = 1  # the current site in the django_site database table
+
+
+# Session
+
+SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
+SESSION_SAVE_EVERY_REQUEST = True  # Default: False
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SECURE = False
+
+
+# Database
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'db.sqlite3',
+        'USER': '',
+        'PASSWORD': '',
+        'HOST': '',
+        'PORT': '',
+    },
+}
+
+# MongoDB
+MONGO_HOST = "localhost"
+MONGO_PORT = 27017
+MONGO_USER = ""
+MONGO_PASSWORD = ""
+MONGO_URI = "mongodb://" + MONGO_HOST + ":" + str(MONGO_PORT)
+
+# Celery (RabbitMQ)
+import djcelery
+djcelery.setup_loader()
+BROKER_HOST = "localhost"
+BROKER_PORT = 5672
+BROKER_USER = "guest"
+BROKER_PASSWORD = "guest"
+BROKER_VHOST = "/"
+CELERY_RESULT_BACKEND = "amqp"
+CELERYD_LOG_FILE = "/tmp/celeryd.log"
+CELERYD_LOG_LEVEL = "INFO"  # DEBUG, INFO, WARNING, ERROR or CRITICAL
+
+
+# Internationalization
+
+LANGUAGE_CODE = 'en'  # 'ja'
+
+TIME_ZONE = 'Asia/Tokyo'
+
+USE_I18N = True  # load the internationalization machinery
+USE_L10N = True  # format dates, numbers and calendars according to the current locale
+USE_TZ = True    # use timezone-aware datetimes
+
+LANGUAGES = (
+    ('en', u'English'),
+    ('ja', u'日本語'),
+)
+
+
+# Static files (CSS, JavaScript, Images)
+
+STATIC_URL = '/static/'  # URL prefix for static files.
+
+STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
+
+
+# User-uploaded files
+
+# URL that handles the media served from MEDIA_ROOT. Make sure to use a
+# trailing slash.
+# Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
+MEDIA_URL = ''
+
+
+# Logging
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
@@ -200,156 +168,130 @@ LOGGING = {
     }
 }
 
-# library path
-# sys.path.append(os.path.join(os.path.dirname(__file__), '../lib'))
-sys.path.append(os.path.join(BASE_DIR, 'lib'))
+
+# TODO:
 
 ## User authentication
-# If user is not logged in @login_required, redirect to:
-LOGIN_URL = '/login/'
-
+AUTH_USER_MODEL = 'authentication.User'
+LOGIN_URL = '/login/'  # If user is not logged in @login_required, redirect to:
+MAX_USERNAME_LENGTH = 255
 MIN_PASSWORD_LENGTH = 8
 
-# Registration
-ACCOUNT_ACTIVATION_REQUIRED = True
+ACCOUNT_ACTIVATION_REQUIRED = True  # Account activation on registration
 ACCOUNT_ACTIVATION_KYE_EXPIRE_HOURS= 24
 ACCOUNT_ACTIVATION_KEY_LENGTH = 40  # Notice: If you change this, you also have to change url regexp in url.py
 
-# longerusername
-MAX_USERNAME_LENGTH = 255  # optional, default is 255.
-
-# Upload genome file
+## Uploads
 MAX_UPLOAD_GENOMEFILE_NAME_LENGTH = 255
 MAX_UPLOAD_GENOMEFILE_SIZE = 2 * (1024 ** 3)  # == 2Gbytes. 100Mbytes: 1024**2 == 104857600, 1Gbytes: 1024**3
 MAX_UPLOAD_GENOMEFILE_COUNT = 3
 
+# POPULATIONS = ['African',
+#                'European',
+#                'Asian',
+#                'Japanese',
+#                'unknown']
 
-POPULATIONS = ['African',
-               'European',
-               'Asian',
-               'Japanese',
-               'unknown']
+# POPULATION_LONG_NAME_MAP = {'Asian': 'Asian',
+#                             'Europian': 'Europian',
+#                             'Japanese': 'Japanese',
+#                             'unknown': 'unknown'}
 
-POPULATION_LONG_NAME_MAP = {'Asian': 'Asian',
-                            'Europian': 'Europian',
-                            'Japanese': 'Japanese',
-                            'unknown': 'unknown'}
+# POPULATION_SOURCE_MAP = {'African': ['African'],
+#                          'European': ['European'],
+#                          'Asian': ['Asian'],
+#                          'Japanese': ['Japanese'],
+#                          'unknown': ['']}
 
-POPULATION_SOURCE_MAP = {'African': ['African'],
-                         'European': ['European'],
-                         'Asian': ['Asian'],
-                         'Japanese': ['Japanese'],
-                         'unknown': ['']}
-
-POPULATION_CODE_MAP = {'Asian': 'JPT',
-                       'Europian': 'CEU',
-                       'Japanese': 'JPT',
-                       'unknown': 'unknown'}
+# POPULATION_CODE_MAP = {'Asian': 'JPT',
+#                        'Europian': 'CEU',
+#                        'Japanese': 'JPT',
+#                        'unknown': 'unknown'}
 
 # UPDATE_SPAN = 30  # update if last riskreport is older than this days.
 
-
 # GWAS Catalog
-GWASCATALOG_URL = 'http://www.genome.gov/admin/gwascatalog.txt'
+# GWASCATALOG_URL = 'http://www.genome.gov/admin/gwascatalog.txt'
 # GWASCATALOG_INFO_URL = 'http://www.genome.gov/Pages/About/OD/OPG/GWAS%20Catalog/Tab_delimited_column_descriptions_09_27.pdf'
 
 #
-PATH_TO_ENG2JA = os.path.join(BASE_DIR, 'data', 'gwascatalog.traits.translated.tsv.csv')
-PATH_TO_DISEASE2WIKI = os.path.join(BASE_DIR, 'data', 'disease2wiki.json')
+# PATH_TO_ENG2JA = os.path.join(BASE_DIR, 'data', 'gwascatalog.traits.translated.tsv.csv')
+# PATH_TO_DISEASE2WIKI = os.path.join(BASE_DIR, 'data', 'disease2wiki.json')
 
 # test
-TEST_USER_ID = 'test@test.com'
-TEST_USER_PASSWORD = 'password123'
-TEST_DUMMY_USER_ID = 'dummy@dummy.com'
+# TEST_USER_ID = 'test@test.com'
+# TEST_USER_PASSWORD = 'password123'
+# TEST_DUMMY_USER_ID = 'dummy@dummy.com'
 
 # demo user
-DEMO_USER_ID = 'demo@pergenie.org'
-RESERVED_USER_ID = [TEST_USER_ID, TEST_DUMMY_USER_ID, DEMO_USER_ID]
+# DEMO_USER_ID = 'demo@pergenie.org'
+# RESERVED_USER_ID = [TEST_USER_ID, TEST_DUMMY_USER_ID, DEMO_USER_ID]
 
-TEST_23ANDME_FILE = os.path.join(BASE_DIR, 'lib/mongo/parser/test/test.23andme.txt')
-TEST_VCF40_FILE = os.path.join(BASE_DIR, 'lib/mongo/parser/test/test.vcf40.vcf')
+# TEST_23ANDME_FILE = os.path.join(BASE_DIR, 'lib/mongo/parser/test/test.23andme.txt')
+# TEST_VCF40_FILE = os.path.join(BASE_DIR, 'lib/mongo/parser/test/test.vcf40.vcf')
 
 
-# settings for mongodb
-MONGO_HOST = "localhost"
-MONGO_PORT = 27017
-MONGO_USER = ""
-MONGO_PASSWORD = ""
-MONGO_URI = "mongodb://" + MONGO_HOST + ":" + str(MONGO_PORT)
-
-# Celery
-import djcelery
-djcelery.setup_loader()
-BROKER_HOST = "localhost"
-BROKER_PORT = 5672
-BROKER_USER = "guest"
-BROKER_PASSWORD = "guest"
-BROKER_VHOST = "/"
-CELERY_RESULT_BACKEND = "amqp"
-CELERYD_LOG_FILE = "/tmp/celeryd.log"
-CELERYD_LOG_LEVEL = "INFO" # DEBUG, INFO, WARNING, ERROR or CRITICAL
-
-# Use Gmail
+# Gmail
 # EMAIL_USE_TLS = True
 # EMAIL_HOST = 'smtp.gmail.com'
 # EMAIL_HOST_USER = 'username@hostname'
 # EMAIL_HOST_PASSWORD = ''
 # EMAIL_PORT = 587
 
-# Use Outlook with my domain
-EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp-mail.outlook.com'
-EMAIL_HOST_USER = 'username@hostname'
-EMAIL_HOST_PASSWORD = ''
-EMAIL_PORT = 587
+# Outlook
+# EMAIL_USE_TLS = True
+# EMAIL_HOST = 'smtp-mail.outlook.com'
+# EMAIL_HOST_USER = 'username@hostname'
+# EMAIL_HOST_PASSWORD = ''
+# EMAIL_PORT = 587
 
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+# DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 # 23andMe API
-CLIENT_ID = ""
-CLIENT_SECRET = ""
-CALLBACK_URL = ""
-SCOPE_RS_LIST = []
-SCOPE = "basic names" + " ".join(SCOPE_RS_LIST)
+# CLIENT_ID = ""
+# CLIENT_SECRET = ""
+# CALLBACK_URL = ""
+# SCOPE_RS_LIST = []
+# SCOPE = "basic names" + " ".join(SCOPE_RS_LIST)
 
 # Large reference files
-LARGE_REFERENCE_DIR = ''
-PATH_TO_REFERENCE_FASTA = os.path.join(LARGE_REFERENCE_DIR, 'human_g1k_v37.fasta')
-REFGENOME_VERSION = 'GRCh37/hg19'
-REFGENOME_LINK = 'http://www.ncbi.nlm.nih.gov/projects/genome/assembly/grc/human/index.shtml#GRCh37'
-PATH_TO_DBSNP = os.path.join(LARGE_REFERENCE_DIR, 'dbsnp_137.b37.vcf')
-DBSNP_VERSION = 'B137'
-STRAND_DB_DIR = os.path.join(LARGE_REFERENCE_DIR, 'Genotyping_chips_strand_and_build_files/www.well.ox.ac.uk/~wrayner/strand')
-BIOQ_DIR = os.path.join(LARGE_REFERENCE_DIR, 'bioq', 'B137')
+# LARGE_REFERENCE_DIR = ''
+# PATH_TO_REFERENCE_FASTA = os.path.join(LARGE_REFERENCE_DIR, 'human_g1k_v37.fasta')
+# REFGENOME_VERSION = 'GRCh37/hg19'
+# REFGENOME_LINK = 'http://www.ncbi.nlm.nih.gov/projects/genome/assembly/grc/human/index.shtml#GRCh37'
+# PATH_TO_DBSNP = os.path.join(LARGE_REFERENCE_DIR, 'dbsnp_137.b37.vcf')
+# DBSNP_VERSION = 'B137'
+# STRAND_DB_DIR = os.path.join(LARGE_REFERENCE_DIR, 'Genotyping_chips_strand_and_build_files/www.well.ox.ac.uk/~wrayner/strand')
+# BIOQ_DIR = os.path.join(LARGE_REFERENCE_DIR, 'bioq', 'B137')
 
-#
-PATH_TO_REFFLAT = os.path.join(BASE_DIR, 'data', 'large_dbs', 'ucsc_refFlat', 'refFlat.txt')
-PATH_TO_INTERVAL_LIST_DIR = os.path.join(BASE_DIR, 'data', 'large_dbs', 'interval_lists')
+# #
+# PATH_TO_REFFLAT = os.path.join(BASE_DIR, 'data', 'large_dbs', 'ucsc_refFlat', 'refFlat.txt')
+# PATH_TO_INTERVAL_LIST_DIR = os.path.join(BASE_DIR, 'data', 'large_dbs', 'interval_lists')
 
 # OMIM
-PATH_TO_OMIMTXT = os.path.join(BASE_DIR, 'data', 'large_dbs', 'OMIM', 'omim.txt')
-OMIM_APIKEY = ''
-PATH_TO_MIM2GENE = os.path.join(BASE_DIR, 'data', 'large_dbs', 'OMIM', 'mim2gene.txt')
+# PATH_TO_OMIMTXT = os.path.join(BASE_DIR, 'data', 'large_dbs', 'OMIM', 'omim.txt')
+# OMIM_APIKEY = ''
+# PATH_TO_MIM2GENE = os.path.join(BASE_DIR, 'data', 'large_dbs', 'OMIM', 'mim2gene.txt')
 
 #
-PATH_TO_POPULATION_PCA = os.path.join(BASE_DIR, 'data', 'large_dbs', 'population_pca')
+# PATH_TO_POPULATION_PCA = os.path.join(BASE_DIR, 'data', 'large_dbs', 'population_pca')
 
 
 # PDB
-PATH_TO_PDB = os.path.join(LARGE_REFERENCE_DIR, 'pdb')
-RSYNC_PDB = True
+# PATH_TO_PDB = os.path.join(LARGE_REFERENCE_DIR, 'pdb')
+# RSYNC_PDB = True
 
 
 # demo data
-DEMO_23ANDME_GENOME_EU_M = {'name': os.path.join(LARGE_REFERENCE_DIR, 'demo_data', 'genome_Greg_Mendel.txt'),
-                            'population': 'European',
-                            'file_format': 'andme'}
-DEMO_23ANDME_GENOME_EU_F = {'name': os.path.join(LARGE_REFERENCE_DIR, 'demo_data', 'genome_Lilly_Mendel.txt'),
-                            'population': 'European',
-                            'file_format': 'andme'}
-TOMITA_GENOME = {'name': os.path.join(LARGE_REFERENCE_DIR, 'demo_data', 'DRA000583.bwa.gatk.vcf'),
-                 'population': 'Japanese',
-                 'file_format': 'vcf'}
+# DEMO_23ANDME_GENOME_EU_M = {'name': os.path.join(LARGE_REFERENCE_DIR, 'demo_data', 'genome_Greg_Mendel.txt'),
+#                             'population': 'European',
+#                             'file_format': 'andme'}
+# DEMO_23ANDME_GENOME_EU_F = {'name': os.path.join(LARGE_REFERENCE_DIR, 'demo_data', 'genome_Lilly_Mendel.txt'),
+#                             'population': 'European',
+#                             'file_format': 'andme'}
+# TOMITA_GENOME = {'name': os.path.join(LARGE_REFERENCE_DIR, 'demo_data', 'DRA000583.bwa.gatk.vcf'),
+#                  'population': 'Japanese',
+#                  'file_format': 'vcf'}
 
 
 ## Registeration & Login
@@ -361,37 +303,37 @@ ALLOWED_EMAIL_DOMAINS = []  # otherwise, set like ['domain.com', 'domain.co.jp']
 ## Genome data uploading
 
 # if False, users cannot upload genome data,
-IS_UPLOADABLE = True
+# IS_UPLOADABLE = True
 
-UPLOAD_DIR = '/tmp/pergenie/uploaded'
+# UPLOAD_DIR = '/tmp/pergenie/uploaded'
 
 # limit for number or uploadable files per user
-UPLOAD_GENOMEFILE_COUNT = 3
+# UPLOAD_GENOMEFILE_COUNT = 3
 
-GENOME_FILE_FORMATS = [
-    'vcf',
-    'andme'
-]
+# GENOME_FILE_FORMATS = [
+#     'vcf',
+#     'andme'
+# ]
 
-GENOME_FILE_FORMAT_LONG_NAME_MAP = {
-    'vcf': 'VCF (Whole Genome)',
-    'andme': '23andMe'
-}
+# GENOME_FILE_FORMAT_LONG_NAME_MAP = {
+#     'vcf': 'VCF (Whole Genome)',
+#     'andme': '23andMe'
+# }
 
-GENOME_FILE_FORMAT_EXTENTION_MAP = {
-    'vcf': '*.vcf',
-    'andme': '*.txt'
-}
+# GENOME_FILE_FORMAT_EXTENTION_MAP = {
+#     'vcf': '*.vcf',
+#     'andme': '*.txt'
+# }
 
-GENOME_FILE_FORMAT_SHORT_NAME_MAP = {
-    'vcf': 'wg',
-    'andme': 'andme'
-}
+# GENOME_FILE_FORMAT_SHORT_NAME_MAP = {
+#     'vcf': 'wg',
+#     'andme': 'andme'
+# }
 
-GENOME_FILE_FORMAT_REGION_FILE_MAP = {
-    'vcf': '',
-    'andme': 'andme_region'
-}
+# GENOME_FILE_FORMAT_REGION_FILE_MAP = {
+#     'vcf': '',
+#     'andme': 'andme_region'
+# }
 
     # {'name': 'vcf_exome_truseq',
     #  'extention': '*.vcf',
@@ -402,24 +344,24 @@ GENOME_FILE_FORMAT_REGION_FILE_MAP = {
 
 # if True, all the samples in vcf will be imported,
 # otherwise, only 1st sample will be imported.
-MULTI_SAMPLE_VCF = False
+# MULTI_SAMPLE_VCF = False
 
 
 ## Genome data cron job
 
-CRON_DIRS = {}  # set {'username': ['/path/to/datadir']}
+# CRON_DIRS = {}  # set {'username': ['/path/to/datadir']}
 
-DEFAULT_POPULATION = 'unknown'
+# DEFAULT_POPULATION = 'unknown'
 
 #
-INT_CHROMS = [i + 1 for i in range(22)]
+# INT_CHROMS = [i + 1 for i in range(22)]
 
 
 # FIXME:
-BACKUP_DIR = BASE_DIR
+# BACKUP_DIR = BASE_DIR
 
 #
-IS_DEMO_ONLY = False
+# IS_DEMO_ONLY = False
 
 #
-GWASCATALOG_INCONSISTENCE_THRS = 0.3
+# GWASCATALOG_INCONSISTENCE_THRS = 0.3
