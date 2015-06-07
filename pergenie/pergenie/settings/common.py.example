@@ -44,6 +44,8 @@ SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
 SESSION_SAVE_EVERY_REQUEST = True  # Default: False
 SESSION_COOKIE_HTTPONLY = True  # Default: True
 
+X_FRAME_OPTIONS = 'DENY'
+
 TIME_ZONE = 'Asia/Tokyo'
 LANGUAGE_CODE = 'en'  # 'ja'
 
