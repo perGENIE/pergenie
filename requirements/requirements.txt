@@ -3,7 +3,7 @@ Django>=1.8,<1.8.99
 # database
 MySQL-python
 pymongo>=2.7
-# psycopg2
+psycopg2
 
 # RabbitMQ
 django-celery
