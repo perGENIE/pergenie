@@ -1,2 +1,5 @@
 # debug
 django-debug-toolbar
+
+# custom extensions
+django-extensions
