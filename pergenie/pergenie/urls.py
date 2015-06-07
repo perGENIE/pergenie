@@ -1,33 +1,28 @@
-import os
-
 from django.conf.urls import patterns, include, url
 from django.conf import settings
-from django.contrib import admin
-admin.autodiscover()
+from django.conf.urls.static import static
 
-DOCUMENT_ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../static')  ###
+from apps.landing import urls as landing_urls
+from apps.authentication import views as authentication_views
+from apps.dashboard import views as dashboard_views
 
-# > How Django processes a request
-# > 3. Django runs through each URL pattern, in order, and stops at the first one that matches the requested URL.
 
-urlpatterns = patterns('',
-    url(r'^static/(?P<path>.*)$', 'django.views.static.serve',{'document_root': DOCUMENT_ROOT}),
-
+urlpatterns = [
     # Landing page
-    url(r'^$', include('apps.landing.urls')),
+    url(r'^$', include(landing_urls)),
 
     # Authentication
-    url(r'^register/$',                              'apps.authentication.views.register'),
-    url(r'^activation/(?P<activation_key>\w{40})/$', 'apps.authentication.views.activation'),
-    url(r'^login/$',                                 'apps.authentication.views.login'),
-    url(r'^logout/$',                                'apps.authentication.views.logout'),
-    url(r'^about-service/$',                         'apps.authentication.views.about_service'),
+    url(r'^register/$',                              authentication_views.register),
+    url(r'^activation/(?P<activation_key>\w{40})/$', authentication_views.activation),
+    url(r'^login/$',                                 authentication_views.login),
+    url(r'^logout/$',                                authentication_views.logout),
+    url(r'^about-service/$',                         authentication_views.about_service),
     # url(r'^trydemo/$',                               'apps.authentication.views.trydemo'),
     # url(r'^logoutdemo/$',                            'apps.authentication.views.logoutdemo'),
     # url(r'^user_settings/$',                         'apps.xxxxxxxxxxxxxx.views.user_settings'),
 
     # Dashboard
-    url(r'^dashboard/$', 'apps.dashboard.views.index'),
+    url(r'^dashboard/$', dashboard_views.index),
 
     # # 23andme-api
     # url(r'^auth/callback/$', 'apps.api.views.callback'),
@@ -71,11 +66,14 @@ urlpatterns = patterns('',
     # url(r'^mydys/$', 'apps.mygene.views.my_dys'),
 
     # url(r'^traits/$', 'apps.traits.views.index'),
-)
+] + static(settings.STATIC_URL)
 
 if settings.DEBUG:
     import debug_toolbar
-    urlpatterns += patterns('',
+    from django.contrib import admin
+    admin.autodiscover()
+
+    urlpatterns += [
         url(r'^__debug__/', include(debug_toolbar.urls)),
         url(r'^admin/', include(admin.site.urls)),
-    )
+    ]
