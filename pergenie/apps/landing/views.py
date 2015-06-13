@@ -1,7 +1,9 @@
 import sys, os
 from django.shortcuts import render
-from django.conf import settings
 
 
 def index(request):
-    return render(request, 'index.html', dict())
+    return render(request, 'index.html')
+
+def about(request):
+    return render(request, 'about.html')

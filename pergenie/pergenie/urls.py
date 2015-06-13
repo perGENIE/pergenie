@@ -2,21 +2,21 @@ from django.conf.urls import patterns, include, url
 from django.conf import settings
 from django.conf.urls.static import static
 
-from apps.landing import urls as landing_urls
+from apps.landing import views as landing_views
 from apps.authentication import views as authentication_views
 from apps.dashboard import views as dashboard_views
 
 
 urlpatterns = [
-    # Landing page
-    url(r'^$', include(landing_urls)),
+    url(r'^$', landing_views.index),
+    url(r'^about/$', landing_views.about),
 
     # Authentication
     url(r'^register/$',                              authentication_views.register),
     url(r'^activation/(?P<activation_key>\w{40})/$', authentication_views.activation),
     url(r'^login/$',                                 authentication_views.login),
     url(r'^logout/$',                                authentication_views.logout),
-    url(r'^about-service/$',                         authentication_views.about_service),
+
     # url(r'^trydemo/$',                               'apps.authentication.views.trydemo'),
     # url(r'^logoutdemo/$',                            'apps.authentication.views.logoutdemo'),
     # url(r'^user_settings/$',                         'apps.xxxxxxxxxxxxxx.views.user_settings'),
