@@ -1,5 +1,6 @@
 # debug
 django-debug-toolbar
+ipython
 
 # custom extensions
 django-extensions
