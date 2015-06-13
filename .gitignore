@@ -27,7 +27,7 @@ tmp/email
 
 # Settings
 pergenie/pergenie/settings/common.py
-pergenie/pergenie/settings/develop.py
+pergenie/pergenie/settings/development.py
 pergenie/pergenie/settings/staging.py
 
 # Daemon
