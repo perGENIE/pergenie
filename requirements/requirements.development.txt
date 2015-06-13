@@ -4,3 +4,9 @@ ipython
 
 # custom extensions
 django-extensions
+
+# test
+pytest-django
+
+# integration test
+splinter[django]
