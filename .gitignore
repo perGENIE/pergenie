@@ -18,6 +18,10 @@
 *.sqlite3
 *.p
 
+# Test
+.coverage
+htmlcov
+
 # Settings
 pergenie/pergenie/settings/common.py
 pergenie/pergenie/settings/develop.py
