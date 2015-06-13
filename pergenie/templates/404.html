@@ -1,29 +1,27 @@
-{% extends "frontend_layout.html" %}
-{% load staticfiles %}
-{% load i18n %}
+{% extends "layout/authentication.html" %}
 {% block title %}404 Page not found{% endblock %}
-{% block cookie_id %}404{% endblock %}
 {% block description %}404 Page not found{% endblock %}
+{% load staticfiles %}
+{% load extras %}
+{% load i18n %}
 
-{% block main_container %}
-<div class="container-fluid">
-  <div class="row">
-    <div class="col-md-4">&nbsp;</div>
-    <div class="col-md-4"><a href="{% url apps.frontend.views.index %}"><img class="login_logo" src="{% static 'images/logo.png' %}"></a></div>
-  </div>
-  <div class="row">
-    <div class="col-md-4">&nbsp;</div>
-    <div class="col-md-4">
-      <div class="box grad_colour_dark_blue">
-        <h2 class="box_head round_top">404 Page not found</h2>
-        <div class="toggle_container">
-          <div class="block box_content round_bottom padding_20">
+{% block cookie_id %}404{% endblock %}
+
+{% block main %}
+<section id="main">
+  <div class="container">
+    <div class="row-fluid">
+      <div class="span12 center">
+        <div class="error-container center">
+          <h1 class="transparent">#404</h1>
+
+          <div class="error-details">
             {% trans "Sorry, the page you requested may have been moved or deleted." %}
           </div>
+
         </div>
       </div>
     </div>
   </div>
-</div><!--/.fluid-container-->
-
+</section>
 {% endblock %}
