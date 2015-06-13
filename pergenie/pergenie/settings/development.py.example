@@ -20,7 +20,8 @@ MIDDLEWARE_CLASSES += (
 
 SUPPORT_EMAIL = ''
 NOREPLY_EMAIL = ''
-
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+EMAIL_FILE_PATH = 'tmp/email'
 
 # Database
 
