@@ -16,12 +16,8 @@ if __name__ == "__main__":
     log.info('host: {}'.format(host))
 
     if host.endswith('.local'):
-        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "pergenie.settings.develop")
+        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "pergenie.settings.development")
     else:
         os.environ.setdefault("DJANGO_SETTINGS_MODULE", "pergenie.settings.staging")
-
-    if not is_up('mongod'):
-        log.critical("mongod is not alive")
-        sys.exit()
 
     execute_from_command_line(sys.argv)
