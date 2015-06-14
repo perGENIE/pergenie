@@ -66,9 +66,9 @@ def register(request):
                 messages.error(request, _('Invalid mail address assumed.'))
                 break
 
-            return render(request, 'authentication/registration_completed.html', dict(email=email))
+            return render(request, 'registration_completed.html', dict(email=email))
 
-    return render(request, 'authentication/register.html')
+    return render(request, 'register.html')
 
 
 def activation(request, activation_key):
@@ -88,7 +88,7 @@ def activation(request, activation_key):
 
     send_activation_completed_email(user)
 
-    return render(request, 'authentication/activation_completed.html')
+    return render(request, 'activation_completed.html')
 
 
 @require_http_methods(['GET', 'POST'])
@@ -125,7 +125,7 @@ def login(request):
 
             return redirect('apps.dashboard.views.index')
 
-    return render(request, 'authentication/login.html')
+    return render(request, 'login.html')
 
 
 def logout(request):
@@ -145,13 +145,13 @@ def logout(request):
 
 
 def send_activation_email(user, activation_url):
-    email_template = get_template('authentication/activation_email.html')
+    email_template = get_template('activation_email.html')
     email_title = _("Welcome to perGENIE")
     email_body = email_template.render(Context({'activation_url': activation_url, 'support_email': settings.SUPPORT_EMAIL}))
     user.email_user(subject=email_title, message=email_body, from_email=settings.NOREPLY_EMAIL)
 
 def send_activation_completed_email(user):
-    email_template = get_template('authentication/activation_completed_email.html')
+    email_template = get_template('activation_completed_email.html')
     email_title = _('Your account has been activated')
     email_body = email_template.render(Context({'support_email': settings.SUPPORT_EMAIL}))
     user.email_user(subject=email_title, message=email_body, from_email=settings.NOREPLY_EMAIL)

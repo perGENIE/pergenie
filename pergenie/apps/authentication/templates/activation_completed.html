@@ -1,5 +1,5 @@
-{% extends "layout/authentication.html" %}
-{% block title %}Registeration Completed{% endblock %}
+{% extends "layout/layout_no_nav.html" %}
+{% block title %}Activation Completed{% endblock %}
 {% block description %}{% endblock %}
 {% load staticfiles %}
 {% load extras %}
@@ -16,10 +16,11 @@
             <a href="#"><img class="login_logo" src="{% static 'img/logo.png' %}"></a>
           </div>
 
-          <h4>{% trans "Registeration completed" %}</h4>
+          <h4>{% trans "Activation completed" %}</h4>
 
-          <p>{% trans "Registration completed. An activation link has been sent to the email address you supplied: " %}<b>{{ email }}</b></p>
-          <p>{% trans " Check the email and follow the instructions for activating your account!" %}</p>
+          <p>{% trans "Thanks for signing up! Now you can " %}</p>
+          <p><b><a href="/login/">{% trans "Login" %}</a></b></p>
+          <p>{% trans " and enjoy perGENIE!" %}</p>
 
         </div>
       </div>
