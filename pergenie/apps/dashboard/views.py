@@ -4,19 +4,13 @@ from django.shortcuts import render
 from django.utils.translation import ugettext as _
 from django.conf import settings
 
-# from lib.api.user import User
-# user = User()
-# from lib.api.genomes import Genomes
-# genomes = Genomes()
-# from lib.api.gwascatalog import GWASCatalog
-# gwascatalog = GWASCatalog()
 from utils.clogging import getColorLogger
 log = getColorLogger(__name__)
 
 
-# @login_required
+@login_required
 def index(request):
-    user_id = request.user.username
+    user_id = request.user.email
 
     # while True:
     #     gwascatalog.check_gwascatalog_imported()

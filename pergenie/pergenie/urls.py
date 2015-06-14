@@ -8,18 +8,17 @@ from apps.dashboard import views as dashboard_views
 
 
 urlpatterns = [
-    url(r'^$', landing_views.index),
-    url(r'^about/$', landing_views.about),
+    url(r'^$', landing_views.index, name='index'),
+    url(r'^about/$', landing_views.about, name='about'),
 
     # Authentication
-    url(r'^register/$',                              authentication_views.register),
-    url(r'^activation/(?P<activation_key>\w{40})/$', authentication_views.activation),
-    url(r'^login/$',                                 authentication_views.login),
-    url(r'^logout/$',                                authentication_views.logout),
+    url(r'^register/$', authentication_views.register),
+    url(r'^activation/(?P<activation_key>\w{{{activation_key_length}}})/$'.format(activation_key_length=settings.ACCOUNT_ACTIVATION_KEY_LENGTH),
+                        authentication_views.activation),
+    url(r'^login/$',    authentication_views.login),
+    url(r'^logout/$',   authentication_views.logout),
 
-    # url(r'^trydemo/$',                               'apps.authentication.views.trydemo'),
-    # url(r'^logoutdemo/$',                            'apps.authentication.views.logoutdemo'),
-    # url(r'^user_settings/$',                         'apps.xxxxxxxxxxxxxx.views.user_settings'),
+    # url(r'^trydemo/$',  authentication_views.trydemo),
 
     # Dashboard
     url(r'^dashboard/$', dashboard_views.index),

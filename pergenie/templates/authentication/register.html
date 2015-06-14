@@ -22,7 +22,7 @@
             <ul class="fields-list">
               <li>
                 <i class="icon-envelope-alt" style="float: left;"></i>
-                <input id="user_id" name="user_id" placeholder="Email" type="email">
+                <input id="email" name="email" placeholder="Email" type="email">
               </li>
               <li>
                 <i class="icon-key"></i>
@@ -38,7 +38,7 @@
 
             <label class="checkbox">
               <input type="checkbox" id="terms_ok_0" name="terms_ok_0" value="terms_ok_0">
-              {% trans "I read " %}<a href="{% url 'apps.authentication.views.about_service' %}" target="_blank">{% trans "About The Service of perGENIE" %}</a>{% trans ", and I accept it." %}
+              {% trans "I read " %}<a href="{% url 'about' %}" target="_blank">{% trans "About The Service of perGENIE" %}</a>{% trans ", and I accept it." %}
             </label>
             <label class="checkbox">
               <input type="checkbox" id="terms_ok_1" name="terms_ok_1" value="terms_ok_1">
