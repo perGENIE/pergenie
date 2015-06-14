@@ -42,8 +42,6 @@ class AuthenticationLoginBrowserTestCase(TestCase):
         self.browser.visit('/logout')
         assert '/login' in self.browser.url
 
-        # TODO: check login status by session cookie(?)
-
     def test_too_long_email_should_fail_login(self):
         self.browser.fill('email', 'a' * 254 + '@pergenie.org')
         self.browser.fill('password', self.test_user_password)
@@ -89,6 +87,9 @@ class AuthenticationRegisterBrowserTestCase(TestCase):
         self.browser.find_by_name('commit').click()
         assert 'registeration completed' in self.browser.title.lower()
 
+        user = User.objects.get(email=self.test_user_id)
+        assert user.is_active == False
+
     def test_activation_ok(self):
         self.browser.visit('/register')
         self.browser.fill_form({'email': self.test_user_id,
@@ -101,12 +102,14 @@ class AuthenticationRegisterBrowserTestCase(TestCase):
         user = User.objects.get(email=self.test_user_id)
         activation_key = UserActivation.objects.get(user=user).activation_key
         assert user.is_active == False
+        assert UserActivation.objects.filter(activation_key=activation_key).exists() == True
 
         self.browser.visit('/activation/' + activation_key)
         assert 'activation completed' in self.browser.title.lower()
 
         user = User.objects.get(email=self.test_user_id)
         assert user.is_active == True
+        assert UserActivation.objects.filter(activation_key=activation_key).exists() == False
 
     def test_too_long_email_should_fail_register(self):
         self.browser.visit('/register')
@@ -171,6 +174,10 @@ class AuthenticationRegisterBrowserTestCase(TestCase):
                                 'terms_ok_1': True})
         self.browser.find_by_name('commit').click()
         assert self.browser.is_text_present('Already registered')
+
+    # TODO:
+    def test_email_sending_error_should_fail_register(self):
+        pass
 
     def test_incorrect_activation_key_should_fail_activation(self):
         self.browser.visit('/activation/' + 'a' * 40)
