@@ -169,17 +169,17 @@ LOGGING = {
 }
 
 
-# TODO:
+# Authentication
 
-## User authentication
 AUTH_USER_MODEL = 'authentication.User'
-LOGIN_URL = '/login/'  # If user is not logged in @login_required, redirect to:
-MAX_USERNAME_LENGTH = 255
+LOGIN_URL = '/login/'
 MIN_PASSWORD_LENGTH = 8
 
-ACCOUNT_ACTIVATION_REQUIRED = True  # Account activation on registration
 ACCOUNT_ACTIVATION_KYE_EXPIRE_HOURS= 24
-ACCOUNT_ACTIVATION_KEY_LENGTH = 40  # Notice: If you change this, you also have to change url regexp in url.py
+ACCOUNT_ACTIVATION_KEY_LENGTH = 40
+
+
+# TODO:
 
 ## Uploads
 MAX_UPLOAD_GENOMEFILE_NAME_LENGTH = 255
@@ -293,12 +293,6 @@ MAX_UPLOAD_GENOMEFILE_COUNT = 3
 #                  'population': 'Japanese',
 #                  'file_format': 'vcf'}
 
-
-## Registeration & Login
-INVALID_USER_ID_CHARACTERS = ['"', "'", "/"]
-
-# if blank, all domains are allowed to register & login
-ALLOWED_EMAIL_DOMAINS = []  # otherwise, set like ['domain.com', 'domain.co.jp']
 
 ## Genome data uploading
 
