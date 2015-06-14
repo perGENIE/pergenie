@@ -35,17 +35,9 @@ def register(request):
                         messages.error(request, field.errors)
                 break
 
-            email = form.cleaned_data['email']
-            password1 = form.cleaned_data['password1']
-            password2 = form.cleaned_data['password2']
-            terms_ok_0 = form.cleaned_data['terms_ok_0']
-            terms_ok_1 = form.cleaned_data['terms_ok_1']
-
-            log.debug(email)
-
             try:
                 with transaction.atomic():
-                    user = User.objects.create_user(email, password1)
+                    user = User.objects.create_user(form.cleaned_data['email'], form.cleaned_data['password1'])
                     user.save()
 
                     while True:
@@ -66,7 +58,7 @@ def register(request):
                 messages.error(request, _('Invalid mail address assumed.'))
                 break
 
-            return render(request, 'registration_completed.html', dict(email=email))
+            return render(request, 'registration_completed.html', dict(email=user.email))
 
     return render(request, 'register.html')
 
@@ -101,12 +93,7 @@ def login(request):
                 messages.error(request, _('invalid mail address or password'))
                 break
 
-            email = form.cleaned_data['email']
-            password = form.cleaned_data['password']
-
-            # TODO: email dmain blacklist
-
-            user = authenticate(username=email, password=password)
+            user = authenticate(username=form.cleaned_data['email'], password=form.cleaned_data['password'])
 
             if user is None:
                 messages.error(request, _('invalid mail address or password'))
