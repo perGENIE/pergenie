@@ -72,8 +72,8 @@ class AuthenticationLoginBrowserTestCase(TestCase):
 class AuthenticationRegisterBrowserTestCase(TestCase):
     def setUp(self):
         self.browser = Browser('django')
-        self.test_user_id = 'test@pergenie.org'
-        self.test_user_password = 'testtesttest'
+        self.test_user_id = 'test-user@pergenie.org'
+        self.test_user_password = 'test-user-password'
 
     def test_register_page_ok(self):
         self.browser.visit('/register')
