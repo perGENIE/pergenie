@@ -23,6 +23,12 @@ urlpatterns = [
     # Dashboard
     url(r'^dashboard/$', dashboard_views.index),
 
+    #
+    url(r'^upload/$', 'apps.genome.views.index'),
+    # url(r'^upload/delete$', 'apps.upload.views.delete'),
+    # url(r'^upload/status$', 'apps.upload.views.status'),
+
+
     # # 23andme-api
     # url(r'^auth/callback/$', 'apps.api.views.callback'),
     # url(r'^auth/logout/$', 'apps.api.views.logout'),
@@ -47,10 +53,6 @@ urlpatterns = [
     # url(r'^library/summary/(?P<field_name>.*?)/$', 'apps.library.views.summary'),
 
     # url(r'^faq/$', 'apps.faq.views.index'),
-
-    # url(r'^upload/$', 'apps.upload.views.index'),
-    # url(r'^upload/delete$', 'apps.upload.views.delete'),
-    # url(r'^upload/status$', 'apps.upload.views.status'),
 
     # url(r'^population/$', 'apps.population.views.index'),
 
