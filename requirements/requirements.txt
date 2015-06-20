@@ -10,7 +10,7 @@ django-celery
 
 # bio, statistics
 pyfasta
-# numpy
+numpy
 
 # internal api
 requests
