@@ -26,7 +26,7 @@ class AuthenticationLoginBrowserTestCase(TestCase):
 
         self.browser.fill('email', self.test_user_id)
         self.browser.fill('password', self.test_user_password)
-        self.browser.find_by_name('commit').click()
+        self.browser.find_by_name('submit').click()
         assert '/dashboard' in self.browser.url
 
     def test_logout_ok(self):
@@ -36,7 +36,7 @@ class AuthenticationLoginBrowserTestCase(TestCase):
         # login
         self.browser.fill('email', self.test_user_id)
         self.browser.fill('password', self.test_user_password)
-        self.browser.find_by_name('commit').click()
+        self.browser.find_by_name('submit').click()
 
         # logout
         self.browser.visit('/logout')
@@ -45,25 +45,25 @@ class AuthenticationLoginBrowserTestCase(TestCase):
     def test_too_long_email_should_fail_login(self):
         self.browser.fill('email', 'a' * 254 + '@pergenie.org')
         self.browser.fill('password', self.test_user_password)
-        self.browser.find_by_name('commit').click()
+        self.browser.find_by_name('submit').click()
         assert self.browser.is_text_present('invalid mail address or password')
 
     def test_not_exist_user_should_fail_login(self):
         self.browser.fill('email', 'not-exist-user@pergenie.org')
         self.browser.fill('password', 'not-exist-user-password')
-        self.browser.find_by_name('commit').click()
+        self.browser.find_by_name('submit').click()
         assert self.browser.is_text_present('invalid mail address or password')
 
     def test_incorrect_password_should_fail_login(self):
         self.browser.fill('email', self.test_user_id)
         self.browser.fill('password', 'incorrect-password')
-        self.browser.find_by_name('commit').click()
+        self.browser.find_by_name('submit').click()
         assert self.browser.is_text_present('invalid mail address or password')
 
     def test_not_active_user_should_fail_login(self):
         self.browser.fill('email', self.test_user_id)
         self.browser.fill('password', self.test_user_password)
-        self.browser.find_by_name('commit').click()
+        self.browser.find_by_name('submit').click()
         assert self.browser.is_text_present('invalid mail address or password')
 
 
@@ -84,7 +84,7 @@ class AuthenticationRegisterBrowserTestCase(TestCase):
                                 'password2': self.test_user_password,
                                 'terms_ok_0': True,
                                 'terms_ok_1': True})
-        self.browser.find_by_name('commit').click()
+        self.browser.find_by_name('submit').click()
         assert 'registeration completed' in self.browser.title.lower()
 
         user = User.objects.get(email=self.test_user_id)
@@ -97,7 +97,7 @@ class AuthenticationRegisterBrowserTestCase(TestCase):
                                 'password2': self.test_user_password,
                                 'terms_ok_0': True,
                                 'terms_ok_1': True})
-        self.browser.find_by_name('commit').click()
+        self.browser.find_by_name('submit').click()
 
         user = User.objects.get(email=self.test_user_id)
         activation_key = UserActivation.objects.get(user=user).activation_key
@@ -118,7 +118,7 @@ class AuthenticationRegisterBrowserTestCase(TestCase):
                                 'password2': self.test_user_password,
                                 'terms_ok_0': True,
                                 'terms_ok_1': True})
-        self.browser.find_by_name('commit').click()
+        self.browser.find_by_name('submit').click()
         assert self.browser.is_text_present('Ensure this value has at most 254')
 
     def test_too_long_password_should_fail_register(self):
@@ -128,7 +128,7 @@ class AuthenticationRegisterBrowserTestCase(TestCase):
                                 'password2': 'a' * 1025,
                                 'terms_ok_0': True,
                                 'terms_ok_1': True})
-        self.browser.find_by_name('commit').click()
+        self.browser.find_by_name('submit').click()
         assert self.browser.is_text_present('Ensure this value has at most 1024')
 
     def test_too_weak_password_should_fail_register(self):
@@ -138,7 +138,7 @@ class AuthenticationRegisterBrowserTestCase(TestCase):
                                 'password2': 'weak',
                                 'terms_ok_0': True,
                                 'terms_ok_1': True})
-        self.browser.find_by_name('commit').click()
+        self.browser.find_by_name('submit').click()
         assert self.browser.is_text_present('Passwords too short')
 
     def test_not_match_passwords_should_fail_register(self):
@@ -148,7 +148,7 @@ class AuthenticationRegisterBrowserTestCase(TestCase):
                                 'password2': 'not-match-password',
                                 'terms_ok_0': True,
                                 'terms_ok_1': True})
-        self.browser.find_by_name('commit').click()
+        self.browser.find_by_name('submit').click()
         assert self.browser.is_text_present('Passwords do not match')
 
     def test_not_agree_with_terms_should_fail_register(self):
@@ -158,7 +158,7 @@ class AuthenticationRegisterBrowserTestCase(TestCase):
                                 'password2': self.test_user_password,
                                 'terms_ok_0': False,
                                 'terms_ok_1': True})
-        self.browser.find_by_name('commit').click()
+        self.browser.find_by_name('submit').click()
         assert self.browser.is_text_present('Not read and accept about service')
 
     def test_already_registerd_user_should_fail_register(self):
@@ -172,7 +172,7 @@ class AuthenticationRegisterBrowserTestCase(TestCase):
                                 'password2': self.test_user_password,
                                 'terms_ok_0': True,
                                 'terms_ok_1': True})
-        self.browser.find_by_name('commit').click()
+        self.browser.find_by_name('submit').click()
         assert self.browser.is_text_present('Already registered')
 
     # TODO:
