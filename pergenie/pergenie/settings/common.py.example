@@ -25,6 +25,7 @@ INSTALLED_APPS = (
     'apps.landing',
     'apps.authentication',
     'apps.dashboard',
+    'apps.genome',
 
     'apps.templatetags',
     'apps.db'
@@ -179,18 +180,17 @@ ACCOUNT_ACTIVATION_KYE_EXPIRE_HOURS= 24
 ACCOUNT_ACTIVATION_KEY_LENGTH = 40
 
 
-# TODO:
+# Application settings
 
-## Uploads
-MAX_UPLOAD_GENOMEFILE_NAME_LENGTH = 255
-MAX_UPLOAD_GENOMEFILE_SIZE = 2 * (1024 ** 3)  # == 2Gbytes. 100Mbytes: 1024**2 == 104857600, 1Gbytes: 1024**3
+# Genome upload/delete/status
+
+MAX_UPLOAD_GENOME_FILE_NAME_LENGTH = 255
+MAX_UPLOAD_GENOME_FILE_SIZE = 2 * (1024 ** 3)  # == 2Gbytes. 100Mbytes: 1024**2 == 104857600, 1Gbytes: 1024**3
 MAX_UPLOAD_GENOMEFILE_COUNT = 3
 
-# POPULATIONS = ['African',
-#                'European',
-#                'Asian',
-#                'Japanese',
-#                'unknown']
+GENOME_FILE_FORMATS = ['vcf', 'tsv_23andme']
+
+POPULATIONS = ['Asian', 'European', 'African', 'unknown'] + ['Japanese']
 
 # POPULATION_LONG_NAME_MAP = {'Asian': 'Asian',
 #                             'Europian': 'Europian',
@@ -303,11 +303,6 @@ MAX_UPLOAD_GENOMEFILE_COUNT = 3
 
 # limit for number or uploadable files per user
 # UPLOAD_GENOMEFILE_COUNT = 3
-
-# GENOME_FILE_FORMATS = [
-#     'vcf',
-#     'andme'
-# ]
 
 # GENOME_FILE_FORMAT_LONG_NAME_MAP = {
 #     'vcf': 'VCF (Whole Genome)',
