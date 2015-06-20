@@ -1,10 +1,11 @@
-{% extends "layout.html" %}
+{% extends "layout/layout_no_nav.html" %}
 {% block title %}Upload{% endblock %}
-{% block description %}upload genome file{% endblock %}
+{% block description %}{% endblock %}
 {% load staticfiles %}
 {% load extras %}
+{% load i18n %}
 
-{% block main_container %}
+{% block main %}
 <div class="row">
   <div class="col-md-12">
     <div class="content-box carving no-box-shadow">
@@ -26,7 +27,7 @@
           <div class="row">
             <div class="col-md-12" data-step="1" data-intro="You can upload your genome file via this form!">
 
-              <form class="form-horizontal" action="{% url apps.upload.views.index %}" method="post" enctype="multipart/form-data">
+              <form class="form-horizontal" action="{% url 'genome-upload' %}" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
 		        <fieldset>
                   <div class="control-group" data-step="2" data-intro="First, selcet your genome file.">
@@ -37,45 +38,53 @@
                   </div>
 
                   <div data-step="3" data-intro="Next, select popultion and some other features if you can.">
-                    <div class="control-group">
-                      <label class="control-label" title="see help?"><a data-toggle="modal" href="#uploadModal">Population <span class="glyphicon glyphicon-question-sign"></span></a></label>
-                      <div class="controls">
-                        <select name="population">
-                          <option value="unknown">Unknown</option>
-                          <option value="Asian">Asian</option>
-                          <option value="European">European</option>
-                          <option value="Japanese">Japanese</option>
-                        </select>
-                      </div>
-                    </div>
-
-                    <!-- <div class="control-group"> -->
-                    <!--   <label class="control-label"><a data-toggle="modal" href="#uploadModal">Sex <span class="glyphicon glyphicon-question-sign"></span></a></label> -->
-                    <!--   <div class="controls"> -->
-                    <!--     <select name="sex"> -->
-                    <!--       <option value="unknown">Unknown</option> -->
-                    <!--       <option value="male">male</option> -->
-                    <!--       <option value="female">female</option> -->
-                    <!--     </select> -->
-                    <!--   </div> -->
-                    <!-- </div> -->
 
                     <div class="control-group">
-                      <label class="control-label" title="see help?"><a data-toggle="modal" href="#uploadModal">File Format <span class="glyphicon glyphicon-question-sign"></span></a></label>
+                      <label class="control-label" title="see help?">
+                        <a data-toggle="modal" href="#uploadModal">File Format <span class="glyphicon glyphicon-question-sign"></span></a>
+                      </label>
                       <div class="controls">
                         <select name="file_format">
-                          <option value="vcf">VCF (Whole Genome)</option>
-                          <option value="andme">23andMe</option>
+                          {% for file_format_value, file_format_display_name in FILE_FORMAT_CHOICES %}
+                          <option value="{{ file_format_value }}">{{ file_format_display_name }}</option>
+                          {% endfor %}
                         </select>
                       </div>
                     </div>
+
+                    <div class="control-group">
+                      <label class="control-label" title="see help?">
+                        <a data-toggle="modal" href="#uploadModal">Population <span class="glyphicon glyphicon-question-sign"></span></a>
+                      </label>
+                      <div class="controls">
+                        <select name="population">
+                          {% for population_value, population_display_name in POPULATION_CHOICES %}
+                          <option value="{{ population_value }}">{{ population_display_name }}</option>
+                          {% endfor %}
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="control-group">
+                      <label class="control-label">
+                        <a data-toggle="modal" href="#uploadModal">Sex <span class="glyphicon glyphicon-question-sign"></span></a>
+                      </label>
+                      <div class="controls">
+                        <select name="sex">
+                          {% for sex_value, sex_display_name in SEX_CHOICES %}
+                          <option value="{{ sex_value }}">{{ sex_display_name }}</option>
+                          {% endfor %}
+                        </select>
+                      </div>
+                    </div>
+
                   </div>
+
                   <!-- <span class="label label-warning">Notice</span> genome fileをアップロードする前に，<a href="#">利用規約</a>をご確認ください． -->
                   <div  data-step="3" data-intro="Finally, submit!">
                     <div class="form-actions">
-                      <input type="submit" class="btn btn-primary">
-                      <input type="reset" value="reset" class="btn">
-
+                      <input name="submit" type="submit" class="btn btn-primary">
+                      <input name="reset" type="reset" value="reset" class="btn">
                     </div>
                   </div>
 
@@ -131,7 +140,7 @@
       <li>In addition, for VCF, we distinguish <code>While Genome Sequencing</code> and <code>Targeted Exome Sequencing</code>.
         Otherwise, we cannot distinguish whether the genotype not appear in VCF is <b>reference allele</b> or <b>not available allele in the targeted sequence</b>.
         (Usually, records in VCF is only <b>alternative allele (non-reference allele)</b>).</li>
-      <li>See more detail <a href="{% url apps.faq.views.index %}">[FAQ] What does na in genotypes mean?</a></li>
+      <li>See more detail <a href="#">[FAQ] What does na in genotypes mean?</a></li>
     </ul>
 
   </div>
@@ -262,7 +271,7 @@
 </script>
 {% endif %}
 
-<script type="text/javascript">window.upload_status_url = "{% url apps.upload.views.status %}";</script>
+<script type="text/javascript">window.upload_status_url = "#";</script>
 <script type="text/javascript" src="{% static 'js/upload.js' %}"></script>
 
 <script type="text/javascript">$('label.control-label').tooltip();</script>

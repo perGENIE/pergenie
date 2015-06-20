@@ -5,6 +5,7 @@ from django.conf.urls.static import static
 from apps.landing import views as landing_views
 from apps.authentication import views as authentication_views
 from apps.dashboard import views as dashboard_views
+from apps.genome import views as genome_views
 
 
 urlpatterns = [
@@ -21,21 +22,12 @@ urlpatterns = [
     # url(r'^trydemo/$',  authentication_views.trydemo),
 
     # Dashboard
-    url(r'^dashboard/$', dashboard_views.index),
+    url(r'^dashboard/$', dashboard_views.index, name='dashboard'),
 
-    #
-    url(r'^upload/$', 'apps.genome.views.index'),
-    # url(r'^upload/delete$', 'apps.upload.views.delete'),
-    # url(r'^upload/status$', 'apps.upload.views.status'),
-
-
-    # # 23andme-api
-    # url(r'^auth/callback/$', 'apps.api.views.callback'),
-    # url(r'^auth/logout/$', 'apps.api.views.logout'),
-    # url(r'^auth/profiles/$', 'apps.api.views.profiles'),
-    # url(r'^auth/user/$', 'apps.api.views.user'),
-    # url(r'^auth/genotype/(?P<snpid>\w+)/$', 'apps.api.views.genotype'),
-    # url(r'^login_with_23andme/$', 'apps.login_with_23andme.views.view'),
+    # Genome upload/delete/status
+    url(r'^genome/upload/$', genome_views.upload, name='genome-upload'),
+    url(r'^genome/delete/$', genome_views.delete, name='genome-delete'),
+    url(r'^genome/status/$', genome_views.status, name='genome-status'),
 
     # url(r'^riskreport/$', 'apps.riskreport.views.index'),
     # url(r'^riskreport/export/$', 'apps.riskreport.views.export'),
@@ -78,3 +70,14 @@ if settings.DEBUG:
         url(r'^__debug__/', include(debug_toolbar.urls)),
         url(r'^admin/', include(admin.site.urls)),
     ]
+
+
+# TODO:
+
+# # 23andme-api
+# url(r'^auth/callback/$', 'apps.api.views.callback'),
+# url(r'^auth/logout/$', 'apps.api.views.logout'),
+# url(r'^auth/profiles/$', 'apps.api.views.profiles'),
+# url(r'^auth/user/$', 'apps.api.views.user'),
+# url(r'^auth/genotype/(?P<snpid>\w+)/$', 'apps.api.views.genotype'),
+# url(r'^login_with_23andme/$', 'apps.login_with_23andme.views.view'),
