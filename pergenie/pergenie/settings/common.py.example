@@ -16,7 +16,6 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'djcelery',
     'django.contrib.humanize',
 
     # Uncomment the next line to enable admin documentation:
@@ -94,17 +93,15 @@ MONGO_USER = ""
 MONGO_PASSWORD = ""
 MONGO_URI = "mongodb://" + MONGO_HOST + ":" + str(MONGO_PORT)
 
-# Celery (RabbitMQ)
-import djcelery
-djcelery.setup_loader()
-BROKER_HOST = "localhost"
-BROKER_PORT = 5672
-BROKER_USER = "guest"
-BROKER_PASSWORD = "guest"
-BROKER_VHOST = "/"
-CELERY_RESULT_BACKEND = "amqp"
-CELERYD_LOG_FILE = "/tmp/celeryd.log"
-CELERYD_LOG_LEVEL = "INFO"  # DEBUG, INFO, WARNING, ERROR or CRITICAL
+# Celery
+BROKER_URL = 'amqp://{USER}:{PASSWORD}@{HOST}:{PORT}//'.format(USER='guest',
+                                                               PASSWORD='guest',
+                                                               HOST='localhost',
+                                                               PORT=5672)
+CELERY_RESULT_BACKEND = 'amqp'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
 
 
 # Internationalization
@@ -128,14 +125,6 @@ LANGUAGES = (
 STATIC_URL = '/static/'  # URL prefix for static files.
 
 STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
-
-
-# User-uploaded files
-
-# URL that handles the media served from MEDIA_ROOT. Make sure to use a
-# trailing slash.
-# Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
-MEDIA_URL = ''
 
 
 # Logging
@@ -180,7 +169,13 @@ ACCOUNT_ACTIVATION_KYE_EXPIRE_HOURS= 24
 ACCOUNT_ACTIVATION_KEY_LENGTH = 40
 
 
+# Test
+
+TEST_DATA_DIR = os.path.join(BASE_DIR, 'test', 'data')
+
+
 # Application settings
+
 
 # Genome upload/delete/status
 
@@ -188,25 +183,7 @@ MAX_UPLOAD_GENOME_FILE_NAME_LENGTH = 255
 MAX_UPLOAD_GENOME_FILE_SIZE = 2 * (1024 ** 3)  # == 2Gbytes. 100Mbytes: 1024**2 == 104857600, 1Gbytes: 1024**3
 MAX_UPLOAD_GENOMEFILE_COUNT = 3
 
-GENOME_FILE_FORMATS = ['vcf', 'tsv_23andme']
-
-POPULATIONS = ['Asian', 'European', 'African', 'unknown'] + ['Japanese']
-
-# POPULATION_LONG_NAME_MAP = {'Asian': 'Asian',
-#                             'Europian': 'Europian',
-#                             'Japanese': 'Japanese',
-#                             'unknown': 'unknown'}
-
-# POPULATION_SOURCE_MAP = {'African': ['African'],
-#                          'European': ['European'],
-#                          'Asian': ['Asian'],
-#                          'Japanese': ['Japanese'],
-#                          'unknown': ['']}
-
-# POPULATION_CODE_MAP = {'Asian': 'JPT',
-#                        'Europian': 'CEU',
-#                        'Japanese': 'JPT',
-#                        'unknown': 'unknown'}
+UPLOAD_DIR = '/tmp/pergenie'
 
 # UPDATE_SPAN = 30  # update if last riskreport is older than this days.
 
@@ -217,11 +194,6 @@ POPULATIONS = ['Asian', 'European', 'African', 'unknown'] + ['Japanese']
 #
 # PATH_TO_ENG2JA = os.path.join(BASE_DIR, 'data', 'gwascatalog.traits.translated.tsv.csv')
 # PATH_TO_DISEASE2WIKI = os.path.join(BASE_DIR, 'data', 'disease2wiki.json')
-
-# test
-# TEST_USER_ID = 'test@test.com'
-# TEST_USER_PASSWORD = 'password123'
-# TEST_DUMMY_USER_ID = 'dummy@dummy.com'
 
 # demo user
 # DEMO_USER_ID = 'demo@pergenie.org'
@@ -293,16 +265,6 @@ POPULATIONS = ['Asian', 'European', 'African', 'unknown'] + ['Japanese']
 #                  'population': 'Japanese',
 #                  'file_format': 'vcf'}
 
-
-## Genome data uploading
-
-# if False, users cannot upload genome data,
-# IS_UPLOADABLE = True
-
-# UPLOAD_DIR = '/tmp/pergenie/uploaded'
-
-# limit for number or uploadable files per user
-# UPLOAD_GENOMEFILE_COUNT = 3
 
 # GENOME_FILE_FORMAT_LONG_NAME_MAP = {
 #     'vcf': 'VCF (Whole Genome)',
