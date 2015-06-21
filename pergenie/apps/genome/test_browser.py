@@ -1,9 +1,11 @@
 from django.test import TestCase
+from django.test.utils import override_settings
 
 from splinter import Browser
 
 from apps.authentication.models import User
 from .models import Genome
+from .tasks import ping
 
 
 class GenomeBrowserTestCase(TestCase):
@@ -69,18 +71,10 @@ class GenomeBrowserTestCase(TestCase):
 
         self.browser.visit('/genome/status')
 
-    # def test_celery_job_add(self):
-    #     """Check if celery-job works
-
-    #     * if fails with `error: [Errno 61] Connection refused]`, rabbitmq-server may not be working
-    #     * if fails with `AssertionError: False != True`, celery may not be working
-
-    #     """
-    #     from lib.tasks import add
-    #     from time import sleep
-
-    #     r = add.delay(5, 5)
-    #     sleep(1)
-
-    #     self.failUnlessEqual(r.successful(), True)
-    #     self.failUnlessEqual(r.result, 10)
+    @override_settings(CELERY_EAGER_PROPAGATES_EXCEPTIONS=True,
+                       CELERY_ALWAYS_EAGER=True,
+                       BROKER_BACKEND='memory')
+    def test_celery_task_ping_ok(self):
+        result = ping.delay()
+        assert result.successful() == True
+        assert result.result == 'pong'
