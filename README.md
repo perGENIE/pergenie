@@ -9,8 +9,7 @@
 - Python packages:
 
 ```
-$ pip install -r requirements/requirements.txt
-$ pip install -r requirements/requirements.development.txt
+$ pip install -r requirements/development.txt
 ```
 
 2\. Configure environments settings
@@ -29,10 +28,13 @@ $ cp pergenie/pergenie/settings/develop.py.example pergenie/pergenie/settings/de
 ```
 $ cd pergenie
 $ python manage.py migrate
-$ python manage.py celeryd_detach
 ```
 
-4.\ Run
+```
+$ celery --app=pergenie worker --loglevel=info --logfile=/tmp/celeryd.log  # --detach
+```
+
+4\. Run
 
 ```
 $ python manage.py runserver
