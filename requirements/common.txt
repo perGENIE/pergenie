@@ -12,7 +12,7 @@ numpy
 
 # internal api
 requests
-git+https://github.com/knmkr/pymongo_genomes.git
+git+https://github.com/knmkr/py-vcf-parser.git
 
 # others
 termcolor     # logging
