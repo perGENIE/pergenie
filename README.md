@@ -31,7 +31,8 @@ $ python manage.py migrate
 ```
 
 ```
-$ celery --app=pergenie worker --loglevel=info --logfile=/tmp/celeryd.log  # --detach
+$ celery multi start 1 --app=pergenie --loglevel=info --logfile=/tmp/celeryd.log --pidfile=celery%n.pid
+$ celery multi restart 1 --logfile=/tmp/celeryd.log --pidfile=celery%n.pid
 ```
 
 4\. Run
