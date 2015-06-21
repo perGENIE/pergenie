@@ -1,14 +1,16 @@
 from django.test import TestCase
 from django.test.utils import override_settings
+from django.conf import settings
 
 from splinter import Browser
 
+from test import MongoTestCase
 from apps.authentication.models import User
 from .models import Genome
 from .tasks import ping
 
 
-class GenomeBrowserTestCase(TestCase):
+class GenomeBrowserTestCase(MongoTestCase):
     def setUp(self):
         self.browser = Browser('django')
 
@@ -78,3 +80,8 @@ class GenomeBrowserTestCase(TestCase):
         result = ping.delay()
         assert result.successful() == True
         assert result.result == 'pong'
+
+    def test_mongo_dummy_db_ok(self):
+        dummy_collection = self.mongo_dummy_db['dummy']
+        dummy_collection.insert_one({'ping': 'pong'})
+        assert dummy_collection.find_one()['ping'] == 'pong'
