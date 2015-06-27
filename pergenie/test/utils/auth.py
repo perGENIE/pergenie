@@ -6,8 +6,6 @@ from apps.authentication.models import User
 
 
 def create_user(test_user_id, test_user_password, is_active=False):
-    test_user_id = 'test-user@pergenie.org'
-    test_user_password = 'test-user-password'
     user = User.objects.create_user(test_user_id,
                                     test_user_password)
     user.is_active = is_active
