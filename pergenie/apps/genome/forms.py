@@ -40,17 +40,21 @@ class UploadForm(forms.Form):
                 raise forms.ValidationError(_('Too long file name.'))
 
             if upload_file.size > settings.MAX_UPLOAD_GENOME_FILE_SIZE:
-                raise forms.ValidationError(_('Too large file size: %(file_name)s' % {'file_name': upload_file.name}))
+                raise forms.ValidationError(_('Too large file size: {file_name}'.format(file_name=upload_file.name)))
 
             ext = os.path.splitext(upload_file.name)[1].lower()[1:]
             if ext not in ('csv', 'txt', 'vcf', 'tsv'):
-                raise forms.ValidationError(_('Not allowed file extention: %(file_name)s' % {'file_name': upload_file.name}))
+                msg = _('Not allowed file extention {ext}: {file_name}'.format(file_name=upload_file.name, ext=ext))
+                log.warn(msg)
+                raise forms.ValidationError(msg)
 
             if upload_file.content_type == 'text/plain':
                 pass
-            elif upload_file.content_type in ('text/directory', 'text/vcard') and ext == 'vcf':
+            elif upload_file.content_type in ('text/vcard', 'text/x-vcard', 'text/directory;profile=vCard', 'text/directory') and ext == 'vcf':
                 pass
             else:
-                raise forms.ValidationError(_('Not allowed file type: %(file_name)s' % {'file_name': upload_file.name}))
+                msg = _('Not allowed file type {content_type}: {file_name}'.format(file_name=upload_file.name, content_type=upload_file.content_type))
+                log.warn(msg)
+                raise forms.ValidationError(msg)
 
         return upload_files
