@@ -1,8 +1,13 @@
-from . import MongoTestCase
+from django.test import TestCase
+
+from pergenie.mongo import mongo_db
 
 
-class TestMongoTestCase(MongoTestCase):
-    def test_mongo_dummy_db_ok(self):
-        dummy_collection = self.mongo_dummy_db['dummy']
+class PingMongoTestCase(TestCase):
+    def test_ping_mongo_ok(self):
+        dummy_collection = mongo_db['dummy']
         dummy_collection.insert_one({'ping': 'pong'})
+
         assert dummy_collection.find_one()['ping'] == 'pong'
+
+        mongo_db.drop_collection(dummy_collection)
