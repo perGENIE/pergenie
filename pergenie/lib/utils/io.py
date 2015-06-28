@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
-import sys, os
+import sys
+import os
+import subprocess
 import time
 import urllib
 import socket
@@ -13,24 +15,20 @@ from lib.utils import clogging
 log = clogging.getColorLogger(__name__)
 
 
-
 def pickle_dump_obj(obj, fout_name):
     with open(fout_name, 'wb') as fout:
         pickle.dump(obj, fout, protocol=2)
-
 
 def pickle_load_obj(fin_name):
     with open(fin_name, 'rb') as fin:
         obj = pickle.load(fin)
     return obj
 
-
 def touch(filename, times=None):
     """Touch <filename>"""
 
     with file(filename, 'a'):
         os.utime(filename, times)
-
 
 def get_url_content(url, dst):
     """Get content form url"""
@@ -56,7 +54,6 @@ def reporthook(count, block_size, total_size):
                      (percent, progress_size / (1024 * 1024), speed, duration))
     sys.stdout.flush()
     is_finished = count * block_size >= total_size
-
 
 # try:
 #     import pyPdf
@@ -88,3 +85,8 @@ class cd:
 
     def __exit__(self, etype, value, traceback):
         os.chdir(self.savedPath)
+
+def count_file_lines(file_path):
+    cmd = ['wc', '-l', file_path]
+    lines = int(subprocess.Popen(cmd, stdout=subprocess.PIPE).communicate()[0].split()[0])
+    return lines

@@ -10,12 +10,11 @@ from django.contrib import messages
 from django.utils.translation import ugettext as _
 from django.conf import settings
 
-import magic    # FIXME: move to .models
+import magic
 
 from .forms import UploadForm
 from .models import Genome
 
-# from lib.tasks import qimport_variants
 from utils import clogging
 log = clogging.getColorLogger(__name__)
 
@@ -35,7 +34,7 @@ def upload(request):
             upload_files = request.FILES.getlist('upload_files')
 
             # Ensure not to exceed the limits of upload file count.
-            my_genomes = Genome.objects.filter(owners=request.user)
+            my_genomes = Genome.objects.filter(owner=request.user)
             if len(my_genomes) + len(upload_files) > settings.MAX_UPLOAD_GENOMEFILE_COUNT:
                 messages.error(request, _('Too many files.'))
                 break
@@ -46,7 +45,8 @@ def upload(request):
                 os.makedirs(upload_dir)
 
             for upload_file in upload_files:
-                genome = Genome(file_name=upload_file.name,
+                genome = Genome(owner=request.user,
+                                file_name=upload_file.name,
                                 display_name=upload_file.name,
                                 file_format=form.cleaned_data['file_format'],
                                 population=form.cleaned_data['population'],
@@ -62,9 +62,11 @@ def upload(request):
                 # Filetype identification using libmagic via python-magic
                 m = magic.Magic(mime_encoding=True)
                 magic_filetype = m.from_file(uploaded_file_path)
-                log.info('magic_filetype {}'.format(magic_filetype))
+
                 if not magic_filetype in ('us-ascii'):
-                    messages.error(request, _('File type not allowed, or encoding not allowed. %(file_name)s' % {'file_name': file_name}))
+                    msg = _('File type not allowed, or encoding not allowed {magic_filetype}: {file_name}'.format(file_name=file_name, magic_filetype=magic_filetype))
+                    log.warn(msg)
+                    messages.error(request, msg)
                     try:
                         os.remove(uploaded_file_path)
                     except OSError:
@@ -74,55 +76,53 @@ def upload(request):
                     continue
 
                 genome.save()
-                genome.owners.add(request.user)
                 genome.readers.add(request.user)
 
                 msg = _('%(file_name)s uploaded.') % {'file_name': upload_file.name}
 
                 # Import genome into DB as background job.
-                # qimport_variants.delay(info)
-                # msg += _(', and now importing...')
+                genome.create_genotypes()
+                msg += _(', and now importing...')
 
                 messages.success(request, msg)
 
             break
 
+    my_genomes = Genome.objects.filter(owner=request.user)
+
     return render(request, 'upload.html',
                   {'POPULATION_CHOICES': Genome.POPULATION_CHOICES,
                    'SEX_CHOICES': Genome.SEX_CHOICES,
-                   'FILE_FORMAT_CHOICES': Genome.FILE_FORMAT_CHOICES})
+                   'FILE_FORMAT_CHOICES': Genome.FILE_FORMAT_CHOICES,
+                   'my_genomes': my_genomes})
 
 
 @login_required
 @require_http_methods(['POST'])
 def delete(request):
-    file_name = request.POST.get('id')
-    owner = request.user.id
+    genome_id = request.POST.get('id')
 
-    while True:
-        try:
-            delete_target = Genome.objects.get(id=id,
-                                               owners=request.user)
-        except DoesNotExist:
-            messages.error(request, _('Invalid request.'))
-            break
+    try:
+        genome = Genome.objects.get(owner=request.user, id=genome_id)
 
-        # Remove genome data.
-        # from MongoDB
+        genome.delete_genotypes()
 
-        # Remove genome file in upload dir.
-        try:
-            file_path = os.path.join(settings.UPLOAD_DIR, owner, delete_target.id)
-            if os.path.exists(file_path):
-                os.remove(file_path)
-        except IOError:
-            messages.error(request, _('Invalid request.'))
-            break
+        file_path = genome.get_genome_file()
+        if os.path.exists(file_path):
+            os.remove(file_path)
 
-        messages.success(request, _('Deleted: %(file_name)s') % {'file_name': file_name})
-        break
+        genome.delete()
 
-    return redirect('apps.upload.views.index')
+        messages.success(request, _('Deleted: {}'.format(genome.file_name)))
+
+    except DoesNotExist:
+        log.error('Failed to delete not existing genome: {}'.format(genome_id))
+        messages.error(request, _('Invalid request.'))
+    except IOError:
+        log.error('Failed to delete not existing file: {}'.format(file_path))
+        messages.error(request, _('Invalid request.'))
+
+    return redirect('genome-upload')
 
 
 @login_required
@@ -133,11 +133,10 @@ def status(request):
                   'uploaded_files': []}
 
     else:
-        my_genomes = Genome.objects.filter(owners=request.user)
-
+        my_genomes = Genome.objects.filter(owner=request.user)
         result = {'status': 'ok',
-                  'error_message': None,
-                  'uploaded_files': {x['id']: x['status'] for x in my_genomes}}
+                  'error_message': '',
+                  'uploaded_files': {str(x.id): x.status for x in my_genomes}}
 
     response = JsonResponse(result)
     response['Pragma'] = 'no-cache'

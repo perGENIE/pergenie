@@ -174,16 +174,15 @@
               </thead>
 
               <tbody>
-                {% if my_genomes %}
                 {% for my_genome in my_genomes %}
                 <tr class="uploaded_file">
                   <td class="dataname">{{ my_genome.file_name }}</td>
-                  <td class="center">{{ my_genome.date }}</td>
+                  <td class="center"></td>
                   <td class="center">
                     <span class="label label-success">{{ my_genome.population }}</span>
                   </td>
                   <td class="center">
-                    <span class="label label-success">{{ my_genome.file_format|file_format_long_name }}</span>
+                    <span class="label label-success">{{ my_genome.file_format }}</span>
                   </td>
                   <td class="center">
 		            {% if my_genome.status == -1 %}
@@ -221,11 +220,11 @@
                             Really delete "{{ my_genome.file_name }}"?
                           </div>
                           <div class="modal-footer">
-			                <form action="{% url apps.upload.views.delete %}" method="POST" enctype="multipart/form-data">
+			                <form action="{% url 'genome-delete' %}" method="POST" enctype="multipart/form-data">
                               {% csrf_token %}
-			                  <input type="hidden" name="name" value="{{ my_genome.file_name }}">
-			                  <button class="btn btn-default" data-dismiss="modal">No.</button>
-			                  <button class="btn btn-primary" href="#" type="submit">Yes, delete this data.</button>
+			                  <input type="hidden" name="id" value="{{ my_genome.id }}">
+			                  <button id="delete-no-{{ my_genome.id }}" class="btn btn-default" data-dismiss="modal">No.</button>
+			                  <button id="delete-yes-{{ my_genome.id }}" class="btn btn-primary" href="#" type="submit">Yes, delete this data.</button>
 			                </form>
                           </div>
                         </div><!-- /.modal-content -->
@@ -235,11 +234,10 @@
 		        </tr>
 
 		        {% endfor %}
-		        {% endif %}
               </tbody>
             </table>
 
-	        <form id="uploaded-file-deleter" style="display: none;" action="{% url apps.upload.views.delete %}" method="POST" enctype="multipart/form-data">
+	        <form id="uploaded-file-deleter" style="display: none;" action="{% url 'genome-delete' %}" method="POST" enctype="multipart/form-data">
               {% csrf_token %}
 	          <input type="hidden" name="name" value="">
 	        </form>
