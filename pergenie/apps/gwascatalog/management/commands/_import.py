@@ -1,4 +1,5 @@
-import sys, os
+import sys
+import os
 import re
 import csv
 import datetime
@@ -13,34 +14,12 @@ h = HTMLParser.HTMLParser()
 from xml.sax.saxutils import *
 
 from django.conf import settings
+
 from lib.utils import clogging
 log = clogging.getColorLogger(__name__)
-
 from extract_region import extract_region
 from lib.mongo.mutate_fasta import MutateFasta
 from lib.utils.genome import chr_id2chrom
-
-# BioQ (dbSNP)
-from lib.mysql.bioq import Bioq
-bq = Bioq(settings.DATABASES['bioq']['HOST'],
-          settings.DATABASES['bioq']['USER'],
-          settings.DATABASES['bioq']['PASSWORD'],
-          settings.DATABASES['bioq']['NAME'])
-try:
-    bq.get_allele_freqs(3)
-except Exception:
-    log.warn('======================')
-    log.warn('BioQ not available ...')
-    log.warn('======================')
-    bq = None
-
-# 1000 Genomes
-# from lib.mysql.snps import Snps
-# snpdb = Snps(settings.DATABASES['snps']['HOST'],
-#              settings.DATABASES['snps']['USER'],
-#              settings.DATABASES['snps']['PASSWORD'],
-#              settings.DATABASES['snps']['NAME'])
-
 
 _g_gene_symbol_map = {}  # { Gene Symbol => (Entrez Gene ID, OMIM Gene ID) }
 _g_gene_id_map = {}      # { Entrez Gene ID => (Gene Symbol, OMIM Gene ID) }
