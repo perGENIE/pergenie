@@ -27,7 +27,7 @@ INSTALLED_APPS = (
     'apps.genome',
 
     'apps.templatetags',
-    'apps.db'
+    'apps.gwascatalog'
 )
 
 MIDDLEWARE_CLASSES = (
