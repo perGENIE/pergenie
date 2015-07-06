@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import sys
 import os
 import re
 import glob
@@ -11,6 +12,7 @@ from django.conf import settings
 from apps.gwascatalog.models import GWASCatalog
 from ._clean import clean_catalog
 from ._import import import_catalog
+
 from lib.utils.io import get_url_content
 from lib.utils import clogging
 log = clogging.getColorLogger(__name__)

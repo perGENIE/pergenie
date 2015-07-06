@@ -27,7 +27,7 @@ INSTALLED_APPS = (
     'apps.genome',
 
     'apps.templatetags',
-    'apps.gwascatalog'
+    'apps.gwascatalog',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -188,20 +188,14 @@ UPLOAD_DIR = '/tmp/pergenie'
 # UPDATE_SPAN = 30  # update if last riskreport is older than this days.
 
 # GWAS Catalog
-# GWASCATALOG_URL = 'http://www.genome.gov/admin/gwascatalog.txt'
-# GWASCATALOG_INFO_URL = 'http://www.genome.gov/Pages/About/OD/OPG/GWAS%20Catalog/Tab_delimited_column_descriptions_09_27.pdf'
+GWASCATALOG_URL = 'http://www.genome.gov/admin/gwascatalog.txt'
+GWASCATALOG_DESCRIPTIONS_LINK = 'http://www.genome.gov/Pages/About/OD/OPG/GWAS%20Catalog/Tab_delimited_column_descriptions_09_27.pdf'
 
-#
-# PATH_TO_ENG2JA = os.path.join(BASE_DIR, 'data', 'gwascatalog.traits.translated.tsv.csv')
-# PATH_TO_DISEASE2WIKI = os.path.join(BASE_DIR, 'data', 'disease2wiki.json')
-
-# demo user
-# DEMO_USER_ID = 'demo@pergenie.org'
-# RESERVED_USER_ID = [TEST_USER_ID, TEST_DUMMY_USER_ID, DEMO_USER_ID]
-
-# TEST_23ANDME_FILE = os.path.join(BASE_DIR, 'lib/mongo/parser/test/test.23andme.txt')
-# TEST_VCF40_FILE = os.path.join(BASE_DIR, 'lib/mongo/parser/test/test.vcf40.vcf')
-
+# Reference files
+REFERENCE_DIR = os.path.join(BASE_DIR, 'data')
+REFERENCE_GENOME_FASTA = os.path.join(REFERENCE_DIR, 'human_g1k_v37.fasta')
+REFGENOME_GENOME_BUILD = 'GRCh37/hg19'
+REFGENOME_GENOME_LINK = 'http://www.ncbi.nlm.nih.gov/projects/genome/assembly/grc/human/index.shtml#GRCh37'
 
 # Gmail
 # EMAIL_USE_TLS = True
@@ -226,11 +220,6 @@ UPLOAD_DIR = '/tmp/pergenie'
 # SCOPE_RS_LIST = []
 # SCOPE = "basic names" + " ".join(SCOPE_RS_LIST)
 
-# Large reference files
-# LARGE_REFERENCE_DIR = ''
-# PATH_TO_REFERENCE_FASTA = os.path.join(LARGE_REFERENCE_DIR, 'human_g1k_v37.fasta')
-# REFGENOME_VERSION = 'GRCh37/hg19'
-# REFGENOME_LINK = 'http://www.ncbi.nlm.nih.gov/projects/genome/assembly/grc/human/index.shtml#GRCh37'
 # PATH_TO_DBSNP = os.path.join(LARGE_REFERENCE_DIR, 'dbsnp_137.b37.vcf')
 # DBSNP_VERSION = 'B137'
 # STRAND_DB_DIR = os.path.join(LARGE_REFERENCE_DIR, 'Genotyping_chips_strand_and_build_files/www.well.ox.ac.uk/~wrayner/strand')

@@ -19,7 +19,7 @@ class MutateFasta(object):
         last_pos = offset[2] if offset else len(self.fasta[chrom])
 
         for r in records:
-            ref = self._slice_fasta(r['chrom'], r['pos'], r['pos'])
+            ref = self.slice_fasta(r['chrom'], r['pos'], r['pos'])
 
             if not r['chrom'] == chrom: continue
             if not (r['ref'] and r['alt']): continue
@@ -28,22 +28,22 @@ class MutateFasta(object):
             mut_type, sub_seq = self._classify_mut(r['ref'], r['alt'])
 
             if mut_type == 'snv':
-                seq += self._slice_fasta(chrom, prev_pos + 1, r['pos'] - 1)
+                seq += self.slice_fasta(chrom, prev_pos + 1, r['pos'] - 1)
                 seq += sub_seq
                 prev_pos = r['pos']
 
             elif mut_type == 'del':
-                seq += self._slice_fasta(chrom, prev_pos + 1, r['pos'])
+                seq += self.slice_fasta(chrom, prev_pos + 1, r['pos'])
                 prev_pos += len(sub_seq)
 
             elif mut_type == 'ins':
-                seq += self._slice_fasta(chrom, prev_pos + 1, r['pos'])
+                seq += self.slice_fasta(chrom, prev_pos + 1, r['pos'])
                 seq += sub_seq
                 prev_pos = r['pos']
 
         # Reminder
         if prev_pos + 1 <= last_pos:
-            seq += self._slice_fasta(chrom, prev_pos + 1, last_pos)
+            seq += self.slice_fasta(chrom, prev_pos + 1, last_pos)
 
         return seq
 
@@ -56,27 +56,27 @@ class MutateFasta(object):
         # NOTE: refFlat is stored in 0-based coordinate
 
         # 5'UTR + 1st Exon
-        cons.append([self._slice_fasta(chrom, r['txStart'] + 1, r['cdsStart']), 'utr'])
-        cons.append([self._slice_fasta(chrom, r['cdsStart'] + 1, r['exonEnds'][0]), 'exon'])
+        cons.append([self.slice_fasta(chrom, r['txStart'] + 1, r['cdsStart']), 'utr'])
+        cons.append([self.slice_fasta(chrom, r['cdsStart'] + 1, r['exonEnds'][0]), 'exon'])
 
         if r['exonCount'] > 1:
-            cons.append([self._slice_fasta(chrom, r['exonEnds'][0] + 1, r['exonStarts'][1]), 'intron'])
+            cons.append([self.slice_fasta(chrom, r['exonEnds'][0] + 1, r['exonStarts'][1]), 'intron'])
 
             # Exons
             for i,con in enumerate(r['exonStarts']):
                 if i == 0 or i+1 == r['exonCount']: continue
 
-                cons.append([self._slice_fasta(chrom, r['exonStarts'][i] + 1, r['exonEnds'][i]), 'exon'])
-                cons.append([self._slice_fasta(chrom, r['exonEnds'][i] + 1, r['exonStarts'][i+1]), 'intron'])
+                cons.append([self.slice_fasta(chrom, r['exonStarts'][i] + 1, r['exonEnds'][i]), 'exon'])
+                cons.append([self.slice_fasta(chrom, r['exonEnds'][i] + 1, r['exonStarts'][i+1]), 'intron'])
 
             # last Exon + 3'UTR
-            cons.append([self._slice_fasta(chrom, r['exonStarts'][r['exonCount']-1] + 1, r['cdsEnd']), 'exon'])
+            cons.append([self.slice_fasta(chrom, r['exonStarts'][r['exonCount']-1] + 1, r['cdsEnd']), 'exon'])
 
-        cons.append([self._slice_fasta(chrom, r['cdsEnd'] + 1, r['txEnd']), 'utr'])
+        cons.append([self.slice_fasta(chrom, r['cdsEnd'] + 1, r['txEnd']), 'utr'])
 
         return cons
 
-    def _slice_fasta(self, chrom, start, stop):
+    def slice_fasta(self, chrom, start, stop):
         return self.fasta.sequence({'chr': str(chrom), 'start': int(start), 'stop': int(stop)}, one_based=True)
 
     def _classify_mut(self, ref, alt):
