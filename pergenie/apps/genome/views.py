@@ -130,13 +130,13 @@ def status(request):
     if not request.user:
         result = {'status': 'error',
                   'error_message': _('login required'),
-                  'uploaded_files': []}
+                  'genome_info': []}
 
     else:
         my_genomes = Genome.objects.filter(owner=request.user)
         result = {'status': 'ok',
                   'error_message': '',
-                  'uploaded_files': {str(x.id): x.status for x in my_genomes}}
+                  'genome_info': {str(x.id): x.status for x in my_genomes}}
 
     response = JsonResponse(result)
     response['Pragma'] = 'no-cache'
