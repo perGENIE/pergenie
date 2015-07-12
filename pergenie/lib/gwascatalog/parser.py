@@ -28,7 +28,7 @@ def _float(text):
             return None
 
 
-def string_without_slash(text):
+def str_without_slash(text):
     text = escape(text)
     text = text.replace('/', '&#47;')  # FIXME
     return text
@@ -47,27 +47,65 @@ def ci_text(text):
     Returns:
     - {'CI': [float, float], 'text': ''}
 
-    >>> res = _CI_text(''); res['CI'], res['text']
+    >>> res = ci_text(''); res['CI'], res['text']
     ([], '')
-    >>> res = _CI_text('NR'); res['CI'], res['text']
+    >>> res = ci_text('NR'); res['CI'], res['text']
     ([], '')
-    >>> res = _CI_text('NS'); res['CI'], res['text']
+    >>> res = ci_text('NS'); res['CI'], res['text']
     ([], '')
-    >>> res = _CI_text('[NR]'); res['CI'], res['text']
+    >>> res = ci_text('[NR]'); res['CI'], res['text']
     ([], '')
-    >>> res = _CI_text('[NR] unit increase]'); res['CI'], res['text']
+    >>> res = ci_text('[NR] unit increase]'); res['CI'], res['text']
     ([], 'unit increase]')
-    >>> res = _CI_text('[0.091-0.169] unit decrease'); res['CI'], res['text']
-    ([0.091, 0.169], 'unit decrease')
-    >>> res = _CI_text(' hoge '); res['CI'], res['text']
+    >>> res = ci_text(' hoge '); res['CI'], res['text']
     ([], 'hoge')
+
+    >>> res = ci_text('[0.091-0.169]'); res['CI'], res['text']
+    ([0.091, 0.169], '')
+    >>> res = ci_text('[0.091-0.169] unit decrease'); res['CI'], res['text']
+    ([0.091, 0.169], 'unit decrease')
+    >>> res = ci_text('0.091-0.169] unit decrease'); res['CI'], res['text']
+    ([0.091, 0.169], 'unit decrease')
+    >>> res = ci_text('[0.091-0.169 unit decrease'); res['CI'], res['text']
+    ([0.091, 0.169], 'unit decrease')
+    >>> res = ci_text('0.091-0.169 unit decrease'); res['CI'], res['text']
+    ([0.091, 0.169], 'unit decrease')
+
+    >>> res = ci_text('[.02931-.0585] unit decrease'); res['CI'], res['text']
+    ([0.02931, 0.0585], 'unit decrease')
+    >>> res = ci_text('[.009684-0.02406] unit increase'); res['CI'], res['text']
+    ([0.009684, 0.02406], 'unit increase')
+    >>> res = ci_text('[0.42-1] unit decrease'); res['CI'], res['text']
+    ([0.42, 1.0], 'unit decrease')
+    >>> res = ci_text('[1-2.37] unit increase'); res['CI'], res['text']
+    ([1.0, 2.37], 'unit increase')
+    >>> res = ci_text('[4.58-287]'); res['CI'], res['text']
+    ([4.58, 287.0], '')
+    >>> res = ci_text('[1.41 - 2.39]'); res['CI'], res['text']
+    ([1.41, 2.39], '')
+    >>> res = ci_text('[1.46,2.33]'); res['CI'], res['text']
+    ([1.46, 2.33], '')
+    >>> res = ci_text('[1.16 1.43]'); res['CI'], res['text']
+    ([1.16, 1.43], '')
+    >>> res = ci_text('1.19-1.48]'); res['CI'], res['text']
+    ([1.19, 1.48], '')
+    >>> res = ci_text('[NR] kg/m2 per copy in adults'); res['CI'], res['text']
+    ([], 'kg/m2 per copy in adults')
+
+    # malformed records...
+    >>> res = ci_text('- 7.90 [NR] msec difference between homozygotes'); res['CI'], res['text']
+    ([], '- 7.90 [NR] msec difference between homozygotes')
     """
-
     result = {'CI': [], 'text': ''}
-    pattern_regular = re.compile('\[(-?\d+\.\d+)-(-?\d+\.\d+)\]\s*(.*)')
-    pattern_ci_none_text = re.compile('\[(NR|NS)\]\s*(.*)')
+    pattern_regular = re.compile('\[?(-?\d*\.\d+|\d+)\s*[-|,|\s+]\s*(-?\d*\.\d+|\d+)\]?\s*(.*)')
+    pattern_without_ci = re.compile('(\[(NR|NS)\]\s*)?(.*)')
 
-    if not text or text in ('NR', 'NS', '[NR]', '[NS]'):
+    if not text:
+        return result
+
+    text = text.strip()
+
+    if text in ('NR', 'NS', '[NR]', '[NS]'):
         return result
 
     match = pattern_regular.findall(text)
@@ -76,32 +114,26 @@ def ci_text(text):
         result['text'] = match[0][2].strip()
         return result
 
-    match = pattern_ci_none_text.findall(text)
+    match = pattern_without_ci.findall(text)
     if match:
         result['CI'] = []
-        result['text'] = match[0][1].strip()
+        result['text'] = match[0][2].strip()
         return result
-
-    result['text'] = text.strip()
-    log.debug('CI and unit:')
-    log.debug(result)
-
-    return result
 
 
 def platform(text):
     """
-    >>> _platform('Illumina [2,272,849] (imputed)')
+    >>> platform('Illumina [2,272,849] (imputed)')
     ['Illumina']
-    >>> _platform('Ilumina [475,157]')
+    >>> platform('Ilumina [475,157]')
     ['Illumina']
-    >>> _platform('Affymetrix & Illumina [2,217,510] (imputed)')
+    >>> platform('Affymetrix & Illumina [2,217,510] (imputed)')
     ['Affymetrix', 'Illumina']
-    >>> _platform('Affymetrix[200,220]')
+    >>> platform('Affymetrix[200,220]')
     ['Affymetrix']
-    >>> _platform('Afymetrix [287,554]')
+    >>> platform('Afymetrix [287,554]')
     ['Affymetrix']
-    >>> _platform('Perlegen[438,784]')
+    >>> platform('Perlegen[438,784]')
     ['Perlegen']
 
     """

@@ -1,5 +1,7 @@
 import re
 
+from django.conf import settings
+
 from pergenie.fasta import reference_genome_fasta
 from lib.utils.genome import chr_id2chrom
 from lib.utils import clogging
@@ -9,31 +11,31 @@ log = clogging.getColorLogger(__name__)
 def reliability_rank(record):
     """
     >>> record = {'study': 'a', 'p_value': '1e-10'}
-    >>> calc_reliability_rank(record)
+    >>> reliability_rank(record)
     '***'
     >>> record = {'study': 'a', 'p_value': '1e-7'}
-    >>> calc_reliability_rank(record)
+    >>> reliability_rank(record)
     '**'
     >>> record = {'study': 'a', 'p_value': '1e-4'}
-    >>> calc_reliability_rank(record)
+    >>> reliability_rank(record)
     '*'
     >>> record = {'study': 'a', 'p_value': '1e-1'}
-    >>> calc_reliability_rank(record)
+    >>> reliability_rank(record)
     ''
     >>> record = {'study': 'a', 'p_value': '0.0'}
-    >>> calc_reliability_rank(record)
+    >>> reliability_rank(record)
     ''
     >>> record = {'study': 'Meta-analysis of a', 'p_value': '1e-10'}
-    >>> calc_reliability_rank(record)
+    >>> reliability_rank(record)
     'm***'
     >>> record = {'study': 'meta-analysis of a', 'p_value': '1e-10'}
-    >>> calc_reliability_rank(record)
+    >>> reliability_rank(record)
     'm***'
     >>> record = {'study': 'meta analysis of a', 'p_value': '1e-10'}
-    >>> calc_reliability_rank(record)
+    >>> reliability_rank(record)
     'm***'
     >>> record = {'study': 'a meta analysis of a', 'p_value': '1e-10'}
-    >>> calc_reliability_rank(record)
+    >>> reliability_rank(record)
     'm***'
     """
 
@@ -169,64 +171,72 @@ def population(text):
 
 
 def identfy_or_or_beta(OR_or_beta, CI_95):
-    if CI_95['text']:
-        OR = 'beta:{0}'.format(OR_or_beta)
+    """
+    >>> identfy_or_or_beta(None, None)
+    (None, None)
+    >>> identfy_or_or_beta(None, {'CI': [], 'text': ''})
+    (None, None)
+    >>> identfy_or_or_beta(10, {'CI': [], 'text': ''})
+    (10, None)
+    >>> identfy_or_or_beta(None, {'CI': [], 'text': 'unit increase'})
+    (None, None)
+    >>> identfy_or_or_beta(-1.0, {'CI': [], 'text': 'unit increase'})
+    (None, -1.0)
+    """
+    OR, beta = None, None
 
+    if CI_95 and CI_95['text']:
+        beta = OR_or_beta
     else:
-        if OR_or_beta:
-            OR = float(OR_or_beta)
+        if OR_or_beta > 1.0:  # OR are ajusted to >1.0 in GWAS Catalog
+            OR = OR_or_beta
 
-            if OR < 1.0:
-                # Somehow beta without text in 95% CI?
-                # OR are ajusted to >1.0 in GWAS Catalog...
-                OR = 'beta:{0}?'.format(OR_or_beta)
-
-        else:
-            OR = None
-
-    return OR
+    return OR, beta
 
 
-def risk_allele(data, thrs=None, snps=None):
+def risk_allele(data, snps=None):
     """
 
-    Use strongest_snp_risk_allele in GWAS Catalog as risk allele, e.g., rs331615-T -> T
+    Use strongest_snp_risk_allele in GWAS Catalog as risk allele,
+    e.g., rs331615-T -> T
 
     Following checks will be done if available.
 
-    * Consistency check based on allele frequency in SNPs database (dbSNP or 1000Genomes).
+    * Consistency check based on allele frequency in SNPs database
+      (dbSNP or 1000Genomes).
 
     """
     notes = ''
-    gwascatalog_inconsistence_thrs = thrs or settings.GWASCATALOG_INCONSISTENCE_THRS
+    gwascatalog_af_inconsistence_thrs = settings.GWASCATALOG_AF_INCONSISTENCE_THRS
 
     # Parse `strongest_snp_risk_allele`
     if not data['strongest_snp_risk_allele']:
-        return None, None, 'no strongest_snp_risk_allele'
+        return None, None
 
     _risk_allele = re.compile('rs(\d+)\-(\S+)')
     try:
         rs, risk_allele = _risk_allele.findall(data['strongest_snp_risk_allele'])[0]
     except (ValueError, IndexError):
-        log.warn('failed to parse "strongest_snp_risk_allele": {0}'.format(data))
-        return None, None, 'failed to parse strongest_snp_risk_allele'
+        log.warn('failed to parse "strongest_snp_risk_allele": {}'.format(data['strongest_snp_risk_allele']))
+        log.warn(data)
+        return None, None
 
     if risk_allele == '?':
-        return int(rs), risk_allele, 'risk_allele == ?'
+        return int(rs), risk_allele
 
     if not risk_allele in ('A', 'T', 'G', 'C'):
-        log.warn('allele is not in (A,T,G,C): {0}'.format(data))
-        return int(rs), None, 'not risk_allele in A, T, G, C'
+        log.warn('allele is not in (A,T,G,C)')
+        log.warn(data)
+        return int(rs), None
 
     if not data['risk_allele_frequency']:
-        log.warn('GWAS Catalog freq not found')
-        return int(rs), risk_allele + '?', 'no risk_allele_frequency'
+        return int(rs), risk_allele + '?'
 
     # Strand checks (if database is available)
-    snp_database = snps or snpdb or bq
+    snp_database = snps
 
     if not snp_database:
-        return int(rs), risk_allele, 'no validation'
+        return int(rs), risk_allele
 
     else:
         RV = {'A': 'T', 'T': 'A', 'G': 'C', 'C': 'G'}

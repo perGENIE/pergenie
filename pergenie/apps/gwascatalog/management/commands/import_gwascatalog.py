@@ -13,6 +13,7 @@ from apps.gwascatalog.models import GWASCatalog
 from ._clean import clean_catalog
 from ._import import import_catalog
 
+from pergenie.mongo import mongo_db
 from lib.utils.io import get_url_content
 from lib.utils import clogging
 log = clogging.getColorLogger(__name__)
@@ -31,10 +32,17 @@ class Command(BaseCommand):
             catalog_dir = os.path.join(settings.UPLOAD_DIR, 'gwascatalog')
             if not os.path.exists(catalog_dir):
                 os.makedirs(catalog_dir)
+            catalog_path = os.path.join(catalog_dir, 'gwascatalog.{}.txt'.format(datetime.now().strftime('%Y%m%d')))
+            log.debug(catalog_path)
 
-            log.info('Getting latest gwascatalog form official web site...')
-            catalog_path = os.path.join(catalog_dir, 'gwascatalog.{}.txt'.format(datetime.now().strftime('%Y%m%d-%H%M')))
-            get_url_content(url=settings.GWASCATALOG_URL, dst=catalog_path)
+            if not os.path.exists(catalog_path):
+                log.info('Getting latest gwascatalog form official web site...')
+                try:
+                    get_url_content(url=settings.GWASCATALOG_URL, dst=catalog_path)
+                except (IOError,KeyboardInterrupt) as exception:
+                    if os.path.exists(catalog_path):
+                        os.remove(catalog_path)
+                    raise
 
             log.info('Cleaning gwascatalog...')
             catalog_cleaned_path = re.sub(r'\.txt$', '.cleaned.txt', catalog_path)
@@ -49,6 +57,6 @@ class Command(BaseCommand):
             log.info('Done.')
 
         except Exception as exception:
-            log.error(exception)
-            # TODO: delete mongodb collection
+            catalog.delete_catalog()
             catalog.delete()
+            raise
