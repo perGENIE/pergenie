@@ -1,7 +1,6 @@
 Django>=1.8,<1.8.99
 
 # database
-MySQL-python
 pymongo>=3.0
 psycopg2
 celery>=3.1
