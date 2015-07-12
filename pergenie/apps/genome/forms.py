@@ -6,6 +6,9 @@ from django.conf import settings
 
 from .models import Genome
 
+from utils import clogging
+log = clogging.getColorLogger(__name__)
+
 
 class UploadForm(forms.Form):
     upload_files = forms.FileField(
@@ -44,8 +47,7 @@ class UploadForm(forms.Form):
 
             ext = os.path.splitext(upload_file.name)[1].lower()[1:]
             if ext not in ('csv', 'txt', 'vcf', 'tsv'):
-                msg = _('Not allowed file extention {ext}: {file_name}'.format(file_name=upload_file.name, ext=ext))
-                log.warn(msg)
+                msg = _('Not allowed file extention: {file_name}'.format(file_name=upload_file.name))
                 raise forms.ValidationError(msg)
 
             if upload_file.content_type == 'text/plain':
@@ -54,7 +56,6 @@ class UploadForm(forms.Form):
                 pass
             else:
                 msg = _('Not allowed file type {content_type}: {file_name}'.format(file_name=upload_file.name, content_type=upload_file.content_type))
-                log.warn(msg)
                 raise forms.ValidationError(msg)
 
         return upload_files
