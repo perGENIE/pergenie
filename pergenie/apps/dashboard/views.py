@@ -45,5 +45,5 @@ def index(request):
     #             intro_type=intro_type,
     #             is_registerable=settings.IS_REGISTERABLE)
 
-    return render(request, 'dashboard/index.html',
+    return render(request, 'index.html',
                   dict(user_id=user_id))
