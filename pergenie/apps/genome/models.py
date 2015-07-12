@@ -1,6 +1,7 @@
 import sys
 import os
 import uuid
+import datetime
 import csv
 
 from django.db import models
@@ -22,6 +23,7 @@ log = clogging.getColorLogger(__name__)
 
 class Genome(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    created_at = models.DateTimeField(default=datetime.datetime.now)
 
     owner = models.ForeignKey(User, related_name='owner')
     readers = models.ManyToManyField(User, related_name='reader')
