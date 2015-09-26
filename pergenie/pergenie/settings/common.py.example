@@ -27,7 +27,7 @@ INSTALLED_APPS = (
     'apps.genome',
 
     'apps.templatetags',
-    'apps.db'
+    'apps.gwascatalog',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -185,23 +185,15 @@ MAX_UPLOAD_GENOMEFILE_COUNT = 100
 
 UPLOAD_DIR = '/tmp/pergenie'
 
-# UPDATE_SPAN = 30  # update if last riskreport is older than this days.
-
 # GWAS Catalog
-# GWASCATALOG_URL = 'http://www.genome.gov/admin/gwascatalog.txt'
-# GWASCATALOG_INFO_URL = 'http://www.genome.gov/Pages/About/OD/OPG/GWAS%20Catalog/Tab_delimited_column_descriptions_09_27.pdf'
+GWASCATALOG_URL = 'http://www.genome.gov/admin/gwascatalog.txt'
+GWASCATALOG_DESCRIPTIONS_LINK = 'http://www.genome.gov/Pages/About/OD/OPG/GWAS%20Catalog/Tab_delimited_column_descriptions_09_27.pdf'
 
-#
-# PATH_TO_ENG2JA = os.path.join(BASE_DIR, 'data', 'gwascatalog.traits.translated.tsv.csv')
-# PATH_TO_DISEASE2WIKI = os.path.join(BASE_DIR, 'data', 'disease2wiki.json')
-
-# demo user
-# DEMO_USER_ID = 'demo@pergenie.org'
-# RESERVED_USER_ID = [TEST_USER_ID, TEST_DUMMY_USER_ID, DEMO_USER_ID]
-
-# TEST_23ANDME_FILE = os.path.join(BASE_DIR, 'lib/mongo/parser/test/test.23andme.txt')
-# TEST_VCF40_FILE = os.path.join(BASE_DIR, 'lib/mongo/parser/test/test.vcf40.vcf')
-
+# Reference files
+REFERENCE_DIR = os.path.join(BASE_DIR, 'data')
+REFERENCE_GENOME_FASTA = os.path.join(REFERENCE_DIR, 'human_g1k_v37.fasta')
+REFGENOME_GENOME_BUILD = 'GRCh37/hg19'
+REFGENOME_GENOME_LINK = 'http://www.ncbi.nlm.nih.gov/projects/genome/assembly/grc/human/index.shtml#GRCh37'
 
 # Gmail
 # EMAIL_USE_TLS = True
@@ -225,94 +217,3 @@ UPLOAD_DIR = '/tmp/pergenie'
 # CALLBACK_URL = ""
 # SCOPE_RS_LIST = []
 # SCOPE = "basic names" + " ".join(SCOPE_RS_LIST)
-
-# Large reference files
-# LARGE_REFERENCE_DIR = ''
-# PATH_TO_REFERENCE_FASTA = os.path.join(LARGE_REFERENCE_DIR, 'human_g1k_v37.fasta')
-# REFGENOME_VERSION = 'GRCh37/hg19'
-# REFGENOME_LINK = 'http://www.ncbi.nlm.nih.gov/projects/genome/assembly/grc/human/index.shtml#GRCh37'
-# PATH_TO_DBSNP = os.path.join(LARGE_REFERENCE_DIR, 'dbsnp_137.b37.vcf')
-# DBSNP_VERSION = 'B137'
-# STRAND_DB_DIR = os.path.join(LARGE_REFERENCE_DIR, 'Genotyping_chips_strand_and_build_files/www.well.ox.ac.uk/~wrayner/strand')
-# BIOQ_DIR = os.path.join(LARGE_REFERENCE_DIR, 'bioq', 'B137')
-
-# #
-# PATH_TO_REFFLAT = os.path.join(BASE_DIR, 'data', 'large_dbs', 'ucsc_refFlat', 'refFlat.txt')
-# PATH_TO_INTERVAL_LIST_DIR = os.path.join(BASE_DIR, 'data', 'large_dbs', 'interval_lists')
-
-# OMIM
-# PATH_TO_OMIMTXT = os.path.join(BASE_DIR, 'data', 'large_dbs', 'OMIM', 'omim.txt')
-# OMIM_APIKEY = ''
-# PATH_TO_MIM2GENE = os.path.join(BASE_DIR, 'data', 'large_dbs', 'OMIM', 'mim2gene.txt')
-
-#
-# PATH_TO_POPULATION_PCA = os.path.join(BASE_DIR, 'data', 'large_dbs', 'population_pca')
-
-
-# PDB
-# PATH_TO_PDB = os.path.join(LARGE_REFERENCE_DIR, 'pdb')
-# RSYNC_PDB = True
-
-
-# demo data
-# DEMO_23ANDME_GENOME_EU_M = {'name': os.path.join(LARGE_REFERENCE_DIR, 'demo_data', 'genome_Greg_Mendel.txt'),
-#                             'population': 'European',
-#                             'file_format': 'andme'}
-# DEMO_23ANDME_GENOME_EU_F = {'name': os.path.join(LARGE_REFERENCE_DIR, 'demo_data', 'genome_Lilly_Mendel.txt'),
-#                             'population': 'European',
-#                             'file_format': 'andme'}
-# TOMITA_GENOME = {'name': os.path.join(LARGE_REFERENCE_DIR, 'demo_data', 'DRA000583.bwa.gatk.vcf'),
-#                  'population': 'Japanese',
-#                  'file_format': 'vcf'}
-
-
-# GENOME_FILE_FORMAT_LONG_NAME_MAP = {
-#     'vcf': 'VCF (Whole Genome)',
-#     'andme': '23andMe'
-# }
-
-# GENOME_FILE_FORMAT_EXTENTION_MAP = {
-#     'vcf': '*.vcf',
-#     'andme': '*.txt'
-# }
-
-# GENOME_FILE_FORMAT_SHORT_NAME_MAP = {
-#     'vcf': 'wg',
-#     'andme': 'andme'
-# }
-
-# GENOME_FILE_FORMAT_REGION_FILE_MAP = {
-#     'vcf': '',
-#     'andme': 'andme_region'
-# }
-
-    # {'name': 'vcf_exome_truseq',
-    #  'extention': '*.vcf',
-    #  'long_name': 'VCF (TruSeq Exome)',
-    #  'short_name': 'truseq',
-    #  'region_file': 'TruSeq-Exome-Targeted-Regions-BED-file'},
-
-
-# if True, all the samples in vcf will be imported,
-# otherwise, only 1st sample will be imported.
-# MULTI_SAMPLE_VCF = False
-
-
-## Genome data cron job
-
-# CRON_DIRS = {}  # set {'username': ['/path/to/datadir']}
-
-# DEFAULT_POPULATION = 'unknown'
-
-#
-# INT_CHROMS = [i + 1 for i in range(22)]
-
-
-# FIXME:
-# BACKUP_DIR = BASE_DIR
-
-#
-# IS_DEMO_ONLY = False
-
-#
-# GWASCATALOG_INCONSISTENCE_THRS = 0.3

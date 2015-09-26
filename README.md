@@ -41,6 +41,8 @@ $ celery multi restart 1 --logfile=/tmp/celeryd.log --pidfile=celery%n.pid
 
 4\. Run
 
+Run local server (for development only)
+
 ```
 $ python manage.py runserver
 ```
