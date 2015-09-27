@@ -1,13 +1,12 @@
 import sys
 import os
-import re
-import glob
+import csv
 import datetime
 
 from django.core.management.base import BaseCommand, CommandError
 from django.conf import settings
 
-from apps.gwascatalog.models import GWASCatalog
+from apps.gwascatalog.models import GwasCatalogSnp
 from lib.utils.io import get_url_content
 from lib.utils import clogging
 log = clogging.getColorLogger(__name__)
@@ -20,12 +19,11 @@ class Command(BaseCommand):
         try:
             log.info('Fetching latest gwascatalog...')
 
-            catalog_dir = os.path.join(settings.UPLOAD_DIR, 'gwascatalog')
-            if not os.path.exists(catalog_dir):
-                os.makedirs(catalog_dir)
+            if not os.path.exists(GWASCATALOG_DIR):
+                os.makedirs(GWASCATALOG_DIR)
 
-            catalog_path = os.path.join(catalog_dir, 'gwascatalog.{}.txt'.format(datetime.datetime.now().strftime('%Y%m%d')))
-            log.debug(catalog_path)
+            today = datetime.datetime.now().strftime('%Y-%m-%d')
+            catalog_path = os.path.join(GWASCATALOG_DIR, 'gwascatalog.{}.tsv'.format(today))
 
             if not os.path.exists(catalog_path):
                 try:
@@ -37,18 +35,39 @@ class Command(BaseCommand):
 
             log.info('Importing gwascatalog...')
 
-            # TODO: parse dbsnp-pg-min/contrib/gwascatalog
+            chunk_length = 1000
+            gwascatalog_snps = []
 
-            # TODO: cleanup records
-            # _calc_reliability_rank()
-            # _population()
-            # OR/beta
-            # _platform()
-            # _risk_allele()
+            reader = csv.DictReader(catalog_path, delimiter='\t')
+            for record in reader:
 
-            # TODO: create GwasCatalog models
+                population = get_population(record['initial_sample_size'])
 
-            # TODO: activation
+                if population:
+                    population_1st = population[0]
+                    db_allele_freq = {'Asian': {}, 'European': {}, 'African': {}}[population_1st]  # TODO
+                else:
+                    db_allele_freq = {}
+
+                # TODO: odds_ratio/beta_coeff
+
+                record.update({'risk_allele_forward': get_forward_risk_allele(record['risk_allele'],
+                                                                              record['risk_allele_freq_reported'],
+                                                                              db_allele_freq,
+                                                                              settings.GWASCATALOG_INCONSISTENCE_THRS),
+                               'population': population,
+                               'reliability_rank': get_reliability_rank(record['study'],
+                                                                        record['p_value'])}
+
+                snp = GwasCatalogSnp(**record)
+                gwascatalog_snps.append(snp)
+
+                if len(gwascatalog_snps) == chunk_length:
+                    GwasCatalogSnp.object.bulk_create(gwascatalog_snps)
+                    gwascatalog_snps[:] = []
+
+            if len(gwascatalog_snps) > 0:
+                GwasCatalogSnp.object.bulk_create(gwascatalog_snps)
 
             log.info('Done.')
 

@@ -1,6 +1,5 @@
-def _platform(text):
+def get_platform(text):
     """
-
     >>> _platform('Illumina [2,272,849] (imputed)')
     ['Illumina']
     >>> _platform('Ilumina [475,157]')

@@ -1,38 +1,29 @@
-def calc_reliability_rank(record):
+def get_reliability_rank(study, p_value, sample_size=None):
     """
-    >>> record = {'study': 'a', 'p_value': '1e-10'}
-    >>> calc_reliability_rank(record)
+    >>> get_reliability_rank(study = 'a', p_value = '1e-10')
     '***'
-    >>> record = {'study': 'a', 'p_value': '1e-7'}
-    >>> calc_reliability_rank(record)
+    >>> get_reliability_rank(study = 'a', p_value = '1e-7')
     '**'
-    >>> record = {'study': 'a', 'p_value': '1e-4'}
-    >>> calc_reliability_rank(record)
+    >>> get_reliability_rank(study = 'a', p_value = '1e-4')
     '*'
-    >>> record = {'study': 'a', 'p_value': '1e-1'}
-    >>> calc_reliability_rank(record)
+    >>> get_reliability_rank(study = 'a', p_value = '1e-1')
     ''
-    >>> record = {'study': 'a', 'p_value': '0.0'}
-    >>> calc_reliability_rank(record)
+    >>> get_reliability_rank(study = 'a', p_value = '0.0')
     ''
-    >>> record = {'study': 'Meta-analysis of a', 'p_value': '1e-10'}
-    >>> calc_reliability_rank(record)
+    >>> get_reliability_rank(study = 'Meta-analysis of a', p_value = '1e-10')
     'm***'
-    >>> record = {'study': 'meta-analysis of a', 'p_value': '1e-10'}
-    >>> calc_reliability_rank(record)
+    >>> get_reliability_rank(study = 'meta-analysis of a', p_value = '1e-10')
     'm***'
-    >>> record = {'study': 'meta analysis of a', 'p_value': '1e-10'}
-    >>> calc_reliability_rank(record)
+    >>> get_reliability_rank(study = 'meta analysis of a', p_value = '1e-10')
     'm***'
-    >>> record = {'study': 'a meta analysis of a', 'p_value': '1e-10'}
-    >>> calc_reliability_rank(record)
+    >>> get_reliability_rank(study = 'a meta analysis of a', p_value = '1e-10')
     'm***'
     """
 
     r_rank = ''
 
     # is Meta-Analysis of GWAS ?
-    if re.search('meta.?analysis', record['study'], re.IGNORECASE):
+    if re.search('meta.?analysis', study, re.IGNORECASE):
         r_rank += 'm'
 
     """
@@ -45,8 +36,8 @@ def calc_reliability_rank(record):
 
     """
 
-    if record['p_value']:
-        res = re.findall('(\d+)e-(\d+)', record['p_value'], re.IGNORECASE)
+    if p_value:
+        res = re.findall('(\d+)e-(\d+)', p_value, re.IGNORECASE)
 
         if not res:
             pass
@@ -61,9 +52,8 @@ def calc_reliability_rank(record):
             elif 9 <= b:
                 r_rank += '***'
 
-    # sample size:
-    # TODO: parse sample-size
-    # TODO: check the correlation `sample size` and `p-value`
-    # if record['initial_sample_size']:
+    # TODO:
+    if sample_size:
+        pass
 
     return r_rank
