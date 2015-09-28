@@ -6,6 +6,7 @@ import datetime
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 from django.conf import settings
+from django.utils import timezone
 
 from apps.snp.models import Snp
 from lib.utils.io import get_url_content
@@ -23,7 +24,7 @@ class Command(BaseCommand):
         if not os.path.exists(settings.GWASCATALOG_DIR):
             os.makedirs(settings.GWASCATALOG_DIR)
 
-        today = datetime.datetime.now().strftime('%Y-%m-%d')
+        today = timezone.now().strftime('%Y-%m-%d')
         af_path = os.path.join(settings.GWASCATALOG_DIR, 'gwascatalog_snps_allele_freq_{}.tsv'.format(today))
 
         log.info('Importing snps in gwascatalog...')

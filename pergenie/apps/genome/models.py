@@ -7,6 +7,7 @@ import csv
 from django.db import models
 from django.conf import settings
 from django.utils.translation import ugettext as _
+from django.utils import timezone
 
 from celery.task import Task
 from celery.decorators import task
@@ -23,7 +24,7 @@ log = clogging.getColorLogger(__name__)
 
 class Genome(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    created_at = models.DateTimeField(default=datetime.datetime.now)
+    created_at = models.DateTimeField(default=timezone.now)
 
     owner = models.ForeignKey(User, related_name='owner')
     readers = models.ManyToManyField(User, related_name='reader')
