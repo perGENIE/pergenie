@@ -14,7 +14,7 @@ log = clogging.getColorLogger(__name__)
 
 
 class Command(BaseCommand):
-    help = "Update SNPs in GWAS Catalog"
+    help = "Update SNPs"
 
     @transaction.atomic
     def handle(self, *args, **options):
