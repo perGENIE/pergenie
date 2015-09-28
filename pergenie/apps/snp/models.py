@@ -11,20 +11,20 @@ from django.utils.translation import ugettext as _
 from lib.utils import clogging
 log = clogging.getColorLogger(__name__)
 
-CHROM_CHOICES = [i+1 for i in range(22)] + ['X', 'Y']
+_chrom = [i+1 for i in range(22)] + ['X', 'Y']
+CHROM_CHOICES = zip(_chrom, _chrom)
 
 
 class Snp(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-
     rs_id_reported = models.IntegerField()
     rs_id_current = models.IntegerField()
 
-    chrom = models.CharField(choices=CHROM_CHOICES, blank=True)
-    pos = models.IntegerField()
-    reference_allele = models.CharField(max_length=1024, blank=True)
+    allele = ArrayField(models.CharField(max_length=1024))
+    freq = ArrayField(models.DecimalField(max_digits=5, decimal_places=4))
+    populations = ArrayField(models.CharField(max_length=32))
 
-    allele = ArrayField(models.CharField(max_length=1024, blank=True))
-    east_asian_freq = ArrayField(models.DecimalField(max_digits=1, decimal_places=5))
-    european_freq = ArrayField(models.DecimalField())
-    african_freq = ArrayField(models.DecimalField())
+    chrom = models.CharField(choices=CHROM_CHOICES, max_length=2, blank=True)
+    pos = models.IntegerField(null=True, blank=True)
+
+    class Meta:
+        unique_together = ('rs_id_reported', 'rs_id_current', 'populations')
