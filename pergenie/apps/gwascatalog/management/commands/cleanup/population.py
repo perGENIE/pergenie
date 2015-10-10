@@ -1,3 +1,5 @@
+import re
+
 def get_population(text):
     """Parse `initial_sample_size` in GWAS Catalog,
     then return a list of combination of

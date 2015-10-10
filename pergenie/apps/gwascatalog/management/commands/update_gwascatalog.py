@@ -9,7 +9,9 @@ from django.conf import settings
 from django.utils import timezone
 from django.utils.dateparse import parse_date
 
+from apps.snp.models import Snp
 from apps.gwascatalog.models import GwasCatalogSnp
+from cleanup.population import get_population
 from lib.utils.io import get_url_content
 from lib.utils import clogging
 log = clogging.getColorLogger(__name__)
@@ -25,35 +27,21 @@ class Command(BaseCommand):
         if not os.path.exists(settings.GWASCATALOG_DIR):
             os.makedirs(settings.GWASCATALOG_DIR)
 
+        # TODO: Fetch from web
+        current_tz = timezone.get_current_timezone()
         today = timezone.now().strftime('%Y-%m-%d')
         catalog_path = os.path.join(settings.GWASCATALOG_DIR, 'gwascatalog_cleaned_{}.tsv'.format(today))
 
         log.info('Importing gwascatalog...')
 
-        chunk_length = 1000
-        snps = []
-
-        current_tz = timezone.get_current_timezone()
-        log.info(current_tz)
-
         model_fields = [field for field in GwasCatalogSnp._meta.get_fields() if field.name not in ('id', 'created_at')]
         model_field_names = [field.name for field in model_fields]
         model_fields_map = dict(zip(model_field_names, model_fields))
 
+        gwascatalog_snps = []
         reader = csv.DictReader(open(catalog_path, 'rb'), delimiter='\t')
         for record in reader:
-            # population = get_population(record['initial_sample_size'])
-
-            # if population:
-            #     population_1st = population[0]
-            #     db_allele_freq = {'Asian': {}, 'European': {}, 'African': {}}[population_1st]  # TODO
-            # else:
-            #     db_allele_freq = {}
-
-            # TODO: odds_ratio/beta_coeff
-
-            record.update({'risk_allele_forward': '',
-                           'population': [],
+            record.update({'population': get_population(record['initial_sample']),
                            'reliability_rank': '',
                            'odds_ratio': None,
                            'beta_coeff': None})
@@ -61,28 +49,40 @@ class Command(BaseCommand):
             data = {}
             for k,v in record.items():
                 if k in model_field_names:
-                    # blank or null
+                    # Set blank or null
                     if v == '':
                         if type(model_fields_map[k]) in (models.fields.CharField, models.fields.TextField):
                             v = ''
                         else:
                             v = None
 
-                    # datetime with timezone
+                    # Set datetime with timezone
                     if type(model_fields_map[k]) == models.DateTimeField:
                         v = current_tz.localize(datetime(*(parse_date(v).timetuple()[:5])))
 
                     data[k] = v
 
-            snps.append(GwasCatalogSnp(**data))
+            gwascatalog_snps.append(GwasCatalogSnp(**data))
 
-            if len(snps) == chunk_length:
-                log.debug('processed: {} records'.format(len(snps)))
-                GwasCatalogSnp.objects.bulk_create(snps)
-                snps[:] = []
+        # JOIN GwasCatalogSnp AND Snp ON snp_id = snp_id_reported
+        snp_ids = [snp.snp_id for snp in gwascatalog_snps]
+        snp_obj_map = dict((x.rs_id_reported,x) for x in Snp.objects.filter(rs_id_reported__in=snp_ids))
 
-        if len(snps) > 0:
-            log.debug('processed: {} records'.format(len(snps)))
-            GwasCatalogSnp.objects.bulk_create(snps)
+        # TODO: Is updating in loop valid?
+        for i,snp in enumerate(gwascatalog_snps):
+            snp_obj = snp_obj_map.get(snp.snp_id)
+            gwascatalog_snps[i].snp = snp_obj
 
+            if snp_obj:
+                if snp.population:
+                    gwascatalog_snps[i].snp.db_allele_freq = {}  # = {'Asian': {}, 'European': {}, 'African': {}}[population[0]]
+                else:
+                    gwascatalog_snps[i].snp.db_allele_freq = {}
+
+            # TODO: odds_ratio/beta_coeff
+            # TODO: validate risk_allele
+
+        GwasCatalogSnp.objects.bulk_create(gwascatalog_snps)
+
+        log.debug('processed: {} records'.format(len(gwascatalog_snps)))
         log.info('Done.')

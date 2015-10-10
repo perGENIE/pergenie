@@ -1,12 +1,13 @@
 import uuid
 import datetime
 
-from django.db.models import Model, DateTimeField, BooleanField, CharField, IntegerField, FloatField, DecimalField
+from django.db.models import Model, DateTimeField, BooleanField, CharField, IntegerField, FloatField, DecimalField, ForeignKey
 from django.contrib.postgres.fields import ArrayField
 from django.conf import settings
 from django.utils.translation import ugettext as _
 from django.utils import timezone
 
+from apps.snp.models import Snp
 from lib.utils import clogging
 log = clogging.getColorLogger(__name__)
 
@@ -17,7 +18,7 @@ class GwasCatalogSnp(Model):
     date_downloaded                = DateTimeField()
     pubmed_id                      = CharField(             max_length=8)
     disease_or_trait               = CharField(             max_length=1024)
-    snp_id                         = IntegerField()
+    snp_id_reported                = IntegerField(                                                    null=True)
     risk_allele                    = CharField(             max_length=1024,                          blank=True)
 
     initial_sample                 = CharField(             max_length=1024,                          blank=True)
@@ -35,5 +36,7 @@ class GwasCatalogSnp(Model):
     odds_ratio                     = DecimalField(          max_digits=8, decimal_places=4,           null=True)
     beta_coeff                     = DecimalField(          max_digits=8, decimal_places=4,           null=True)
 
+    snp = ForeignKey('snp.Snp', null=True)
+
     class Meta:
-        unique_together = ('date_downloaded', 'pubmed_id', 'disease_or_trait', 'snp_id', 'risk_allele')
+        unique_together = ('date_downloaded', 'pubmed_id', 'disease_or_trait', 'snp_id_reported', 'risk_allele')
