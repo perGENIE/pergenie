@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+GENOME_FILE_PATH=$1
+RS_MERGE_ARCH_PATH=$2
+BIN_PATH=$3
+
+gzip -dc ${GENOME_FILE_PATH}| \
+    ${BIN_PATH}/vcf-subset --keep-index 0 | \
+    ${BIN_PATH}/vcf-update ${RS_MERGE_ARCH_PATH}| \
+    ${BIN_PATH}/vcf-to-tab --without-header \
+                 --without-chr-pos \
+                 --rs-id-as-int \
+                 > ${GENOME_FILE_PATH}.tsv
