@@ -8,35 +8,50 @@
 
 - [Python]() >=2.7,<3
 - [PostgreSQL]()
-- [MongoDB]()
 - [RabbitMQ]()
+
 - Python packages:
 
 ```
 $ pip install -r requirements/development.txt
 ```
 
+- Command-line vcf tools
+  - Download binaries from https://github.com/knmkr/go-vcf-tools/releases/download/${version}, and put them at `pergenie/bin`
+
+
 2\. Configure environments settings
 
 ```
-$ cp pergenie/pergenie/settings/common.py.example pergenie/pergenie/settings/common.py
-$ cp pergenie/pergenie/settings/develop.py.example pergenie/pergenie/settings/develop.py
+$ cp pergenie/settings/common.py.example pergenie/settings/common.py
+$ cp pergenie/settings/develop.py.example pergenie/settings/develop.py
 ```
 
 3\. Preparing backends
 
-- Run postgres
-- Run mongod
-- Run rabbitmq-server
+- Run postgres server
+
+- Run database migration
 
 ```
-$ cd pergenie
 $ python manage.py migrate
 ```
+
+- Run rabbitmq-server
+
+- Run celery
+
+as daemon
 
 ```
 $ celery multi start 1 --app=pergenie --loglevel=info --logfile=/tmp/celeryd.log --pidfile=celery%n.pid
 $ celery multi restart 1 --logfile=/tmp/celeryd.log --pidfile=celery%n.pid
+```
+
+or run in foreground (for development only)
+
+```
+$ celery --app=pergenie worker --logfile=/tmp/celeryd.log --pidfile=celery%n.pid
 ```
 
 4\. Run
