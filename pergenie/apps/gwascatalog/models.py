@@ -19,6 +19,7 @@ class GwasCatalogSnp(Model):
     pubmed_id                      = CharField(             max_length=8)
     disease_or_trait               = CharField(             max_length=1024)
     snp_id_reported                = IntegerField(                                                    null=True)
+    snp_id_current                 = IntegerField(                                                    null=True)
     risk_allele                    = CharField(             max_length=1024,                          blank=True)
 
     initial_sample                 = CharField(             max_length=1024,                          blank=True)

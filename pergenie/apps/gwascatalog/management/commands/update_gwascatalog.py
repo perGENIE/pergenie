@@ -30,7 +30,7 @@ class Command(BaseCommand):
         # TODO: Fetch from web
         current_tz = timezone.get_current_timezone()
         today = timezone.now().strftime('%Y-%m-%d')
-        catalog_path = os.path.join(settings.GWASCATALOG_DIR, 'gwascatalog_cleaned_{}.tsv'.format(today))
+        catalog_path = os.path.join(settings.GWASCATALOG_DIR, 'gwascatalog.cleaned-{}.tsv'.format(today))
 
         log.info('Importing gwascatalog...')
 
@@ -46,6 +46,7 @@ class Command(BaseCommand):
                            'odds_ratio': None,
                            'beta_coeff': None})
 
+            # Import only pre-defined in model fields
             data = {}
             for k,v in record.items():
                 if k in model_field_names:
@@ -65,19 +66,19 @@ class Command(BaseCommand):
             gwascatalog_snps.append(GwasCatalogSnp(**data))
 
         # JOIN GwasCatalogSnp AND Snp ON snp_id = snp_id_reported
-        snp_ids = [snp.snp_id for snp in gwascatalog_snps]
-        snp_obj_map = dict((x.rs_id_reported,x) for x in Snp.objects.filter(rs_id_reported__in=snp_ids))
+        # snp_ids = [snp.snp_id for snp in gwascatalog_snps]
+        # snp_obj_map = dict((x.rs_id_reported,x) for x in Snp.objects.filter(rs_id_reported__in=snp_ids))
 
         # TODO: Is updating in loop valid?
-        for i,snp in enumerate(gwascatalog_snps):
-            snp_obj = snp_obj_map.get(snp.snp_id)
-            gwascatalog_snps[i].snp = snp_obj
+        # for i,snp in enumerate(gwascatalog_snps):
+        #     snp_obj = snp_obj_map.get(snp.snp_id)
+        #     gwascatalog_snps[i].snp = snp_obj
 
-            if snp_obj:
-                if snp.population:
-                    gwascatalog_snps[i].snp.db_allele_freq = {}  # = {'Asian': {}, 'European': {}, 'African': {}}[population[0]]
-                else:
-                    gwascatalog_snps[i].snp.db_allele_freq = {}
+        #     if snp_obj:
+        #         if snp.population:
+        #             gwascatalog_snps[i].snp.db_allele_freq = {}  # = {'Asian': {}, 'European': {}, 'African': {}}[population[0]]
+        #         else:
+        #             gwascatalog_snps[i].snp.db_allele_freq = {}
 
             # TODO: odds_ratio/beta_coeff
             # TODO: validate risk_allele
