@@ -1,0 +1,22 @@
+---
+- hosts: all
+  become: yes
+  gather_facts: no
+  roles:
+    - { role: selinux }
+    - { role: sshd }
+    - { role: devtools }
+    - { role: epel }
+    - { role: ntpd }
+
+- hosts: pergenie_host
+  become: yes
+  gather_facts: yes
+  roles:
+    - { role: python }
+    - { role: postgresql }
+    # TODO:
+    # rabbitmq
+    # apache/nginx
+    # go-vcf-tools
+    # pergenie

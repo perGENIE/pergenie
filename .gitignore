@@ -40,3 +40,7 @@ pergenie/static/vendor
 
 # pyfasta
 *.gdx
+
+# ansible/vagrant
+hosts
+.vagrant

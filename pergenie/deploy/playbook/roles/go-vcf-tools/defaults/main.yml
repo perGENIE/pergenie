@@ -1,0 +1,6 @@
+---
+tag: 0.0.1
+dst_file: linux.amd64.tar.gz
+dst_url: "https://github.com/knmkr/go-vcf-tools/releases/download/{{ tag }}/{{ dst_file }}"
+
+bin_dir: /opt/local/bin
