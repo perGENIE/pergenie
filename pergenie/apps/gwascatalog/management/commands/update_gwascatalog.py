@@ -10,7 +10,7 @@ from django.utils import timezone
 from django.utils.dateparse import parse_date
 
 from apps.snp.models import Snp
-from apps.gwascatalog.models import GwasCatalogSnp
+from apps.gwascatalog.models import GwasCatalogSnp, GwasCatalogPhenotype
 from cleanup.population import get_population
 from lib.utils.io import get_url_content
 from lib.utils import clogging
@@ -33,7 +33,8 @@ class Command(BaseCommand):
         today = timezone.now().strftime('2015-09-25')  # FIXME
         today_with_tz = current_tz.localize(datetime(*(parse_date(today).timetuple()[:5])))
 
-        log.info('Updating snp allele freq data for gwascatalog...')
+        # - Allele freq
+        log.info('Updating snp allele freq records for gwascatalog...')
         catalog_freq_path = os.path.join(settings.GWASCATALOG_DIR, 'gwascatalog-snps-allele-freq-2015-10-09.tsv')  # FIXME
         reader = csv.DictReader(open(catalog_freq_path, 'rb'), delimiter='\t',
                                 fieldnames=['snp_id_current', 'allele', 'freq', 'populations'])
@@ -54,6 +55,7 @@ class Command(BaseCommand):
         log.info('updated: {} records'.format(num_updated))
         log.info('created: {} records'.format(num_created))
 
+        # - Gwas Catalog
         log.info('Importing gwascatalog...')
         catalog_path = os.path.join(settings.GWASCATALOG_DIR, 'gwascatalog-cleaned-{}.tsv'.format(today))
 
@@ -91,13 +93,6 @@ class Command(BaseCommand):
 
                     data[k] = v
 
-            # WIP:
-            # phenotype = GwasCatalogPhenotype(name=data['disease_or_trait'])
-            # found_id = GwasCatalogPhenotype.objects.filter(name=data['disease_or_trait'])
-            # if not found_id:
-            #     found_id = phenotype.save()
-            # data['phenotype'] = found_id
-
             # TODO: odds_ratio/beta_coeff
 
             # TODO: add freq data for European, African
@@ -106,18 +101,26 @@ class Command(BaseCommand):
                                'European':  '{CHB,JPT}',
                                'African':   '{CHB,JPT}'}.get(population_1st, '{}')
 
-            if freq_population != '{}':
-                snp = Snp.objects.filter(snp_id_current=data['snp_id_current'], populations=freq_population).first()
-                # TODO: validate risk_allele
+            # TODO: validate risk_allele
+            # if freq_population != '{}':
+            #     snp = Snp.objects.filter(snp_id_current=data['snp_id_current'], populations=freq_population).first()
 
             gwascatalog_snps.append(GwasCatalogSnp(**data))
 
         GwasCatalogSnp.objects.bulk_create(gwascatalog_snps)
-
         log.info('created: {} records'.format(len(gwascatalog_snps)))
 
-        # disease_or_trait = GwasCatalogSnp.objects.values_list('disease_or_trait', flat=True)
-        # gwascatalog_phenotypes = []
+        # - Phenotype
+        log.info('Updating phenotype records for gwascatalog...')
+        phenotypes = GwasCatalogSnp.objects.distinct().values_list('disease_or_trait', flat=True)
+        num_created = 0
+        for phenotype in phenotypes:
+            gwascatalog_phenotype, created = GwasCatalogPhenotype.objects.get_or_create(
+                name=phenotype
+            )
+            if created:
+                num_created += 1
+        log.info('created: {} records'.format(num_created))
 
         log.info('Done.')
 
