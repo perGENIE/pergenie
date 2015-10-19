@@ -29,10 +29,38 @@ class Command(BaseCommand):
 
         # TODO: Fetch from web
         current_tz = timezone.get_current_timezone()
-        today = timezone.now().strftime('%Y-%m-%d')
-        catalog_path = os.path.join(settings.GWASCATALOG_DIR, 'gwascatalog.cleaned-{}.tsv'.format(today))
+        # today = timezone.now().strftime('%Y-%m-%d')
+        today = timezone.now().strftime('2015-09-25')  # FIXME
+        today_with_tz = current_tz.localize(datetime(*(parse_date(today).timetuple()[:5])))
+
+        log.info('Updating snp allele freq data for gwascatalog...')
+        catalog_freq_path = os.path.join(settings.GWASCATALOG_DIR, 'gwascatalog-snps-allele-freq-2015-10-09.tsv')  # FIXME
+        reader = csv.DictReader(open(catalog_freq_path, 'rb'), delimiter='\t',
+                                fieldnames=['snp_id_current', 'allele', 'freq', 'populations'])
+        num_created = 0
+        num_updated = 0
+        for record in reader:
+            snp, created = Snp.objects.update_or_create(
+                snp_id_current=record['snp_id_current'],
+                defaults={'allele': to_null_array_if_blank(record['allele']),
+                          'freq': to_null_array_if_blank(record['freq']),
+                          'populations': record['populations']}
+            )
+            if created:
+                num_created += 1
+            else:
+                num_updated += 1
+
+        log.info('updated: {} records'.format(num_updated))
+        log.info('created: {} records'.format(num_created))
 
         log.info('Importing gwascatalog...')
+        catalog_path = os.path.join(settings.GWASCATALOG_DIR, 'gwascatalog-cleaned-{}.tsv'.format(today))
+
+        prev = GwasCatalogSnp.objects.filter(date_downloaded=today_with_tz)
+        if prev:
+            prev.delete()
+            log.info('Removed existing records which data_downloaded == today.')
 
         model_fields = [field for field in GwasCatalogSnp._meta.get_fields() if field.name not in ('id', 'created_at')]
         model_field_names = [field.name for field in model_fields]
@@ -63,27 +91,39 @@ class Command(BaseCommand):
 
                     data[k] = v
 
-            gwascatalog_snps.append(GwasCatalogSnp(**data))
-
-        # JOIN GwasCatalogSnp AND Snp ON snp_id = snp_id_reported
-        # snp_ids = [snp.snp_id for snp in gwascatalog_snps]
-        # snp_obj_map = dict((x.rs_id_reported,x) for x in Snp.objects.filter(rs_id_reported__in=snp_ids))
-
-        # TODO: Is updating in loop valid?
-        # for i,snp in enumerate(gwascatalog_snps):
-        #     snp_obj = snp_obj_map.get(snp.snp_id)
-        #     gwascatalog_snps[i].snp = snp_obj
-
-        #     if snp_obj:
-        #         if snp.population:
-        #             gwascatalog_snps[i].snp.db_allele_freq = {}  # = {'Asian': {}, 'European': {}, 'African': {}}[population[0]]
-        #         else:
-        #             gwascatalog_snps[i].snp.db_allele_freq = {}
+            # WIP:
+            # phenotype = GwasCatalogPhenotype(name=data['disease_or_trait'])
+            # found_id = GwasCatalogPhenotype.objects.filter(name=data['disease_or_trait'])
+            # if not found_id:
+            #     found_id = phenotype.save()
+            # data['phenotype'] = found_id
 
             # TODO: odds_ratio/beta_coeff
-            # TODO: validate risk_allele
+
+            # TODO: add freq data for European, African
+            population_1st = data['population'][0] if data['population'] else ''
+            freq_population = {'EastAsian': '{CHB,JPT}',
+                               'European':  '{CHB,JPT}',
+                               'African':   '{CHB,JPT}'}.get(population_1st, '{}')
+
+            if freq_population != '{}':
+                snp = Snp.objects.filter(snp_id_current=data['snp_id_current'], populations=freq_population).first()
+                # TODO: validate risk_allele
+
+            gwascatalog_snps.append(GwasCatalogSnp(**data))
 
         GwasCatalogSnp.objects.bulk_create(gwascatalog_snps)
 
-        log.debug('processed: {} records'.format(len(gwascatalog_snps)))
+        log.info('created: {} records'.format(len(gwascatalog_snps)))
+
+        # disease_or_trait = GwasCatalogSnp.objects.values_list('disease_or_trait', flat=True)
+        # gwascatalog_phenotypes = []
+
         log.info('Done.')
+
+
+def to_null_array_if_blank(text):
+    if text == '':
+        return '{}'
+    else:
+        return text

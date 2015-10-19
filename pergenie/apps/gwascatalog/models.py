@@ -37,7 +37,8 @@ class GwasCatalogSnp(Model):
     odds_ratio                     = DecimalField(          max_digits=8, decimal_places=4,           null=True)
     beta_coeff                     = DecimalField(          max_digits=8, decimal_places=4,           null=True)
 
-    snp = ForeignKey('snp.Snp', null=True)
-
     class Meta:
         unique_together = ('date_downloaded', 'pubmed_id', 'disease_or_trait', 'snp_id_reported', 'risk_allele')
+
+class GwasCatalogPhenotype(Model):
+    name = CharField(max_length=1024)
