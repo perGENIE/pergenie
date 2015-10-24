@@ -1,0 +1,4 @@
+---
+app_user: pergenie
+app_root: /home/{{ app_user }}/pergenie/pergenie
+repo_url: https://github.com/pergenie/perGENIE.git

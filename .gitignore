@@ -22,8 +22,9 @@
 .coverage
 htmlcov
 
-# File-based email
-tmp/email
+# tmp
+pergenie/tmp/email
+pergenie/tmp/downloads/gwascatalog
 
 # Settings
 pergenie/pergenie/settings/common.py
@@ -39,3 +40,7 @@ pergenie/static/vendor
 
 # pyfasta
 *.gdx
+
+# ansible/vagrant
+hosts
+.vagrant

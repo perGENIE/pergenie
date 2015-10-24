@@ -18,6 +18,7 @@ termcolor     # logging
 psutil        # logging
 python-magic  # upload file validation
 LEPL          # email validation
+pytz          # timezone
 
 # TODO: add comments
 # Jinja2

@@ -1,12 +1,17 @@
 import sys
 import os
 import csv
-import datetime
+from datetime import datetime
 
 from django.core.management.base import BaseCommand, CommandError
+from django.db import models, transaction
 from django.conf import settings
+from django.utils import timezone
+from django.utils.dateparse import parse_date
 
-from apps.gwascatalog.models import GwasCatalogSnp
+from apps.snp.models import Snp
+from apps.gwascatalog.models import GwasCatalogSnp, GwasCatalogPhenotype
+from cleanup.population import get_population
 from lib.utils.io import get_url_content
 from lib.utils import clogging
 log = clogging.getColorLogger(__name__)
@@ -15,64 +20,113 @@ log = clogging.getColorLogger(__name__)
 class Command(BaseCommand):
     help = "Update GWAS Catalog"
 
+    @transaction.atomic
     def handle(self, *args, **options):
-        try:
-            log.info('Fetching latest gwascatalog...')
+        log.info('Fetching latest gwascatalog...')
 
-            if not os.path.exists(GWASCATALOG_DIR):
-                os.makedirs(GWASCATALOG_DIR)
+        if not os.path.exists(settings.GWASCATALOG_DIR):
+            os.makedirs(settings.GWASCATALOG_DIR)
 
-            today = datetime.datetime.now().strftime('%Y-%m-%d')
-            catalog_path = os.path.join(GWASCATALOG_DIR, 'gwascatalog.{}.tsv'.format(today))
+        # TODO: Fetch from web
+        current_tz = timezone.get_current_timezone()
+        # today = timezone.now().strftime('%Y-%m-%d')
+        today = timezone.now().strftime('2015-09-25')  # FIXME
+        today_with_tz = current_tz.localize(datetime(*(parse_date(today).timetuple()[:5])))
 
-            if not os.path.exists(catalog_path):
-                try:
-                    get_url_content(url=settings.GWASCATALOG_URL, dst=catalog_path)
-                except (IOError,KeyboardInterrupt) as exception:
-                    if os.path.exists(catalog_path):
-                        os.remove(catalog_path)
-                    raise
+        # - Allele freq
+        log.info('Updating snp allele freq records for gwascatalog...')
+        catalog_freq_path = os.path.join(settings.GWASCATALOG_DIR, 'gwascatalog-snps-allele-freq-2015-10-09.tsv')  # FIXME
+        reader = csv.DictReader(open(catalog_freq_path, 'rb'), delimiter='\t',
+                                fieldnames=['snp_id_current', 'allele', 'freq', 'populations'])
+        num_created = 0
+        num_updated = 0
+        for record in reader:
+            snp, created = Snp.objects.update_or_create(
+                snp_id_current=record['snp_id_current'],
+                defaults={'allele': to_null_array_if_blank(record['allele']),
+                          'freq': to_null_array_if_blank(record['freq']),
+                          'populations': record['populations']}
+            )
+            if created:
+                num_created += 1
+            else:
+                num_updated += 1
 
-            log.info('Importing gwascatalog...')
+        log.info('updated: {} records'.format(num_updated))
+        log.info('created: {} records'.format(num_created))
 
-            chunk_length = 1000
-            gwascatalog_snps = []
+        # - Gwas Catalog
+        log.info('Importing gwascatalog...')
+        catalog_path = os.path.join(settings.GWASCATALOG_DIR, 'gwascatalog-cleaned-{}.tsv'.format(today))
 
-            reader = csv.DictReader(catalog_path, delimiter='\t')
-            for record in reader:
+        prev = GwasCatalogSnp.objects.filter(date_downloaded=today_with_tz)
+        if prev:
+            prev.delete()
+            log.info('Removed existing records which data_downloaded == today.')
 
-                population = get_population(record['initial_sample_size'])
+        model_fields = [field for field in GwasCatalogSnp._meta.get_fields() if field.name not in ('id', 'created_at')]
+        model_field_names = [field.name for field in model_fields]
+        model_fields_map = dict(zip(model_field_names, model_fields))
 
-                if population:
-                    population_1st = population[0]
-                    db_allele_freq = {'Asian': {}, 'European': {}, 'African': {}}[population_1st]  # TODO
-                else:
-                    db_allele_freq = {}
+        gwascatalog_snps = []
+        reader = csv.DictReader(open(catalog_path, 'rb'), delimiter='\t')
+        for record in reader:
+            record.update({'population': get_population(record['initial_sample']),
+                           'reliability_rank': '',
+                           'odds_ratio': None,
+                           'beta_coeff': None})
 
-                # TODO: odds_ratio/beta_coeff
+            # Import only pre-defined in model fields
+            data = {}
+            for k,v in record.items():
+                if k in model_field_names:
+                    # Set blank or null
+                    if v == '':
+                        if type(model_fields_map[k]) in (models.fields.CharField, models.fields.TextField):
+                            v = ''
+                        else:
+                            v = None
 
-                record.update({'risk_allele_forward': get_forward_risk_allele(record['risk_allele'],
-                                                                              record['risk_allele_freq_reported'],
-                                                                              db_allele_freq,
-                                                                              settings.GWASCATALOG_INCONSISTENCE_THRS),
-                               'population': population,
-                               'reliability_rank': get_reliability_rank(record['study'],
-                                                                        record['p_value'])}
+                    # Set datetime with timezone
+                    if type(model_fields_map[k]) == models.DateTimeField:
+                        v = current_tz.localize(datetime(*(parse_date(v).timetuple()[:5])))
 
-                snp = GwasCatalogSnp(**record)
-                gwascatalog_snps.append(snp)
+                    data[k] = v
 
-                if len(gwascatalog_snps) == chunk_length:
-                    GwasCatalogSnp.object.bulk_create(gwascatalog_snps)
-                    gwascatalog_snps[:] = []
+            # TODO: odds_ratio/beta_coeff
 
-            if len(gwascatalog_snps) > 0:
-                GwasCatalogSnp.object.bulk_create(gwascatalog_snps)
+            # TODO: add freq data for European, African
+            population_1st = data['population'][0] if data['population'] else ''
+            freq_population = {'EastAsian': '{CHB,JPT}',
+                               'European':  '{CHB,JPT}',
+                               'African':   '{CHB,JPT}'}.get(population_1st, '{}')
 
-            log.info('Done.')
+            # TODO: validate risk_allele
+            # if freq_population != '{}':
+            #     snp = Snp.objects.filter(snp_id_current=data['snp_id_current'], populations=freq_population).first()
 
-        except Exception as exception:
-            # TODO: rollback
-            # catalog.delete_catalog()
-            # catalog.delete()
-            raise
+            gwascatalog_snps.append(GwasCatalogSnp(**data))
+
+        GwasCatalogSnp.objects.bulk_create(gwascatalog_snps)
+        log.info('created: {} records'.format(len(gwascatalog_snps)))
+
+        # - Phenotype
+        log.info('Updating phenotype records for gwascatalog...')
+        phenotypes = GwasCatalogSnp.objects.distinct().values_list('disease_or_trait', flat=True)
+        num_created = 0
+        for phenotype in phenotypes:
+            gwascatalog_phenotype, created = GwasCatalogPhenotype.objects.get_or_create(
+                name=phenotype
+            )
+            if created:
+                num_created += 1
+        log.info('created: {} records'.format(num_created))
+
+        log.info('Done.')
+
+
+def to_null_array_if_blank(text):
+    if text == '':
+        return '{}'
+    else:
+        return text

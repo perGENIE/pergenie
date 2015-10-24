@@ -1,0 +1,9 @@
+---
+- command: wget -c {{ dst_url }}
+- command: tar xf {{ dst_file }}
+
+- become: yes
+  file: path={{ bin_dir }} state=directory mode=0755
+
+- become: yes
+  command: mv {{ dst_file }}/* {{ bin_dir }}

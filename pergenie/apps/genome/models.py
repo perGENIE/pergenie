@@ -3,10 +3,13 @@ import os
 import uuid
 import datetime
 import csv
+import subprocess
 
 from django.db import models
 from django.conf import settings
 from django.utils.translation import ugettext as _
+from django.utils import timezone
+from django.contrib.postgres.fields import ArrayField
 
 from celery.task import Task
 from celery.decorators import task
@@ -14,7 +17,6 @@ from celery.exceptions import Ignore
 import vcf
 
 from apps.authentication.models import User
-from pergenie.mongo import mongo_db
 
 from lib.utils import clogging
 from lib.utils.io import count_file_lines
@@ -23,7 +25,7 @@ log = clogging.getColorLogger(__name__)
 
 class Genome(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    created_at = models.DateTimeField(default=datetime.datetime.now)
+    created_at = models.DateTimeField(default=timezone.now)
 
     owner = models.ForeignKey(User, related_name='owner')
     readers = models.ManyToManyField(User, related_name='reader')
@@ -79,66 +81,65 @@ class Genome(models.Model):
         task_import_genotypes.delay(str(self.id))
 
     def get_genotypes(self):
-        return mongo_db['genome-' + str(self.id)]
+        return Genotype.objects.filter(genome_id=self.id)
 
     def delete_genotypes(self):
-        mongo_db.drop_collection(self.get_genotypes())
+        self.get_genotypes().delete()
+
+class Genotype(models.Model):
+    genome = models.ForeignKey(Genome)
+    rs_id_current = models.IntegerField()
+    genotype = ArrayField(models.CharField(max_length=1024),size=2)
 
 
 @task(ignore_result=True)
 def task_import_genotypes(genome_id, minimum_snps=False):
-    log = Task.get_logger()
-    log.info('Importing genotypes...')
+    log.info('Importing genotypes ...')
 
-    status = 0
     error = None
 
     try:
         genome = Genome.objects.get(id=uuid.UUID(genome_id))
-        genotypes = genome.get_genotypes()
 
-        if genotypes.find_one():
+        genotypes_found = genome.get_genotypes()
+        if genotypes_found:
+            log.info('Delete old records ...')
             genome.delete_genotypes()
 
         file_path = genome.get_genome_file()
-        file_lines = count_file_lines(file_path)
-        log.info('#lines: {}'.format(file_lines))
 
-        with open(file_path, 'rb') as fin:
-            reader = {Genome.FILE_FORMAT_VCF: vcf.DictReader}[genome.file_format]
+        log.info('Getting SNP ID whitelist ...')
+        snp_id_whitelist = []
+        snp_id_whitelist += GwasCatalogSnp.objects.exclude(snp_id_current__isnull=True).distinct('snp_id_current').values_list('snp_id_current', flat=True)
+        with open(file_path + '.whitelist.txt') as fout:
+            for snp_id in snp_id_whitelist:
+                print >>fout, 'rs' + snp_id  # TODO:
 
-            log.info('Start importing...')
-            for i,record in enumerate(reader(fin)):
-                if genome.file_format == Genome.FILE_FORMAT_VCF:
-                    record['genotype'] = record['genotypes'][record['samples'][0]]
+        log.info('Converting to tsv ...')
+        cmd = [os.path.join(settings.BASE_DIR, 'bin', 'vcf-to-tsv'),
+               file_path,
+               settings.RS_MERGE_ARCH_PATH,
+               os.path.join(settings.BASE_DIR, 'bin')]
+        subprocess.Popen(cmd, stdout=subprocess.PIPE).communicate()[0]
 
-                if record['rs']:
-                    # TODO: rs => snp_id
-                    # TODO: genotype => alleles
-                    genotypes.insert_one({'rs': record['rs'],
-                                          'genotype': record['genotype']})
+        log.info('Importing into database ...')
+        genotypes = []
+        with open(os.path.join(file_path + '.tsv'), 'rb') as fin:
+            for i,line in enumerate(fin):
+                record = line.strip().split('\t')
+                genotype = record[1].split('/')
+                genotypes.append(Genotype(genome=genome,
+                                          rs_id_current=int(record[0]),
+                                          genotype=genotype))
 
-                if i > 0 and i % 10000 == 0:
-                    log.debug('{i} lines done...'.format(i=i+1))
-
-                    # Update Genome status
-                    genome.status = int(100 * (i * 0.9 / file_lines) + 1)
-                    genome.save()
-
-            log.info('Creating index...')
-            genotypes.create_index('rs')
-            status = 100
-
-    except csv.Error, csv_error:
-        log.info('Parser error:' + str(csv_error))
-        error = _('Invalid genome file.')
+            Genotype.objects.bulk_create(genotypes)
 
     except Exception, exception:
         log.error('Unexpected error:' + str(exception))
         erorr = _('Invalid genome file.')
 
     finally:
-        genome.status = status
+        genome.status = 100
         genome.error = error
 
         if error:
