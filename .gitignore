@@ -10,6 +10,11 @@
 # Python
 *.py[cod]
 *_flymake.py
+.cache
+.virtualenv
+
+# npm
+node_modules
 
 # Locale
 *.mo
