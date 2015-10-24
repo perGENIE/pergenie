@@ -1,3 +1,5 @@
+import re
+
 def get_population(text):
     """Parse `initial_sample_size` in GWAS Catalog,
     then return a list of combination of
@@ -239,21 +241,21 @@ def get_population(text):
                (re.compile('[^South] African(|-) American', re.I), 'African'),
                (re.compile('Malawian', re.I), 'African'),
 
-               (re.compile('(|East|South|Indian|Southeast) Asian', re.I), 'Asian'),
-               (re.compile('Korean', re.I), 'Asian'),
-               (re.compile('Taiwanese', re.I), 'Asian'),
-               (re.compile('Indonesian', re.I), 'Asian'),
-               (re.compile('Micronesian', re.I), 'Asian'),
-               (re.compile('Han Chinese', re.I), 'Asian'),
-               (re.compile('Chinese Han', re.I), 'Asian'),
-               (re.compile('Southern Chinese', re.I), 'Asian'),
-               (re.compile('Indian', re.I), 'Asian'),
-               (re.compile('Malay', re.I), 'Asian'),
-               (re.compile(' Chinese', re.I), 'Asian'),
-               (re.compile('Thai-Chinese', re.I), 'Asian'),
-               (re.compile('Filipino', re.I), 'Asian'),
-               (re.compile('Vietnamese', re.I), 'Asian'),
-               (re.compile('Japanese', re.I), 'Asian'),
+               (re.compile('(|East|South|Indian|Southeast) Asian', re.I), 'EastAsian'),
+               (re.compile('Korean', re.I), 'EastAsian'),
+               (re.compile('Taiwanese', re.I), 'EastAsian'),
+               (re.compile('Indonesian', re.I), 'EastAsian'),
+               (re.compile('Micronesian', re.I), 'EastAsian'),
+               (re.compile('Han Chinese', re.I), 'EastAsian'),
+               (re.compile('Chinese Han', re.I), 'EastAsian'),
+               (re.compile('Southern Chinese', re.I), 'EastAsian'),
+               (re.compile('Indian', re.I), 'EastAsian'),
+               (re.compile('Malay', re.I), 'EastAsian'),
+               (re.compile(' Chinese', re.I), 'EastAsian'),
+               (re.compile('Thai-Chinese', re.I), 'EastAsian'),
+               (re.compile('Filipino', re.I), 'EastAsian'),
+               (re.compile('Vietnamese', re.I), 'EastAsian'),
+               (re.compile('Japanese', re.I), 'EastAsian'),
 
                (re.compile('Japanese', re.I), 'Japanese'),
            ]

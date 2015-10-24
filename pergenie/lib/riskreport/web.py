@@ -1,31 +1,24 @@
-import sys, os
+import sys
+import os
 import re
 import datetime
-import zipfile
-from pprint import pformat, pprint
-from pymongo import MongoClient
+
 from django.conf import settings
-from lib.api.gwascatalog import GWASCatalog
-gwascatalog = GWASCatalog()
-from lib.api.genomes import Genomes
-genomes = Genomes()
+
 from utils import clogging
 log = clogging.getColorLogger(__name__)
-from riskreport_base import RiskReportBase
+from .base import RiskReportBase
+
 
 class RiskReport(RiskReportBase):
-    """
-    Django and MongoDB version of RiskReport
+    """Django version of RiskReport
 
-    - Depends on Django
-    - Depneds on MongoDB
-
+    - genome: use Genome model
+    - gwascatalog: use GwasCatalog model
     """
 
     def __init__(self):
-        c = MongoClient(host=settings.MONGO_URI)
-        self.db = c['pergenie']
-        self.data_info = self.db['data_info']
+        pass
 
     def is_uptodate(self, info):
         """Check if user's risk report is up-to-date.
@@ -51,7 +44,7 @@ class RiskReport(RiskReportBase):
         return riskreport
 
     def write_riskreport(self, user_id, file_infos, ext='tsv', force_uptade=False):
-        """Write out riskreport(.tsv|.csv) as .zip
+        """Write out riskreport(.tsv|.csv)
         """
 
         fout_paths = []
@@ -108,21 +101,6 @@ class RiskReport(RiskReportBase):
 
                     print >>fout, delimiter[ext].join(content)
 
-        # Zip (py26)
-        log.info('Zipping {0} file(s)...'.format(len(fout_paths)))
-
-        if len(fout_paths) == 1:
-            fout_zip_name = '{file_name}.zip'.format(file_name=os.path.basename(fout_paths[0]))
-        else:
-            fout_zip_name = 'RR.zip'
-        fout_zip_path = os.path.join(RR_dir, fout_zip_name)
-        fout_zip = zipfile.ZipFile(fout_zip_path, 'w', zipfile.ZIP_DEFLATED)
-        for fout_path in fout_paths:
-            fout_zip.write(fout_path, os.path.join(user_id, os.path.basename(fout_path)))
-        fout_zip.close()
-
-        return fout_zip_path
-
     def get_all_riskreports(self, user_id):
         all_riskreports = []
         user_files = genomes.get_data_infos(user_id)
@@ -168,45 +146,8 @@ class RiskReport(RiskReportBase):
 
         # Case3: TODO:
 
-        # Get number of uniq studies for this population
-        # & Get cover rate of GWAS Catalog for this population
-        uniq_studies, uniq_snps = set(), set()
-        n_available = 0
-        for record in catalog_map.values():
-            if not record['pubmed_id'] in uniq_studies:
-                uniq_studies.update([record['pubmed_id']])
-
-            if record['snp_id_current'] and record['snp_id_current'] not in uniq_snps:
-                uniq_snps.update([record['snp_id_current']])
-
-                if info['file_format'] == 'vcf_exome_truseq' and record['is_in_truseq']:
-                    n_available += 1
-                elif info['file_format'] == 'vcf_exome_iontargetseq' and record['is_in_iontargetseq']:
-                    n_available += 1
-                elif info['file_format'] == 'andme' and record['is_in_andme']:
-                    n_available += 1
-
-        log.debug('n_available: %s' % n_available)
-
-        n_studies = len(uniq_studies)
-        if info['file_format'] == 'vcf_whole_genome':
-            catalog_cover_rate_for_this_population = 100
-        else:
-            catalog_cover_rate_for_this_population = round(100 * n_available / len(uniq_snps))
-
         # Calculate risk
         risk_store, risk_reports = self.risk_calculation(catalog_map, variants_map)
-
-        # Set reliability rank
-        tmp_risk_reports = dict()
-        for trait,studies in risk_reports.items():
-            tmp_risk_reports[trait] = {}
-
-            for study,value in studies.items():
-                record = risk_store[trait][study].values()[0]['catalog_map']
-                r_rank = self._calc_reliability_rank(record)
-                tmp_risk_reports[trait].update({study: [r_rank, value]})
-        risk_reports = tmp_risk_reports
 
         # Import riskreport into MongoDB
         file_uuid = self.get_file_uuid(info['user_id'], info['name'])
