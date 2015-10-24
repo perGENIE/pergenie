@@ -8,7 +8,7 @@ def get_browser(width, heigth):
     return browser
 
 def create_screenshot(browser, path, dst_dir):
-    base_url = 'http://localhost:8000/'
+    base_url = 'http://localhost:8888/'
     browser.visit(os.path.join(base_url, path))
     filename = os.path.join(dst_dir, 'screenshot{}.png'.format(path.replace('/', '-')))
     browser.driver.save_screenshot(filename)
