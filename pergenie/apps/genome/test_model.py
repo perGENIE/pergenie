@@ -6,7 +6,6 @@ from django.test.utils import override_settings
 from django.conf import settings
 from django.utils.translation import ugettext as _
 
-from pergenie.mongo import mongo_db
 from apps.authentication.models import User
 from .models import Genome
 

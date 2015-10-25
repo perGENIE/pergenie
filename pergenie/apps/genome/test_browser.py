@@ -7,7 +7,6 @@ from django.conf import settings
 
 from splinter import Browser
 
-from pergenie.mongo import mongo_db
 from test.utils import auth
 from .models import Genome
 
