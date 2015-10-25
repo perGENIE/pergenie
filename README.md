@@ -31,6 +31,13 @@ $ cp pergenie/settings/develop.py.example pergenie/settings/develop.py
 
 - Run postgres server
 
+- Create postgres user and database
+
+```
+$ createuser pergenie
+$ createdb pergenie -O pergenie
+```
+
 - Run database migration
 
 ```
