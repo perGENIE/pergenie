@@ -53,9 +53,6 @@ DATABASES = {
     },
 }
 
-# MongoDB
-# TODO:
-
 # Celery (RabbitMQ)
 # TODO:
 
