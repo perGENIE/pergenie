@@ -37,19 +37,6 @@ DATABASES = {
     },
 }
 
-# MongoDB
-MONGO_HOST = '127.0.0.1'
-MONGO_PORT = 27017
-MONGO_USER = 'w3pgenie'
-MONGO_PASSWORD = 'password'
-MONGO_DB_NAME = 'pergenie'
-# MONGO_URI = 'mongodb://{USER}:{PASSWORD}@{HOST}:{PORT}'.format(USER=MONGO_USER,
-#                                                                PASSWORD=MONGO_PASSWORD,
-#                                                                HOST=MONGO_HOST,
-#                                                                PORT=MONGO_PORT)
-MONGO_URI = 'mongodb://{HOST}:{PORT}'.format(HOST=MONGO_HOST,
-                                             PORT=MONGO_PORT)
-
 # Celery
 BROKER_URL = 'amqp://{USER}:{PASSWORD}@{HOST}:{PORT}//'.format(USER='guest',
                                                                PASSWORD='guest',
