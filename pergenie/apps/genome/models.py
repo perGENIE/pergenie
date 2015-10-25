@@ -17,6 +17,7 @@ from celery.exceptions import Ignore
 import vcf
 
 from apps.authentication.models import User
+from apps.gwascatalog.models import GwasCatalogSnp
 
 from lib.utils import clogging
 from lib.utils.io import count_file_lines
@@ -111,7 +112,7 @@ def task_import_genotypes(genome_id, minimum_snps=False):
         log.info('Getting SNP ID whitelist ...')
         snp_id_whitelist = []
         snp_id_whitelist += GwasCatalogSnp.objects.exclude(snp_id_current__isnull=True).distinct('snp_id_current').values_list('snp_id_current', flat=True)
-        with open(file_path + '.whitelist.txt') as fout:
+        with open(file_path + '.whitelist.txt', 'w') as fout:
             for snp_id in snp_id_whitelist:
                 print >>fout, 'rs' + snp_id  # TODO:
 
@@ -120,7 +121,7 @@ def task_import_genotypes(genome_id, minimum_snps=False):
                file_path,
                settings.RS_MERGE_ARCH_PATH,
                os.path.join(settings.BASE_DIR, 'bin')]
-        subprocess.Popen(cmd, stdout=subprocess.PIPE).communicate()[0]
+        subprocess.check_output(cmd)
 
         log.info('Importing into database ...')
         genotypes = []
