@@ -4,7 +4,9 @@ GENOME_FILE_PATH=$1
 RS_MERGE_ARCH_PATH=$2
 BIN_PATH=$3
 
-gzip -dc ${GENOME_FILE_PATH}| \
+# FIXME: Need to check gzipeed or not
+# gzip -dc ${GENOME_FILE_PATH}| \
+cat ${GENOME_FILE_PATH}| \
     ${BIN_PATH}/vcf-subset --keep-index 0 | \
     ${BIN_PATH}/vcf-update ${RS_MERGE_ARCH_PATH} | \
     ${BIN_PATH}/vcf-filter ${GENOME_FILE_PATH}.whitelist.txt | \
