@@ -54,6 +54,12 @@ or run in foreground (for development only)
 $ celery --app=pergenie worker --logfile=/tmp/celeryd.log --pidfile=celery%n.pid
 ```
 
+- [optional] Create super-user to login
+
+```
+$ python manage.py createsuperuser
+```
+
 4\. Run
 
 Run local server (for development only)
