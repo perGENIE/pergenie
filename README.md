@@ -19,6 +19,8 @@ $ pip install -r requirements/development.txt
 - Command-line vcf tools
   - Download binaries from https://github.com/knmkr/go-vcf-tools/releases/download/${version}, and put them at `pergenie/bin`
 
+- Download merge history of rs IDs from `ftp.ncbi.nih.gov/snp/organisms/human_9606_b144_GRCh37p13/database/organism_data/RsMergeArch.bcp.gz` and put at `RS_MERGE_ARCH_PATH`
+
 
 2\. Configure environments settings
 
@@ -76,6 +78,16 @@ $ python manage.py runserver
 ```
 
 Browse development server at `http://127.0.0.1:8000/`
+
+
+## Notes
+
+- Versions of public database sources are fixed as following:
+
+| source                 | version          |
+|------------------------|------------------|
+| Human Reference Genome | GRCh37p13        |
+| dbSNP                  | b144             |
 
 
 ## Notice

@@ -47,5 +47,8 @@ CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 
+UPLOAD_DIR = os.path.join(BASE_DIR, 'tmp')
+TEST_DATA_DIR = os.path.join(BASE_DIR, 'test', 'data')
 
-UPLOAD_DIR = '/tmp/pergenie'
+# Genome
+RS_MERGE_ARCH_PATH = os.path.join(BASE_DIR, 'tmp', 'RsMergeArch.bcp.gz')
