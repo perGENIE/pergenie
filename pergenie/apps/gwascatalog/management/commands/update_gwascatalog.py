@@ -30,7 +30,7 @@ class Command(BaseCommand):
         # TODO: Fetch from web
         current_tz = timezone.get_current_timezone()
         # today = timezone.now().strftime('%Y-%m-%d')
-        today = timezone.now().strftime('2015-09-25')  # FIXME
+        today = '2015-09-25'  # FIXME
         today_with_tz = current_tz.localize(datetime(*(parse_date(today).timetuple()[:5])))
 
         # - Allele freq
