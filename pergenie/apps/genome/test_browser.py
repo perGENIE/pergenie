@@ -8,7 +8,9 @@ from django.conf import settings
 from splinter import Browser
 
 from test.utils import auth
+from apps.gwascatalog.models import GwasCatalogSnp
 from .models import Genome
+from lib.utils.date import today_with_tz
 
 
 @override_settings(CELERY_EAGER_PROPAGATES_EXCEPTIONS=True,
@@ -22,6 +24,11 @@ class GenomeBrowserTestCase(TestCase):
         self.genomes = []
 
         self.browser = auth.browser_login(Browser('django'), self.test_user_id, self.test_user_password)
+
+        # SNPs for whitelist
+        GwasCatalogSnp(date_downloaded=today_with_tz,
+                       snp_id_current=527236043,  # rsLow rs6054257 => rsHigh rs527236043
+                       population=['EastAsian']).save()
 
     def tearDown(self):
         if self.genomes:
@@ -125,7 +132,7 @@ class GenomeBrowserTestCase(TestCase):
         response = json.loads(self.browser.html)
         expected = {'status': 'ok',
                     'error_message': '',
-                    'uploaded_files': {str(self.genomes[0].id): 100}}
+                    'genome_info': {str(self.genomes[0].id): 100}}
 
         assert response == expected
 
