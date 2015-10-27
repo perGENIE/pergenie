@@ -18,9 +18,8 @@ import vcf
 
 from apps.authentication.models import User
 from apps.gwascatalog.models import GwasCatalogSnp
-
-from lib.utils import clogging
 from lib.utils.io import count_file_lines
+from lib.utils import clogging
 log = clogging.getColorLogger(__name__)
 
 
@@ -114,18 +113,20 @@ def task_import_genotypes(genome_id, minimum_snps=False):
         snp_id_whitelist += GwasCatalogSnp.objects.exclude(snp_id_current__isnull=True).distinct('snp_id_current').values_list('snp_id_current', flat=True)
         with open(file_path + '.whitelist.txt', 'w') as fout:
             for snp_id in snp_id_whitelist:
-                print >>fout, 'rs' + snp_id  # TODO:
+                print >>fout, 'rs{}'.format(snp_id)
 
         log.info('Converting to tsv ...')
         cmd = [os.path.join(settings.BASE_DIR, 'bin', 'vcf-to-tsv'),
                file_path,
                settings.RS_MERGE_ARCH_PATH,
                os.path.join(settings.BASE_DIR, 'bin')]
+        log.debug(cmd)
         subprocess.check_output(cmd)
 
         log.info('Importing into database ...')
+
         genotypes = []
-        with open(os.path.join(file_path + '.tsv'), 'rb') as fin:
+        with open(file_path + '.tsv', 'r') as fin:
             for i,line in enumerate(fin):
                 record = line.strip().split('\t')
                 genotype = record[1].split('/')
@@ -134,19 +135,15 @@ def task_import_genotypes(genome_id, minimum_snps=False):
                                           genotype=genotype))
 
             Genotype.objects.bulk_create(genotypes)
+        genome.status = 100
 
     except Exception, exception:
-        log.error('Unexpected error:' + str(exception))
-        erorr = _('Invalid genome file.')
+        log.error('Unexpected error: ' + str(exception))
+        genome.error = _('Invalid genome file.')
+        genome.status = -1
+        genome.delete_genotypes()
 
     finally:
-        genome.status = 100
-        genome.error = error
-
-        if error:
-            genome.status = -1
-            genome.delete_genotypes()
-
         genome.save()
 
     log.info('Done!')

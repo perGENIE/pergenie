@@ -38,7 +38,7 @@ class GwasCatalogSnp(Model):
     beta_coeff                     = DecimalField(          max_digits=8, decimal_places=4,           null=True)
 
     class Meta:
-        unique_together = ('date_downloaded', 'pubmed_id', 'disease_or_trait', 'snp_id_reported', 'risk_allele')
+        unique_together = ('date_downloaded', 'pubmed_id', 'disease_or_trait', 'snp_id_current', 'risk_allele')
 
 class GwasCatalogPhenotype(Model):
     name = CharField(max_length=1024)

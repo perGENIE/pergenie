@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e -o pipefail
+
 GENOME_FILE_PATH=$1
 RS_MERGE_ARCH_PATH=$2
 BIN_PATH=$3
