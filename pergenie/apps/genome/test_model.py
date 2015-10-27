@@ -1,13 +1,19 @@
 import os
 import shutil
+from datetime import datetime
 
 from django.test import TestCase
 from django.test.utils import override_settings
 from django.conf import settings
 from django.utils.translation import ugettext as _
+from django.utils import timezone
+from django.utils.dateparse import parse_date
 
 from apps.authentication.models import User
-from .models import Genome
+from apps.gwascatalog.models import GwasCatalogSnp
+from .models import Genome, Genotype
+from lib.utils import clogging
+log = clogging.getColorLogger(__name__)
 
 
 @override_settings(CELERY_EAGER_PROPAGATES_EXCEPTIONS=True,
@@ -22,6 +28,14 @@ class GenomeModelTestCase(TestCase):
         self.user.is_active = True
         self.user.save()
         self.genome = None
+
+        # SNPs for whitelist
+        current_tz = timezone.get_current_timezone()
+        today = timezone.now().strftime('2015-09-25')
+        today_with_tz = current_tz.localize(datetime(*(parse_date(today).timetuple()[:5])))
+        GwasCatalogSnp(date_downloaded=today_with_tz,
+                       snp_id_current=527236043,  # rsLow rs6054257 => rsHigh rs527236043
+                       population=['EastAsian']).save()
 
     def tearDown(self):
         if self.genome:
@@ -77,7 +91,10 @@ class GenomeModelTestCase(TestCase):
 
         assert genome.status == 100
         assert genotypes.count() == 1
-        assert genotypes.find_one({'rs': 6054257})['genotype'] == 'GG'
+
+        one_genotype = Genotype.objects.get(genome=self.genome.id, rs_id_current=527236043)
+
+        assert one_genotype.genotype == ['G', 'G']
 
     def test_invalid_genome_file_should_fail_create_genotypes(self):
         # TODO: DRY
