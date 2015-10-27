@@ -1,17 +1,15 @@
 import os
 import shutil
-from datetime import datetime
 
 from django.test import TestCase
 from django.test.utils import override_settings
 from django.conf import settings
 from django.utils.translation import ugettext as _
-from django.utils import timezone
-from django.utils.dateparse import parse_date
 
 from apps.authentication.models import User
 from apps.gwascatalog.models import GwasCatalogSnp
 from .models import Genome, Genotype
+from lib.utils.date import today_with_tz
 from lib.utils import clogging
 log = clogging.getColorLogger(__name__)
 
@@ -30,9 +28,6 @@ class GenomeModelTestCase(TestCase):
         self.genome = None
 
         # SNPs for whitelist
-        current_tz = timezone.get_current_timezone()
-        today = timezone.now().strftime('2015-09-25')
-        today_with_tz = current_tz.localize(datetime(*(parse_date(today).timetuple()[:5])))
         GwasCatalogSnp(date_downloaded=today_with_tz,
                        snp_id_current=527236043,  # rsLow rs6054257 => rsHigh rs527236043
                        population=['EastAsian']).save()
