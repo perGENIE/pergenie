@@ -79,6 +79,13 @@ $ python manage.py runserver
 
 Browse development server at `http://127.0.0.1:8000/`
 
+5\. Initialize data
+
+```
+$ python manage.py update_gwascatalog
+$ python manage.py init_demo_user
+```
+
 
 ## Notes
 
