@@ -20,4 +20,6 @@ if __name__ == "__main__":
     else:
         os.environ.setdefault("DJANGO_SETTINGS_MODULE", "pergenie.settings.staging")
 
+    # TODO: settings.production
+
     execute_from_command_line(sys.argv)

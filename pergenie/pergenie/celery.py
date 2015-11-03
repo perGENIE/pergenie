@@ -13,6 +13,8 @@ if host.endswith('.local'):
 else:
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "pergenie.settings.staging")
 
+# TODO: settings.production
+
 app = Celery('pergenie')
 
 # Using a string here means the worker will not have to
