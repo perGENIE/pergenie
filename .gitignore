@@ -28,8 +28,7 @@ node_modules
 htmlcov
 
 # tmp
-pergenie/tmp/email
-pergenie/tmp/downloads/gwascatalog
+pergenie/tmp/
 
 # Settings
 pergenie/pergenie/settings/common.py
