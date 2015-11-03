@@ -63,12 +63,6 @@ or run in foreground (for development only)
 $ celery --app=pergenie worker --logfile=/tmp/celeryd.log --pidfile=celery%n.pid
 ```
 
-- [optional] Create super-user to login
-
-```
-$ python manage.py createsuperuser
-```
-
 4\. Run
 
 Run local server (for development only)
@@ -82,6 +76,7 @@ Browse development server at `http://127.0.0.1:8000/`
 5\. Initialize data
 
 ```
+$ python manage.py createsuperuser
 $ python manage.py update_gwascatalog
 $ python manage.py init_demo_user
 ```
