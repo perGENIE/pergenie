@@ -16,6 +16,7 @@ from django.conf import settings
 
 from .forms import LoginForm, RegisterForm
 from .models import UserActivation, User
+from lib.utils.demo import create_demo_user, prune_demo_user
 from utils import clogging
 log = clogging.getColorLogger(__name__)
 
@@ -119,17 +120,12 @@ def logout(request):
     auth_logout(request)
     return redirect('apps.authentication.views.login')
 
-
-# TODO:
-# def trydemo(request):
-#     return redirect('apps.dashboard.views.index')
-
-
-# TODO:
-# def logoutdemo(request):
-#     auth_logout(request)
-#     return redirect('apps.authentication.views.index')
-
+def trydemo(request):
+    prune_demo_user()
+    demo_user = create_demo_user()
+    auth_user = authenticate(email=demo_user.email, password='')
+    auth_login(request, auth_user)
+    return redirect('apps.dashboard.views.index')
 
 def send_activation_email(user, activation_url):
     email_template = get_template('activation_email.html')

@@ -10,7 +10,8 @@ log = getColorLogger(__name__)
 
 @login_required
 def index(request):
-    user_id = request.user.email
+    user = request.user
+    user_id = str(user)
 
     # while True:
     #     gwascatalog.check_gwascatalog_imported()

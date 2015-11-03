@@ -18,8 +18,7 @@ urlpatterns = [
                         authentication_views.activation),
     url(r'^login/$',    authentication_views.login),
     url(r'^logout/$',   authentication_views.logout),
-
-    # url(r'^trydemo/$',  authentication_views.trydemo),
+    url(r'^trydemo/$',  authentication_views.trydemo),
 
     # Dashboard
     url(r'^dashboard/$', dashboard_views.index, name='dashboard'),
