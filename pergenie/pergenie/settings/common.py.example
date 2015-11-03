@@ -27,6 +27,7 @@ INSTALLED_APPS = (
     'apps.authentication',
     'apps.dashboard',
     'apps.genome',
+    'apps.snp',
 
     'apps.templatetags',
     'apps.gwascatalog',
