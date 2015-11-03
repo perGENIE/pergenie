@@ -1,6 +1,7 @@
 import sys
 import os
 import csv
+from glob import glob
 from datetime import datetime
 
 from django.core.management.base import BaseCommand, CommandError
@@ -22,20 +23,35 @@ class Command(BaseCommand):
 
     @transaction.atomic
     def handle(self, *args, **options):
-        log.info('Fetching latest gwascatalog...')
+        current_tz = timezone.get_current_timezone()
+        today = timezone.now().strftime('%Y-%m-%d')
+        today_with_tz = current_tz.localize(datetime(*(parse_date(today).timetuple()[:5])))
 
         if not os.path.exists(settings.GWASCATALOG_DIR):
             os.makedirs(settings.GWASCATALOG_DIR)
 
         # TODO: Fetch from web
-        current_tz = timezone.get_current_timezone()
-        # today = timezone.now().strftime('%Y-%m-%d')
-        today = '2015-09-25'  # FIXME
-        today_with_tz = current_tz.localize(datetime(*(parse_date(today).timetuple()[:5])))
+        try:
+            log.info('Fetching latest gwascatalog...')
+        except Exception as e:
+            # Remove broken downloaded file if exists
+            pass
 
-        # - Allele freq
+        catalog_path = max(glob(os.path.join(settings.GWASCATALOG_DIR, 'gwascatalog-cleaned-*')), key=os.path.getctime)
+        log.info(catalog_path)
+
+        # TODO: Fetch from web
+        try:
+            log.info('Fetching latest gwascatalog allele freq...')
+        except Exception as e:
+            # Remove broken downloaded file if exists
+            pass
+
+        catalog_freq_path = max(glob(os.path.join(settings.GWASCATALOG_DIR, 'gwascatalog-snps-allele-freq-*')), key=os.path.getctime)
+        log.info(catalog_freq_path)
+
+        # - Gwas Catalog Allele Freq
         log.info('Updating snp allele freq records for gwascatalog...')
-        catalog_freq_path = os.path.join(settings.GWASCATALOG_DIR, 'gwascatalog-snps-allele-freq-2015-10-09.tsv')  # FIXME
         reader = csv.DictReader(open(catalog_freq_path, 'rb'), delimiter='\t',
                                 fieldnames=['snp_id_current', 'allele', 'freq', 'populations'])
         num_created = 0
@@ -57,13 +73,6 @@ class Command(BaseCommand):
 
         # - Gwas Catalog
         log.info('Importing gwascatalog...')
-        catalog_path = os.path.join(settings.GWASCATALOG_DIR, 'gwascatalog-cleaned-{}.tsv'.format(today))
-
-        prev = GwasCatalogSnp.objects.filter(date_downloaded=today_with_tz)
-        if prev:
-            prev.delete()
-            log.info('Removed existing records which data_downloaded == today.')
-
         model_fields = [field for field in GwasCatalogSnp._meta.get_fields() if field.name not in ('id', 'created_at')]
         model_field_names = [field.name for field in model_fields]
         model_fields_map = dict(zip(model_field_names, model_fields))
