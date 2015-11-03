@@ -30,3 +30,13 @@ $ ansible-playbook playbook/site.yml -i playbook/hosts --ask-become-pass
 ```
 
 See details in `Vagrantfile` and `playbook`.
+
+
+## Versions
+
+|                        | version          |
+|------------------------|------------------|
+| CentOS                 | 6.7              |
+| Python                 | 2.7              |
+| PostgreSQL             | 9.4              |
+| RabbitMQ               | 3.5              |

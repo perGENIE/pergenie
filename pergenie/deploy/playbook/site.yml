@@ -3,7 +3,7 @@
   become: yes
   gather_facts: no
   roles:
-    - { role: selinux }
+    - { role: libselinux-python }
     - { role: sshd }
     - { role: devtools }
     - { role: epel }
@@ -15,8 +15,7 @@
   roles:
     - { role: python }
     - { role: postgresql }
-    # TODO:
-    # rabbitmq
-    # apache/nginx
-    # go-vcf-tools
-    # pergenie
+    - { role: rabbitmq }
+    # - { role: apache }
+    - { role: go-vcf-tools }
+    - { role: pergenie }

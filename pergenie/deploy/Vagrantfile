@@ -1,6 +1,6 @@
 Vagrant.configure(2) do |config|
 
-  config.vm.define :dbsnp_host do |node|
+  config.vm.define :pergenie_host do |node|
     node.vm.box = "centos6"
     node.vm.box_url = "http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_centos-6.7_chef-provisionerless.box"
 
