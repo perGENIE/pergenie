@@ -16,6 +16,6 @@
     - { role: python }
     - { role: postgresql }
     - { role: rabbitmq }
-    # - { role: apache }
+    - { role: httpd }
     - { role: go-vcf-tools }
     - { role: pergenie }

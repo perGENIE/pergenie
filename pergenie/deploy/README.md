@@ -1,10 +1,4 @@
-# Deployment scripts for hosting `perGENIE` server.
-
-
-## Requirements
-
-- `VirtualBox` & `Vagrant`
-- `Ansible`
+# Deployment scripts for hosting `perGENIE` server
 
 
 ## Getting Started
@@ -40,3 +34,4 @@ See details in `Vagrantfile` and `playbook`.
 | Python                 | 2.7              |
 | PostgreSQL             | 9.4              |
 | RabbitMQ               | 3.5              |
+| Apache httpd           | 2.2              |

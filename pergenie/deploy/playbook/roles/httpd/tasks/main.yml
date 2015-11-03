@@ -1,0 +1,10 @@
+---
+- name: install httpd
+  become: yes
+  yum: name=httpd,httpd-devel state=present
+
+# TODO: configure
+
+- name: start httpd service
+  become: yes
+  service: name='httpd' state=started enabled=yes
