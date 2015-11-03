@@ -5,6 +5,8 @@ import sys, os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.append(os.path.join(BASE_DIR, 'lib'))
 
+DOMAIN = 'pergenie.org'  # FIXME
+
 
 # Application definition
 
@@ -179,8 +181,14 @@ MAX_UPLOAD_GENOMEFILE_COUNT = 100
 UPLOAD_DIR = '/tmp/pergenie'
 
 # GWAS Catalog
+
 GWASCATALOG_URL = 'http://www.genome.gov/admin/gwascatalog.txt'
-GWASCATALOG_DESCRIPTIONS_LINK = 'http://www.genome.gov/Pages/About/OD/OPG/GWAS%20Catalog/Tab_delimited_column_descriptions_09_27.pdf'
+GWASCATALOG_INCONSISTENCE_THRS = 0.1
+
+# Demo mode
+
+DEMO_GENOME_FILE_NAME = 'demo.vcf'
+
 
 # Reference files
 REFERENCE_DIR = os.path.join(BASE_DIR, 'data')
