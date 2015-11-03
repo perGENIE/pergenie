@@ -1,8 +1,6 @@
 from uuid import uuid4
 from datetime import timedelta
 
-from django.core.management.base import BaseCommand, CommandError
-from django.db import models, transaction
 from django.utils import timezone
 from django.conf import settings
 
