@@ -188,9 +188,11 @@
 
                       <td>
                         <!-- Delete  -->
+                        {% if my_genome.owner == request.user.id %}
                         <button class="btn btn-red" type="button" data-toggle="modal" data-target="#deleteModal{{ forloop.counter0 }}">
                           <i class="icon-trash"></i> Remove
                         </button>
+                        {% endif %}
 
                         <!-- deleteModal -->
                         <div class="modal fade" id="deleteModal{{ forloop.counter0 }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">

@@ -14,6 +14,7 @@ import magic
 
 from .forms import UploadForm
 from .models import Genome
+from apps.authentication.models import User
 
 from utils import clogging
 log = clogging.getColorLogger(__name__)
@@ -88,7 +89,11 @@ def upload(request):
 
             break
 
-    my_genomes = Genome.objects.filter(owner=request.user)
+    user = User.objects.filter(id=request.user.id)
+
+    owner_genomes = Genome.objects.filter(owner=user)
+    reader_genomes = Genome.objects.filter(readers__in=user)
+    my_genomes = list(owner_genomes) + list(reader_genomes)
 
     return render(request, 'upload.html',
                   {'POPULATION_CHOICES': Genome.POPULATION_CHOICES,
