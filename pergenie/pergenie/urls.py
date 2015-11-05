@@ -1,16 +1,23 @@
 from django.conf.urls import patterns, include, url
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib import admin
 
+from apps.internal import views as internal_views
 from apps.landing import views as landing_views
 from apps.authentication import views as authentication_views
 from apps.dashboard import views as dashboard_views
 from apps.genome import views as genome_views
 
+admin.autodiscover()
 
 urlpatterns = [
     url(r'^$', landing_views.index, name='index'),
     url(r'^about/$', landing_views.about, name='about'),
+
+    # Internal
+    url(r'^internal/admin/', include(admin.site.urls)),
+    url(r'^internal/health-check/$', internal_views.health_check),
 
     # Authentication
     url(r'^register/$', authentication_views.register),
@@ -62,14 +69,10 @@ urlpatterns = [
 
 if settings.DEBUG:
     import debug_toolbar
-    from django.contrib import admin
-    admin.autodiscover()
 
     urlpatterns += [
-        url(r'^__debug__/', include(debug_toolbar.urls)),
-        url(r'^admin/', include(admin.site.urls)),
+        url(r'^__debug__/$', include(debug_toolbar.urls)),
     ]
-
 
 # TODO:
 
