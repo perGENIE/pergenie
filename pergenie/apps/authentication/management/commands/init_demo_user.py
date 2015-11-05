@@ -12,5 +12,5 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         demo_user = create_demo_user()
-        log.debug('id: {}'.format(demo_user.id))
-        log.debug('email: {}'.format(demo_user.email))
+        log.debug('demo user id: {}'.format(demo_user.id))
+        log.debug('demo user email: {}'.format(demo_user.email))

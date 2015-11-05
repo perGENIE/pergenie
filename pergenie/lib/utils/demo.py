@@ -1,3 +1,6 @@
+import os
+import shutil
+import subprocess
 from uuid import uuid4
 from datetime import timedelta
 
@@ -5,12 +8,11 @@ from django.utils import timezone
 from django.conf import settings
 
 from apps.authentication.models import User
-from apps.genome.models import Genome
+from apps.genome.models import Genome, Genotype
 from lib.utils import clogging
 log = clogging.getColorLogger(__name__)
 
 
-# TODO: @transaction.atomic
 def create_demo_user():
     '''Create demo user records.
 
@@ -33,8 +35,45 @@ def create_demo_user():
                                                       file_format=Genome.FILE_FORMAT_VCF,
                                                       population=Genome.POPULATION_UNKNOWN,
                                                       sex=Genome.SEX_UNKNOWN)
+    # Init demo genotype (once)
+    if is_created:
+        # Prepare genome file
+        genome_file_dir = os.path.join(settings.UPLOAD_DIR, str(admin_user.id))
+        if not os.path.exists(genome_file_dir):
+            os.makedirs(genome_file_dir)
+        genome_file_path = genome.get_genome_file()
+        shutil.copyfile(src=os.path.join(settings.DEMO_GENOME_FILE_DIR, settings.DEMO_GENOME_FILE_NAME), dst=genome_file_path)
 
-    # TODO: Init demo genotype (once)
+        # TODO: Create SNP whitelist
+        snp_id_whitelist = [527236043]
+        with open(genome_file_path + '.whitelist.txt', 'w') as fout:
+            for snp_id in snp_id_whitelist:
+                print >>fout, 'rs{}'.format(snp_id)
+
+        # Cleanup genome file
+        cmd = [os.path.join(settings.BASE_DIR, 'bin', 'vcf-to-tsv'),
+               genome_file_path,
+               settings.RS_MERGE_ARCH_PATH,
+               os.path.join(settings.BASE_DIR, 'bin')]
+        subprocess.check_output(cmd)
+
+        log.debug('Cleanup genome file: {}'.format(cmd))
+
+        # Create genotype records
+        genotypes = []
+        with open(genome_file_path + '.tsv', 'r') as fin:
+            for i,line in enumerate(fin):
+                record = line.strip().split('\t')
+                genotype = record[1].split('/')
+                genotypes.append(Genotype(genome=genome,
+                                          rs_id_current=int(record[0]),
+                                          genotype=genotype))
+            Genotype.objects.bulk_create(genotypes)
+
+        log.debug('Genotype created: {}'.format(Genotype.objects.filter(genome_id=genome.id).count()))
+
+        genome.status = 100
+        genome.save()
 
     # Init demo user
     email = '{}@{}'.format(uuid4(), settings.DOMAIN)
