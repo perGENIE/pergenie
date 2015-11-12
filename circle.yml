@@ -8,4 +8,4 @@ dependencies:
 
 test:
     override:
-        - cd pergenie && py.test apps/landing/test_browser.py
+        - cd pergenie && export DJANGO_SETTINGS_MODULE=pergenie.settings.ci && py.test apps/landing/test_browser.py
