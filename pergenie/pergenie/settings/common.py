@@ -28,9 +28,11 @@ INSTALLED_APPS = (
     'apps.dashboard',
     'apps.genome',
     'apps.snp',
+    'apps.gwascatalog',
+    'apps.library',
 
     'apps.templatetags',
-    'apps.gwascatalog',
+    'apps.db'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -80,14 +82,15 @@ SESSION_COOKIE_SECURE = False
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': '',
         'USER': '',
         'PASSWORD': '',
         'HOST': '',
         'PORT': '',
     },
 }
+
 
 # Celery
 BROKER_URL = 'amqp://{USER}:{PASSWORD}@{HOST}:{PORT}//'.format(USER='guest',
@@ -186,36 +189,7 @@ UPLOAD_DIR = '/tmp/pergenie'
 GWASCATALOG_URL = 'http://www.genome.gov/admin/gwascatalog.txt'
 GWASCATALOG_INCONSISTENCE_THRS = 0.1
 
+
 # Demo mode
 
 DEMO_GENOME_FILE_NAME = 'demo.vcf'
-
-
-# Reference files
-REFERENCE_DIR = os.path.join(BASE_DIR, 'data')
-REFERENCE_GENOME_FASTA = os.path.join(REFERENCE_DIR, 'human_g1k_v37.fasta')
-REFGENOME_GENOME_BUILD = 'GRCh37/hg19'
-REFGENOME_GENOME_LINK = 'http://www.ncbi.nlm.nih.gov/projects/genome/assembly/grc/human/index.shtml#GRCh37'
-
-# Gmail
-# EMAIL_USE_TLS = True
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_HOST_USER = 'username@hostname'
-# EMAIL_HOST_PASSWORD = ''
-# EMAIL_PORT = 587
-
-# Outlook
-# EMAIL_USE_TLS = True
-# EMAIL_HOST = 'smtp-mail.outlook.com'
-# EMAIL_HOST_USER = 'username@hostname'
-# EMAIL_HOST_PASSWORD = ''
-# EMAIL_PORT = 587
-
-# DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-
-# 23andMe API
-# CLIENT_ID = ""
-# CLIENT_SECRET = ""
-# CALLBACK_URL = ""
-# SCOPE_RS_LIST = []
-# SCOPE = "basic names" + " ".join(SCOPE_RS_LIST)

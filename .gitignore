@@ -31,7 +31,6 @@ htmlcov
 pergenie/tmp/
 
 # Settings
-pergenie/pergenie/settings/common.py
 pergenie/pergenie/settings/development.py
 pergenie/pergenie/settings/staging.py
 
