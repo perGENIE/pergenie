@@ -1,0 +1,11 @@
+machine:
+    python:
+        version: 2.7.6
+
+dependencies:
+    pre:
+        - pip install -r requirements/ci.txt
+
+test:
+    override:
+        - cd pergenie && py.test apps/landing/test_browser.py
