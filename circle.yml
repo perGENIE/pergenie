@@ -1,8 +1,6 @@
 machine:
     python:
         version: 2.7.10
-    services:
-        - postgresql
     environment:
         DB_NAME: circle_ci
         DB_USER: ubuntu
@@ -13,4 +11,4 @@ dependencies:
 
 test:
     override:
-        - cd pergenie && DJANGO_SETTINGS_MODULE=pergenie.settings.ci py.test apps/landing/test_browser.py
+        - cd pergenie && DJANGO_SETTINGS_MODULE=pergenie.settings.ci py.test apps/landing/test_browser.py apps/genome/test_model.py

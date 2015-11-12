@@ -25,7 +25,6 @@ $ pip install -r requirements/development.txt
 2\. Configure environments settings
 
 ```
-$ cp pergenie/settings/common.py.example pergenie/settings/common.py
 $ cp pergenie/settings/develop.py.example pergenie/settings/develop.py
 ```
 
