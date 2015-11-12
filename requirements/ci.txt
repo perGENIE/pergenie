@@ -1,0 +1,8 @@
+-r common.txt
+
+# test
+pytest-django
+pytest-cov
+
+# integration test
+splinter[django]
