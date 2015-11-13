@@ -1,0 +1,10 @@
+---
+- name: install mod_wsgi
+  become: yes
+  yum: name=mod_wsgi state=latest
+
+- name: configure mod_wsgi
+  become: yes
+  template: src=wsgi.conf.j2 dest=/etc/httpd/conf.d/wsgi.conf
+  notify:
+    - restart httpd

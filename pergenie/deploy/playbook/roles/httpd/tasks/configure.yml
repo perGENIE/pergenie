@@ -1,0 +1,10 @@
+---
+- name: configure httpd
+  become: yes
+  template: src=httpd.conf.j2 dest=/etc/httpd/conf/httpd.conf
+  notify:
+    - restart httpd
+
+- name: start httpd
+  become: yes
+  service: name=httpd state=started enabled=yes

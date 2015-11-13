@@ -1,14 +1,4 @@
 ---
-- name: install httpd
-  become: yes
-  yum: name=httpd,httpd-devel state=latest
-
-- name: configure httpd
-  become: yes
-  template: src=httpd.conf.j2 dest=/etc/httpd/conf/httpd.conf
-  notify:
-    - restart httpd
-
-- name: start httpd
-  become: yes
-  service: name=httpd state=started enabled=yes
+- include: install.yml
+- include: configure.yml
+- include: mod_wsgi.yml
