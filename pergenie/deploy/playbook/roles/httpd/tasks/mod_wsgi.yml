@@ -1,7 +1,7 @@
 ---
 - name: install mod_wsgi
   become: yes
-  yum: name=mod_wsgi state=latest
+  yum: name=mod_wsgi state=present
 
 - name: configure mod_wsgi
   become: yes

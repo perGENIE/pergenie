@@ -1,4 +1,4 @@
 ---
 - name: install httpd
   become: yes
-  yum: name=httpd,httpd-devel state=latest
+  yum: name=httpd,httpd-devel state=present
