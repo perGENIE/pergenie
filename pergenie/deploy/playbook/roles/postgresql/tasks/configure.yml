@@ -5,16 +5,23 @@
            creates=/var/lib/pgsql/{{ postgresql_version }}/data/postgresql.conf
 
 # - name: configure postgresql.conf
+#   become_user: postgres
 #   template:
 #     src=postgresql.conf.j2
 #     dest=/var/lib/pgsql/{{ postgresql_version }}/data/postgresql.conf
 #     owner=postgres group=postgres mode=0640
 
-# - name: configure pg_hba.conf
-#   template:
-#     src=pg_hba.conf.j2
-#     dest=/var/lib/pgsql/{{ postgresql_version }}/data/pg_hba.conf
-#     owner=postgres group=postgres mode=0640
+- name: configure pg_hba.conf
+  become_user: postgres
+  template:
+    src=pg_hba.conf.j2
+    dest=/var/lib/pgsql/{{ postgresql_version }}/data/pg_hba.conf
+    owner=postgres group=postgres mode=0640
+  # notify: restart postgresql
+
+- name: restart postgresql
+  become: yes
+  service: name='postgresql-{{ postgresql_version }}' state=restarted
 
 - name: start postgresql service
   become: yes
