@@ -30,10 +30,6 @@ htmlcov
 # tmp
 pergenie/tmp/
 
-# Settings
-pergenie/pergenie/settings/development.py
-pergenie/pergenie/settings/staging.py
-
 # Daemon
 *.pid
 *.log
@@ -47,3 +43,8 @@ pergenie/static/vendor
 # ansible/vagrant
 hosts
 .vagrant
+
+# Settings
+pergenie/pergenie/settings/development.py
+pergenie/deploy/playbook/group_vars/staging
+pergenie/deploy/playbook/group_vars/production
