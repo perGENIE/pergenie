@@ -1,11 +1,9 @@
-LoadModule ssl_module modules/mod_ssl.so
-Listen 443
+Listen 443 https
 
 ##  SSL Global Context
-SSLPassPhraseDialog  builtin
-SSLSessionCache         shmcb:/var/cache/mod_ssl/scache(512000)
+SSLPassPhraseDialog exec:/usr/libexec/httpd-ssl-pass-dialog
+SSLSessionCache         shmcb:/run/httpd/sslcache(512000)
 SSLSessionCacheTimeout  300
-SSLMutex default
 SSLRandomSeed startup file:/dev/urandom  256
 SSLRandomSeed connect builtin
 SSLCryptoDevice builtin
@@ -18,7 +16,7 @@ LogLevel warn
 
 SSLEngine on
 SSLProtocol all -SSLv2
-SSLCipherSuite DEFAULT:!EXP:!SSLv2:!DES:!IDEA:!SEED:+3DES
+SSLCipherSuite HIGH:MEDIUM:!aNULL:!MD5
 SSLCertificateFile {{ ssl_crt_file_path }}
 SSLCertificateKeyFile {{ ssl_key_file_path }}
 
@@ -29,7 +27,7 @@ SSLCertificateKeyFile {{ ssl_key_file_path }}
     SSLOptions +StdEnvVars
 </Directory>
 
-SetEnvIf User-Agent ".*MSIE.*" \
+BrowserMatch "MSIE [2-5]" \
          nokeepalive ssl-unclean-shutdown \
          downgrade-1.0 force-response-1.0
 
