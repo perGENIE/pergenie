@@ -2,18 +2,15 @@
 # https://www.rabbitmq.com/install-rpm.html
 
 - name: install erlang
-  become: yes
   yum: name=erlang state=present
 
 - name: import gpg key
   rpm_key: key=https://www.rabbitmq.com/rabbitmq-signing-key-public.asc state=present
 
 - name: install rabbitmq server
-  become: yes
   yum: name={{ rpm_url }} state=present
 
 # TODO: configure
 
 - name: start rabbitmq service
-  become: yes
   service: name='rabbitmq-server' state=started enabled=yes
