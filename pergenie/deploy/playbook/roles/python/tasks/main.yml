@@ -3,7 +3,7 @@
 
 - name: install python2.7
   become: yes
-  command: /var/tmp/xbuild/python-install -f 2.7.10 /opt/python-2.7
+  command: /var/tmp/xbuild/python-install -f 2.7.10 /opt/python-2.7 creates=/opt/python-2.7/bin/python2.7
 
 - name: upgrade pip
   become: yes
