@@ -42,3 +42,7 @@ CustomLog logs/ssl_request_log \
 RewriteEngine On
 RewriteCond %{HTTPS} off
 RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI}
+
+# Redirect www to non-www
+RewriteCond %{HTTP_HOST} ^www\.staging\.pergenie\.org [NC]
+RewriteRule ^(.*)$ https://staging.pergenie.org/$1 [L,R=301]
