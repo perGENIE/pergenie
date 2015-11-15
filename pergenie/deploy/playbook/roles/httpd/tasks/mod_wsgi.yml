@@ -1,5 +1,6 @@
 ---
-- yum: name=mod_wsgi state=present
+- name: install mod_wsgi
+  yum: name=mod_wsgi state=present
 
 - name: configure mod_wsgi
   template: src=wsgi.conf.j2 dest=/etc/httpd/conf.d/mod_wsgi.conf
