@@ -1,21 +1,8 @@
 #
-# This is the Apache server configuration file providing SSL support.
-# It contains the configuration directives to instruct the server how to
-# serve pages over an https connection. For detailing information about these
-# directives see <URL:http://httpd.apache.org/docs/2.2/mod/mod_ssl.html>
-#
-# Do NOT simply read the instructions in here without understanding
-# what they do.  They're here only as hints or reminders.  If you are unsure
-# consult the online docs. You have been warned.
-#
-
-LoadModule ssl_module modules/mod_ssl.so
-
-#
 # When we also provide SSL we have to listen to the
 # the HTTPS port in addition.
 #
-Listen 443
+Listen 443 https
 
 ##
 ##  SSL Global Context
@@ -28,18 +15,13 @@ Listen 443
 #   Configure the pass phrase gathering process.
 #   The filtering dialog program (`builtin' is a internal
 #   terminal dialog) has to provide the pass phrase on stdout.
-SSLPassPhraseDialog  builtin
+SSLPassPhraseDialog exec:/usr/libexec/httpd-ssl-pass-dialog
 
 #   Inter-Process Session Cache:
 #   Configure the SSL Session Cache: First the mechanism
 #   to use and second the expiring timeout (in seconds).
-SSLSessionCache         shmcb:/var/cache/mod_ssl/scache(512000)
+SSLSessionCache         shmcb:/run/httpd/sslcache(512000)
 SSLSessionCacheTimeout  300
-
-#   Semaphore:
-#   Configure the path to the mutual exclusion semaphore the
-#   SSL engine uses internally for inter-process synchronization.
-SSLMutex default
 
 #   Pseudo Random Number Generator (PRNG):
 #   Configure one or more sources to seed the PRNG of the
@@ -93,9 +75,22 @@ SSLEngine on
 SSLProtocol all -SSLv2
 
 #   SSL Cipher Suite:
-# List the ciphers that the client is permitted to negotiate.
-# See the mod_ssl documentation for a complete list.
-SSLCipherSuite DEFAULT:!EXP:!SSLv2:!DES:!IDEA:!SEED:+3DES
+#   List the ciphers that the client is permitted to negotiate.
+#   See the mod_ssl documentation for a complete list.
+SSLCipherSuite HIGH:MEDIUM:!aNULL:!MD5
+
+#   Speed-optimized SSL Cipher configuration:
+#   If speed is your main concern (on busy HTTPS servers e.g.),
+#   you might want to force clients to specific, performance
+#   optimized ciphers. In this case, prepend those ciphers
+#   to the SSLCipherSuite list, and enable SSLHonorCipherOrder.
+#   Caveat: by giving precedence to RC4-SHA and AES128-SHA
+#   (as in the example below), most connections will no longer
+#   have perfect forward secrecy - if the server's key is
+#   compromised, captures of past or future traffic must be
+#   considered compromised, too.
+#SSLCipherSuite RC4-SHA:AES128-SHA:HIGH:MEDIUM:!aNULL:!MD5
+#SSLHonorCipherOrder on
 
 #   Server Certificate:
 # Point SSLCertificateFile at a PEM encoded certificate.  If
@@ -208,7 +203,7 @@ SSLCertificateKeyFile /etc/pki/tls/private/localhost.key
 #   Similarly, one has to force some clients to use HTTP/1.0 to workaround
 #   their broken HTTP/1.1 implementation. Use variables "downgrade-1.0" and
 #   "force-response-1.0" for this.
-SetEnvIf User-Agent ".*MSIE.*" \
+BrowserMatch "MSIE [2-5]" \
          nokeepalive ssl-unclean-shutdown \
          downgrade-1.0 force-response-1.0
 
