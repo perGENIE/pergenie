@@ -1,9 +1,17 @@
 ---
+# ntp
 ntp_server: ntp.nict.jp
 
-# TODO: for staging, change to public repo: pergenie/pergenie
-repo_url: git@github.com:knmkr/perGENIE-private.git
+# python27
+python27_bin_dir: /opt/python-2.7/bin
+python27: "{{ python27_bin_dir }}/python"
 
+# httpd
+ssl_crt_file_path: /etc/pki/tls/certs/server.crt
+ssl_key_file_path: /etc/pki/tls/private/server.key
+
+# pergenie
+repo_url: git@github.com:knmkr/perGENIE-private.git
 app_user: pergenie
 
 build_root:      /apps

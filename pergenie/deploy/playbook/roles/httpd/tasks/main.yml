@@ -2,3 +2,4 @@
 - include: install.yml
 - include: configure.yml
 - include: mod_wsgi.yml
+- include: mod_ssl.yml
