@@ -1,6 +1,5 @@
 ---
-- name: install mod_ssl and openssl
-  yum: name=mod_ssl,openssl state=present
+- yum: name=mod_ssl,openssl state=present
 
 # http://serialized.net/2013/04/simply-generating-self-signed-ssl-certs-with-ansible/
 - name: generate a self-signed certificate
@@ -13,5 +12,3 @@
 
 - name: configure mod_ssl
   template: src=ssl.conf.j2 dest=/etc/httpd/conf.d/ssl.conf
-  notify:
-    - restart httpd

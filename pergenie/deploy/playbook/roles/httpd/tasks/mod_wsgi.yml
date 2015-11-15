@@ -1,36 +1,5 @@
 ---
-- name: download mod_wsgi
-  become: yes
-  get_url: url={{ mod_wsgi_download_url }} dest=/opt/mod_wsgi-{{ mod_wsgi_version }}.tar.gz mode=0440
-
-- become: yes
-  args:
-    chdir: /opt
-    creates: /opt/mod_wsgi-{{ mod_wsgi_version }}
-  command: tar xvfz mod_wsgi-{{ mod_wsgi_version }}.tar.gz
-
-- become: yes
-  args:
-    chdir: /opt
-  command: rm mod_wsgi-{{ mod_wsgi_version }}.tar.gz
-
-- become: yes
-  args:
-    chdir: /opt/mod_wsgi-{{ mod_wsgi_version }}
-  command: ./configure --with-python={{ python27 }}
-
-- become: yes
-  args:
-    chdir: /opt/mod_wsgi-{{ mod_wsgi_version }}
-  command: make
-
-- become: yes
-  args:
-    chdir: /opt/mod_wsgi-{{ mod_wsgi_version }}
-  command: make install
+- yum: name=mod_wsgi state=present
 
 - name: configure mod_wsgi
-  become: yes
-  template: src=wsgi.conf.j2 dest=/etc/httpd/conf.d/wsgi.conf
-  notify:
-    - restart httpd
+  template: src=wsgi.conf.j2 dest=/etc/httpd/conf.d/mod_wsgi.conf
