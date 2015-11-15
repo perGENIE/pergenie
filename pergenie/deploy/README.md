@@ -42,11 +42,11 @@ See details in `Vagrantfile` and `playbook`.
 
 ## Software versions in playbook
 
-- CentOS 6.7
+- CentOS 7.1
 
-|                        | version          |                   |
-|------------------------|------------------|-------------------|
-| Python                 | 2.7              | build from source |
-| PostgreSQL             | 9.4              | yum with rpm repo |
-| RabbitMQ               | 3.5              | yum with rpm repo |
-| Apache httpd           | 2.2              | yum               |
+|                        | version          |                            |
+|------------------------|------------------|----------------------------|
+| Python                 | 2.7              | yum default                |
+| PostgreSQL             | 9.4              | yum with official rpm repo |
+| RabbitMQ               | 3.5              | yum with official rpm repo |
+| Apache httpd           | 2.4              | yum default                |
