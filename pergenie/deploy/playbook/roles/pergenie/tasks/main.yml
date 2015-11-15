@@ -3,13 +3,6 @@
   become: yes
   user: name={{ app_user }} generate_ssh_key=yes ssh_key_bits=2048 ssh_key_file=.ssh/id_rsa
 
-- name: add github.com to known_hosts
-  become_user: "{{ app_user }}"
-  shell: ssh-keyscan github.com >> /home/{{ app_user }}/.ssh/known_hosts
-
-- yum: name=python-psycopg2 state=present
-  become: yes
-
 - name: create postgresql user
   become_user: postgres
   postgresql_user: name={{ database_user }}
@@ -32,27 +25,33 @@
     path={{ build_root }} state=directory recurse=yes
     owner={{ app_user }} group={{ app_user }}
 
+# FIXME:
+- name: add github.com to known_hosts
+  become_user: "{{ app_user }}"
+  shell: ssh-keyscan github.com >> /home/{{ app_user }}/.ssh/known_hosts
+  when: rollout_env == 'staging'
+
 - name: clone repo
   become_user: "{{ app_user }}"
   git: repo={{ repo_url }}
        dest={{ proj_root }}
   tags: rollout
 
-- name: install python packages
+- name: create virtualenv and install python packages
   become_user: "{{ app_user }}"
-  pip: virtualenv_command=/opt/python-2.7/bin/virtualenv
+  pip: virtualenv_command=virtualenv
        virtualenv={{ virtualenv_dir }}
        requirements={{ proj_root }}/requirements/{{ rollout_env }}.txt
   environment:
     PATH: "{{ ansible_env.PATH }}:/usr/pgsql-9.4/bin"
   tags: rollout
 
-- name: configure pergenie
+- name: configure settings.py
   become_user: "{{ app_user }}"
   template: src=settings.py.j2 dest="{{ wsgi_dir }}/settings/{{ rollout_env }}.py"
   tags: rollout
 
-- name: django migrate
+- name: django manage.py migrate
   become_user: "{{ app_user }}"
   django_manage: virtualenv={{ virtualenv_dir }}
                  app_path={{ app_root }}
