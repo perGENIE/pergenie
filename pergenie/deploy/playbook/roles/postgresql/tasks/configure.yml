@@ -1,7 +1,6 @@
 ---
 - name: initdb
-  become: yes
-  command: service postgresql-{{ postgresql_version }} initdb
+  command: /usr/pgsql-{{ postgresql_version }}/bin/postgresql{{ postgresql_version| replace('.', '') }}-setup initdb
            creates=/var/lib/pgsql/{{ postgresql_version }}/data/postgresql.conf
 
 # - name: configure postgresql.conf
@@ -17,12 +16,7 @@
     src=pg_hba.conf.j2
     dest=/var/lib/pgsql/{{ postgresql_version }}/data/pg_hba.conf
     owner=postgres group=postgres mode=0640
-  # notify: restart postgresql
-
-- name: restart postgresql
-  become: yes
-  service: name='postgresql-{{ postgresql_version }}' state=restarted
+  notify: restart postgresql
 
 - name: start postgresql service
-  become: yes
   service: name='postgresql-{{ postgresql_version }}' state=started enabled=yes
