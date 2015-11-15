@@ -1,4 +1,7 @@
 ---
+- name: install libselinux-python
+  yum: name=libselinux-python state=present
+
 - name: configure sshd
   lineinfile: >
     dest=/etc/ssh/sshd_config
