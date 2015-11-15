@@ -1,5 +1,5 @@
 ---
-- yum: name=python-devel,python-pip status=present
+- yum: name=python-devel,python-pip state=present
 
 - name: upgrade pip
   pip: name=pip extra_args="--upgrade"
