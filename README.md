@@ -1,61 +1,65 @@
 [![perGENIE screenshot](http://knmkr.info/img/portfolio/pergenie.png)](http://pergenie.org/)
 
-## Getting started
-
-### with Django development server
+## Getting started for development env
 
 1\. Install requirements
 
 - [Python](https://www.python.org/) >=2.7,<3
 - [PostgreSQL](http://www.postgresql.org/)
 - [RabbitMQ](https://www.rabbitmq.com/)
-- Python packages
-  - Run `$ pip install -r requirements/development.txt`
-- Command-line vcf tools
-  - Download binaries from https://github.com/knmkr/go-vcf-tools/releases/download/${version}, and put them at `pergenie/bin`
-- Merge history of rs IDs
-  - Download from `ftp.ncbi.nih.gov/snp/organisms/human_9606_b144_GRCh37p13/database/organism_data/RsMergeArch.bcp.gz` and put at `RS_MERGE_ARCH_PATH`
 
-2\. Configure settings.py
+2\. Install Python packages
 
 ```
-$ ${EDITOR} pergenie/settings/develop.py  # e.g. pergenie/settings/develop.py.example
+$ pip install -r requirements/development.txt
 ```
 
-3\. Create postgres user and database
+3\. Configure settings.py
+
+```
+$ ${EDITOR} pergenie/settings/develop.py  # e.g. pergenie/develop.py.example
+```
+
+4\. Create PostgreSQL user and database
 
 ```
 $ createuser pergenie
 $ createdb pergenie -O pergenie
 ```
 
-4\. Database migration
+5\. DB migration
 
 ```
 $ python manage.py migrate
 ```
 
-5\. Init data
+6\. Init data
 
 ```
 $ python manage.py createsuperuser
 $ python manage.py update_gwascatalog
+$ python manage.py setup_go_vcf_tools
 $ python manage.py init_demo_user
 ```
 
-6\. Run celery
+7\. Run Celery (for job queing)
 
 ```
 $ celery --app=pergenie worker --logfile=/tmp/celeryd.log --pidfile=celery%n.pid
 ```
 
-7\. Run pergenie server
+8\. Run perGENIE server
 
 ```
 $ python manage.py runserver
 ```
 
-Browse development server at `http://127.0.0.1:8000/`
+9\. Browse development server at `http://127.0.0.1:8000/`
+
+
+## Getting started for staging and production env
+
+See `pergenie/deploy`.
 
 
 ## Notes

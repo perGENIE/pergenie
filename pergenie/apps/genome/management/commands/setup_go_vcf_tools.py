@@ -28,6 +28,7 @@ class Command(BaseCommand):
         tar_gz = os.path.join(tmp_dir, 'go-vcf-tools.tar.gz')
         get_url_content(url, tar_gz)
 
+        log.info('Extracting go-vcf-tools ...')
         with tarfile.open(tar_gz, 'r') as tar:
             dst = os.path.join(tmp_dir, 'go-vcf-tools')
             tar.extractall(dst)
@@ -36,5 +37,9 @@ class Command(BaseCommand):
 
         os.remove(tar_gz)
         shutil.rmtree(dst)
+
+        log.info('Fetching RsMergeArch ...')
+        url = 'ftp.ncbi.nih.gov/snp/organisms/human_9606_b144_GRCh37p13/database/organism_data/RsMergeArch.bcp.gz'
+        get_url_content(url, settings.RS_MERGE_ARCH_PATH)
 
         log.info('Done.')
