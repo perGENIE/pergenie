@@ -58,9 +58,9 @@ $ python manage.py runserver
 9\. Browse development server at `http://127.0.0.1:8000/`
 
 
-## Getting started for staging and production env
+## For staging and production env
 
-See `pergenie/deploy`.
+See `pergenie/deploy`
 
 
 ## Notes
