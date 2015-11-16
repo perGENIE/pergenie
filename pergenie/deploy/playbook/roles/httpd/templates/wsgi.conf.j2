@@ -1,8 +1,10 @@
+<IfModule wsgi_module>
+
 LoadModule wsgi_module modules/mod_wsgi.so
 
 # Location of UNIX sockets
 # https://code.google.com/p/modwsgi/wiki/ConfigurationIssues#Location_Of_UNIX_Sockets
-WSGISocketPrefix run/wsgi  # /var/run/wsgi
+WSGISocketPrefix run/wsgi
 
 # TODO: or TraceEnable Off?
 # Avoid `http TRACE XSS attack`
@@ -50,3 +52,5 @@ WSGIScriptAlias / {{ wsgi_dir }}/wsgi.py
 #   Deny from all
 #   Allow from 127.0.0.1
 # </Location>
+
+</IfModule>
