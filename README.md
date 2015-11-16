@@ -17,7 +17,7 @@ $ pip install -r requirements/development.txt
 3\. Configure settings.py
 
 ```
-$ ${EDITOR} pergenie/settings/develop.py  # e.g. pergenie/develop.py.example
+$ ${EDITOR} pergenie/settings/development.py  # e.g. pergenie/development.py.example
 ```
 
 4\. Create PostgreSQL user and database
