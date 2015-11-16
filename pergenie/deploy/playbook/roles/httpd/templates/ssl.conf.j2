@@ -1,3 +1,5 @@
+<IfModule ssl_module>
+
 Listen 443 https
 
 ##  SSL Global Context
@@ -41,6 +43,9 @@ RewriteEngine On
 RewriteCond %{HTTPS} off
 RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI}
 
+# TODO: http://www.pergenie.org to http://pergenie.org
 # Redirect www to non-www
 RewriteCond %{HTTP_HOST} ^www\.staging\.pergenie\.org [NC]
 RewriteRule ^(.*)$ https://staging.pergenie.org/$1 [L,R=301]
+
+</IfModule>
