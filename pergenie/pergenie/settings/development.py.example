@@ -28,12 +28,11 @@ EMAIL_FILE_PATH = 'tmp/email'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'db.sqlite3',
-        'USER': '',
-        'PASSWORD': '',
-        'HOST': '',
-        'PORT': '',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'pergenie',
+        'USER': 'pergenie',
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
     },
 }
 
@@ -46,9 +45,3 @@ CELERY_RESULT_BACKEND = 'amqp'
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
-
-UPLOAD_DIR = os.path.join(BASE_DIR, 'tmp')
-TEST_DATA_DIR = os.path.join(BASE_DIR, 'test', 'data')
-
-# Genome
-RS_MERGE_ARCH_PATH = os.path.join(BASE_DIR, 'tmp', 'RsMergeArch.bcp.gz')
