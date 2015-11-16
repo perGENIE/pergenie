@@ -17,5 +17,4 @@
     - { role: postgresql }
     - { role: rabbitmq }
     - { role: httpd }
-    - { role: go-vcf-tools }
     - { role: pergenie }
