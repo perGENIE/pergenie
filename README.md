@@ -23,7 +23,8 @@ $ ${EDITOR} pergenie/settings/development.py  # e.g. pergenie/settings/developme
 4\. Create PostgreSQL user and database
 
 ```
-$ createuser pergenie
+$ createuser pergenie --password
+Password: pergenie
 $ createdb pergenie -O pergenie
 ```
 
