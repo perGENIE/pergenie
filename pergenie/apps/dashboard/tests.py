@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-
-# from pymongo import MongoClient
-# from django.conf import settings
 from lib.test import LoginUserTestCase
 from lib.utils.clogging import getColorLogger
 log = getColorLogger(__name__)
@@ -15,37 +11,30 @@ class SimpleTestCase(LoginUserTestCase):
         log.info('test_login_required')
         self._test_login_required('/{app_name}/'.format(app_name=self.app_name))
 
-
-
     # def test_menu_bar(self):
     #     self.client.login(username=self.test_user_id, password=self.test_user_password)
     #     response = self.client.get('/dashboard/')
 
-        # test, user_id showed correctly
-        # menu_bar_user_id = '''
-        # <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-        # <i class="icon-unlock"></i>
-        # {}
-        # <b class="caret"></b>
-        # </a>'''.format(self.dummy_user_id)
-        # self.failUnlessEqual(bool(menu_bar_user_id in response.content), False)
+    #     test, user_id showed correctly
+    #     menu_bar_user_id = '''
+    #     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+    #     <i class="icon-unlock"></i>
+    #     {}
+    #     <b class="caret"></b>
+    #     </a>'''.format(self.dummy_user_id)
+    #     self.failUnlessEqual(bool(menu_bar_user_id in response.content), False)
 
-#         menu_bar_user_id = '''<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-# <i class="icon-unlock"></i>
-# {}
-# <b class="caret"></b>
-# </a>'''.format(self.test_user_id)
-#         self.failUnlessEqual(bool(menu_bar_user_id in response.content), True)
+    #     menu_bar_user_id = '''<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+    #     <i class="icon-unlock"></i>
+    #     {}
+    #     <b class="caret"></b>
+    #     </a>'''.format(self.test_user_id)
+    #     self.failUnlessEqual(bool(menu_bar_user_id in response.content), True)
 
-
-        # TODO: check cookies & session data
-
+    #     # TODO: check cookies & session data
 
     # def test_msg(self):
-    #     """ """
-
-
-    #         # print list(data_info.find())
+    #     print list(data_info.find())
 
     #     #TODO: test, msg for 'no file uploaded' shows correctly.
     #     #TODO: test, latest catalog...
@@ -59,5 +48,4 @@ class SimpleTestCase(LoginUserTestCase):
     #     # print '.status_code', response.status_code
 
     #     print response.context['msg']
-
     #     pass
