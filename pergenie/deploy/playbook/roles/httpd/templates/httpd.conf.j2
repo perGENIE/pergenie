@@ -79,4 +79,7 @@ AddDefaultCharset UTF-8
 
 EnableSendfile on
 
+# Avoid http TRACE XSS attack
+TraceEnable off
+
 IncludeOptional conf.d/*.conf

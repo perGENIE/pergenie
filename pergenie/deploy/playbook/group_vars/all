@@ -8,7 +8,6 @@ ssl_key_file_path: /etc/pki/tls/private/server.key
 
 # pergenie
 repo_url: git@github.com:knmkr/perGENIE-private.git
-app_user: pergenie
 
 build_root:      /apps
 proj_root:       "{{ build_root }}/pergenie/repo"
@@ -18,7 +17,5 @@ wsgi_dir:        "{{ app_root }}/pergenie"
 virtualenv_dir:           "{{ build_root }}/pergenie/.virtualenvs/pergenie"
 virtualenv_site_packages: "{{ virtualenv_dir }}/lib/python2.7/site-packages"
 
-static_root: "{{ build_root }}/pergenie/static"  # FIXME
-media_root:  "{{ build_root }}/pergenie/media"   # FIXME
-
-allowed_host: localhost  # FIXME
+static_root: "{{ build_root }}/pergenie/static"
+media_root:  "{{ build_root }}/pergenie/media"

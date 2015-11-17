@@ -25,6 +25,8 @@
     path={{ build_root }} state=directory recurse=yes
     owner={{ app_user }} group={{ app_user }}
 
+# TODO: move bellow to rollout.yml
+
 # FIXME:
 - name: add github.com to known_hosts
   become_user: "{{ app_user }}"
@@ -57,12 +59,10 @@
                  app_path={{ app_root }}
                  command=migrate
   tags: rollout
+  notify: restart wsgi
 
 # TODO: $ python manage.py createsuperuser
 #       $ python manage.py update_gwascatalog
 #       $ python manage.py init_demo_user
 
-- name: restart wsgi
-  become_user: "{{ app_user }}"
-  command: touch {{ wsgi_dir }}/wsgi.py
-  tags: rollout
+# TODO: add `notify: restart wsgi` at last command

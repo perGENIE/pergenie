@@ -1,4 +1,4 @@
-<IfModule ssl_module>
+<IfModule mod_ssl.c>
 
 Listen 443 https
 
@@ -22,17 +22,20 @@ SSLCipherSuite HIGH:MEDIUM:!aNULL:!MD5
 SSLCertificateFile {{ ssl_crt_file_path }}
 SSLCertificateKeyFile {{ ssl_key_file_path }}
 
-<Files ~ "\.(cgi|shtml|phtml|php3?)$">
+# SSL Engine Options
+<Files ~ "wsgi.py$">
     SSLOptions +StdEnvVars
 </Files>
-<Directory "/var/www/cgi-bin">
+<Directory "{{ wsgi_dir }}">
     SSLOptions +StdEnvVars
 </Directory>
 
+# SSL Protocol Adjustments
 BrowserMatch "MSIE [2-5]" \
          nokeepalive ssl-unclean-shutdown \
          downgrade-1.0 force-response-1.0
 
+# Per-Server Logging
 CustomLog logs/ssl_request_log \
           "%t %h %{SSL_PROTOCOL}x %{SSL_CIPHER}x \"%r\" %b"
 
@@ -43,7 +46,7 @@ RewriteEngine On
 RewriteCond %{HTTPS} off
 RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI}
 
-# TODO: http://www.pergenie.org to http://pergenie.org
+# FIXME: avoid hardcoding of stating.pergenie.org
 # Redirect www to non-www
 RewriteCond %{HTTP_HOST} ^www\.staging\.pergenie\.org [NC]
 RewriteRule ^(.*)$ https://staging.pergenie.org/$1 [L,R=301]
