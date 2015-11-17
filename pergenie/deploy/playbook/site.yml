@@ -16,4 +16,4 @@
     - { role: postgresql }
     - { role: rabbitmq }
     - { role: httpd, tags: ['httpd'] }
-    - { role: pergenie }
+    - { role: pergenie, tags: ['pergenie'] }
