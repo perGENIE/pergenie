@@ -1,7 +1,4 @@
 ---
 - include: install.yml
-- include: mod_ssl.yml
-- include: mod_wsgi.yml
-
-- name: restart httpd
-  service: name=httpd state=restarted enabled=yes
+- include: mod_ssl.yml tags=mod_ssl
+- include: mod_wsgi.yml tags=mod_wsgi

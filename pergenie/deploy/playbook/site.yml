@@ -3,7 +3,6 @@
   become: yes
   gather_facts: no
   roles:
-    - { role: libselinux-python }
     - { role: sshd }
     - { role: devtools }
     - { role: epel }
@@ -16,5 +15,5 @@
     - { role: python }
     - { role: postgresql }
     - { role: rabbitmq }
-    - { role: httpd }
+    - { role: httpd, tags: ['httpd'] }
     - { role: pergenie }

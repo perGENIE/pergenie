@@ -4,3 +4,4 @@
 
 - name: configure mod_wsgi
   template: src=wsgi.conf.j2 dest=/etc/httpd/conf.d/mod_wsgi.conf
+  notify: restart httpd

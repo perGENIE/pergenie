@@ -12,3 +12,4 @@
 
 - name: configure mod_ssl
   template: src=ssl.conf.j2 dest=/etc/httpd/conf.d/ssl.conf
+  notify: restart httpd

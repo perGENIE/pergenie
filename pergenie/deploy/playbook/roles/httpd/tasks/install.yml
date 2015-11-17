@@ -4,3 +4,4 @@
 
 - name: configure httpd
   template: src=httpd.conf.j2 dest=/etc/httpd/conf/httpd.conf
+  notify: restart httpd
