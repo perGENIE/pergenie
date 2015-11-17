@@ -46,11 +46,13 @@
        requirements={{ proj_root }}/requirements/{{ rollout_env }}.txt
   environment:
     PATH: "{{ ansible_env.PATH }}:/usr/pgsql-9.4/bin"
+  notify: restart wsgi
   tags: rollout
 
 - name: configure settings.py
   become_user: "{{ app_user }}"
   template: src=settings.py.j2 dest="{{ wsgi_dir }}/settings/{{ rollout_env }}.py"
+  notify: restart wsgi
   tags: rollout
 
 - name: django manage.py migrate
@@ -58,11 +60,9 @@
   django_manage: virtualenv={{ virtualenv_dir }}
                  app_path={{ app_root }}
                  command=migrate
-  tags: rollout
   notify: restart wsgi
+  tags: rollout
 
 # TODO: $ python manage.py createsuperuser
 #       $ python manage.py update_gwascatalog
 #       $ python manage.py init_demo_user
-
-# TODO: add `notify: restart wsgi` at last command
