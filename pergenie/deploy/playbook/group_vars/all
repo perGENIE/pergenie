@@ -15,4 +15,4 @@ virtualenv_dir:           "{{ build_root }}/pergenie/.virtualenvs/pergenie"
 virtualenv_site_packages: "{{ virtualenv_dir }}/lib/python2.7/site-packages"
 
 static_root: "/var/www/pergenie/static"
-media_root:  "/var/www/pergenie/media"  # FIXME
+upload_root: "{{ build_root }}/pergenie/data"

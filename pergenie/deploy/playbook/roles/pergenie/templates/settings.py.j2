@@ -62,10 +62,7 @@ DATABASES = {
 # Static files
 STATIC_ROOT = '{{ static_root }}'
 
-# User-uploaded files
-MEDIA_ROOT = '{{ media_root }}'
-
 
 # Genome upload/delete/status
-
-UPLOAD_DIR = MEDIA_ROOT
+UPLOAD_ROOT = '{{ upload_root }}'
+GENOME_UPLOAD_DIR = os.path.join(UPLOAD_ROOT, 'genome')

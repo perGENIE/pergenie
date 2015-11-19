@@ -6,29 +6,15 @@ LoadModule wsgi_module modules/mod_wsgi.so
 # https://code.google.com/p/modwsgi/wiki/ConfigurationIssues#Location_Of_UNIX_Sockets
 WSGISocketPrefix run/wsgi
 
-Alias /static {{ static_root }}
-Alias /robots.txt {{ static_root }}/robots.txt
-Alias /favicon.ico {{ static_root }}/img/favicon.ico
-
-<Directory {{ static_root }}>
-  Require all granted
-</Directory>
-
-# Alias /media {{ media_root }}
-#
-# <Directory {{ media_root }}>
-#   Require all granted
-# </Directory>
-
 WSGIDaemonProcess {{ http_server_host }} user=apache group=apache python-path={{ app_root }}:{{ virtualenv_site_packages }}
 WSGIProcessGroup {{ http_server_host }}
 
 WSGIScriptAlias / {{ wsgi_dir }}/wsgi.py
 
 <Directory {{ wsgi_dir }}>
-<Files wsgi.py>
-  Require all granted
-</Files>
+  <Files wsgi.py>
+    Require all granted
+  </Files>
 </Directory>
 
 # <Location /internal>

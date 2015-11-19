@@ -29,6 +29,10 @@
   become: yes
   file: path={{ static_root }} state=directory mode=0755 recurse=yes owner={{ app_user }} group={{ app_user }}
 
+- name: create upload root dir
+  become: yes
+  file: path={{ upload_root }} state=directory mode=0755 recurse=yes owner={{ app_user }} group={{ app_user }}
+
 # TODO: move bellow to rollout.yml
 
 - name: add github.com to known_hosts
