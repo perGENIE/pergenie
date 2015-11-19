@@ -31,7 +31,6 @@
 
 # TODO: move bellow to rollout.yml
 
-# FIXME:
 - name: add github.com to known_hosts
   become_user: "{{ app_user }}"
   shell: ssh-keyscan github.com >> /home/{{ app_user }}/.ssh/known_hosts
