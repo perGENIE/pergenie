@@ -15,8 +15,10 @@ framework.
 """
 import os
 
-ROLLOUT_ENV = os.environ.get('ROLLOUT_ENV') or 'development'
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "pergenie.settings.{}".format(ROLLOUT_ENV))
+for rollout_env in ['development', 'ci', 'staging', 'production']:
+    settings_py = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'settings', rollout_env + '.py')
+    if os.path.exists(settings_py):
+        os.environ["DJANGO_SETTINGS_MODULE"] = 'pergenie.settings.' + rollout_env
 
 # This application object is used by any WSGI server configured to use this
 # file. This includes Django's development server, if the WSGI_APPLICATION
