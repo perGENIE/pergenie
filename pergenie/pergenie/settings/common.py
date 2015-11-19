@@ -29,7 +29,6 @@ INSTALLED_APPS = (
     'apps.genome',
     'apps.snp',
     'apps.gwascatalog',
-    'apps.library',
 
     'apps.templatetags',
     'apps.db'
