@@ -15,7 +15,8 @@ framework.
 """
 import os
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "pergenie.settings.staging")
+rollout_env = os.environ.get('ROLLOUT_ENV') or 'development'
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "pergenie.settings.{}".format(rollout_env))
 
 # TODO: settings.production
 

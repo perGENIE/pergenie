@@ -64,6 +64,8 @@
   django_manage: virtualenv={{ virtualenv_dir }}
                  app_path={{ app_root }}
                  command=migrate
+  environment:
+    rollout_env: "{{ rollout_env }}"
   notify: restart wsgi
   tags: rollout
 
@@ -72,6 +74,8 @@
   django_manage: virtualenv={{ virtualenv_dir }}
                  app_path={{ app_root }}
                  command=collectstatic
+  environment:
+    rollout_env: "{{ rollout_env }}"
   notify: restart wsgi
   tags: rollout
 
