@@ -25,6 +25,10 @@
     path={{ build_root }} state=directory recurse=yes
     owner={{ app_user }} group={{ app_user }}
 
+- name: create static root dir
+  become: yes
+  file: path={{ static_root }} state=directory mode=0755 recurse=yes owner={{ app_user }} group={{ app_user }}
+
 # TODO: move bellow to rollout.yml
 
 # FIXME:
@@ -60,6 +64,14 @@
   django_manage: virtualenv={{ virtualenv_dir }}
                  app_path={{ app_root }}
                  command=migrate
+  notify: restart wsgi
+  tags: rollout
+
+- name: django manage.py collectstatic
+  become_user: "{{ app_user }}"
+  django_manage: virtualenv={{ virtualenv_dir }}
+                 app_path={{ app_root }}
+                 command=collectstatic
   notify: restart wsgi
   tags: rollout
 

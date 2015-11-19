@@ -2,22 +2,17 @@
 # ntp
 ntp_server: ntp.nict.jp
 
-# httpd
-ssl_crt_file_path: /etc/pki/tls/certs/server.crt
-ssl_key_file_path: /etc/pki/tls/private/server.key
-
 # pergenie
 repo_url: git@github.com:knmkr/perGENIE-private.git
 
 app_user: pergenie
 
-build_root:      /apps
-proj_root:       "{{ build_root }}/pergenie/repo"
-app_root:        "{{ proj_root }}/pergenie"
-wsgi_dir:        "{{ app_root }}/pergenie"
-
+build_root:               /apps
+proj_root:                "{{ build_root }}/pergenie/repo"
+app_root:                 "{{ build_root }}/pergenie/repo/pergenie"
+wsgi_dir:                 "{{ build_root }}/pergenie/repo/pergenie/pergenie"
 virtualenv_dir:           "{{ build_root }}/pergenie/.virtualenvs/pergenie"
 virtualenv_site_packages: "{{ virtualenv_dir }}/lib/python2.7/site-packages"
 
-static_root: "{{ build_root }}/pergenie/static"
-media_root:  "{{ build_root }}/pergenie/media"
+static_root: "/var/www/pergenie/static"
+media_root:  "/var/www/pergenie/media"  # FIXME
