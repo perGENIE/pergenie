@@ -15,10 +15,7 @@ framework.
 """
 import os
 
-rollout_env = os.environ.get('ROLLOUT_ENV') or 'development'
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "pergenie.settings.{}".format(rollout_env))
-
-# TODO: settings.production
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "pergenie.settings.development")
 
 # This application object is used by any WSGI server configured to use this
 # file. This includes Django's development server, if the WSGI_APPLICATION
