@@ -9,6 +9,8 @@ ssl_key_file_path: /etc/pki/tls/private/server.key
 # pergenie
 repo_url: git@github.com:knmkr/perGENIE-private.git
 
+app_user: pergenie
+
 build_root:      /apps
 proj_root:       "{{ build_root }}/pergenie/repo"
 app_root:        "{{ proj_root }}/pergenie"

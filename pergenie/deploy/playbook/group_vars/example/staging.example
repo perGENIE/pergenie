@@ -1,0 +1,13 @@
+---
+rollout_env: staging
+http_server_host: staging.pergenie.org
+http_server_name: "{{ http_server_host }}:80"
+
+database_name: "{{ app_user }}"
+database_user: "{{ app_user }}"
+database_pass: "{{ app_user }}"
+database_host: localhost
+database_port: 5432
+
+django_secret_key: secretkey_secretkey_secretkey_secretkey_secretkey_secretkey
+django_allowed_host: "{{ http_server_host }}"
