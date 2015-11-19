@@ -15,9 +15,6 @@ if __name__ == "__main__":
     host = socket.gethostname()
     log.info('host: {}'.format(host))
 
-    rollout_env = os.environ.get('ROLLOUT_ENV') or 'development'
-    log.info('rollout_env: {}'.format(rollout_env))
-
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "pergenie.settings.{}".format(rollout_env))
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "pergenie.settings.development")
 
     execute_from_command_line(sys.argv)
