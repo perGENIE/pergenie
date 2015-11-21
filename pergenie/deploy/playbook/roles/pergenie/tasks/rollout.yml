@@ -1,0 +1,43 @@
+---
+- name: clone repo
+  git: repo={{ repo_url }}
+       dest={{ proj_root }}
+       accept_hostkey=yes
+
+- name: clone private files repo if exists
+  git: repo={{ private_files_repo_url }}
+       dest={{ private_files_repo_root }}
+       accept_hostkey=yes
+       key_file="/home/{{ app_user }}/.ssh/id_rsa_private_files_repo"
+  when: private_files_repo_url is defined
+
+- name: symlink statc/vendor
+  file: src="{{ private_files_repo_root }}/static/vendor"
+        dest="{{ app_root }}/static/vendor"
+        owner={{ app_user }} group={{ app_user }}
+        state=link
+  when: private_files_repo_url is defined
+
+- name: create virtualenv and install python packages
+  pip: virtualenv_command=virtualenv
+       virtualenv={{ virtualenv_dir }}
+       requirements={{ proj_root }}/requirements/{{ rollout_env }}.txt
+
+- name: configure settings.py
+  template: src=settings.py.j2 dest="{{ wsgi_dir }}/settings/{{ rollout_env }}.py"
+
+- name: django manage.py migrate
+  django_manage: virtualenv={{ virtualenv_dir }}
+                 app_path={{ app_root }}
+                 command=migrate
+                 settings="pergenie.settings.{{ rollout_env }}"
+
+- name: django manage.py collectstatic
+  django_manage: virtualenv={{ virtualenv_dir }}
+                 app_path={{ app_root }}
+                 command=collectstatic
+                 settings="pergenie.settings.{{ rollout_env }}"
+
+# TODO: $ python manage.py createsuperuser
+#       $ python manage.py update_gwascatalog
+#       $ python manage.py init_demo_user

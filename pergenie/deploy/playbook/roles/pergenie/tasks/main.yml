@@ -1,7 +1,10 @@
 ---
 - name: create app user
-  become: yes
   user: name={{ app_user }} generate_ssh_key=yes ssh_key_bits=2048 ssh_key_file=.ssh/id_rsa
+
+- name: create ssh-key for private files repo if exists
+  user: name={{ app_user }} generate_ssh_key=yes ssh_key_bits=2048 ssh_key_file=.ssh/id_rsa_private_files_repo
+  when: private_files_repo_url is defined
 
 - name: create postgresql user
   become_user: postgres
@@ -16,70 +19,20 @@
                  owner={{ database_user }}
 
 - name: create project root dir
-  become: yes
   file: path={{ proj_root }} state=directory mode=0755
 
 - name: set build dir owner to app user
-  become: yes
   file:
     path={{ build_root }} state=directory recurse=yes
     owner={{ app_user }} group={{ app_user }}
 
 - name: create static root dir
-  become: yes
   file: path={{ static_root }} state=directory mode=0755 recurse=yes owner={{ app_user }} group={{ app_user }}
 
 - name: create upload root dir
-  become: yes
   file: path={{ upload_root }} state=directory mode=0755 recurse=yes owner={{ app_user }} group={{ app_user }}
 
-# TODO: move bellow to rollout.yml
-
-- name: add github.com to known_hosts
+- include: rollout.yml
   become_user: "{{ app_user }}"
-  shell: ssh-keyscan github.com >> /home/{{ app_user }}/.ssh/known_hosts
-  when: rollout_env == 'staging'
-
-- name: clone repo
-  become_user: "{{ app_user }}"
-  git: repo={{ repo_url }}
-       dest={{ proj_root }}
-  tags: rollout
-
-- name: create virtualenv and install python packages
-  become_user: "{{ app_user }}"
-  pip: virtualenv_command=virtualenv
-       virtualenv={{ virtualenv_dir }}
-       requirements={{ proj_root }}/requirements/{{ rollout_env }}.txt
-  environment:
-    PATH: "{{ ansible_env.PATH }}:/usr/pgsql-9.4/bin"
   notify: restart wsgi
   tags: rollout
-
-- name: configure settings.py
-  become_user: "{{ app_user }}"
-  template: src=settings.py.j2 dest="{{ wsgi_dir }}/settings/{{ rollout_env }}.py"
-  notify: restart wsgi
-  tags: rollout
-
-- name: django manage.py migrate
-  become_user: "{{ app_user }}"
-  django_manage: virtualenv={{ virtualenv_dir }}
-                 app_path={{ app_root }}
-                 command=migrate
-                 settings="pergenie.settings.{{ rollout_env }}"
-  notify: restart wsgi
-  tags: rollout
-
-- name: django manage.py collectstatic
-  become_user: "{{ app_user }}"
-  django_manage: virtualenv={{ virtualenv_dir }}
-                 app_path={{ app_root }}
-                 command=collectstatic
-                 settings="pergenie.settings.{{ rollout_env }}"
-  notify: restart wsgi
-  tags: rollout
-
-# TODO: $ python manage.py createsuperuser
-#       $ python manage.py update_gwascatalog
-#       $ python manage.py init_demo_user
