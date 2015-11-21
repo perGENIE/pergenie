@@ -18,19 +18,13 @@
                  encoding='UTF-8'
                  owner={{ database_user }}
 
-- name: create project root dir
-  file: path={{ proj_root }} state=directory mode=0755
-
-- name: set build dir owner to app user
-  file:
-    path={{ build_root }} state=directory recurse=yes
-    owner={{ app_user }} group={{ app_user }}
-
-- name: create static root dir
-  file: path={{ static_root }} state=directory mode=0755 recurse=yes owner={{ app_user }} group={{ app_user }}
-
-- name: create upload root dir
-  file: path={{ upload_root }} state=directory mode=0755 recurse=yes owner={{ app_user }} group={{ app_user }}
+- name: create dirs
+  file: path={{ item }} state=directory recurse=yes owner={{ app_user }} group={{ app_user }}
+  with_items:
+    - "{{ build_root }}"
+    - "{{ proj_root }}"
+    - "{{ static_root }}"
+    - "{{ upload_root }}"
 
 - include: rollout.yml
   become_user: "{{ app_user }}"
