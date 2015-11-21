@@ -12,8 +12,8 @@ ServerAdmin root@localhost
 ServerName {{ http_server_name }}
 
 <Directory />
-  AllowOverride none
-  Require all denied
+    AllowOverride none
+    Require all denied
 </Directory>
 
 Alias /static {{ static_root }}
@@ -21,13 +21,13 @@ Alias /robots.txt {{ static_root }}/robots.txt
 Alias /favicon.ico {{ static_root }}/img/favicon.ico
 
 <Directory {{ static_root }}>
-  Options Indexes FollowSymLinks
-  AllowOverride None
-  Require all granted
+    Options Indexes FollowSymLinks
+    AllowOverride None
+    Require all granted
 </Directory>
 
 <Files ".ht*">
-  Require all denied
+    Require all denied
 </Files>
 
 ErrorLog "logs/error_log"
@@ -38,7 +38,7 @@ LogLevel warn
     LogFormat "%h %l %u %t \"%r\" %>s %b" common
 
     <IfModule logio_module>
-      LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\" %I %O" combinedio
+        LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\" %I %O" combinedio
     </IfModule>
 
     CustomLog "logs/access_log" combined

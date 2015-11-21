@@ -1,4 +1,5 @@
 <IfModule mod_wsgi.c>
+
     LoadModule wsgi_module modules/mod_wsgi.so
 
     # Location of UNIX sockets
@@ -11,9 +12,9 @@
     WSGIScriptAlias / {{ wsgi_dir }}/wsgi.py
 
     <Directory {{ wsgi_dir }}>
-      <Files wsgi.py>
-          Require all granted
-      </Files>
+        <Files wsgi.py>
+            Require all granted
+        </Files>
     </Directory>
 
     # <Location /internal>
@@ -21,4 +22,5 @@
     #   Deny from all
     #   Allow from 127.0.0.1
     # </Location>
+
 </IfModule>
