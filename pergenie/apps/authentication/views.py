@@ -38,7 +38,7 @@ def register(request):
 
             try:
                 with transaction.atomic():
-                    user = User.objects.create_user(form.cleaned_data['email'], form.cleaned_data['password1'])
+                    user = User.objects.create_user(form.cleaned_data['email'], form.cleaned_data['email'], form.cleaned_data['password1'])
                     user.save()
 
                     while True:
