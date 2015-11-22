@@ -29,6 +29,13 @@
     - "{{ proj_root }}"
     - "{{ static_root }}"
     - "{{ upload_root }}"
+    - "{{ backup_root }}"
+
+- name: set crontab
+  template: src=crontab.j2 dest="/home/{{ app_user }}/crontab"
+            owner={{ app_user }} group={{ app_user }} mode=0600
+  notify:
+    reload crontab
 
 - include: rollout.yml
   become_user: "{{ app_user }}"

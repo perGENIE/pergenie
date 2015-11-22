@@ -2,3 +2,7 @@
 - name: restart wsgi
   become_user: "{{ app_user }}"
   command: touch {{ wsgi_dir }}/wsgi.py
+
+- name: reload crontab
+  become_user: "{{ app_user }}"
+  command: crontab "/home/{{ app_user }}/crontab"

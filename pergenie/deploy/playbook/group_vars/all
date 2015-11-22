@@ -16,3 +16,4 @@ virtualenv_site_packages: "{{ virtualenv_dir }}/lib/python2.7/site-packages"
 
 static_root: "/var/www/pergenie/static"
 upload_root: "{{ build_root }}/pergenie/data"
+backup_root: "/home/{{ app_user }}/backup"
