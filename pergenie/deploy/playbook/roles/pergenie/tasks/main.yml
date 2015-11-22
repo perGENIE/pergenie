@@ -18,6 +18,10 @@
                  encoding='UTF-8'
                  owner={{ database_user }}
 
+- name: create .pgpass
+  template: src=pgpass.j2 dest="/home/{{ app_user }}/.pgpass"
+            owner={{ app_user }} group={{ app_user }} mode=0600
+
 - name: create dirs
   file: path={{ item }} state=directory recurse=yes owner={{ app_user }} group={{ app_user }}
   with_items:
