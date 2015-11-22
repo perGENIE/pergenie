@@ -44,5 +44,11 @@
 
 - include: rollout.yml
   become_user: "{{ app_user }}"
-  notify: restart wsgi
+  notify:
+    - restart wsgi
+    - restart celery
   tags: rollout
+
+- include: init_data.yml
+  become_user: "{{ app_user }}"
+  notify: restart wsgi

@@ -1,1 +1,3 @@
 ---
+celery_pid_file: /apps/pergenie/%N.pid
+celery_log_file: /apps/pergenie/%N.log
