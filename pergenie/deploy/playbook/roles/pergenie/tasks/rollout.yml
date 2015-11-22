@@ -45,6 +45,11 @@
   # register: command_result
   # failed_when: "'identified some issues' in command_result.stderr"
 
-# TODO: $ python manage.py createsuperuser
-#       $ python manage.py update_gwascatalog
+- name: django manage.py createsuperuser
+  django_manage: virtualenv={{ virtualenv_dir }}
+                 app_path={{ app_root }}
+                 command="createsuperuser --noinput --username={{ djnago_admin_user }} --email={{ django_admin_email }}"
+                 settings="pergenie.settings.{{ rollout_env }}"
+
+# TODO: $ python manage.py update_gwascatalog
 #       $ python manage.py init_demo_user
