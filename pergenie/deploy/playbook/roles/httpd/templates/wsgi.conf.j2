@@ -17,10 +17,9 @@
         </Files>
     </Directory>
 
-    # <Location /internal>
-    #   Order deny,allow
-    #   Deny from all
-    #   Allow from 127.0.0.1
-    # </Location>
+    <Location /internal>
+        Require ip 127.0.0.1
+        Require ip 192.168.0.0/16
+    </Location>
 
 </IfModule>
