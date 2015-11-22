@@ -25,15 +25,27 @@ NOREPLY_EMAIL = ''
 
 # Security
 
-# FIXME:
-# SECURE_HSTS_SECONDS = 60
-# SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-# SECURE_SSL_REDIRECT = True
-# SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTOCOL", "https")
+# Set the HTTP Strict Transport Security header.
+SECURE_HSTS_SECONDS = 31536000  # 1 year
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 
+# Redirect all non-HTTPS requests to HTTPS.
+SECURE_SSL_REDIRECT = True
+
+# Browser will block the resource from loading in a frame no matter which site made the request.
 X_FRAME_OPTIONS = 'DENY'
+
+# Prevent the browser from guessing the content type and force it to always use the type provided in the Content-Type header.
 SECURE_CONTENT_TYPE_NOSNIFF = True
+
+# Enable the XSS filter in the browser, and force it to always block suspected XSS attacks.
 SECURE_BROWSER_XSS_FILTER = True
+
+# Use a secure cookie for the CSRF cookie.
+CSRF_COOKIE_SECURE = True
+
+# Use HttpOnly flag on the CSRF cookie
+CSRF_COOKIE_HTTPONLY = True
 
 
 # Session

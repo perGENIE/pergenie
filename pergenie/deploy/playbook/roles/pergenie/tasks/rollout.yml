@@ -26,17 +26,24 @@
 - name: configure settings.py
   template: src=settings.py.j2 dest="{{ wsgi_dir }}/settings/{{ rollout_env }}.py"
 
-- name: django manage.py migrate
+- name: django manage.py
   django_manage: virtualenv={{ virtualenv_dir }}
                  app_path={{ app_root }}
-                 command=migrate
+                 command={{ item }}
                  settings="pergenie.settings.{{ rollout_env }}"
+  with_items:
+    - migrate
+    - collectstatic
 
-- name: django manage.py collectstatic
+# TODO: print stdout/stderr
+# TODO: fail when some issues found
+- name: django manage.py check --deploy
   django_manage: virtualenv={{ virtualenv_dir }}
                  app_path={{ app_root }}
-                 command=collectstatic
+                 command="check --deploy"
                  settings="pergenie.settings.{{ rollout_env }}"
+  # register: command_result
+  # failed_when: "'identified some issues' in command_result.stderr"
 
 # TODO: $ python manage.py createsuperuser
 #       $ python manage.py update_gwascatalog
