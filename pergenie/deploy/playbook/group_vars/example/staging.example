@@ -14,3 +14,11 @@ database_port: 5432
 
 django_secret_key: secretkey_secretkey_secretkey_secretkey_secretkey_secretkey
 django_allowed_host: "{{ http_server_host }}"
+
+# (optional) Private files repo
+# private_files_repo_url: git@github.com:user/repo.git
+# private_files_repo_root: "{{ build_root }}/pergenie/private-files-repo"
+
+# (optional) Backup server
+# backup_server: backup_server_host_name
+# backup_server_ssh_port: 22

@@ -1,7 +1,5 @@
 SHELL=/bin/bash
 PATH=/sbin:/bin:/usr/sbin:/usr/bin
 
-today=`date +%Y%m%d`
-
 # Backup postgresql database
-* * * * * pg_dump pergenie| gzip >{{ backup_root }}/pergenie.pg_dump.${today}.gz
+30 0 * * * /home/{{ app_user }}/backup.sh
