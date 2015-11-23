@@ -20,9 +20,9 @@ class getColorLogger(object):
                  'critical': {'color': 'red', 'attrs': ['bold']}
                  }
         self.logger = logging.getLogger(name)
-        self.logger.setLevel(logging.DEBUG) ###
+        self.logger.setLevel(logging.INFO)
         self.stdout = logging.StreamHandler()
-        self.stdout.setLevel(logging.DEBUG) ###
+        self.stdout.setLevel(logging.INFO)
         self.stdout.setFormatter(logging.Formatter('%(asctime)s %(name)s [%(levelname)s] %(message)s'))
         self.logger.addHandler(self.stdout)
 
