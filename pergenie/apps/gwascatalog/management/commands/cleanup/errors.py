@@ -1,0 +1,1 @@
+class GwasCatalogParseError(Exception): pass
