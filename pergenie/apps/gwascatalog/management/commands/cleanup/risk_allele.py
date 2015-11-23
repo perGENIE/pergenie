@@ -1,9 +1,12 @@
 import re
-import string
 
-def reverse_complement(text):
-    nucleic_acid_codes = string.maketrans("ATGCRYKMBVDHatgcrykmbvdh", "TACGYRMKVBHDtacgyrmkvbhd")
-    return text.translate(nucleic_acid_codes)
+from errors import GwasCatalogParseError
+from lib.utils.genome import reverse_complement
+from lib.utils import clogging
+log = clogging.getColorLogger(__name__)
+
+PATTERN = re.compile(r'[ATGC]+')
+
 
 def get_forward_risk_allele(risk_allele, freq_reported, freq_db, thrs):
     """Returns risk alleles on the forward strand with respect to
@@ -15,9 +18,8 @@ def get_forward_risk_allele(risk_allele, freq_reported, freq_db, thrs):
     >>> get_forward_risk_allele('A', 0.1, {'T': 0.1, 'A': 0.9}, 0.1)
     'T'
     """
-    pattern = re.compile(r'[ATGC]+')
 
-    if not pattern.match(risk_allele):
+    if not PATTERN.match(risk_allele):
         log.warn('Allele does not match A/T/G/C: {}'.format(risk_allele))
         return ''
 

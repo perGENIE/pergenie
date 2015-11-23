@@ -1,68 +1,47 @@
-#!/usr/bin/env python
+from django.test import TestCase
+from django.conf import settings
+from django.utils.translation import ugettext as _
 
-import sys,os
-import socket
-import unittest
-sys.path.append('../../')
-host = socket.gethostname()
-if host.endswith('.local'):
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "pergenie.settings.develop")
-else:
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "pergenie.settings.staging")
-
-from import_catalog import _risk_allele
+from .management.commands.cleanup.risk_allele import get_forward_risk_allele
 
 
-class bq(object):
-    """
-    mock of BioQ
-    """
-
-    def __init__(self, freqs):
-        self.freqs = freqs
-
-    def get_allele_freqs(self, rs, population='unkown'):
-        return self.freqs, None
-
-
-class SimpleTest(unittest.TestCase):
+# TODO:
+class GWASCatalogCommandTestCase(TestCase):
     def setUp(self):
-        self.data = {'strongest_snp_risk_allele': 'rs3-C',
+        self.data = {'risk_allele': 'C',
                      'risk_allele_frequency': 0.1,
                      'population': ['European']}
 
     def test_allele_strand_check_ok(self):
-        """
-        Note:
-        It is odd if risk allele freq is equal to other allele. However, we accept as they are.
-        """
+        # Note:
+        # It is odd if risk allele freq is equal to other allele. However, we accept as they are.
 
         for thrs in [0.0, 0.1]:
             # C(0.1) vs C(0.1)/T(0.9) => C
             self.data.update({'risk_allele_frequency': 0.1})
-            snps = bq(freqs={'European': {'C': {'freq': 0.1}, 'T': {'freq': 0.9}}})
-            rs, risk_allele, notes = _risk_allele(self.data, thrs=thrs, snps=snps)
+            freq = {'European': {'C': 0.1, 'T': 0.9}}
+            risk_allele = get_forward_risk_allele(self.data['risk_allele'], self.data['risk_allele_frequency'], freq, thrs)
             self.assertEqual(risk_allele, 'C')
             self.assertEqual(notes, 'ok')
 
             # C(0.5) vs C(0.5)/T(0.5) => C
             self.data.update({'risk_allele_frequency': 0.5})
-            snps = bq(freqs={'European': {'C': {'freq': 0.5}, 'T': {'freq': 0.5}}})
-            rs, risk_allele, notes = _risk_allele(self.data, thrs=thrs, snps=snps)
+            freq = {'European': {'C': 0.5, 'T': 0.5}}
+            risk_allele = get_forward_risk_allele(self.data['risk_allele'], self.data['risk_allele_frequency'], freq, thrs)
             self.assertEqual(risk_allele, 'C')
             self.assertEqual(notes, 'ok')
 
             # C(0.9) vs C(0.9)/T(0.1) => C
             self.data.update({'risk_allele_frequency': 0.9})
-            snps = bq(freqs={'European': {'C': {'freq': 0.9}, 'T': {'freq': 0.1}}})
-            rs, risk_allele, notes = _risk_allele(self.data, thrs=thrs, snps=snps)
+            freq = {'European': {'C': 0.9, 'T': 0.1}}
+            risk_allele = get_forward_risk_allele(self.data['risk_allele'], self.data['risk_allele_frequency'], freq, thrs)
             self.assertEqual(risk_allele, 'C')
             self.assertEqual(notes, 'ok')
 
             # C(0.5) vs G(0.5)/C(0.5) => C
             self.data.update({'risk_allele_frequency': 0.5})
-            snps = bq(freqs={'European': {'G': {'freq': 0.5}, 'C': {'freq': 0.5}}})
-            rs, risk_allele, notes = _risk_allele(self.data, thrs=thrs, snps=snps)
+            freq = {'European': {'G': 0.5, 'C': 0.5}}
+            risk_allele = get_forward_risk_allele(self.data['risk_allele'], self.data['risk_allele_frequency'], freq, thrs)
             self.assertEqual(risk_allele, 'C')
             self.assertEqual(notes, 'ok')
 
@@ -70,36 +49,36 @@ class SimpleTest(unittest.TestCase):
         for thrs in [0.0, 0.1]:
             # C(0.1) vs G(0.1)/A(0.9) => G
             self.data.update({'risk_allele_frequency': 0.1})
-            snps = bq(freqs={'European': {'G': {'freq': 0.1}, 'A': {'freq': 0.9}}})
-            rs, risk_allele, notes = _risk_allele(self.data, thrs=thrs, snps=snps)
+            freq = {'European': {'G': 0.1, 'A': 0.9}}
+            risk_allele = get_forward_risk_allele(self.data['risk_allele'], self.data['risk_allele_frequency'], freq, thrs)
             self.assertEqual(risk_allele, 'G')
             self.assertEqual(notes, 'Snpdb freq for X not found, and solved with rev(X)')
 
             # C(0.5) vs G(0.5)/A(0.5) => G
             self.data.update({'risk_allele_frequency': 0.5})
-            snps = bq(freqs={'European': {'G': {'freq': 0.5}, 'A': {'freq': 0.5}}})
-            rs, risk_allele, notes = _risk_allele(self.data, thrs=thrs, snps=snps)
+            freq = {'European': {'G': 0.5, 'A': 0.5}}
+            risk_allele = get_forward_risk_allele(self.data['risk_allele'], self.data['risk_allele_frequency'], freq, thrs)
             self.assertEqual(risk_allele, 'G')
             self.assertEqual(notes, 'Snpdb freq for X not found, and solved with rev(X)')
 
             # C(0.9) vs G(0.9)/A(0.1) => G
             self.data.update({'risk_allele_frequency': 0.9})
-            snps = bq(freqs={'European': {'G': {'freq': 0.9}, 'A': {'freq': 0.1}}})
-            rs, risk_allele, notes = _risk_allele(self.data, thrs=thrs, snps=snps)
+            freq = {'European': {'G': 0.9, 'A': 0.1}}
+            risk_allele = get_forward_risk_allele(self.data['risk_allele'], self.data['risk_allele_frequency'], freq, thrs)
             self.assertEqual(risk_allele, 'G')
             self.assertEqual(notes, 'Snpdb freq for X not found, and solved with rev(X)')
 
             # C(0.1) vs G(0.1)/C(0.9) => G
             self.data.update({'risk_allele_frequency': 0.1})
-            snps = bq(freqs={'European': {'G': {'freq': 0.1}, 'C': {'freq': 0.9}}})
-            rs, risk_allele, notes = _risk_allele(self.data, thrs=thrs, snps=snps)
+            freq = {'European': {'G': 0.1, 'C': 0.9}}
+            risk_allele = get_forward_risk_allele(self.data['risk_allele'], self.data['risk_allele_frequency'], freq, thrs)
             self.assertEqual(risk_allele, 'G')
             self.assertEqual(notes, 'Inconsistence between GWAS Catalog and Snpdb, and solved with rev(X)')
 
             # C(0.9) vs G(0.9)/C(0.1) => G
             self.data.update({'risk_allele_frequency': 0.9})
-            snps = bq(freqs={'European': {'G': {'freq': 0.9}, 'C': {'freq': 0.1}}})
-            rs, risk_allele, notes = _risk_allele(self.data, thrs=thrs, snps=snps)
+            freq = {'European': {'G': 0.9, 'C': 0.1}}
+            risk_allele = get_forward_risk_allele(self.data['risk_allele'], self.data['risk_allele_frequency'], freq, thrs)
             self.assertEqual(risk_allele, 'G')
             self.assertEqual(notes, 'Inconsistence between GWAS Catalog and Snpdb, and solved with rev(X)')
 
@@ -107,8 +86,8 @@ class SimpleTest(unittest.TestCase):
         for thrs in [0.0, 0.1]:
             # C vs T/A => C?
             self.data.update({'risk_allele_frequency': 0.1})
-            snps = bq(freqs={'European': {'T': {'freq': 0.1}, 'A': {'freq': 0.9}}})
-            rs, risk_allele, notes = _risk_allele(self.data, thrs=thrs, snps=snps)
+            freq = {'European': {'T': 0.1, 'A': 0.9}}
+            risk_allele = get_forward_risk_allele(self.data['risk_allele'], self.data['risk_allele_frequency'], freq, thrs)
             self.assertEqual(risk_allele, 'C?')
             self.assertEqual(notes, 'Snpdb freq for X not found, but Snpdb freq for rev(X) not found')
 
@@ -116,11 +95,7 @@ class SimpleTest(unittest.TestCase):
         for thrs in [0.0, 0.1]:
             # C(0.1) vs G(0.9)/A(0.1) => C?
             self.data.update({'risk_allele_frequency': 0.1})
-            snps = bq(freqs={'European': {'G': {'freq': 0.9}, 'A': {'freq': 0.1}}})
-            rs, risk_allele, notes = _risk_allele(self.data, thrs=thrs, snps=snps)
+            freq = {'European': {'G': 0.9, 'A': 0.1}}
+            risk_allele = get_forward_risk_allele(self.data['risk_allele'], self.data['risk_allele_frequency'], freq, thrs)
             self.assertEqual(risk_allele, 'C?')
             self.assertEqual(notes, 'Snpdb freq for X not found, but not solved with rev(X)')
-
-
-if __name__ == '__main__':
-    unittest.main()

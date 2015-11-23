@@ -1,14 +1,8 @@
-import os
-import shutil
-
 from django.test import TestCase
 from django.conf import settings
 from django.utils.translation import ugettext as _
 
-from pergenie.mongo import mongo_db
 from .models import GWASCatalog
-
-
 
 
 class GWASCatalogModelTestCase(TestCase):
