@@ -44,3 +44,6 @@
 # # FIXME:
 # - command: /bin/true
 #   notify: restart celery
+
+- command: /bin/true
+  notify: restart wsgi
