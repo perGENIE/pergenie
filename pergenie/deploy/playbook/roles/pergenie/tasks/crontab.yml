@@ -1,0 +1,11 @@
+---
+- name: set cron job for backup
+  template: src=backup.sh.j2 dest="/home/{{ app_user }}/backup.sh"
+            owner={{ app_user }} group={{ app_user }} mode=0755
+  when: backup_server is defined
+
+- name: set cron jobs
+  template: src=crontab.j2 dest="/home/{{ app_user }}/crontab"
+            owner={{ app_user }} group={{ app_user }} mode=0600
+  notify: reload crontab
+  when: backup_server is defined

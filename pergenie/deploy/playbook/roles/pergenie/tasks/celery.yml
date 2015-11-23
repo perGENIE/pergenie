@@ -1,1 +1,10 @@
 ---
+- name: create celery user
+  user: name=celery
+
+- name: install init.d/celeryd
+  get_url: url=https://raw.githubusercontent.com/celery/celery/3.1/extra/generic-init.d/celeryd dest=/etc/init.d/celeryd mode=0755
+
+# http://celery.readthedocs.org/en/latest/tutorials/daemonizing.html#example-configuration
+- name: configure celery
+  template: src=celeryd.j2 dest=/etc/default/celeryd

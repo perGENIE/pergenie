@@ -41,9 +41,8 @@
   # register: command_result
   # failed_when: "'identified some issues' in command_result.stderr"
 
-# # FIXME:
-# - command: /bin/true
-#   notify: restart celery
+- command: /bin/true
+  notify: restart celery
 
 - command: /bin/true
   notify: restart wsgi
