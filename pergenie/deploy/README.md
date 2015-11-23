@@ -1,7 +1,7 @@
 # Deploy scripts for hosting `perGENIE`
 
 
-## Getting started for staging env
+## For staging env
 
 1\. Install `VirtualBox`, `Vagrant`, and `Ansible`.
 
@@ -17,7 +17,7 @@ $ ${EDITOR} playbook/group_vars/staging  # e.g. playbook/group_vars/staging.exam
 $ vagrant up
 ```
 
-Once VM is up, to rollout pergenie application:
+Once VM is up, you can rollout pergenie application by:
 
 ```
 $ ANSIBLE_TAGS=rollout vagrant provision
