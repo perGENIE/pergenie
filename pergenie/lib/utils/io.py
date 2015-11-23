@@ -30,8 +30,12 @@ def touch(filename, times=None):
     with file(filename, 'a'):
         os.utime(filename, times)
 
-def get_url_content(url, dst):
+def get_url_content(url, dst, if_not_exists=False):
     """Get content form url"""
+
+    if if_not_exists and os.path.exists(dst):
+        log.info('Already exists.')
+        return
 
     # TODO: error handling
     while True:
