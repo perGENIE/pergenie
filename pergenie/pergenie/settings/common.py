@@ -182,19 +182,9 @@ TEST_DATA_DIR = os.path.join(BASE_DIR, 'test', 'data')
 MAX_UPLOAD_GENOME_FILE_NAME_LENGTH = 255
 MAX_UPLOAD_GENOME_FILE_SIZE = 2 * (1024 ** 3)  # == 2Gbytes. 100Mbytes: 1024**2 == 104857600, 1Gbytes: 1024**3
 MAX_UPLOAD_GENOMEFILE_COUNT = 100
-UPLOAD_DIR = os.path.join('tmp', 'downloads')
 
-# GWAS Catalog
-GWASCATALOG_DIR = os.path.join(UPLOAD_DIR, 'gwascatalog')
-
-# Genome
-RS_MERGE_ARCH_PATH = os.path.join(UPLOAD_DIR, 'RsMergeArch.bcp.gz')
 
 # GWAS Catalog
 
 GWASCATALOG_URL = 'http://www.genome.gov/admin/gwascatalog.txt'
 GWASCATALOG_INCONSISTENCE_THRS = 0.1
-
-# Demo mode
-
-DEMO_GENOME_FILE_NAME = 'demo.vcf'

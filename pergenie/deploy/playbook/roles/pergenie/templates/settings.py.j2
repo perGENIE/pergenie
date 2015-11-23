@@ -15,7 +15,7 @@ ALLOWED_HOSTS = ['{{ django_allowed_host }}',
 
 # People who get code error notifications when DEBUG=False.
 ADMINS = (
-    # ('Your Name', 'your_email@example.com'),
+    ('{{ app_user }}', '{{ django_error_notification_email }}'),
 )
 MANAGERS = ADMINS
 
@@ -86,3 +86,14 @@ STATIC_ROOT = '{{ static_root }}'
 # Genome upload/delete/status
 UPLOAD_ROOT = '{{ upload_root }}'
 GENOME_UPLOAD_DIR = os.path.join(UPLOAD_ROOT, 'genome')
+
+RS_MERGE_ARCH_PATH = os.path.join(BASE_DIR, 'tmp', 'RsMergeArch.bcp.gz')
+
+
+# Demo mode
+DEMO_GENOME_FILE_DIR = os.path.join(BASE_DIR, 'data', 'demo')
+DEMO_GENOME_FILE_NAME = 'demo.vcf'
+
+
+# GWAS Catalog
+GWASCATALOG_DIR = os.path.join(UPLOAD_ROOT, 'gwascatalog')

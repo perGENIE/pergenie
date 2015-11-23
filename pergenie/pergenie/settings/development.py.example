@@ -24,6 +24,7 @@ NOREPLY_EMAIL = ''
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = 'tmp/email'
 
+
 # Database
 
 DATABASES = {
@@ -45,3 +46,19 @@ CELERY_RESULT_BACKEND = 'amqp'
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
+
+
+# Genome
+UPLOAD_ROOT = os.path.join(BASE_DIR, 'tmp')
+GENOME_UPLOAD_DIR = os.path.join(UPLOAD_ROOT, 'genome')
+
+RS_MERGE_ARCH_PATH = os.path.join(BASE_DIR, 'tmp', 'RsMergeArch.bcp.gz')
+
+
+# Demo mode
+DEMO_GENOME_FILE_DIR = os.path.join(BASE_DIR, 'data', 'demo')
+DEMO_GENOME_FILE_NAME = 'demo.vcf'
+
+
+# GWAS Catalog
+GWASCATALOG_DIR = os.path.join(UPLOAD_ROOT, 'gwascatalog')
