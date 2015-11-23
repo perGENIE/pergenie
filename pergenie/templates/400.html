@@ -1,0 +1,27 @@
+{% extends "layout/layout_no_nav.html" %}
+{% block title %}400 Bad request{% endblock %}
+{% block description %}400 Bad request{% endblock %}
+{% load staticfiles %}
+{% load extras %}
+{% load i18n %}
+
+{% block cookie_id %}400{% endblock %}
+
+{% block main %}
+<section id="main">
+  <div class="container">
+    <div class="row-fluid">
+      <div class="span12 center">
+        <div class="error-container center">
+          <h1 class="transparent">#400</h1>
+
+          <div class="error-details">
+            {% trans "Sorry, your browser sent a request that this server could not understand." %}
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
