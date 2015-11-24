@@ -1,18 +1,20 @@
+import re
+
+
 def get_platform(text):
     """
-    >>> _platform('Illumina [2,272,849] (imputed)')
+    >>> get_platform('Illumina [2,272,849] (imputed)')
     ['Illumina']
-    >>> _platform('Ilumina [475,157]')
+    >>> get_platform('Ilumina [475,157]')
     ['Illumina']
-    >>> _platform('Affymetrix & Illumina [2,217,510] (imputed)')
+    >>> get_platform('Affymetrix & Illumina [2,217,510] (imputed)')
     ['Affymetrix', 'Illumina']
-    >>> _platform('Affymetrix[200,220]')
+    >>> get_platform('Affymetrix[200,220]')
     ['Affymetrix']
-    >>> _platform('Afymetrix [287,554]')
+    >>> get_platform('Afymetrix [287,554]')
     ['Affymetrix']
-    >>> _platform('Perlegen[438,784]')
+    >>> get_platform('Perlegen[438,784]')
     ['Perlegen']
-
     """
     if not text: return []
 
