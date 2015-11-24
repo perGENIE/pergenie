@@ -1,4 +1,5 @@
 import re
+from decimal import Decimal
 
 from errors import GwasCatalogParseError
 from lib.utils.genome import reverse_complement
@@ -6,6 +7,7 @@ from lib.utils import clogging
 log = clogging.getColorLogger(__name__)
 
 PATTERN = re.compile(r'[ATGC]+')
+AMBIGOUS = '?'
 
 
 def get_database_strand_allele(allele, reported_freq, database_freq, freq_diff_thrs=0.1):
@@ -87,18 +89,21 @@ def get_database_strand_allele(allele, reported_freq, database_freq, freq_diff_t
     '?'
     """
 
-    ambigous = '?'
     reversed_allele = reverse_complement(allele)
 
     log_msg = ' allele: {}, reversed allele: {}, reported: {}, db: {}, freq_diff_thrs: {}'.format(allele, reversed_allele, reported_freq , database_freq, freq_diff_thrs)
 
+    if not allele:
+        log.info('Allele not given.' + log_msg)
+        return AMBIGOUS
+
     if not PATTERN.match(allele):
         log.info('Given allele does not match A/T/G/C.' + log_msg)
-        return ambigous
+        return AMBIGOUS
 
     if not database_freq:
         log.info('Database freq not given.' + log_msg)
-        return ambigous
+        return AMBIGOUS
 
     # - Case 1: Alleles in database_freq is biallelic and A/G, T/C pattern.
     database_alleles = sorted(database_freq.keys())
@@ -114,24 +119,23 @@ def get_database_strand_allele(allele, reported_freq, database_freq, freq_diff_t
     # or database_freq is not biallelic, e.g., A/T/C, A/T/G/C.
     # In such cases, we need to check the consistency of allele
     # frequencies between database and reported.
-
     if reported_freq:
         # Check if |reported_freq - database_freq| <= freq_diff_thrs
         freq = database_freq.get(allele)
         if freq:
-            if abs(reported_freq - freq) <= freq_diff_thrs:
+            if abs(Decimal(reported_freq) - Decimal(freq)) <= freq_diff_thrs:
                 return allele
 
         # Check if |reported_freq - database_freq_rev| <= freq_diff_thrs
         freq = database_freq.get(reversed_allele)
         if freq:
-            if abs(reported_freq - freq) <= freq_diff_thrs:
+            if abs(Decimal(reported_freq) - Decimal(freq)) <= freq_diff_thrs:
                 return reversed_allele
 
         log.info('Reported freq and database freq are not consistent.' + log_msg)
-        return ambigous
+        return AMBIGOUS
     else:
         log.info('Reported freq is not given.' + log_msg)
-        return ambigous
+        return AMBIGOUS
 
     raise GwasCatalogParseError('Unexpected pattern allele strand validation, after validation process.' + log_msg)

@@ -16,7 +16,7 @@ from cleanup.population import get_population
 from cleanup.odds_ratio_or_beta_coeff import get_odds_ratio_or_beta_coeff, get_ci_and_unit
 from cleanup.errors import GwasCatalogParseError
 from cleanup.reliability_rank import get_reliability_rank
-from cleanup.risk_allele import get_database_strand_allele
+from cleanup.risk_allele import get_database_strand_allele, AMBIGOUS
 from lib.utils.io import get_url_content
 from lib.utils import clogging
 log = clogging.getColorLogger(__name__)
@@ -25,7 +25,6 @@ log = clogging.getColorLogger(__name__)
 class Command(BaseCommand):
     help = "Update GWAS Catalog"
 
-    @transaction.atomic
     def handle(self, *args, **options):
         current_tz = timezone.get_current_timezone()
         today = timezone.now().strftime('%Y-%m-%d')
@@ -51,18 +50,20 @@ class Command(BaseCommand):
         log.info('Updating snp allele freq records for gwascatalog...')
         num_created = 0
         num_updated = 0
-        for record in csv.DictReader(open(catalog_freq_path, 'rb'), delimiter='\t',
-                                     fieldnames=['snp_id_current', 'allele', 'freq', 'populations']):
-            snp, created = Snp.objects.update_or_create(
-                snp_id_current=record['snp_id_current'],
-                defaults={'allele': to_null_array_if_blank(record['allele']),
-                          'freq': to_null_array_if_blank(record['freq']),
-                          'populations': record['populations']}
-            )
-            if created:
-                num_created += 1
-            else:
-                num_updated += 1
+
+        with transaction.atomic():
+            for record in csv.DictReader(open(catalog_freq_path, 'rb'), delimiter='\t',
+                                         fieldnames=['snp_id_current', 'allele', 'freq', 'populations']):
+                snp, created = Snp.objects.update_or_create(
+                    snp_id_current=record['snp_id_current'],
+                    defaults={'allele': to_null_array_if_blank(record['allele']),
+                              'freq': to_null_array_if_blank(record['freq']),
+                              'populations': record['populations']}
+                )
+                if created:
+                    num_created += 1
+                else:
+                    num_updated += 1
 
         log.info('updated: {} records'.format(num_updated))
         log.info('created: {} records'.format(num_created))
@@ -75,6 +76,7 @@ class Command(BaseCommand):
 
         gwascatalog_snps = []
         phenotypes = set()
+
         for record in csv.DictReader(open(catalog_path, 'rb'), delimiter='\t'):
             data = {}
 
@@ -115,12 +117,14 @@ class Command(BaseCommand):
                 # Strands of risk alleles in GWAS Catalog are not set to forward strands with respect to
                 # the human reference genome b37. So we get forward strand alleles by checking consistences of
                 # allele frequencies between reported risk alleles and 1000 Genomes Project alleles.
-                database_freq = {}
-                # if freq_population != '{}':
-                #     snp = Snp.objects.filter(snp_id_current=data['snp_id_current'], populations=freq_population).first()
-
-                risk_allele = get_database_strand_allele(record['risk_allele'], record['risk_allele_freq_reported'],
-                                                         database_freq, freq_diff_thrs=settings.GWASCATALOG_FREQ_DIFF_THRS)
+                if data['snp_id_current']:
+                    # TODO: change freq source by population
+                    snp = Snp.objects.filter(snp_id_current=data['snp_id_current']).first()
+                    database_freq = dict(zip(snp.allele, snp.freq))
+                    risk_allele_forward = get_database_strand_allele(record['risk_allele'], record['risk_allele_freq_reported'],
+                                                                     database_freq, freq_diff_thrs=settings.GWASCATALOG_FREQ_DIFF_THRS)
+                else:
+                    risk_allele_forward = AMBIGOUS
 
                 is_active = True
 
@@ -128,31 +132,36 @@ class Command(BaseCommand):
                 odds_ratio, beta_coeff = None, None
                 is_active = False
 
-            data.update({'population':       population,
-                         'reliability_rank': reliability_rank,
-                         'odds_ratio':       odds_ratio,
-                         'beta_coeff':       beta_coeff,
-                         'beta_coeff_unit':  unit,
-                         # 'risk_allele':      risk_allele,
-                         'is_active':        is_active})
+            data.update({'population':          population,
+                         'reliability_rank':    reliability_rank,
+                         'odds_ratio':          odds_ratio,
+                         'beta_coeff':          beta_coeff,
+                         'beta_coeff_unit':     unit,
+                         'risk_allele_forward': risk_allele_forward,
+                         'is_active':           is_active})
 
             phenotypes.update([record['disease_or_trait']])
 
             gwascatalog_snps.append(GwasCatalogSnp(**data))
             # GwasCatalogSnp.objects.create(**data)
 
-        GwasCatalogSnp.objects.bulk_create(gwascatalog_snps)
+        with transaction.atomic():
+            GwasCatalogSnp.objects.bulk_create(gwascatalog_snps)
+
         log.info('created: {} records'.format(len(gwascatalog_snps)))
 
         # - Phenotype
         log.info('Updating phenotype records for gwascatalog...')
+
         num_created = 0
-        for phenotype in phenotypes:
-            gwascatalog_phenotype, created = GwasCatalogPhenotype.objects.get_or_create(
-                name=phenotype
-            )
-            if created:
-                num_created += 1
+        with transaction.atomic():
+            for phenotype in phenotypes:
+                gwascatalog_phenotype, created = GwasCatalogPhenotype.objects.get_or_create(
+                    name=phenotype
+                )
+                if created:
+                    num_created += 1
+
         log.info('created: {} records'.format(num_created))
 
         log.info('Done.')
