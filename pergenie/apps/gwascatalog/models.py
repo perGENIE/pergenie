@@ -11,6 +11,7 @@ from apps.snp.models import Snp
 from lib.utils import clogging
 log = clogging.getColorLogger(__name__)
 
+
 class GwasCatalogSnp(Model):
     created_at                     = DateTimeField(         default=timezone.now)
     is_active                      = BooleanField(          default=False)
@@ -21,12 +22,13 @@ class GwasCatalogSnp(Model):
     snp_id_reported                = IntegerField(                                                    null=True)
     snp_id_current                 = IntegerField(                                                    null=True)
     risk_allele                    = CharField(             max_length=1024,                          blank=True, default='')
+    risk_allele_forward            = CharField(             max_length=1024,                          blank=True, default='')
 
     initial_sample                 = CharField(             max_length=1024,                          blank=True)
     chrom_reported                 = CharField(             max_length=2,                             blank=True)
     pos_reported                   = IntegerField(                                                    null=True)
     gene_reported                  = CharField(             max_length=1024,                          blank=True, default='')
-    risk_allele_freq_reported      = FloatField(                                                      null=True)
+    risk_allele_freq_reported      = DecimalField(          max_digits=5, decimal_places=4,           null=True)
     p_value                        = DecimalField(          max_digits=1000, decimal_places=1000,     null=True)
     p_value_text                   = CharField(             max_length=1024,                          blank=True, default='')
     odds_ratio_or_beta_coeff       = DecimalField(          max_digits=10, decimal_places=5,          null=True)
