@@ -16,6 +16,7 @@ from cleanup.population import get_population
 from cleanup.odds_ratio_or_beta_coeff import get_odds_ratio_or_beta_coeff, get_ci_and_unit
 from cleanup.errors import GwasCatalogParseError
 from cleanup.reliability_rank import get_reliability_rank
+from cleanup.risk_allele import get_database_strand_allele
 from lib.utils.io import get_url_content
 from lib.utils import clogging
 log = clogging.getColorLogger(__name__)
@@ -109,10 +110,17 @@ class Command(BaseCommand):
                 _, unit                = get_ci_and_unit(record['confidence_interval_95_percent'])
                 odds_ratio, beta_coeff = get_odds_ratio_or_beta_coeff(record['odds_ratio_or_beta_coeff'], unit)
 
-                # TODO:
                 # Validate risk_allele
+                #
+                # Strands of risk alleles in GWAS Catalog are not set to forward strands with respect to
+                # the human reference genome b37. So we get forward strand alleles by checking consistences of
+                # allele frequencies between reported risk alleles and 1000 Genomes Project alleles.
+                database_freq = {}
                 # if freq_population != '{}':
                 #     snp = Snp.objects.filter(snp_id_current=data['snp_id_current'], populations=freq_population).first()
+
+                risk_allele = get_database_strand_allele(record['risk_allele'], record['risk_allele_freq_reported'],
+                                                         database_freq, freq_diff_thrs=settings.GWASCATALOG_FREQ_DIFF_THRS)
 
                 is_active = True
 
@@ -125,6 +133,7 @@ class Command(BaseCommand):
                          'odds_ratio':       odds_ratio,
                          'beta_coeff':       beta_coeff,
                          'beta_coeff_unit':  unit,
+                         # 'risk_allele':      risk_allele,
                          'is_active':        is_active})
 
             phenotypes.update([record['disease_or_trait']])
