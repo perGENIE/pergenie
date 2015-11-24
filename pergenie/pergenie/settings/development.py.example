@@ -62,3 +62,4 @@ DEMO_GENOME_FILE_NAME = 'demo.vcf'
 
 # GWAS Catalog
 GWASCATALOG_DIR = os.path.join(UPLOAD_ROOT, 'gwascatalog')
+GWASCATALOG_FREQ_DIFF_THRS = 0.1
