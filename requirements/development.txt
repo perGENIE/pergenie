@@ -8,6 +8,7 @@ ipython
 django-extensions
 
 # test
+pytest>=2.8.3
 pytest-django
 pytest-cov
 

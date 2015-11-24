@@ -11,4 +11,4 @@ dependencies:
 
 test:
     override:
-        - cd pergenie && DJANGO_SETTINGS_MODULE=pergenie.settings.ci py.test apps/landing/test_browser.py
+        - cd pergenie && DJANGO_SETTINGS_MODULE=pergenie.settings.ci py.test apps/landing/test_browser.py apps/gwascatalog/management/commands/cleanup/{odds_ratio_or_beta_coeff.py,platform.py,reliability_rank.py,risk_allele.py}
