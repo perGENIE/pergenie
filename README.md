@@ -74,7 +74,7 @@ $ python manage.py init_demo_user
 7\. Run Celery (for job queing)
 
 ```
-$ celery --app=pergenie worker --logfile=/tmp/celeryd.log --pidfile=celery%n.pid
+$ DJANGO_SETTINGS_MODULE=pergenie.settings.development celery --app=pergenie worker
 ```
 
 8\. Run perGENIE server
