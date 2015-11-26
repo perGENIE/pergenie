@@ -31,6 +31,7 @@ INSTALLED_APPS = (
     'apps.genome',
     'apps.snp',
     'apps.gwascatalog',
+    'apps.riskreport',
 
     'apps.templatetags',
     'apps.db'

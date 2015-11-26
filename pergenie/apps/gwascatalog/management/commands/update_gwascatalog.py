@@ -58,7 +58,7 @@ class Command(BaseCommand):
                     snp_id_current=record['snp_id_current'],
                     defaults={'allele': to_null_array_if_blank(record['allele']),
                               'freq': to_null_array_if_blank(record['freq']),
-                              'populations': record['populations']}
+                              'population': record['populations']}
                 )
                 if created:
                     num_created += 1
