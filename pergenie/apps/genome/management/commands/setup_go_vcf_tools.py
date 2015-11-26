@@ -19,8 +19,6 @@ class Command(BaseCommand):
         tmp_dir = os.path.join(settings.BASE_DIR, 'tmp')
         bin_dir = os.path.join(settings.BASE_DIR, 'bin')
 
-        # TODO: check already exists?
-
         log.info('Fetching go-vcf-tools ...')
         url = '{repo}/releases/download/{tag}/{os_platform}.amd64.tar.gz'.format(repo='https://github.com/knmkr/go-vcf-tools',
                                                                                  tag='0.0.1',  # TODO: get tag from command argument
@@ -39,7 +37,7 @@ class Command(BaseCommand):
         shutil.rmtree(dst)
 
         log.info('Fetching RsMergeArch ...')
-        url = 'ftp.ncbi.nih.gov/snp/organisms/human_9606_b144_GRCh37p13/database/organism_data/RsMergeArch.bcp.gz'
-        get_url_content(url, settings.RS_MERGE_ARCH_PATH)
+        url = 'http://ftp.ncbi.nih.gov/snp/organisms/human_9606_b144_GRCh37p13/database/organism_data/RsMergeArch.bcp.gz'
+        get_url_content(url, settings.RS_MERGE_ARCH_PATH, if_not_exists=True)
 
         log.info('Done.')
