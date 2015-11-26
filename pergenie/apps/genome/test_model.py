@@ -72,7 +72,7 @@ class GenomeModelTestCase(TestCase):
                              sex=Genome.SEX_UNKNOWN)
         self.genome.save()
 
-        genome_file_dir = os.path.join(settings.UPLOAD_DIR, str(self.user.id))
+        genome_file_dir = os.path.join(settings.GENOME_UPLOAD_DIR, str(self.user.id))
         if not os.path.exists(genome_file_dir):
             os.makedirs(genome_file_dir)
 
@@ -101,7 +101,7 @@ class GenomeModelTestCase(TestCase):
                              sex=Genome.SEX_UNKNOWN)
         self.genome.save()
 
-        genome_file_dir = os.path.join(settings.UPLOAD_DIR, str(self.user.id))
+        genome_file_dir = os.path.join(settings.GENOME_UPLOAD_DIR, str(self.user.id))
         if not os.path.exists(genome_file_dir):
             os.makedirs(genome_file_dir)
 

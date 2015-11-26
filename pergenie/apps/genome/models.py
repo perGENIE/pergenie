@@ -23,6 +23,8 @@ from lib.utils import clogging
 log = clogging.getColorLogger(__name__)
 
 
+
+
 class Genome(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     created_at = models.DateTimeField(default=timezone.now)
@@ -55,6 +57,7 @@ class Genome(models.Model):
         (POPULATION_AFRICAN, _('African')),
         (POPULATION_JAPANESE, _('Japanese')),
     ]
+    POPULATION_MAP = {x[0]:x[1] for x in POPULATION_CHOICES}
     population = models.CharField(max_length=3,
                                   choices=POPULATION_CHOICES,
                                   default=POPULATION_UNKNOWN)
@@ -75,7 +78,7 @@ class Genome(models.Model):
     error = models.CharField(max_length=256, blank=True, null=True)
 
     def get_genome_file(self):
-        return os.path.join(settings.UPLOAD_DIR, str(self.owner.id), str(self.id))
+        return os.path.join(settings.GENOME_UPLOAD_DIR, str(self.owner.id), str(self.id))
 
     def create_genotypes(self):
         task_import_genotypes.delay(str(self.id))

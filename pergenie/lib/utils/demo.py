@@ -38,7 +38,7 @@ def create_demo_user():
     # Init demo genotype (once)
     if is_created:
         # Prepare genome file
-        genome_file_dir = os.path.join(settings.UPLOAD_DIR, str(admin_user.id))
+        genome_file_dir = os.path.join(settings.GENOME_UPLOAD_DIR, str(admin_user.id))
         if not os.path.exists(genome_file_dir):
             os.makedirs(genome_file_dir)
         genome_file_path = genome.get_genome_file()
