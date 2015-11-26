@@ -41,7 +41,7 @@ def upload(request):
                 break
 
             # Ensure upload dir exists.
-            upload_dir = os.path.join(settings.UPLOAD_DIR, str(request.user.id))
+            upload_dir = os.path.join(settings.GENOME_UPLOAD_DIR, str(request.user.id))
             if not os.path.exists(upload_dir):
                 os.makedirs(upload_dir)
 
