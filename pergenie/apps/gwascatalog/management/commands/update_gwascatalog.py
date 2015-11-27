@@ -18,6 +18,7 @@ from cleanup.errors import GwasCatalogParseError
 from cleanup.reliability_rank import get_reliability_rank
 from cleanup.risk_allele import get_database_strand_allele, AMBIGOUS
 from lib.utils.io import get_url_content
+from lib.utils.pg import text2pg_array
 from lib.utils import clogging
 log = clogging.getColorLogger(__name__)
 
@@ -56,8 +57,8 @@ class Command(BaseCommand):
                                          fieldnames=['snp_id_current', 'allele', 'freq', 'populations']):
                 snp, created = Snp.objects.update_or_create(
                     snp_id_current=record['snp_id_current'],
-                    defaults={'allele': to_null_array_if_blank(record['allele']),
-                              'freq': to_null_array_if_blank(record['freq']),
+                    defaults={'allele': text2pg_array(record['allele']),
+                              'freq': text2pg_array(record['freq']),
                               'population': record['populations']}
                 )
                 if created:
@@ -75,7 +76,7 @@ class Command(BaseCommand):
         model_fields_map = dict(zip(model_field_names, model_fields))
 
         gwascatalog_snps = []
-        phenotypes = set()
+        num_phenotype_created = 0
 
         for record in csv.DictReader(open(catalog_path, 'rb'), delimiter='\t'):
             data = {}
@@ -132,15 +133,19 @@ class Command(BaseCommand):
                 odds_ratio, beta_coeff = None, None
                 is_active = False
 
+            # - Phenotype
+            phenotype, phenotype_created = GwasCatalogPhenotype.objects.get_or_create(name=record['disease_or_trait'])
+            if phenotype_created:
+                num_phenotype_created += 1
+
             data.update({'population':          population,
                          'reliability_rank':    reliability_rank,
                          'odds_ratio':          odds_ratio,
                          'beta_coeff':          beta_coeff,
                          'beta_coeff_unit':     unit,
                          'risk_allele_forward': risk_allele_forward,
+                         'phenotype':           phenotype,
                          'is_active':           is_active})
-
-            phenotypes.update([record['disease_or_trait']])
 
             gwascatalog_snps.append(GwasCatalogSnp(**data))
             # GwasCatalogSnp.objects.create(**data)
@@ -148,27 +153,7 @@ class Command(BaseCommand):
         with transaction.atomic():
             GwasCatalogSnp.objects.bulk_create(gwascatalog_snps)
 
-        log.info('created: {} records'.format(len(gwascatalog_snps)))
-
-        # - Phenotype
-        log.info('Updating phenotype records for gwascatalog...')
-
-        num_created = 0
-        with transaction.atomic():
-            for phenotype in phenotypes:
-                gwascatalog_phenotype, created = GwasCatalogPhenotype.objects.get_or_create(
-                    name=phenotype
-                )
-                if created:
-                    num_created += 1
-
-        log.info('created: {} records'.format(num_created))
+        log.info('GWAS Catalog snps processed: {} records'.format(len(gwascatalog_snps)))
+        log.info('GWAS Catalog phenotypes newly created: {} records'.format(num_created))
 
         log.info('Done.')
-
-
-def to_null_array_if_blank(text):
-    if text == '':
-        return '{}'
-    else:
-        return text

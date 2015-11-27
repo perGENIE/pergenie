@@ -5,8 +5,8 @@ from django.test.utils import override_settings
 from django.conf import settings
 
 from apps.authentication.models import User
-from apps.gwascatalog.models import GwasCatalogSnp
-from apps.snp.models import Snp
+from apps.gwascatalog.models import GwasCatalogSnp, GwasCatalogPhenotype
+from apps.snp.models import Snp, get_freqs
 from apps.genome.models import Genome, Genotype
 from .models import RiskReport, PhenotypeRiskReport, SnpRiskReport
 from lib.utils.date import today_with_tz
@@ -26,31 +26,39 @@ class RiskReportModelTestCase(TestCase):
         population = ['EastAsian']
 
         # Prepare GwasCatalogSnp
-        gwascatalog = [('00000001', 'Type 2 diabetes', 671, 'A', 2.0),
-                       ('00000001', 'Type 2 diabetes', 672, 'A', 2.0),
-                       ('00000001', 'Type 2 diabetes', 673, 'A', 2.0)]
+        gwascatalog = [('00000001', 'Type 2 diabetes', 671, 'A', 2.0, population),
+                       ('00000001', 'Type 2 diabetes', 672, 'A', 2.0, population),
+                       ('00000001', 'Type 2 diabetes', 673, 'A', 2.0, population)]
         for record in gwascatalog:
+            phenotype, _ = GwasCatalogPhenotype.objects.get_or_create(name=record[1])
             GwasCatalogSnp(date_downloaded=today_with_tz,
                            pubmed_id=record[0],
-                           disease_or_trait=record[1],
+                           phenotype=phenotype,
                            snp_id_current=record[2],
-                           risk_allele=record[3],
+                           risk_allele_forward=record[3],
                            odds_ratio=record[4],
-                           population=population).save()
+                           population=record[5]).save()
+
+        assert len(GwasCatalogPhenotype.objects.all()) == 1
+        assert len(GwasCatalogSnp.objects.all()) == 3
 
         # Prepare Snp
-        freq = [(671, ['A','G'], [0.2,0.8]),
-                (672, ['A','G'], [0.2,0.8]),
-                (673, ['A','G'], [0.2,0.8])]
+        freq = [(671, ['A','G'], [0.2,0.8], population),
+                (672, ['A','G'], [0.2,0.8], population),
+                (673, ['A','G'], [0.2,0.8], population)]
         for record in freq:
             Snp(snp_id_current=record[0],
                 allele=record[1],
                 freq=[Decimal(x) for x in record[2]],
-                population=population).save()
+                population=record[3]).save()
+
+        assert len(Snp.objects.all()) == 3
 
         # Prepare Genome
-        self.genome = Genome(owner=self.user, file_name='a.vcf', display_name='a.vcf', status=100)
+        self.genome = Genome(owner=self.user, file_name='a.vcf', display_name='a.vcf', status=100, population=Genome.POPULATION_MAP_REVERSE[population[0]])
         self.genome.save()
+
+        assert self.genome.population == 'ASN'
 
     def test_create_riskreport_ok(self):
         # Prepare Genotype
@@ -60,10 +68,8 @@ class RiskReportModelTestCase(TestCase):
         for record in gwas_snps:
             Genotype(genome=self.genome, rs_id_current=record[0], genotype=record[1]).save()
 
-        assert len(Genotype.objects.filter(genome__id=self.genome.id)) == len(gwas_snps)
-
         riskreport, _ = RiskReport.objects.get_or_create(genome=self.genome)
         riskreport.create_riskreport()
 
-        #
-        assert len(PhenotypeRiskReport.objects.filter()) == 1
+        assert len(PhenotypeRiskReport.objects.filter(risk_report__genome=self.genome)) == 1
+        assert len(SnpRiskReport.objects.filter(phenotype_risk_report__risk_report__genome=self.genome)) == 3

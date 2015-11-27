@@ -2,40 +2,44 @@ import operator
 
 
 def cumulative_risk(estimated_snp_risks):
-    return reduce(operator.mul, evidence_snp_risks)
+    return reduce(operator.mul, estimated_snp_risks, 1.0)
 
 
 def relative_risk_to_general_population(risk_allele_freq, odds_ratio, zygosities):
     """
     >>> relative_risk_to_general_population(0.28, 1.37, 'NA')
-    (1.0, 1.22)
+    1.0
     >>> relative_risk_to_general_population(0.28, 1.37, 'RR')
-    (1.5, 1.22)
+    1.5
     >>> relative_risk_to_general_population(0.28, 1.37, 'R.')
-    (1.1, 1.22)
+    1.1
     >>> relative_risk_to_general_population(0.28, 1.37, '..')
-    (0.8, 1.22)
+    0.8
+
+    #
+    # >>> relative_risk_to_general_population(0.28, 1.37, '..')
+    # (0.8, 1.22)
     """
 
     try:
-        prob_hom = freq**2
-        prob_het = 2*freq*(1-freq)
-        prob_ref = (1-freq)**2
+        prob_hom = risk_allele_freq**2
+        prob_het = 2*risk_allele_freq*(1-risk_allele_freq)
+        prob_ref = (1-risk_allele_freq)**2
 
-        OR_hom = OR**2
-        OR_het = OR
-        OR_ref = 1.0
+        odds_ratio_hom = odds_ratio**2
+        odds_ratio_het = odds_ratio
+        odds_ratio_ref = 1.0
 
-        average_population_risk = prob_hom*OR_hom + prob_het*OR_het + prob_ref*OR_ref
+        average_population_risk = prob_hom*odds_ratio_hom + prob_het*odds_ratio_het + prob_ref*odds_ratio_ref
 
-        risk_hom = OR_hom/average_population_risk
-        risk_het = OR_het/average_population_risk
-        risk_ref = OR_ref/average_population_risk
+        risk_hom = odds_ratio_hom/average_population_risk
+        risk_het = odds_ratio_het/average_population_risk
+        risk_ref = odds_ratio_ref/average_population_risk
 
     except TypeError:
-        return 1.0, 1.0  ###
+        return 1.0# , 1.0  ###
 
-    return round({'RR':risk_hom, 'R.':risk_het, '..':risk_ref, 'NA': 1.0}.get(zygosities, 1.0), 1), round(average_population_risk, 2)
+    return round({'RR':risk_hom, 'R.':risk_het, '..':risk_ref, 'NA': 1.0}.get(zygosities, 1.0), 1)# , round(average_population_risk, 2)
 
 
 def zyg(genotype, risk_allele):
