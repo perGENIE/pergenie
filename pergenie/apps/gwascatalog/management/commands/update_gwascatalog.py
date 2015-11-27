@@ -1,7 +1,5 @@
-import sys
 import os
 import csv
-from glob import glob
 from datetime import datetime
 
 from django.core.management.base import BaseCommand, CommandError
@@ -28,8 +26,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         current_tz = timezone.get_current_timezone()
-        today = timezone.now().strftime('%Y-%m-%d')
-        today_with_tz = current_tz.localize(datetime(*(parse_date(today).timetuple()[:5])))
 
         if not os.path.exists(settings.GWASCATALOG_DIR):
             os.makedirs(settings.GWASCATALOG_DIR)
@@ -130,6 +126,7 @@ class Command(BaseCommand):
                 is_active = True
 
             except GwasCatalogParseError as e:
+                log.error(e)
                 odds_ratio, beta_coeff = None, None
                 is_active = False
 

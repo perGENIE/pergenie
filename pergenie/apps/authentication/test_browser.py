@@ -1,7 +1,4 @@
 from django.test import TestCase
-from django.conf import settings
-from django.utils.translation import ugettext as _
-
 from splinter import Browser
 
 from .models import UserActivation, User
