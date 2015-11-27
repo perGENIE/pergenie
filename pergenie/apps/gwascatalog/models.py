@@ -12,13 +12,17 @@ from lib.utils import clogging
 log = clogging.getColorLogger(__name__)
 
 
+class GwasCatalogPhenotype(Model):
+    name = CharField(max_length=1024)
+
 class GwasCatalogSnp(Model):
     created_at                     = DateTimeField(         default=timezone.now)
     is_active                      = BooleanField(          default=False)
 
     date_downloaded                = DateTimeField()
     pubmed_id                      = CharField(             max_length=8)
-    disease_or_trait               = CharField(             max_length=1024)
+    disease_or_trait               = CharField(             max_length=1024,                          blank=True, default='')
+    phenotype                      = ForeignKey(GwasCatalogPhenotype)
     snp_id_reported                = IntegerField(                                                    null=True)
     snp_id_current                 = IntegerField(                                                    null=True)
     risk_allele                    = CharField(             max_length=1024,                          blank=True, default='')
@@ -41,7 +45,4 @@ class GwasCatalogSnp(Model):
     beta_coeff_unit                = CharField(             max_length=1024,                          blank=True, default='')
 
     class Meta:
-        unique_together = ('date_downloaded', 'pubmed_id', 'disease_or_trait', 'snp_id_current', 'risk_allele')
-
-class GwasCatalogPhenotype(Model):
-    name = CharField(max_length=1024)
+        unique_together = ('date_downloaded', 'pubmed_id', 'phenotype', 'snp_id_current', 'risk_allele')

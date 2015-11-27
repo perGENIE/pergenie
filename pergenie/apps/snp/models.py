@@ -28,6 +28,7 @@ class Snp(models.Model):
     class Meta:
         unique_together = ('snp_id_current', 'population')
 
+# FIXME: add population as 2nd argument
 def get_freqs(snp_ids):
     """Return allele freq records as dictionary instead of ValuesQuerySet.
 
@@ -46,5 +47,5 @@ def get_freqs(snp_ids):
     """
 
     snps = Snp.objects.filter(snp_id_current__in=snp_ids).values()
-    freqs = {x['snp_id_current']: dict(zip(x['allele'], x['freq'])) for x in freqs.values()}
+    freqs = {x['snp_id_current']: dict(zip(x['allele'], x['freq'])) for x in snps.values()}
     return freqs

@@ -51,13 +51,14 @@ class Genome(models.Model):
     POPULATION_JAPANESE = 'JPN'
     POPULATION_UNKNOWN = 'UN'
     POPULATION_CHOICES = [
-        (POPULATION_UNKNOWN, _('unknown')),
-        (POPULATION_ASIAN, _('Asian')),
+        (POPULATION_UNKNOWN, _('Unknown')),
+        (POPULATION_ASIAN, _('EastAsian')),
         (POPULATION_EUROPEAN, _('European')),
         (POPULATION_AFRICAN, _('African')),
         (POPULATION_JAPANESE, _('Japanese')),
     ]
     POPULATION_MAP = {x[0]:x[1] for x in POPULATION_CHOICES}
+    POPULATION_MAP_REVERSE = {x[1]:x[0] for x in POPULATION_CHOICES}
     population = models.CharField(max_length=3,
                                   choices=POPULATION_CHOICES,
                                   default=POPULATION_UNKNOWN)
