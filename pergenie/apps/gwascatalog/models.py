@@ -1,19 +1,15 @@
-import uuid
-import datetime
-
 from django.db.models import Model, DateTimeField, BooleanField, CharField, IntegerField, FloatField, DecimalField, ForeignKey
 from django.contrib.postgres.fields import ArrayField
-from django.conf import settings
 from django.utils.translation import ugettext as _
 from django.utils import timezone
 
-from apps.snp.models import Snp
 from lib.utils import clogging
 log = clogging.getColorLogger(__name__)
 
 
 class GwasCatalogPhenotype(Model):
     name = CharField(max_length=1024)
+
 
 class GwasCatalogSnp(Model):
     created_at                     = DateTimeField(         default=timezone.now)

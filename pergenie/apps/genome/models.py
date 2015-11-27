@@ -1,8 +1,5 @@
-import sys
 import os
 import uuid
-import datetime
-import csv
 import subprocess
 
 from django.db import models
@@ -10,19 +7,12 @@ from django.conf import settings
 from django.utils.translation import ugettext as _
 from django.utils import timezone
 from django.contrib.postgres.fields import ArrayField
-
-from celery.task import Task
 from celery.decorators import task
-from celery.exceptions import Ignore
-import vcf
 
 from apps.authentication.models import User
 from apps.gwascatalog.models import GwasCatalogSnp
-from lib.utils.io import count_file_lines
 from lib.utils import clogging
 log = clogging.getColorLogger(__name__)
-
-
 
 
 class Genome(models.Model):
@@ -90,6 +80,7 @@ class Genome(models.Model):
     def delete_genotypes(self):
         self.get_genotypes().delete()
 
+
 class Genotype(models.Model):
     genome = models.ForeignKey(Genome)
     rs_id_current = models.IntegerField()
@@ -99,8 +90,6 @@ class Genotype(models.Model):
 @task(ignore_result=True)
 def task_import_genotypes(genome_id, minimum_snps=False):
     log.info('Importing genotypes ...')
-
-    error = None
 
     try:
         genome = Genome.objects.get(id=uuid.UUID(genome_id))

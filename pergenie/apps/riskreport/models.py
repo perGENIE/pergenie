@@ -1,17 +1,13 @@
 from django.db import models
 from django.db.models import Max
 from django.utils import timezone
-from django.utils.translation import get_language
 from django.conf import settings
 
-from celery.task import Task
 from celery.decorators import task
-from celery.exceptions import Ignore
 
-from apps.authentication.models import User
 from apps.genome.models import Genome, Genotype
 from apps.gwascatalog.models import GwasCatalogPhenotype, GwasCatalogSnp
-from apps.snp.models import Snp, get_freqs
+from apps.snp.models import get_freqs
 from lib.riskreport.commons import *
 from lib.utils.pg import list2pg_array
 from utils import clogging
@@ -50,6 +46,7 @@ class RiskReport(models.Model):
     def create_riskreport(self):
         task_create_riskreport.delay(self, self.genome)
 
+
 class PhenotypeRiskReport(models.Model):
     risk_report = models.ForeignKey(RiskReport)
     phenotype = models.ForeignKey(GwasCatalogPhenotype)
@@ -58,6 +55,7 @@ class PhenotypeRiskReport(models.Model):
 
     class Meta:
         unique_together = ('risk_report', 'phenotype')
+
 
 class SnpRiskReport(models.Model):
     phenotype_risk_report = models.ForeignKey(PhenotypeRiskReport)
@@ -71,6 +69,7 @@ class SnpRiskReport(models.Model):
 
     class Meta:
         unique_together = ('phenotype_risk_report', 'evidence_snp')
+
 
 @task(ignore_result=True)
 def task_create_riskreport(risk_report, genome):

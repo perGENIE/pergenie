@@ -91,7 +91,7 @@ def get_database_strand_allele(allele, reported_freq, database_freq, freq_diff_t
 
     reversed_allele = reverse_complement(allele)
 
-    log_msg = ' allele: {}, reversed allele: {}, reported: {}, db: {}, freq_diff_thrs: {}'.format(allele, reversed_allele, reported_freq , database_freq, freq_diff_thrs)
+    log_msg = ' allele: {}, reversed allele: {}, reported: {}, db: {}, freq_diff_thrs: {}'.format(allele, reversed_allele, reported_freq, database_freq, freq_diff_thrs)
 
     if not allele:
         log.info('Allele not given.' + log_msg)

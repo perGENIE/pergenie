@@ -1,8 +1,5 @@
-import sys, os
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
-from django.utils.translation import ugettext as _
-from django.conf import settings
 
 from utils.clogging import getColorLogger
 log = getColorLogger(__name__)

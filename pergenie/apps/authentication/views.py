@@ -1,11 +1,10 @@
-import sys, os
+import os
 from smtplib import SMTPException
 
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import render, redirect
 from django.utils.translation import ugettext as _
-from django.utils.translation import get_language
 from django.db import IntegrityError, transaction
 from django.http import Http404
 from django.template import Context
@@ -120,6 +119,7 @@ def logout(request):
     auth_logout(request)
     return redirect('apps.authentication.views.login')
 
+
 def trydemo(request):
     prune_demo_user()
     demo_user = create_demo_user()
@@ -127,11 +127,13 @@ def trydemo(request):
     auth_login(request, auth_user)
     return redirect('apps.dashboard.views.index')
 
+
 def send_activation_email(user, activation_url):
     email_template = get_template('activation_email.html')
     email_title = _("Welcome to perGENIE")
     email_body = email_template.render(Context({'activation_url': activation_url, 'support_email': settings.SUPPORT_EMAIL}))
     user.email_user(subject=email_title, message=email_body, from_email=settings.NOREPLY_EMAIL)
+
 
 def send_activation_completed_email(user):
     email_template = get_template('activation_completed_email.html')

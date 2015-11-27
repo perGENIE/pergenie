@@ -1,6 +1,4 @@
-import sys
 import os
-import datetime
 
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
@@ -9,13 +7,11 @@ from django.views.decorators.http import require_http_methods
 from django.contrib import messages
 from django.utils.translation import ugettext as _
 from django.conf import settings
-
 import magic
 
 from .forms import UploadForm
 from .models import Genome
 from apps.authentication.models import User
-
 from utils import clogging
 log = clogging.getColorLogger(__name__)
 
@@ -64,8 +60,8 @@ def upload(request):
                 m = magic.Magic(mime_encoding=True)
                 magic_filetype = m.from_file(uploaded_file_path)
 
-                if not magic_filetype in ('us-ascii'):
-                    msg = _('File type not allowed, or encoding not allowed {magic_filetype}: {file_name}'.format(file_name=file_name, magic_filetype=magic_filetype))
+                if magic_filetype not in ('us-ascii'):
+                    msg = _('File type not allowed, or encoding not allowed {magic_filetype}: {file_name}'.format(file_name=genome.file_name, magic_filetype=magic_filetype))
                     log.warn(msg)
                     messages.error(request, msg)
                     try:
@@ -120,7 +116,7 @@ def delete(request):
 
         messages.success(request, _('Deleted: {}'.format(genome.file_name)))
 
-    except DoesNotExist:
+    except Genome.DoesNotExist:
         log.error('Failed to delete not existing genome: {}'.format(genome_id))
         messages.error(request, _('Invalid request.'))
     except IOError:
