@@ -14,7 +14,7 @@ log = clogging.getColorLogger(__name__)
 
 
 class RiskReport(models.Model):
-    '''
+    """
      ------------
     |            |
     |   Genome   |
@@ -36,7 +36,7 @@ class RiskReport(models.Model):
                        | GwasCatalogPhenotype |    | GwasCatalogSnp |
                        |                      |    |                |
                         ----------------------      ----------------
-    '''
+    """
 
     created_at = models.DateTimeField(default=timezone.now)
     genome = models.ForeignKey(Genome)
@@ -99,26 +99,35 @@ def task_create_riskreport(risk_report, genome):
         evidence_snp_ids = evidence_snps.values_list('snp_id_current', flat=True)
 
         freqs = get_freqs(evidence_snp_ids)
-
-        # TODO: case: if genotype not found
-        genotype = ''.join(Genotype.objects.filter(genome__id=genome.id, rs_id_current__in=evidence_snp_ids).first().genotype)
+        genotypes = Genotype.objects.filter(genome__id=genome.id, rs_id_current__in=evidence_snp_ids)
 
         phenotype_risk_report, _ = PhenotypeRiskReport.objects.get_or_create(risk_report=risk_report, phenotype=phenotype)
 
         # Calculate cumulative risk
         estimated_snp_risks = []
 
+        # Genotype specific risks for each SNP
         for evidence_snp in evidence_snps:
+            # TODO: case: if risk_allele/freq/genotype/ not found
+
+            # Risk allele and its frequency
             risk_allele_forward = evidence_snp.risk_allele_forward
             risk_allele_freq = freqs.get(evidence_snp.snp_id_current).get(risk_allele_forward)
             odds_ratio = evidence_snp.odds_ratio
+
+            # My genotype
+            genotype = ''.join(genotypes.get(rs_id_current=evidence_snp.snp_id_current).genotype)
             zygosities = zyg(genotype, risk_allele_forward)
-            estimated_risk = relative_risk_to_general_population(risk_allele_freq, odds_ratio, zygosities)
+
+            # Genotype specific risks
+            genotype_specific_risks = genotype_specific_risks_relative_to_population(risk_allele_freq, odds_ratio)
+            my_estimated_risk = estimated_risk(genotype_specific_risks, zygosities)
+
             SnpRiskReport(phenotype_risk_report=phenotype_risk_report,
                           evidence_snp=evidence_snp,
-                          estimated_risk=estimated_risk).save()
+                          estimated_risk=my_estimated_risk).save()
 
-            estimated_snp_risks.append(estimated_risk)
+            estimated_snp_risks.append(my_estimated_risk)
 
         phenotype_risk_report.estimated_risk = cumulative_risk(estimated_snp_risks)
         phenotype_risk_report.save()

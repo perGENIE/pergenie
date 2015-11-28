@@ -25,9 +25,9 @@ class RiskReportModelTestCase(TestCase):
         population = ['EastAsian']
 
         # Prepare GwasCatalogSnp
-        gwascatalog = [('00000001', 'Type 2 diabetes', 671, 'A', 2.0, population),
-                       ('00000001', 'Type 2 diabetes', 672, 'A', 2.0, population),
-                       ('00000001', 'Type 2 diabetes', 673, 'A', 2.0, population)]
+        gwascatalog = [('00000001', 'Type 2 diabetes', 671, 'A', 1.5, population),
+                       ('00000001', 'Type 2 diabetes', 672, 'A', 1.5, population),
+                       ('00000001', 'Type 2 diabetes', 673, 'A', 1.5, population)]
         for record in gwascatalog:
             phenotype, _ = GwasCatalogPhenotype.objects.get_or_create(name=record[1])
             GwasCatalogSnp(date_downloaded=today_with_tz,
@@ -60,15 +60,25 @@ class RiskReportModelTestCase(TestCase):
         assert self.genome.population == 'ASN'
 
     def test_create_riskreport_ok(self):
+        # TODO: add more phenotypes
+        phenotypes = ['Type 2 diabetes']
+
         # Prepare Genotype
         gwas_snps = [(671, '{A,A}'),
-                     (672, '{A,A}'),
-                     (673, '{A,A}')]
+                     (672, '{A,G}'),
+                     (673, '{G,G}')]
         for record in gwas_snps:
             Genotype(genome=self.genome, rs_id_current=record[0], genotype=record[1]).save()
 
         riskreport, _ = RiskReport.objects.get_or_create(genome=self.genome)
         riskreport.create_riskreport()
 
-        assert len(PhenotypeRiskReport.objects.filter(risk_report__genome=self.genome)) == 1
-        assert len(SnpRiskReport.objects.filter(phenotype_risk_report__risk_report__genome=self.genome)) == 3
+        phenotype_risk_repot = PhenotypeRiskReport.objects.filter(risk_report__genome=self.genome)
+        assert len(phenotype_risk_repot) == 1
+        assert phenotype_risk_repot.get(phenotype__name=phenotypes[0]).estimated_risk == Decimal('1.906')
+
+        snp_risk_reports = SnpRiskReport.objects.filter(phenotype_risk_report__risk_report__genome=self.genome)
+        assert len(snp_risk_reports) == 3
+        assert snp_risk_reports.get(evidence_snp__snp_id_current=671).estimated_risk == Decimal('1.860')
+        assert snp_risk_reports.get(evidence_snp__snp_id_current=672).estimated_risk == Decimal('1.240')
+        assert snp_risk_reports.get(evidence_snp__snp_id_current=673).estimated_risk == Decimal('0.8264')

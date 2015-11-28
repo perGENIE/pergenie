@@ -1,45 +1,59 @@
 import operator
+from pprint import pprint
+from decimal import Decimal, getcontext
+
+from lib.utils.deprecated_decorator import deprecated
 
 
 def cumulative_risk(estimated_snp_risks):
-    return reduce(operator.mul, estimated_snp_risks, 1.0)
+    """Returns cumulative risk.
 
-
-def relative_risk_to_general_population(risk_allele_freq, odds_ratio, zygosities):
-    """
-    >>> relative_risk_to_general_population(0.28, 1.37, 'NA')
+    >>> cumulative_risk([1.0, 2.0, 3.0])
+    6.0
+    >>> cumulative_risk([])
     1.0
-    >>> relative_risk_to_general_population(0.28, 1.37, 'RR')
-    1.5
-    >>> relative_risk_to_general_population(0.28, 1.37, 'R.')
-    1.1
-    >>> relative_risk_to_general_population(0.28, 1.37, '..')
-    0.8
-
-    #
-    # >>> relative_risk_to_general_population(0.28, 1.37, '..')
-    # (0.8, 1.22)
     """
+    getcontext().prec = 4
 
-    try:
-        prob_hom = risk_allele_freq**2
-        prob_het = 2*risk_allele_freq*(1-risk_allele_freq)
-        prob_ref = (1-risk_allele_freq)**2
+    return reduce(operator.mul, estimated_snp_risks, Decimal(1.0))
 
-        odds_ratio_hom = odds_ratio**2
-        odds_ratio_het = odds_ratio
-        odds_ratio_ref = 1.0
 
-        average_population_risk = prob_hom*odds_ratio_hom + prob_het*odds_ratio_het + prob_ref*odds_ratio_ref
+def estimated_risk(risks, zygosities):
+    return risks.get(zygosities, Decimal(1.0))
 
-        risk_hom = odds_ratio_hom/average_population_risk
-        risk_het = odds_ratio_het/average_population_risk
-        risk_ref = odds_ratio_ref/average_population_risk
 
-    except TypeError:
-        return 1.0# , 1.0  ###
+def genotype_specific_risks_relative_to_population(risk_allele_freq, odds_ratio):
+    """Returns genotype specific risks relative to the general population.
 
-    return round({'RR':risk_hom, 'R.':risk_het, '..':risk_ref, 'NA': 1.0}.get(zygosities, 1.0), 1)# , round(average_population_risk, 2)
+    >>> pprint(genotype_specific_risks_relative_to_population(0.2, 1.5))
+    {'..': Decimal('0.8264'), 'R.': Decimal('1.240'), 'RR': Decimal('1.860')}
+
+    >>> pprint(genotype_specific_risks_relative_to_population(0.3, 1.5))
+    {'..': Decimal('0.7564'), 'R.': Decimal('1.135'), 'RR': Decimal('1.702')}
+
+    >>> pprint(genotype_specific_risks_relative_to_population(0.4, 1.5))
+    {'..': Decimal('0.6944'), 'R.': Decimal('1.042'), 'RR': Decimal('1.562')}
+    """
+    getcontext().prec = 4
+
+    risk_allele_freq = Decimal(risk_allele_freq)
+    odds_ratio = Decimal(odds_ratio)
+
+    prob_hom = risk_allele_freq**2
+    prob_het = 2 * risk_allele_freq * (1 - risk_allele_freq)
+    prob_ref = (1 - risk_allele_freq)**2
+
+    odds_ratio_hom = odds_ratio**2
+    odds_ratio_het = odds_ratio**1
+    odds_ratio_ref = odds_ratio**0
+
+    average_population_risk = prob_hom * odds_ratio_hom + prob_het * odds_ratio_het + prob_ref * odds_ratio_ref
+
+    risk_hom = odds_ratio_hom / average_population_risk
+    risk_het = odds_ratio_het / average_population_risk
+    risk_ref = odds_ratio_ref / average_population_risk
+
+    return {'RR': risk_hom, 'R.': risk_het, '..': risk_ref}
 
 
 def zyg(genotype, risk_allele):
@@ -56,11 +70,12 @@ def zyg(genotype, risk_allele):
     return {0: '..', 1: 'R.', 2: 'RR'}[genotype.count(risk_allele)]
 
 
+@deprecated
 def to_signed_real(records, is_log=False):
     """
-    >>> records = [{'RR': -1.0}, {'RR': 0.0}, {'RR': 0.1}, {'RR': 1.0}]
-    >>> print _to_signed_real(records)
-    [{'RR': -10.0}, {'RR': 1.0}, {'RR': 1.3}, {'RR': 10.0}]
+    # >>> records = [{'RR': -1.0}, {'RR': 0.0}, {'RR': 0.1}, {'RR': 1.0}]
+    # >>> print _to_signed_real(records)
+    # [{'RR': -10.0}, {'RR': 1.0}, {'RR': 1.3}, {'RR': 10.0}]
     """
     results = []
 
