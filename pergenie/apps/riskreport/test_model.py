@@ -2,11 +2,10 @@ from decimal import Decimal
 
 from django.test import TestCase
 from django.test.utils import override_settings
-from django.conf import settings
 
 from apps.authentication.models import User
 from apps.gwascatalog.models import GwasCatalogSnp, GwasCatalogPhenotype
-from apps.snp.models import Snp, get_freqs
+from apps.snp.models import Snp
 from apps.genome.models import Genome, Genotype
 from .models import RiskReport, PhenotypeRiskReport, SnpRiskReport
 from lib.utils.date import today_with_tz
