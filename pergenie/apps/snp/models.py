@@ -8,7 +8,8 @@ from django.contrib.postgres.fields import ArrayField
 from django.conf import settings
 from django.utils.translation import ugettext as _
 
-from lib.utils.genome import CHROM
+from lib.utils.population import POPULATION_CHOICES, POPULATION_GLOBAL
+from lib.utils.genome import CHROM_CHOICES
 from lib.utils import clogging
 log = clogging.getColorLogger(__name__)
 
@@ -18,16 +19,16 @@ class Snp(models.Model):
 
     allele = ArrayField(models.CharField(max_length=1024))
     freq = ArrayField(models.DecimalField(max_digits=5, decimal_places=4))
-    population = ArrayField(models.CharField(max_length=32))
+    population = ArrayField(models.CharField(choices=POPULATION_CHOICES, max_length=3))
 
-    chrom = models.CharField(choices=zip(CHROM, CHROM), max_length=2, blank=True)
+    chrom = models.CharField(choices=CHROM_CHOICES, max_length=2, blank=True)
     pos = models.IntegerField(null=True, blank=True)
 
     class Meta:
         unique_together = ('snp_id_current', 'population')
 
-# FIXME: add population as 2nd argument
-def get_freqs(snp_ids):
+
+def get_freqs(snp_ids, population=POPULATION_GLOBAL):
     """Return allele freq records as dictionary instead of ValuesQuerySet.
 
     Example
@@ -44,6 +45,6 @@ def get_freqs(snp_ids):
     ```
     """
 
-    snps = Snp.objects.filter(snp_id_current__in=snp_ids).values()
+    snps = Snp.objects.filter(snp_id_current__in=snp_ids, population__contains=population).values()
     freqs = {x['snp_id_current']: dict(zip(x['allele'], x['freq'])) for x in snps.values()}
     return freqs

@@ -11,6 +11,7 @@ from celery.decorators import task
 
 from apps.authentication.models import User
 from apps.gwascatalog.models import GwasCatalogSnp
+from lib.utils.population import POPULATION_CHOICES, POPULATION_UNKNOWN
 from lib.utils import clogging
 log = clogging.getColorLogger(__name__)
 
@@ -35,20 +36,6 @@ class Genome(models.Model):
                                    choices=FILE_FORMAT_CHOICES,
                                    default=FILE_FORMAT_VCF)
 
-    POPULATION_ASIAN = 'ASN'
-    POPULATION_EUROPEAN = 'EUR'
-    POPULATION_AFRICAN = 'AFR'
-    POPULATION_JAPANESE = 'JPN'
-    POPULATION_UNKNOWN = 'UN'
-    POPULATION_CHOICES = [
-        (POPULATION_UNKNOWN, _('Unknown')),
-        (POPULATION_ASIAN, _('EastAsian')),
-        (POPULATION_EUROPEAN, _('European')),
-        (POPULATION_AFRICAN, _('African')),
-        (POPULATION_JAPANESE, _('Japanese')),
-    ]
-    POPULATION_MAP = {x[0]:x[1] for x in POPULATION_CHOICES}
-    POPULATION_MAP_REVERSE = {x[1]:x[0] for x in POPULATION_CHOICES}
     population = models.CharField(max_length=3,
                                   choices=POPULATION_CHOICES,
                                   default=POPULATION_UNKNOWN)
