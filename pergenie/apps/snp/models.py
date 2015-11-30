@@ -8,11 +8,9 @@ from django.contrib.postgres.fields import ArrayField
 from django.conf import settings
 from django.utils.translation import ugettext as _
 
+from lib.utils.genome import CHROM
 from lib.utils import clogging
 log = clogging.getColorLogger(__name__)
-
-_chrom = [i+1 for i in range(22)] + ['X', 'Y']
-CHROM_CHOICES = zip(_chrom, _chrom)
 
 
 class Snp(models.Model):
@@ -22,7 +20,7 @@ class Snp(models.Model):
     freq = ArrayField(models.DecimalField(max_digits=5, decimal_places=4))
     population = ArrayField(models.CharField(max_length=32))
 
-    chrom = models.CharField(choices=CHROM_CHOICES, max_length=2, blank=True)
+    chrom = models.CharField(choices=zip(CHROM, CHROM), max_length=2, blank=True)
     pos = models.IntegerField(null=True, blank=True)
 
     class Meta:
