@@ -188,4 +188,3 @@ MAX_UPLOAD_GENOMEFILE_COUNT = 100
 # GWAS Catalog
 
 GWASCATALOG_URL = 'http://www.genome.gov/admin/gwascatalog.txt'
-GWASCATALOG_INCONSISTENCE_THRS = 0.1
