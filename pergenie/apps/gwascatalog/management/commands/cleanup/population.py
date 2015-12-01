@@ -3,18 +3,17 @@ import re
 
 def get_population(text):
     """Parse `initial_sample_size` in GWAS Catalog,
-    then return a list of combination of
-    'European', 'EastAsian', 'African', 'Japanese', e.g.:
+    then return a list of populations, e.g.,
 
-    >>> get_population('European and Asian and African')
+    >>> get_population('European, East Asian, and African')
     ['African', 'EastAsian', 'European']
 
-    If uncategorized:
+    If uncategorizable,
 
     >>> get_population('foo')
     []
 
-    E.g.:
+    E.g.,
 
     >>> get_population('815 related Hispanic ancestry children from 263 families')
     ['European']
@@ -29,7 +28,7 @@ def get_population(text):
     >>> get_population('up to 398 European individuals')
     ['European']
     >>> get_population('1 American Indian ancestry individual, 18 African American/Afro-Caribbean ancestry individuals, 10 East Asian and South Asian ancestry individuals, 325 European ancestry individuals, 17 Latin American ancestry individuals, 6 other ancestry individuals, 4 individuals')
-    ['African', 'EastAsian', 'European']
+    ['African', 'Asian', 'EastAsian', 'European']
     >>> get_population('Up to 512 European ancestry individuals, up to 199 African American individuals')
     ['African', 'European']
     >>> get_population('9,772 European ancestry cases, 16,849 European ancestry controls')
@@ -37,7 +36,7 @@ def get_population(text):
     >>> get_population('9,617 individuals')
     []
     >>> get_population('Up to 813 European ancestry individuals, up to 167 East Asian ancestry individuals, up to 7 Hispanic/Latin American amncestry individuals, up to 74 South Asian ancestry individuals')
-    ['EastAsian', 'European']
+    ['Asian', 'EastAsian', 'European']
     >>> get_population('4,723 cases, 4,792 controls')
     []
     >>> get_population('7,943 African American children, 6,234 European ancestry children')
@@ -45,9 +44,9 @@ def get_population(text):
     >>> get_population('99,900 European descent individuals')
     ['European']
     >>> get_population('62,553 European ancestry individuals, 9,308 South Asian ancestry individuals')
-    ['EastAsian', 'European']
+    ['Asian', 'European']
     >>> get_population('Up to 52,350 European ancestry individuals, up to 8,739 Indian Asian individuals')
-    ['EastAsian', 'European']
+    ['Asian', 'European']
     >>> get_population('2,362 Caucasian cases')
     ['European']
     >>> get_population('4,533 European descent cases, 10,750 European descent controls')
@@ -63,9 +62,9 @@ def get_population(text):
     >>> get_population('96 African American lymphoblastoid cell lines, 96 European ancestry lymphoblastoid cell lines, 96 Han Chinese lymphoblastoid cell lines')
     ['African', 'EastAsian', 'European']
     >>> get_population('1,792 Filipino women')
-    ['EastAsian']
+    ['Asian']
     >>> get_population('13,057 European ancestry individuals, 2,538 Indian ancestry individuals, 2,542 Malay ancestry individuals, 1,883 Chinese ancestry individuals')
-    ['EastAsian', 'European']
+    ['Asian', 'EastAsian', 'European']
     >>> get_population('19,633 Japanese individuals')
     ['EastAsian', 'Japanese']
     >>> get_population('1,141 individuals(Framingham))')
@@ -107,7 +106,7 @@ def get_population(text):
     >>> get_population('374 non-Hispanic Caucasians')
     ['European']
     >>> get_population('7,739 Chinese ancestry individuals, 2,194 Japanese ancestry individuals, 8,838 Korean ancestry individuals, 2,522 Malay ancestry individuals, 1,999 Han Chinese individuals, 1,992 Singapore Chinese individuals, 2,431 Chinese, Malay and Asian Indian individuals')
-    ['EastAsian', 'Japanese']
+    ['Asian', 'EastAsian', 'Japanese']
     >>> get_population('778 European ancestry cases, 4,414 European ancestry controls, 242 Ashkenazi Jewish cases, 354 Ashkenazi Jewish controls, 265 French Canadian cases, 196 French Canadian controls')
     ['European']
     >>> get_population('1,043 German cases, 1,703 German controls')
@@ -123,15 +122,15 @@ def get_population(text):
     >>> get_population('1,194 Chinese ancestry cases, 902 Chinese ancestry controls')
     ['EastAsian']
     >>> get_population('5,568 European ancestry cases, 7,187 European ancestry controls, 1,000 Taiwanese cases, 1,000 Taiwanese controls')
-    ['EastAsian', 'European']
+    ['Asian', 'European']
     >>> get_population('60 Caucasian American lymphoblastoid cell lines, 56 African- American lymphoblastoid cell lines, 60 Han Chinese-American lymphoblastoid cell lines')
     ['African', 'EastAsian', 'European']
     >>> get_population('984 Singaporean Chinese cases, 943 Singaporean Chinese controls, 297 Han Chinese cases, 1,044 Han Chinese controls, 573 South Asian ancestry cases, 3,065 Singaporean Malay controls, 2,538 Singaporean Asian Indian controls, 2,018 Vietnamese ancestry controls.')
-    ['EastAsian']
+    ['Asian', 'EastAsian']
     >>> get_population('2,008 Vietnamese ancestry cases, 2,018 Vietnamese ancestry controls')
-    ['EastAsian']
+    ['Asian']
     >>> get_population('2,684 Asian Indian men')
-    ['EastAsian']
+    ['Asian']
     >>> get_population('2,903 Icelandic CKD cases, 35,818 Icelandic controls, 22,256 Icelandic subjects with serum creatinine')
     ['European']
     >>> get_population('293 family members, 391 white non-Hispanic cases, 188 white non-Hispanic controls')
@@ -139,13 +138,11 @@ def get_population(text):
     >>> get_population('Romanian')
     ['European']
     >>> get_population('1,279 European ancestry cases, 5,139 European ancestry controls, 93 South African Afrikaner cases, 158 South African Afrikaner controls, 93 Ashkenazi Jewish cases, 260 Ashkenazi Jewish controls, 299 European ancestry trios, 101 trios')
-    ['European']
-    >>> get_population('1,399 EA cases,5,275 EA controls')
-    ['European']
+    ['African', 'European']
     >>> get_population('1,644 Dutch individuals, 978 European individuals')
     ['European']
     >>> get_population('1,683 Indonesian ancestry individuals')
-    ['EastAsian']
+    ['Asian']
     >>> get_population('235 mild Thai-Chinese cases, 383 severe Thai-Chinese cases')
     ['EastAsian']
     >>> get_population('315 Hong Kong Chinese individuals from 111 families')
@@ -153,13 +150,13 @@ def get_population(text):
     >>> get_population('431 European American cases, 340 European American controls, 209 African American cases, 84 African American controls')
     ['African', 'European']
     >>> get_population('62 American Indian or Alaska Native ancestry individuals, 158 Asian ancestry individuals, 3,272 African American ancestry individuals, 114 other ancestry individuals, 23,244 European ancestry individuals, 996 unknown ancestry individuals')
-    ['African', 'EastAsian', 'European']
+    ['African', 'Asian', 'European']
     >>> get_population('815 Hispanic/Latin American ancestry children')
     ['European']
     >>> get_population('1,138 French and German extremely obese children, 1,120 French and German normal or underweight children')
     ['European']
     >>> get_population('2,346 Micronesian individuals')
-    ['EastAsian']
+    ['Asian']
     >>> get_population('332 Scandinavian cases, 262 Scandinavian controls, 383 German cases, 2,700 German controls')
     ['European']
     >>> get_population('347 Finnish Saami individuals')
@@ -177,7 +174,7 @@ def get_population(text):
     >>> get_population('4,270 UK twins')
     ['European']
     >>> get_population('667 European ancestry individuals with an event, 2,246 European ancestry individuals without an event, 18 African American individuals with an event, 60 African American individuals without an event, 20 Hispanic ancestry individuals with an event, 65 Hispanic ancestry individuals without an event, 6 Asian, Pacific or other ancestry individuals with an event, 27 Asian, Pacific or other ancestry individuals without an event')
-    ['African', 'EastAsian', 'European']
+    ['African', 'Asian', 'European']
     >>> get_population('785 Hong Kong Southern Chinese (HSKC) extreme BMD females)')
     ['EastAsian']
     >>> get_population('Sorbian')
@@ -187,82 +184,65 @@ def get_population(text):
     >>> get_population('857 Mexican Americans')
     ['European']
     >>> get_population('96 Southeast Asian cases,130 Southeast Asian controls')
-    ['EastAsian']
+    ['Asian']
     """
     result = set()
 
-    # TODO: research about `human classification`
+    patterns = [
+        # European
+        (re.compile('European', re.I), 'European'),
+        (re.compile('Caucasian|white', re.I), 'European'),
+        (re.compile('British|UK', re.I), 'European'),
+        (re.compile('German|Dutch|Danish', re.I), 'European'),
+        (re.compile('French', re.I), 'European'),
+        (re.compile('Italian', re.I), 'European'),
+        (re.compile('Australian', re.I), 'European'),
+        (re.compile('Scottish', re.I), 'European'),
+        (re.compile('Icelandic', re.I), 'European'),
+        (re.compile('Romanian', re.I), 'European'),
+        (re.compile('Croatian', re.I), 'European'),
+        (re.compile('Swedish|Swiss', re.I), 'European'),
+        (re.compile('Scandinavian', re.I), 'European'),
+        (re.compile('Finnish', re.I), 'European'),
+        (re.compile('Sardinian', re.I), 'European'),
+        (re.compile('Sorbian', re.I), 'European'),
+        (re.compile('Turkish', re.I), 'European'),
+        (re.compile('Framingham', re.I), 'European'),
+        (re.compile('Amish', re.I), 'European'),
+        (re.compile('Ashkenazi Jewish', re.I), 'European'),
+        (re.compile('Hispanic', re.I), 'European'),
+        (re.compile('Mexican', re.I), 'European'),
+        (re.compile('European American', re.I), 'European'),
+        (re.compile('Indo-European', re.I), 'European'),  # TODO: Indo-European? Celts?
 
-    # ? Hispanic
-    # ? Mexican-American
-    # ? Hispanic/Latin American
+        # African
+        (re.compile('African', re.I), 'African'),
+        (re.compile('Malawian', re.I), 'African'),
+        (re.compile('South African', re.I), 'European'),  # TODO: South African => European + African ?
 
-    # ? Native American
-    # ? Indo-European  # Celts?
+        # EastAsian
+        (re.compile('[^h]East( )?Asian', re.I), 'EastAsian'),
+        (re.compile('Korea(n)?|Japan(ese)?', re.I), 'EastAsian'),
+        (re.compile('(Han Chinese|Chinese Han|Singapore( |-)Chinese|Thai( |-)Chinese)', re.I), 'EastAsian'),
+        (re.compile('\s?Chinese\s?', re.I), 'EastAsian'),
 
-    # ? Hutterite
-    # ? South African Afrikaner
+        # Asian (non EastAsian)
+        (re.compile('(South|Indian|Southeast) Asian', re.I), 'Asian'),
+        (re.compile('\d+ Asian', re.I), 'Asian'),
+        (re.compile('Taiwan(ese)?|Indonesian|Micronesian|Malay|Filipino|Vietnam(ese)?', re.I), 'Asian'),
+        (re.compile('(Asian|American)? Indian', re.I), 'Asian'),
 
-    # ? Australian
+        # Japanese
+        (re.compile('Japanese', re.I), 'Japanese'),
 
-    regexps = [(re.compile(' European ((|ancestry|descent)|(|individual(|s)))', re.I), 'European'),
-               (re.compile('European American', re.I), 'European'),
-               (re.compile('Caucasian', re.I), 'European'),
-               (re.compile('white', re.I), 'European'),
-               (re.compile(' EA '), 'European'),
-               (re.compile('Australian', re.I), 'European'),
-               (re.compile('UK', re.I), 'European'),
-               (re.compile('British', re.I), 'European'),
-               (re.compile('Framingham', re.I), 'European'),
-               (re.compile('Amish', re.I), 'European'),
-               (re.compile('Ashkenazi Jewish', re.I), 'European'),
-               (re.compile('French', re.I), 'European'),
-               (re.compile('Italian', re.I), 'European'),
-               (re.compile('German', re.I), 'European'),
-               (re.compile('Croatian', re.I), 'European'),
-               (re.compile('Scottish', re.I), 'European'),
-               (re.compile('Icelandic', re.I), 'European'),
-               (re.compile('Romanian', re.I), 'European'),
-               (re.compile('Dutch', re.I), 'European'),
-               (re.compile('Danish', re.I), 'European'),
-               (re.compile('Swedish', re.I), 'European'),
-               (re.compile('Scandinavian', re.I), 'European'),
-               (re.compile('Finnish', re.I), 'European'),
-               (re.compile('Sardinian', re.I), 'European'),
-               (re.compile('Swiss', re.I), 'European'),
-               (re.compile('Sorbian', re.I), 'European'),
+        # TODO:
+        # Native American ?
+        # Hutterite ?
+        # Australian ?
+    ]
 
-               (re.compile('Turkish', re.I), 'European'),
-               (re.compile('Hispanic ancestry', re.I), 'European'),
-               (re.compile('Hispanic\/', re.I), 'European'),
-               (re.compile('Mexican( |-)American(|s)', re.I), 'European'),
-               (re.compile('Indo-European', re.I), 'European'),
-
-               (re.compile('[^South] African ((|ancestry|descent)|(|individual(|s)))', re.I), 'African'),
-               (re.compile('[^South] African(|-) American', re.I), 'African'),
-               (re.compile('Malawian', re.I), 'African'),
-
-               (re.compile('(|East|South|Indian|Southeast) Asian', re.I), 'EastAsian'),
-               (re.compile('Korean', re.I), 'EastAsian'),
-               (re.compile('Taiwanese', re.I), 'EastAsian'),
-               (re.compile('Indonesian', re.I), 'EastAsian'),
-               (re.compile('Micronesian', re.I), 'EastAsian'),
-               (re.compile('Han Chinese', re.I), 'EastAsian'),
-               (re.compile('Chinese Han', re.I), 'EastAsian'),
-               (re.compile('Southern Chinese', re.I), 'EastAsian'),
-               (re.compile('Indian', re.I), 'EastAsian'),
-               (re.compile('Malay', re.I), 'EastAsian'),
-               (re.compile(' Chinese', re.I), 'EastAsian'),
-               (re.compile('Thai-Chinese', re.I), 'EastAsian'),
-               (re.compile('Filipino', re.I), 'EastAsian'),
-               (re.compile('Vietnamese', re.I), 'EastAsian'),
-               (re.compile('Japanese', re.I), 'EastAsian'),
-
-               (re.compile('Japanese', re.I), 'Japanese'),
-           ]
-
-    for regexp, population in regexps:
-        founds = regexp.findall(text)
+    for pattern, population in patterns:
+        founds = pattern.findall(text)
 
         if founds:
             result.update([population])
