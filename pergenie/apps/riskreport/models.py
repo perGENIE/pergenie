@@ -83,7 +83,7 @@ def task_create_riskreport(risk_report_id, genome_id):  # NOTE: arguments for ce
     phenotypes = GwasCatalogPhenotype.objects.all()
     log.debug('#phenotypes: {}'.format(len(phenotypes)))
 
-    population = list2pg_array([Genome.POPULATION_MAP[genome.population]])
+    population = list2pg_array([genome.population])
 
     for phenotype in phenotypes:
         assert type(phenotype) == GwasCatalogPhenotype
@@ -101,7 +101,7 @@ def task_create_riskreport(risk_report_id, genome_id):  # NOTE: arguments for ce
         evidence_snps = gwas_snps.filter(pubmed_id=evidence_article_1st)
         evidence_snp_ids = evidence_snps.values_list('snp_id_current', flat=True)
 
-        freqs = get_freqs(evidence_snp_ids)
+        freqs = get_freqs(evidence_snp_ids, population=population)
         genotypes = Genotype.objects.filter(genome__id=genome.id, rs_id_current__in=evidence_snp_ids)
 
         phenotype_risk_report, _ = PhenotypeRiskReport.objects.get_or_create(risk_report=risk_report, phenotype=phenotype)
