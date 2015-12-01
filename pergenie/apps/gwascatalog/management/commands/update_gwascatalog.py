@@ -151,6 +151,6 @@ class Command(BaseCommand):
             GwasCatalogSnp.objects.bulk_create(gwascatalog_snps)
 
         log.info('GWAS Catalog snps processed: {} records'.format(len(gwascatalog_snps)))
-        log.info('GWAS Catalog phenotypes newly created: {} records'.format(num_created))
+        log.info('GWAS Catalog phenotypes newly created: {} records'.format(num_phenotype_created))
 
         log.info('Done.')

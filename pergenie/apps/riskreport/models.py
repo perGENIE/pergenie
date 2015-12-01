@@ -43,7 +43,7 @@ class RiskReport(models.Model):
     # display_name =
 
     def create_riskreport(self):
-        task_create_riskreport.delay(self, self.genome)
+        task_create_riskreport.delay(self.id, str(self.genome.id))
 
 
 class PhenotypeRiskReport(models.Model):
@@ -71,7 +71,10 @@ class SnpRiskReport(models.Model):
 
 
 @task(ignore_result=True)
-def task_create_riskreport(risk_report, genome):
+def task_create_riskreport(risk_report_id, genome_id):  # NOTE: arguments for celery task should be JSON serializable
+    risk_report = RiskReport.get(id=risk_report_id)
+    genome = Genome.get(id=genome_id)
+
     log.info('Creating riskreport ...')
 
     # TODO: Check for updates
