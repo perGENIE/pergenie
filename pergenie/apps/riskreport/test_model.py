@@ -22,7 +22,7 @@ class RiskReportModelTestCase(TestCase):
         self.user.is_active = True
         self.user.save()
 
-        population = ['EastAsian']
+        population = ['EAS']
 
         # Prepare GwasCatalogSnp
         gwascatalog = [('00000001', 'Type 2 diabetes', 671, 'A', 1.5, population),
@@ -54,10 +54,10 @@ class RiskReportModelTestCase(TestCase):
         assert len(Snp.objects.all()) == 3
 
         # Prepare Genome
-        self.genome = Genome(owner=self.user, file_name='a.vcf', display_name='a.vcf', status=100, population=Genome.POPULATION_MAP_REVERSE[population[0]])
+        self.genome = Genome(owner=self.user, file_name='a.vcf', display_name='a.vcf', status=100, population=population[0])
         self.genome.save()
 
-        assert self.genome.population == 'ASN'
+        assert self.genome.population == 'EAS'
 
     def test_create_riskreport_ok(self):
         # TODO: add more phenotypes
