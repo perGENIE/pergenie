@@ -1,5 +1,5 @@
-# coding: utf-8
 from common import *
+
 
 SECRET_KEY = 'secretkey_secretkey_secretkey_secretkey_secretkey_secretkey'
 
