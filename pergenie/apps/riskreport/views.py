@@ -2,14 +2,14 @@ import sys
 import os
 import datetime
 
-from django.contrib.auth.decorators import login_required
-from django.views.decorators.http import require_http_methods
-from django.views.generic.simple import direct_to_template
-from django.shortcuts import redirect, render
-from django.http import HttpResponse, Http404
-from django.utils.translation import get_language
-from django.utils.translation import ugettext as _
-from django.conf import settings
+# from django.contrib.auth.decorators import login_required
+# from django.views.decorators.http import require_http_methods
+# from django.views.generic.simple import direct_to_template
+# from django.shortcuts import redirect, render
+# from django.http import HttpResponse, Http404
+# from django.utils.translation import get_language
+# from django.utils.translation import ugettext as _
+# from django.conf import settings
 
 from apps.riskreport.forms import RiskReportForm
 from models import RiskReport, PhenotypeRiskReport, SnpRiskReport
@@ -17,77 +17,77 @@ from utils import clogging
 log = clogging.getColorLogger(__name__)
 
 
-@require_http_methods(['GET', 'POST'])
-@login_required
-def index(request):
-    """Summary view for risk report.
+# @require_http_methods(['GET', 'POST'])
+# @login_required
+# def index(request):
+#     """Summary view for risk report.
 
-    - Show top-10 highest & top-10 lowest risk values for one selected riskreport.
-    - Show link to `show all phenotypes`
-    """
+#     - Show top-10 highest & top-10 lowest risk values for one selected riskreport.
+#     - Show link to `show all phenotypes`
+#     """
 
-    user_id = request.user.username
-    browser_language = get_language()
-    force_uptade = False
+#     user_id = request.user.username
+#     browser_language = get_language()
+#     force_uptade = False
 
-    while True:
-        owner_genomes = Genome.objects.filter(owner=user)
-        reader_genomes = Genome.objects.filter(readers__in=user)
-        my_genomes = list(owner_genomes) + list(reader_genomes)
+#     while True:
+#         owner_genomes = Genome.objects.filter(owner=user)
+#         reader_genomes = Genome.objects.filter(readers__in=user)
+#         my_genomes = list(owner_genomes) + list(reader_genomes)
 
-        # TODO: show only latest for each riskreport?
-        risk_reports = RiskReport.objects.filter(genome__in=my_genomes)
+#         # TODO: show only latest for each riskreport?
+#         risk_reports = RiskReport.objects.filter(genome__in=my_genomes)
 
-        if len(riskreport) < 1:
-            err = _('no data uploaded')
-            break
+#         if len(riskreport) < 1:
+#             err = _('no data uploaded')
+#             break
 
-        if not request.method == 'POST':
-            # By default, browse `last_viewed_file` if exists.
-            # TODO: implement using cookie
-            # if tmp_user_info.get('last_viewed_file'):
-            #     if genomes.get_data_info(user_id, tmp_user_info['last_viewed_file']):
-            #         if genomes.get_data_info(user_id, tmp_user_info['last_viewed_file'])['status'] == 100:
-            #             tmp_info = genomes.get_data_info(user_id, tmp_user_info['last_viewed_file'])
-            #             file_name = tmp_info['name']
-            #             break
-            #
-            # If this is the first time, choose first file_name in infos (with status == 100).
-            # for info in infos:
-            #     if info['status'] == 100:
-            #         file_name = info['name']
-            #         tmp_info = info
-            #         break
-            risk_report = risk_reports.first()
+#         if not request.method == 'POST':
+#             # By default, browse `last_viewed_file` if exists.
+#             # TODO: implement using cookie
+#             # if tmp_user_info.get('last_viewed_file'):
+#             #     if genomes.get_data_info(user_id, tmp_user_info['last_viewed_file']):
+#             #         if genomes.get_data_info(user_id, tmp_user_info['last_viewed_file'])['status'] == 100:
+#             #             tmp_info = genomes.get_data_info(user_id, tmp_user_info['last_viewed_file'])
+#             #             file_name = tmp_info['name']
+#             #             break
+#             #
+#             # If this is the first time, choose first file_name in infos (with status == 100).
+#             # for info in infos:
+#             #     if info['status'] == 100:
+#             #         file_name = info['name']
+#             #         tmp_info = info
+#             #         break
+#             risk_report = risk_reports.first()
 
 
-        elif request.method == 'POST':
-            # TODO: replace genome file_name to riskreport name
-            # file_name is selected by user with Form
-            form = RiskReportForm(request.POST)
-            if not form.is_valid():
-                err = _('Invalid request.')
-                break
+#         elif request.method == 'POST':
+#             # TODO: replace genome file_name to riskreport name
+#             # file_name is selected by user with Form
+#             form = RiskReportForm(request.POST)
+#             if not form.is_valid():
+#                 err = _('Invalid request.')
+#                 break
 
-            file_name = request.POST.get('file_name')
-            # population = request.POST.get('population')
+#             file_name = request.POST.get('file_name')
+#             # population = request.POST.get('population')
 
-            # TODO: get top-10 highest & top-10 lowest
+#             # TODO: get top-10 highest & top-10 lowest
 
-            # TODO: set `last_viewed_file`
+#             # TODO: set `last_viewed_file`
 
-            # TODO: translate to Japanese
-            # if browser_language == 'ja':
-            #     h_risk_traits = [TRAITS2JA.get(trait) for trait in h_risk_traits]
+#             # TODO: translate to Japanese
+#             # if browser_language == 'ja':
+#             #     h_risk_traits = [TRAITS2JA.get(trait) for trait in h_risk_traits]
 
-            # TODO: If this is the first time for riskreport,
-            # if ([bool(info.get('riskreport')) for info in infos].count(True) == 0):
-            #     do_intro = True
+#             # TODO: If this is the first time for riskreport,
+#             # if ([bool(info.get('riskreport')) for info in infos].count(True) == 0):
+#             #     do_intro = True
 
-        break
+#         break
 
-    return render(request, 'index.html',
-                  {})
+#     return render(request, 'index.html',
+#                   {})
 
 # @require_http_methods(['GET'])
 # @login_required

@@ -72,8 +72,8 @@ class SnpRiskReport(models.Model):
 
 @task(ignore_result=True)
 def task_create_riskreport(risk_report_id, genome_id):  # NOTE: arguments for celery task should be JSON serializable
-    risk_report = RiskReport.get(id=risk_report_id)
-    genome = Genome.get(id=genome_id)
+    risk_report = RiskReport.objects.get(id=risk_report_id)
+    genome = Genome.objects.get(id=genome_id)
 
     log.info('Creating riskreport ...')
 
