@@ -9,22 +9,21 @@ from django.conf import settings
 from django.utils.translation import ugettext as _
 from django.utils.translation import activate as translation_activate
 
-from lib.test import LoginUserTestCase
 from utils.clogging import getColorLogger
 log = getColorLogger(__name__)
 
 
-class SimpleTest(LoginUserTestCase):
-    def test_login_required(self):
-        response = self.client.get('/riskreport/')
-        self.assertEqual(response.status_code, 302)
+# class SimpleTest(LoginUserTestCase):
+#     def test_login_required(self):
+#         response = self.client.get('/riskreport/')
+#         self.assertEqual(response.status_code, 302)
 
-        # TODO: check all studies?
-        response = self.client.get('/riskreport/もやもや病%28ウィリス動脈輪閉塞症%29/A%20genome-wide%20association%20study%20identifies%20RNF213%20as%20the%20first%20Moyamoya%20disease%20gene./')
-        self.assertEqual(response.status_code, 302)
+#         # TODO: check all studies?
+#         response = self.client.get('/riskreport/もやもや病%28ウィリス動脈輪閉塞症%29/A%20genome-wide%20association%20study%20identifies%20RNF213%20as%20the%20first%20Moyamoya%20disease%20gene./')
+#         self.assertEqual(response.status_code, 302)
 
-        response = self.client.get('/riskreport/もやもや病%28ウィリス動脈輪閉塞症%29/A%20genome-wide%20association%20study%20identifies%20RNF213%20as%20the%20first%20Moyamoya%20disease%20gene./?file_name=' + self.file_cleaned_name)
-        self.assertEqual(response.status_code, 302)
+#         response = self.client.get('/riskreport/もやもや病%28ウィリス動脈輪閉塞症%29/A%20genome-wide%20association%20study%20identifies%20RNF213%20as%20the%20first%20Moyamoya%20disease%20gene./?file_name=' + self.file_cleaned_name)
+#         self.assertEqual(response.status_code, 302)
 
     # def test_index_success(self):
     #     self.client.login(username=self.test_user_id, password=self.test_user_password)
