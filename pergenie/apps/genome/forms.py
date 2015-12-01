@@ -5,7 +5,7 @@ from django.utils.translation import ugettext as _
 from django.conf import settings
 
 from .models import Genome
-
+from lib.utils.population import POPULATION_CHOICES
 from utils import clogging
 log = clogging.getColorLogger(__name__)
 
@@ -18,7 +18,7 @@ class UploadForm(forms.Form):
     )
 
     population = forms.ChoiceField(
-        Genome.POPULATION_CHOICES,
+        POPULATION_CHOICES,
         error_messages={'required': _('Select population.'),
                         'invalid_choice': _('Select population.')}
     )
