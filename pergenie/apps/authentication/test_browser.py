@@ -9,9 +9,14 @@ class AuthenticationLoginBrowserTestCase(TestCase):
         self.browser = Browser('django')
         self.test_user_id = 'test-user@pergenie.org'
         self.test_user_password = 'test-user-password'
-        self.user = User.objects.create_user(self.test_user_id,
-                                             self.test_user_password)
+        self.user = User.objects.create_user(username=self.test_user_id,
+                                             email=self.test_user_id,
+                                             password=self.test_user_password)
         self.user.save()
+
+        assert len(User.objects.all()) == 1
+        assert User.objects.first().is_active is False
+
         self.browser.visit('/login')
 
     def test_login_page_ok(self):
@@ -85,7 +90,7 @@ class AuthenticationRegisterBrowserTestCase(TestCase):
         assert 'registeration completed' in self.browser.title.lower()
 
         user = User.objects.get(email=self.test_user_id)
-        assert user.is_active == False
+        assert user.is_active is False
 
     def test_activation_ok(self):
         self.browser.visit('/register')
@@ -98,15 +103,15 @@ class AuthenticationRegisterBrowserTestCase(TestCase):
 
         user = User.objects.get(email=self.test_user_id)
         activation_key = UserActivation.objects.get(user=user).activation_key
-        assert user.is_active == False
-        assert UserActivation.objects.filter(activation_key=activation_key).exists() == True
+        assert user.is_active is False
+        assert UserActivation.objects.filter(activation_key=activation_key).exists() is True
 
         self.browser.visit('/activation/' + activation_key)
         assert 'activation completed' in self.browser.title.lower()
 
         user = User.objects.get(email=self.test_user_id)
-        assert user.is_active == True
-        assert UserActivation.objects.filter(activation_key=activation_key).exists() == False
+        assert user.is_active is True
+        assert UserActivation.objects.filter(activation_key=activation_key).exists() is False
 
     def test_too_long_email_should_fail_register(self):
         self.browser.visit('/register')
