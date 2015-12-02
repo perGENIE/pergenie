@@ -48,6 +48,7 @@ hosts
 pergenie/pergenie/settings/development.py
 pergenie/deploy/playbook/group_vars/staging
 pergenie/deploy/playbook/group_vars/production
+pergenie/deploy/playbook/roles/firewalld
 
 # bin
 bin/

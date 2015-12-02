@@ -17,3 +17,4 @@
     - { role: rabbitmq }
     - { role: httpd, tags: ['httpd'] }
     - { role: pergenie, tags: ['pergenie'] }
+    - { role: firewalld, tags: ['firewalld'], when: private_files_repo_root is defined }
