@@ -1,3 +1,4 @@
+import re
 import os
 import uuid
 import subprocess
@@ -58,8 +59,11 @@ class Genome(models.Model):
     def get_genome_file(self):
         return os.path.join(settings.GENOME_UPLOAD_DIR, str(self.owner.id), str(self.id))
 
-    def create_genotypes(self):
-        task_import_genotypes.delay(str(self.id))
+    def create_genotypes(self, async=True):
+        if async:
+            task_import_genotypes.delay(str(self.id))
+        else:
+            task_import_genotypes(str(self.id))
 
     def get_genotypes(self):
         return Genotype.objects.filter(genome_id=self.id)
@@ -106,10 +110,11 @@ def task_import_genotypes(genome_id, minimum_snps=False):
         log.info('Importing into database ...')
 
         genotypes = []
+        gt_sep = re.compile(r'[/|]')
         with open(file_path + '.tsv', 'r') as fin:
             for i,line in enumerate(fin):
                 record = line.strip().split('\t')
-                genotype = record[1].split('/')
+                genotype = re.split(gt_sep, record[1])
                 genotypes.append(Genotype(genome=genome,
                                           rs_id_current=int(record[0]),
                                           genotype=genotype))
@@ -126,4 +131,4 @@ def task_import_genotypes(genome_id, minimum_snps=False):
     finally:
         genome.save()
 
-    log.info('Done!')
+    log.info('Done')
