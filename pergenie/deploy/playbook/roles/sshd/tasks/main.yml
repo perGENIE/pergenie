@@ -10,6 +10,9 @@
     line="{{ item.line }}"
     insertafter="{{ item.insertafter }}"
   with_items:
+    - regexp: '^Port 22'
+      line: 'Port {{ ssh_port }}'
+      insertafter: '#Port 22'
     - regexp: '^PermitRootLogin'
       line: 'PermitRootLogin no'
       insertafter: '#PermitRootLogin'

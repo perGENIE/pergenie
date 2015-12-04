@@ -7,6 +7,7 @@
     - { role: devtools }
     - { role: epel }
     - { role: ntpd }
+    - { role: firewalld, tags: ['firewalld'], when: private_files_repo_root is defined }
 
 - hosts: pergenie_host
   become: yes
@@ -17,4 +18,3 @@
     - { role: rabbitmq }
     - { role: httpd, tags: ['httpd'] }
     - { role: pergenie, tags: ['pergenie'] }
-    - { role: firewalld, tags: ['firewalld'], when: private_files_repo_root is defined }
