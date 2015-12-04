@@ -57,7 +57,7 @@ RS_MERGE_ARCH_PATH = os.path.join(BASE_DIR, 'tmp', 'RsMergeArch.bcp.gz')
 
 # Demo mode
 DEMO_GENOME_FILE_DIR = os.path.join(BASE_DIR, 'data', 'demo')
-DEMO_GENOME_FILE_NAME = 'demo.vcf'
+DEMO_GENOME_FILE_NAME = 'DRA000583.bwa.gatk.b144.gwascatalog.gt.vcf'
 
 
 # GWAS Catalog

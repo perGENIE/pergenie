@@ -42,8 +42,11 @@ class RiskReport(models.Model):
     genome = models.ForeignKey(Genome)
     # display_name =
 
-    def create_riskreport(self):
-        task_create_riskreport.delay(self.id, str(self.genome.id))
+    def create_riskreport(self, async=True):
+        if async:
+            task_create_riskreport.deley(self.id, str(self.genome.id))
+        else:
+            task_create_riskreport(self.id, str(self.genome.id))
 
 
 class PhenotypeRiskReport(models.Model):
@@ -81,7 +84,7 @@ def task_create_riskreport(risk_report_id, genome_id):  # NOTE: arguments for ce
     latest_date = GwasCatalogSnp.objects.filter().aggregate(Max('date_downloaded'))['date_downloaded__max']
 
     phenotypes = GwasCatalogPhenotype.objects.all()
-    log.debug('#phenotypes: {}'.format(len(phenotypes)))
+    log.info('#phenotypes: {}'.format(len(phenotypes)))
 
     population = list2pg_array([genome.population])
 
@@ -134,3 +137,5 @@ def task_create_riskreport(risk_report_id, genome_id):  # NOTE: arguments for ce
 
         phenotype_risk_report.estimated_risk = cumulative_risk(estimated_snp_risks)
         phenotype_risk_report.save()
+
+    log.info('Done')
