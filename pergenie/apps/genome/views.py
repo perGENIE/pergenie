@@ -12,7 +12,8 @@ import magic
 from .forms import UploadForm
 from .models import Genome
 from apps.authentication.models import User
-from utils import clogging
+from lib.utils.population import POPULATION_CHOICES
+from lib.utils import clogging
 log = clogging.getColorLogger(__name__)
 
 
@@ -92,7 +93,7 @@ def upload(request):
     my_genomes = list(owner_genomes) + list(reader_genomes)
 
     return render(request, 'upload.html',
-                  {'POPULATION_CHOICES': Genome.POPULATION_CHOICES,
+                  {'POPULATION_CHOICES': POPULATION_CHOICES,
                    'SEX_CHOICES': Genome.SEX_CHOICES,
                    'FILE_FORMAT_CHOICES': Genome.FILE_FORMAT_CHOICES,
                    'my_genomes': my_genomes})
