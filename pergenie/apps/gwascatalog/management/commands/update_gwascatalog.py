@@ -8,7 +8,7 @@ from django.conf import settings
 from django.utils import timezone
 from django.utils.dateparse import parse_date
 
-from apps.snp.models import Snp
+from apps.snp.models import Snp, get_freqs
 from apps.gwascatalog.models import GwasCatalogSnp, GwasCatalogPhenotype
 from cleanup.population import get_population
 from cleanup.odds_ratio_or_beta_coeff import get_odds_ratio_or_beta_coeff, get_ci_and_unit
@@ -115,9 +115,8 @@ class Command(BaseCommand):
                 # the human reference genome b37. So we get forward strand alleles by checking consistences of
                 # allele frequencies between reported risk alleles and 1000 Genomes Project alleles.
                 if data['snp_id_current']:
-                    # TODO: change freq source by population
-                    snp = Snp.objects.filter(snp_id_current=data['snp_id_current']).first()
-                    database_freq = dict(zip(snp.allele, snp.freq))
+                    snp_id = int(data['snp_id_current'])
+                    database_freq = get_freqs([snp_id], population).get(snp_id)
                     risk_allele_forward = get_database_strand_allele(record['risk_allele'], record['risk_allele_freq_reported'],
                                                                      database_freq, freq_diff_thrs=settings.GWASCATALOG_FREQ_DIFF_THRS)
                 else:
@@ -143,6 +142,10 @@ class Command(BaseCommand):
                          'risk_allele_forward': risk_allele_forward,
                          'phenotype':           phenotype,
                          'is_active':           is_active})
+
+            if 'EAS' in population:
+                log.warn(population)
+                log.warn(data)
 
             gwascatalog_snps.append(GwasCatalogSnp(**data))
             # GwasCatalogSnp.objects.create(**data)
