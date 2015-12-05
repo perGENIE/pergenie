@@ -12,7 +12,7 @@ from apps.authentication.models import User
 from apps.genome.models import Genome, Genotype
 from apps.gwascatalog.models import GwasCatalogSnp
 from apps.riskreport.models import RiskReport
-from lib.utils.population import POPULATION_UNKNOWN
+from lib.utils.population import POPULATION_UNKNOWN, POPULATION_EAST_ASIAN
 from lib.utils import clogging
 log = clogging.getColorLogger(__name__)
 
@@ -37,8 +37,8 @@ def create_demo_user():
                                                       file_name=settings.DEMO_GENOME_FILE_NAME,
                                                       display_name='Demo VCF',
                                                       file_format=Genome.FILE_FORMAT_VCF,
-                                                      population=POPULATION_UNKNOWN,
-                                                      sex=Genome.SEX_UNKNOWN)
+                                                      population=POPULATION_EAST_ASIAN,
+                                                      sex=Genome.SEX_MALE)
     # Init default demo genotype and riskreport (once)
     if is_created:
         # Prepare genome file

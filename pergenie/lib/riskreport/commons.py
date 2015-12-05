@@ -8,14 +8,19 @@ from lib.utils.deprecated_decorator import deprecated
 def cumulative_risk(estimated_snp_risks):
     """Returns cumulative risk.
 
-    >>> cumulative_risk([1.0, 2.0, 3.0])
+    >>> cumulative_risk([1.0, 2.0, None, 3.0])
     6.0
     >>> cumulative_risk([])
     1.0
     """
     getcontext().prec = 4
 
-    return reduce(operator.mul, estimated_snp_risks, Decimal(1.0))
+    assert type(estimated_snp_risks) == list
+
+    if not estimated_snp_risks or set(estimated_snp_risks) == set([None]):
+        return None
+
+    return reduce(operator.mul, [val for val in estimated_snp_risks if val is not None], Decimal(1.0))
 
 
 def estimated_risk(risks, zygosities):
