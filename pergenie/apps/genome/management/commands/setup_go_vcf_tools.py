@@ -4,7 +4,7 @@ import shutil
 import tarfile
 import platform
 
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 from django.conf import settings
 
 from lib.utils.io import get_url_content
@@ -38,6 +38,6 @@ class Command(BaseCommand):
 
         log.info('Fetching RsMergeArch ...')
         url = 'http://ftp.ncbi.nih.gov/snp/organisms/human_9606_b144_GRCh37p13/database/organism_data/RsMergeArch.bcp.gz'
-        get_url_content(url, settings.RS_MERGE_ARCH_PATH, if_not_exists=True)
+        get_url_content(url, settings.RS_MERGE_ARCH_PATH, if_not_exists=True, md5='836289e6fe867bd5a6754802f05b2fb8')
 
         log.info('Done.')
