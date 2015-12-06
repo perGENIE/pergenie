@@ -5,12 +5,9 @@
                  virtualenv={{ virtualenv_dir }} app_path={{ app_root }} settings="pergenie.settings.{{ rollout_env }}"
   ignore_errors: yes
 
-# TODO:
-# - name: init_demo_user
-#   django_manage: command="init_demo_user"
-#                  virtualenv={{ virtualenv_dir }} app_path={{ app_root }} settings="pergenie.settings.{{ rollout_env }}"
-
-# TODO:
-# - name: update_gwascatalog
-#   django_manage: command="update_gwascatalog"
-#                  virtualenv={{ virtualenv_dir }} app_path={{ app_root }} settings="pergenie.settings.{{ rollout_env }}"
+- django_manage: command={{ item }}
+                 virtualenv={{ virtualenv_dir }} app_path={{ app_root }} settings="pergenie.settings.{{ rollout_env }}"
+  with_items:
+    - update_gwascatalog
+    - setup_go_vcf_tools
+    - init_demo_user

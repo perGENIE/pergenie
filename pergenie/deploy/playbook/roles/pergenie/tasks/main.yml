@@ -17,6 +17,7 @@
   postgresql_db: name={{ database_name }}
                  encoding='UTF-8'
                  owner={{ database_user }}
+                 state=present
 
 - name: create .pgpass
   template: src=pgpass.j2 dest="/home/{{ app_user }}/.pgpass"
@@ -42,3 +43,4 @@
 - include: init_data.yml
   become_user: "{{ app_user }}"
   notify: restart wsgi
+  tags: init_data
