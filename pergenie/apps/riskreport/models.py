@@ -47,7 +47,7 @@ class RiskReport(models.Model):
 
     def create_riskreport(self, async=True):
         if async:
-            task_create_riskreport.deley(self.id, str(self.genome.id))
+            task_create_riskreport.delay(self.id, str(self.genome.id))
         else:
             task_create_riskreport(self.id, str(self.genome.id))
 
