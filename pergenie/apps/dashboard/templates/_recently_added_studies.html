@@ -9,17 +9,24 @@
   <div class="row-fluid">
     <div class="span12">
       <ul class="latest-comments">
+
+        {% for study in recent_studies %}
         <li class="comment-box">
-          <!-- TODO: icons -->
-          <!-- <div class="avatar user1 pull-left"></div> -->
-          <div class="article">
-            <div class="post-info"> Mike, 24 minutes ago </div>
+          <div class="article" style="margin-left: 10px;">
+            <div class="post-info">{{ study.date_published| date }}</div>
             <div class="post-content">
-              <b>{% trans "Trait: " %}</b>{{ record.trait }} ({{ record.added|date }})
-              <b>{% trans "Study: " %}</b>{{ record.study }} <a href="{{ record.pubmed_link }}" target="_blank"><span class="label label-info">Pubmed</span></a>
+              <b>{{ study.phenotype.name }}</b><br>
+              <a href="{{ study.pubmed_url }}" target="_blank"><span class="label label-info">Pubmed</span> </a>{{ study.study_title }}
             </div>
           </div>
         </li>
+        {% endfor %}
+
+        <ul class="latest-comments">
+          <li class="comment-box view-more" style="text-align: center">
+            <a href="#">View more...</a>
+          </li>
+        </ul>
       </ul>
     </div>
   </div>
