@@ -1,47 +1,27 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 
+from apps.authentication.models import User
+from apps.genome.models import Genome
+from apps.gwascatalog.models import GwasCatalogSnp
 from utils.clogging import getColorLogger
 log = getColorLogger(__name__)
 
 
 @login_required
 def index(request):
-    user = request.user
-    user_id = str(user)
+    while True:
+        # Your Genome Files
+        user = User.objects.filter(id=request.user.id)
+        owner_genomes = Genome.objects.filter(owner=user)
+        reader_genomes = Genome.objects.filter(readers__in=user)
+        my_genomes = list(owner_genomes) + list(reader_genomes)
 
-    # while True:
-    #     gwascatalog.check_gwascatalog_imported()
-    #     catalog_latest_new_records_data = gwascatalog.get_latest_added_date()
-    #     recent_catalog_records = gwascatalog.get_recent_catalog_records()
+        # Recently Added Studies
+        recent_studies = GwasCatalogSnp.objects.distinct('pubmed_id', 'date_published').order_by('-date_published')[0:3]
 
-    #     infos = genomes.get_data_infos(user_id)
-
-    #     if user_id.startswith(settings.DEMO_USER_ID):
-    #         tmp_user_info = user.get_user_info(user_id)
-    #         if not tmp_user_info.get('last_viewed_file'):
-    #             intro_type = 'demo_welcome'
-    #         else:
-    #             intro_type = 'demo_invitation'
-
-    #     else:
-    #         if not infos:
-    #             intro_type = 'welcome'
-    #             break
-
-    #         # for info in infos:
-    #         #     if not info['status'] == 100:
-    #         #         intro_type = ['wait_upload']
-
-    #     break
-
-    # msgs = dict(msg=msg, err=err,
-    #             demo_user_id=settings.DEMO_USER_ID,
-    #             catalog_latest_new_records_data=catalog_latest_new_records_data,
-    #             recent_catalog_records=recent_catalog_records,
-    #             infos=infos,
-    #             intro_type=intro_type,
-    #             is_registerable=settings.IS_REGISTERABLE)
+        break
 
     return render(request, 'dashboard.html',
-                  dict(user_id=user_id))
+                  dict(my_genomes=my_genomes,
+                       recent_studies=recent_studies))

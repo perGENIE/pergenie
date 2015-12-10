@@ -9,61 +9,33 @@
   <table class="table projects-table">
     <thead>
       <tr>
-        <th width="20%">Title</th>
-        <th width="60">Progress</th>
-        <th width="20%"></th>
+        <th width="70%">Name</th>
+        <th width="30">Status</th>
+        <!-- <th width="10%"></th> -->
       </tr>
     </thead>
     <tbody>
 
+      {% for genome in my_genomes|slice:":3" %}
       <tr>
-        <td class="project-title center" >EventManager</td>
+        <td class="project-title center">{{ genome.display_name }}</td>
         <td class="center">
-          <div class="progress progress-danger">
-            <div class="bar" style="width: 25%;"></div>
+          <div class="progress">
+            <div class="bar" style="width: {{ genome.status }}%;"></div>
           </div>
         </td>
-
-        <td class="center ">
-          <a class="btn btn-mini btn-green" href="#">
-            <i class="icon-zoom-in icon-white"></i>
-          </a>
-          <a class="btn btn-mini btn-orange" href="#">
-            <i class="icon-edit icon-white"></i>
-          </a>
-          <a class="btn btn-mini btn-red" href="#">
-            <i class="icon-trash icon-white"></i>
-          </a>
-        </td>
       </tr>
+      {% endfor %}
 
-      <tr>
-        <td class="project-title center" >ProjectY</td>
-        <td class="center">
-          <div class="progress progress-success">
-            <div class="bar sun-blue" style="width: 100%;"></div>
-          </div>
-        </td>
-
-        <td class="center ">
-          <a class="btn btn-mini btn-green" href="#">
-            <i class="icon-zoom-in icon-white"></i>
-          </a>
-          <a class="btn btn-mini btn-orange" href="#">
-            <i class="icon-edit icon-white"></i>
-          </a>
-          <a class="btn btn-mini btn-red" href="#">
-            <i class="icon-trash icon-white"></i>
-          </a>
-        </td>
-      </tr>
     </tbody>
   </table>
 
-  <!-- TODO: view more -->
-  <!-- <ul class="latest-comments"> -->
-  <!--   <li class="comment-box view-more" style="text-align: center"> -->
-  <!--     <a href="#">View more...</a> -->
-  <!--   </li> -->
-  <!-- </ul> -->
+  {% if my_genomes|length > 3 %}
+  <ul class="latest-comments">
+    <li class="comment-box view-more" style="text-align: center">
+      <a href="#">View more...</a>
+    </li>
+  </ul>
+  {% endif %}
+
 </div>
