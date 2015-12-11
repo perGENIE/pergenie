@@ -92,7 +92,7 @@ def task_import_genotypes(genome_id, minimum_snps=False):
 
         file_path = genome.get_genome_file()
 
-        log.info('Getting SNP ID whitelist ...')
+        log.info('Creating SNP ID whitelist ...')
         snp_id_whitelist = []
         snp_id_whitelist += GwasCatalogSnp.objects.exclude(snp_id_current__isnull=True).distinct('snp_id_current').values_list('snp_id_current', flat=True)
         with open(file_path + '.whitelist.txt', 'w') as fout:
