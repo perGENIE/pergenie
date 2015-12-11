@@ -84,7 +84,7 @@ def task_create_riskreport(risk_report_id, genome_id):  # NOTE: arguments for ce
     log.info('Creating riskreport ...')
 
     # TODO: Check for updates
-    latest_date = GwasCatalogSnp.objects.filter().aggregate(Max('date_downloaded'))['date_downloaded__max']
+    latest_date = GwasCatalogSnp.objects.aggregate(Max('date_downloaded'))['date_downloaded__max']
 
     phenotypes = GwasCatalogPhenotype.objects.all()
     log.info('#phenotypes: {}'.format(len(phenotypes)))
