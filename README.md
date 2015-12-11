@@ -88,9 +88,9 @@ $ python manage.py runserver
 
 ## Notes
 
-- Versions of public database sources are fixed as following:
+- Versions of public database sources are pinned as follows:
 
-| source                 | version          |
+| Sources                | Versions         |
 |------------------------|------------------|
 | Human Reference Genome | GRCh37p13        |
 | dbSNP                  | b144             |
