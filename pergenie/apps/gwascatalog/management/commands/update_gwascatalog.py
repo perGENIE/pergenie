@@ -1,5 +1,6 @@
 import os
 import csv
+import gzip
 from datetime import datetime
 
 from django.core.management.base import BaseCommand, CommandError
@@ -32,14 +33,14 @@ class Command(BaseCommand):
 
         # TODO: automatically choose latest version
         log.info('Fetching latest gwascatalog...')
-        catalog_path = os.path.join(settings.GWASCATALOG_DIR, 'dbsnp-pg-min-0.5.1-b144-GRCh37.gwascatalog-cleaned.tsv')
-        get_url_content(url='https://github.com/knmkr/dbsnp-pg-min/releases/download/0.5.1/dbsnp-pg-min-0.5.1-b144-GRCh37.gwascatalog-cleaned.tsv',
+        catalog_path = os.path.join(settings.GWASCATALOG_DIR, 'dbsnp-pg-min-0.5.2-b144-GRCh37.gwascatalog-cleaned.tsv.gz')
+        get_url_content(url='https://github.com/knmkr/dbsnp-pg-min/releases/download/0.5.2/dbsnp-pg-min-0.5.2-b144-GRCh37.gwascatalog-cleaned.tsv.gz',
                         dst=catalog_path,
                         if_not_exists=True)
 
         log.info('Fetching latest gwascatalog allele freq...')
-        catalog_freq_path = os.path.join(settings.GWASCATALOG_DIR, 'dbsnp-pg-min-0.5.1-b144-GRCh37.gwascatalog-snps-allele-freq.tsv')
-        get_url_content(url='https://github.com/knmkr/dbsnp-pg-min/releases/download/0.5.1/dbsnp-pg-min-0.5.1-b144-GRCh37.gwascatalog-snps-allele-freq.tsv',
+        catalog_freq_path = os.path.join(settings.GWASCATALOG_DIR, 'dbsnp-pg-min-0.5.2-b144-GRCh37.gwascatalog-snps-allele-freq.tsv.gz')
+        get_url_content(url='https://github.com/knmkr/dbsnp-pg-min/releases/download/0.5.2/dbsnp-pg-min-0.5.2-b144-GRCh37.gwascatalog-snps-allele-freq.tsv.gz',
                         dst=catalog_freq_path,
                         if_not_exists=True)
 
@@ -49,7 +50,7 @@ class Command(BaseCommand):
         num_updated = 0
 
         with transaction.atomic():
-            for record in csv.DictReader(open(catalog_freq_path, 'rb'), delimiter='\t',
+            for record in csv.DictReader(gzip.open(catalog_freq_path, 'rb'), delimiter='\t',
                                          fieldnames=['snp_id_current', 'allele', 'freq', 'populations']):
                 snp, created = Snp.objects.update_or_create(
                     snp_id_current=record['snp_id_current'],
@@ -74,7 +75,7 @@ class Command(BaseCommand):
         gwascatalog_snps = []
         num_phenotype_created = 0
 
-        for record in csv.DictReader(open(catalog_path, 'rb'), delimiter='\t'):
+        for record in csv.DictReader(gzip.open(catalog_path, 'rb'), delimiter='\t'):
             data = {}
 
             # If date_downloaded is already imported, abort.
@@ -143,9 +144,9 @@ class Command(BaseCommand):
                          'phenotype':           phenotype,
                          'is_active':           is_active})
 
-            if 'EAS' in population:
-                log.warn(population)
-                log.warn(data)
+            # if 'EAS' in population:
+            #     log.warn(population)
+            #     log.warn(data)
 
             gwascatalog_snps.append(GwasCatalogSnp(**data))
             # GwasCatalogSnp.objects.create(**data)
