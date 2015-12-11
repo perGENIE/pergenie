@@ -16,16 +16,25 @@
       <!-- TODO: list from INSTALLED_APP -->
       <div class="row-fluid">
         <div class="span12 padded5">
-          <button class="button square" href="#">
-            <i class="icon-align-left icon-large"></i>
-            <span class="button-text">RiskReport</span>
-          </button>
+          <a href="{% url 'riskreport' %}">
+            <button class="button square" href="#">
+              <i class="icon-align-left icon-large"></i>
+              <span class="button-text">RiskReport</span>
+            </button>
+          </a>
 
           <a href="{% url 'genome-upload' %}">
-          <button class="button square" href="#">
-            <i class="icon-upload-alt icon-large"></i>
-            <span class="button-text">GenomeFiles</span>
-          </button>
+            <button class="button square" href="#">
+              <i class="icon-upload-alt icon-large"></i>
+              <span class="button-text">Genomes</span>
+            </button>
+          </a>
+
+          <a href="{% url 'faq' %}">
+            <button class="button square" href="#">
+              <i class="icon-question-sign icon-large"></i>
+              <span class="button-text">FAQ</span>
+            </button>
           </a>
         </div>
       </div>
