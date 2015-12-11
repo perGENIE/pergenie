@@ -54,9 +54,9 @@ class Command(BaseCommand):
                                          fieldnames=['snp_id_current', 'allele', 'freq', 'populations']):
                 snp, created = Snp.objects.update_or_create(
                     snp_id_current=record['snp_id_current'],
+                    population=record['populations'],
                     defaults={'allele': text2pg_array(record['allele']),
-                              'freq': text2pg_array(record['freq']),
-                              'population': record['populations']}
+                              'freq': text2pg_array(record['freq'])}
                 )
                 if created:
                     num_created += 1
