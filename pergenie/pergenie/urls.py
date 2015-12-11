@@ -8,6 +8,8 @@ from apps.landing import views as landing_views
 from apps.authentication import views as authentication_views
 from apps.dashboard import views as dashboard_views
 from apps.genome import views as genome_views
+from apps.riskreport import views as riskreport_views
+from apps.faq import views as faq_views
 
 admin.autodiscover()
 
@@ -35,7 +37,8 @@ urlpatterns = [
     url(r'^genome/delete/$', genome_views.delete, name='genome-delete'),
     url(r'^genome/status/$', genome_views.status, name='genome-status'),
 
-    # url(r'^riskreport/$', 'apps.riskreport.views.index'),
+    # Risk Report
+    url(r'^riskreport/$', riskreport_views.index, name='riskreport'),
     # url(r'^riskreport/export/$', 'apps.riskreport.views.export'),
     # url(r'^riskreport/show_all/$', 'apps.riskreport.views.show_all'),
     # url(r'^riskreport/show_all_files/$', 'apps.riskreport.views.show_all_files'),
@@ -50,7 +53,8 @@ urlpatterns = [
     # url(r'^library/summary/$', 'apps.library.views.summary_index'),
     # url(r'^library/summary/(?P<field_name>.*?)/$', 'apps.library.views.summary'),
 
-    # url(r'^faq/$', 'apps.faq.views.index'),
+    # FAQ
+    url(r'^faq/$', faq_views.index, name='faq'),
 
     # url(r'^population/$', 'apps.population.views.index'),
 

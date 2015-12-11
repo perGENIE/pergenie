@@ -32,6 +32,7 @@ INSTALLED_APPS = (
     'apps.snp',
     'apps.gwascatalog',
     'apps.riskreport',
+    'apps.faq',
 
     'apps.templatetags',
     'apps.db'
