@@ -1,0 +1,159 @@
+{% extends "layout/layout.html" %}
+{% load extras %}
+{% load staticfiles %}
+{% block title %}FAQ{% endblock %}
+{% block description %}{% endblock %}
+{% load i18n %}
+
+{% block main %}
+<section id="main">
+  <div class="container">
+
+    <div class="row-fluid">
+      <div class="span12">
+        <div class="content-box">
+          <div class="content-box-header">
+            <i class="icon-question-sign"></i> FAQ
+          </div>
+          <div class="row-fluid">
+            <div class="span12">
+
+              <div class="padded">
+                <ol class="faq-list">
+                  <li>
+                    <h4 id="faq-question-1">How are risk values calculated?</h4>
+                    <p>See <a href="{% static 'images/snaps/methods.png' %}">Methods</a>.</p>
+                  </li>
+
+                  <li>
+                    <h4 id="faq-question-2">What is RR (Relative Risk)?</h4>
+                    <p>See <a href="{% static 'images/snaps/methods.png' %}">Methods</a>.</p>
+                  </li>
+
+                  <li>
+                    <h4 id="faq-question-3">What is OR (Odds Ratio)?</h4>
+                    <p>See <a href="{% static 'images/snaps/methods.png' %}">Methods</a>.</p>
+                  </li>
+
+                  <li>
+                    <h4 id="faq-question-4">What is VCF?</h4>
+                    <p><a href="http://www.1000genomes.org/wiki/Analysis/Variant%20Call%20Format/vcf-variant-call-format-version-41" target="_blank">VCF (Variant Call Format)</a> is a typical data format for DNA sequencing data from NGS.</p>
+                    <p>Example:</p>
+                    <pre class="prettyprint">
+##fileformat=VCFv4.1
+...
+#CHROM POS     ID        REF    ALT     QUAL FILTER INFO                FORMAT      NA00001
+20     14370   rs6054257 G      A       29   PASS   NS=3;DP=14;AF=0.5   GT:GQ:DP:HQ 0|0:48:1:51,51
+20     17330   .         T      A       3    q10    NS=3;DP=11;AF=0.017 GT:GQ:DP:HQ 0|0:49:3:58,50
+</pre>
+                  </li>
+
+                  <li>
+                    <h4 id="faq-question-5">What versions of reference files are used?</h4>
+                    <ul>
+                      <li>dbSNP Build: {{ dbsnp_version }}</li>
+                      <li>Human Genome Assembly: <a href="{{ refgenome_link }}" target="_blank">{{ refgenome_version }}</a></li>
+                    </ul>
+                    <p>Currently, we did not support data convertion between different versions of reference files. So, if you upload genome file based on hg18 version of Human Genome Assembly, we cannot handle it correctly. (Coordinates conversion from hg18 to hg19 are required).</p>
+                  </li>
+
+                  <li>
+                    <h4 id="faq-question-6">What is 23andMe?</h4>
+                    <p><a href="https://www.23andme.com/" target="_blank">23andMe (23andMe, Inc.)</a> is a common direct-to-consumer genetic testing service .</p>
+                  </li>
+
+                  <li>
+                    <h4 id="faq-question-7"></h4>
+                  </li>
+
+                  <li>
+                    <h4 id="faq-question-8"></h4>
+                  </li>
+
+                  <li>
+                    <h4 id="faq-question-9">[Advanced] How do you check strands of SNPs?</h4>
+                    <p>In GWAS Catalog, strands of risk_alleles are not provided.
+                      But we handle all the genotypes of users in plus strands in perGENIE.
+                      So we check strands of risk_alleles refering dbSNP.
+                      If strands of risk_alleles seem minus, we reverse it.
+                    </p>
+                  </li>
+
+                  <li>
+                    <h4 id="faq-question-10">OMIM?</h4>
+                    <p>
+                      Online Mendelian Inheritance in Man, OMIM&reg;. McKusick-Nathans Institute of Genetic Medicine, Johns Hopkins University &#40;Baltimore, MD&#41;, &#123;date&#125;. World Wide Web URL: <a href="//omim.org" target="_blank">http&#58;&#47;&#47;omim.org&#47;</a>
+                    </p>
+                  </li>
+
+                  <li>
+                    <h4 id="faq-question-11">When do I need this service?</h4>
+                    <p>If you are unhappy with the current design of your website, if you are considering another vision for your website design, or would like to improve the "look and feel" of your site, if you are planning a new website and want to see a second design sample before you spend a lot of money on development, if you are a design company with no more ideas and want someone else to have a try.</p>
+                  </li>
+                  <li>
+                    <h4 id="faq-question-12">Will my design be shown on your references?</h4>
+                    <p>Yes. But if you choose our "Keep secret" service we will not add you to our reference list. In that case, you will be charged an additional fee of we charge 200 USD.</p>
+                  </li>
+                  <li>
+                    <h4 id="faq-question-13">What happen with the files and information I'm sending to you?</h4>
+                    <p>All files and information we receive will be treated confidentially and be deleted after use.</p>
+                  </li>
+                </ol>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+  <!-- <h4>[Advanced] Why have I genotyped records outside my targeted region?</h4> -->
+  <!-- <p>Even though your VCF is generated by exome targetted sequencing, some records which is in external exome region may exist. -->
+  <!--   Those records may be artifacts of read-mapping or variant-calling, or matter of exome-targetting in DNA sampling. -->
+  <!--   Nevertheless, they are in VCF because they are passed filter of quality of variant-calling. -->
+  <!--   So, in perGENIE, as far as variant records appear in VCF, they are treated as existing variatns, though they are not in its targeted region. -->
+  <!-- </p> -->
+
+  <!-- <h4>[Advanced] How does the cover rate of GWAS Cataog for each genome file calculated?</h4> -->
+  <!-- <p>= 100 * (# of (unique SNPs in GWAS Catalog && available in your genome file)) / (# of unique SNPs in GWAS Catalog)</p> -->
+
+  <!-- <h4>[Advanced] How does the cover rate of whole genome for each genome file calculated?</h4> -->
+  <!-- <p>= 100 * (length of targeted region) / (length of whole genome)</p> -->
+  <!-- <p>For VCF of whole genome sequencing, this value is 100%</p> -->
+  <!-- <ul> -->
+  <!--   <li>For SNP array of 23andMe, targeted region is considered as the total number of SNPs on array.</li> -->
+  <!--   <li>For TruSeq-Exome-Targeted-Region, targeted region is considered as the whole reigion of targeted region.</li> -->
+  <!-- </ul> -->
+
+  <!-- <h4>[Advanced] Are reference alleles always non-risk allele?</h4> -->
+  <!-- <p>No. Reference allele is not always non-risk allele. There are some records that reference allele is risk-allele. -->
+  <!--   Especially, if the frequency of risk-allele is not low, e.g., 0.6 or something, risk-allele maybe the reference allele. -->
+  <!--   Though it is confusable, as it depends on the definition of the risk-allele in each GWAS, it is unavoidable. -->
+  <!-- </p> -->
+
+  <!-- <h4>[Advanced] Why are there no riks values betwee 0 to 1 in charts?</h4> -->
+  <!-- <p>まず，Relative risk (RR)は2つの確率の比であるため，常に正の値になります．</p> -->
+  <!-- <p>RRが1より大きい値xをとるとき，x倍リスクが高いという意味です． -->
+  <!--   しかし，RRが1より小さい値をとるとき，0.y倍リスクが高い，となりますが， -->
+  <!--   これは逆数をとって，y倍リスクが「低い」と言い換えた方がわかりやすいと考えられます． -->
+  <!-- </p> -->
+  <!-- <p>そのため，perGENIEではRRが0から1の値を取るときその逆数をとり， -->
+  <!--   また符号をマイナスにしてリスクが低くなるという意味で表記しているので， -->
+  <!--   0から1の値が表示されていません． -->
+  <!-- </p> -->
+  <!-- <p>また，この問題はlog(RR)で表記することでも解決するため，log表記を好む方のために，settingsからlog表記に設定可能（予定）です．</p> -->
+
+  <!-- <h4>[Advanced] Some risk allele frequency of SNPs seem inconsistent with dbSNP or HapMap, ...</h4> -->
+  <!-- <p>GWAS Catalogに対して，AlleleのStrandや，Allele frequencyのチェックをかけてはいるのですが，チェックからもれてしまっているレコードである可能性があります．もしこのようなSNPを見つけた場合，perGENIE Teamまでご連絡ください．</p> -->
+
+  <!-- <h4>How to enable WebGL in Safari</h4> -->
+  <!-- <p>In Safari, <a href="//www.khronos.org/webgl/" target="_blank">WebGL</a> is not enabled by default. To view 3D structure of protain, enable WebGL like following:</p> -->
+  <!-- <p>1. Set checkbox in Preferences > Advanced > Show Develop menu in menu bar</p> -->
+  <!-- <p><img src="{% static 'images/snaps/safari_preferences_advanced.png' %}"></p> -->
+  <!-- <p>2. Select menu in Menubar > Develop > Enable WebGL</p> -->
+  <!-- <p><img src="{% static 'images/snaps/safari_menu_developpng.png' %}"></p> -->
+{% endblock %}
+
+{% block js %}
+{% endblock %}
