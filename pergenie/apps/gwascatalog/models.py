@@ -17,7 +17,7 @@ class GwasCatalogSnp(Model):
 
     date_downloaded                = DateTimeField()
     pubmed_id                      = CharField(             max_length=8)
-    date_published                 = DateTimeField()
+    date_published                 = DateTimeField(                                                   null=True)
     study_title                    = CharField(             max_length=1024,                          blank=True, default='')
     pubmed_url                     = CharField(             max_length=1024,                          blank=True, default='')
     disease_or_trait               = CharField(             max_length=1024,                          blank=True, default='')
