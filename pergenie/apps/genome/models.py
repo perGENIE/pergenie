@@ -56,6 +56,9 @@ class Genome(models.Model):
     status = models.IntegerField(default=0)
     error = models.CharField(max_length=256, blank=True, null=True)
 
+    class Meta:
+        unique_together = ('owner', 'display_name')
+
     def get_genome_file(self):
         return os.path.join(settings.GENOME_UPLOAD_DIR, str(self.owner.id), str(self.id))
 

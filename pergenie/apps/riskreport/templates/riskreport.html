@@ -1,0 +1,217 @@
+{% extends "layout/layout.html" %}
+{% load extras %}
+{% load staticfiles %}
+{% block title %}Risk Report{% endblock %}
+{% block description %}{% endblock %}
+{% load i18n %}
+
+{% block main %}
+<section id="main">
+  <div class="container">
+
+    <div class="row-fluid">
+      <div class="span12">
+        <h2 class="transparent-text">{% trans "Disease Risk Report" %}</h2>
+      </div>
+    </div>
+
+    <!--  -->
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+      {{ message }}
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="row-fluid">
+      <div class="span12">
+        <div class="content-box">
+
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th><i class="icon-user"></i>{% trans "Genome file" %}</th>
+                <th><i class="icon-globe"></i>{% trans "Population" %}</th>
+                <th><i class="icon-file"></i>{% trans "File Format" %}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <!-- Genome file -->
+                <td class="center">
+                  <form action="{% url 'riskreport' %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+		                <fieldset>
+                      <select name="genome_file_name" onchange="submit(this.form)" class="form-control input-sm">
+                        {% for record in risk_reports %}
+                        <option value="{{ record.genome.id }}" {% if record.genome.display_name == risk_report.genome.display_name %}selected{% endif %}>{{ risk_report.genome.display_name }}</option>
+                        {% endfor %}
+                      </select>
+                    </fieldset>
+                  </form>
+                </td>
+
+                <!-- Population -->
+                <td class="center">
+                  <span class="label label-success">{{ risk_report.genome.population }}</span>
+                </td>
+
+                <!-- File Format -->
+                <td class="center">
+                  <span class="label label-success">{{ risk_report.genome.file_format }}</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="row-fluid">
+        <div class="span6">
+          <div class="content-box">
+            <div class="content-box-header">
+              <i class="icon-align-left"></i> {% trans "Top 10 Highest Risks" %}
+            </div>
+
+            <div class="row-fluid">
+              <div class="span12">
+                <div id="container_highest_risks"></div>
+                <a href="#"><button class="btn btn-info"><i class="icon-zoom-in"></i> {% trans "Show more" %}</button></a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="span6">
+          <div class="content-box">
+            <div class="content-box-header">
+              <i class="icon-ok-sign"></i> {% trans "Statistics" %}
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="row-fluid">
+        <div class="span6">
+          <div class="content-box">
+            <div class="content-box-header">
+              <i class="icon-flag"></i> {% trans "Download" %}
+            </div>
+
+            <div class="row-fluid">
+              <div class="span6">
+                <a href="#"><button class="btn btn-info">{% trans "Download all reports" %}</button></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript" src="//code.highcharts.com/3.0/highcharts.js"></script>
+<script type="text/javascript" src="//code.highcharts.com/3.0/modules/exporting.js"></script>
+
+<script type="text/javascript">
+$(function () {
+    var chart;
+    $(document).ready(function() {
+        chart = new Highcharts.Chart({
+            chart: {
+                renderTo: 'container_highest_risks',
+                type: 'bar'
+            },
+            title: {
+                text: ''
+            },
+            xAxis: {
+                categories: [{% for name in top_10_names %}"{{ name|limit:40 }}",
+                             {% endfor %}],
+                title: {
+                    text: null
+                }
+            },
+            yAxis: {
+                max: 10,
+                min: 1,
+                title: {
+                    text: '[{% trans "Risk relative to average population" %}]',
+                    align: 'high'
+                }
+            },
+            tooltip: {
+                formatter: function() {
+                    return ''+
+                           this.x + ': x' + ((this.y == 0.0) ? 1.0 : this.y);
+                }
+            },
+            plotOptions: {
+            series: {
+                shadow:false,
+                cursor:'pointer',
+                    point: {
+                        events: {
+                            click: function() {
+                                location.href = this.options.url;
+                                <!-- window.open(this.options.url); -->
+                            }
+                        }
+                    }
+                },
+                bar: {
+                    dataLabels: {
+                        enabled: true,
+                        rotation: 0,
+                        color: '#FFFFFF',
+                        align: 'right',
+                        x: 0,
+                        y: 0,
+                        style: {
+                            fontSize: '13px',
+                            fontFamily: 'Verdana, sans-serif'
+                        }
+                    }
+                }
+            },
+            credits: {
+                enabled: false
+            },
+            exporting: {
+                enabled: false
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'top',
+                x: -50,
+                y: 50,
+                floating: true,
+                borderWidth: 1,
+                backgroundColor: '#FFFFFF',
+                shadow: true,
+                enabled: false
+            },
+
+            series: [
+                    {
+                    name: 'name',
+                    data: [{% for risk in top_10_risks %}{y: {% ifnotequal risk 1.0 %}{{ risk }}{% else %}0.0{% endifnotequal %},
+                            color: {% if risk < 0 %}'#2ca6f1'{% elif risk == 0 %}'#8a8a8a'{% else %}'#f12ca6'{% endif %},
+                            url:""},
+                           {% endfor %}],
+                    },
+            ]
+        });
+    });
+});
+</script>
+
+{% endblock %}
