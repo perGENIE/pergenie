@@ -2,96 +2,81 @@ import sys
 import os
 import datetime
 
-# from django.contrib.auth.decorators import login_required
-# from django.views.decorators.http import require_http_methods
-# from django.views.generic.simple import direct_to_template
-# from django.shortcuts import redirect, render
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_http_methods
+from django.shortcuts import redirect, render
 # from django.http import HttpResponse, Http404
 # from django.utils.translation import get_language
-# from django.utils.translation import ugettext as _
-# from django.conf import settings
+from django.contrib import messages
+from django.utils.translation import ugettext as _
+from django.conf import settings
+from django.db.models import Q
 
-from apps.riskreport.forms import RiskReportForm
-from models import RiskReport, PhenotypeRiskReport, SnpRiskReport
-from utils import clogging
+from apps.authentication.models import User
+from apps.genome.models import Genome
+from apps.gwascatalog.models import GwasCatalogSnp
+from .forms import RiskReportForm
+from .models import RiskReport, PhenotypeRiskReport, SnpRiskReport
+from lib.utils import clogging
 log = clogging.getColorLogger(__name__)
 
 
-# @require_http_methods(['GET', 'POST'])
-# @login_required
-# def index(request):
-#     """Summary view for risk report.
+@require_http_methods(['GET', 'POST'])
+@login_required
+def index(request):
+    """Summary view for risk reports.
 
-#     - Show top-10 highest & top-10 lowest risk values for one selected riskreport.
-#     - Show link to `show all phenotypes`
-#     """
+    - Show top 10 highest risk values for one selected riskreport.
+    - Show link to `show all phenotypes`
+    - Show only latest for each riskreport.
+    """
 
-#     user_id = request.user.username
-#     browser_language = get_language()
-#     force_uptade = False
+    while True:
+        user = User.objects.filter(id=request.user.id)
+        owner_genomes = Genome.objects.filter(owner=user)
+        reader_genomes = Genome.objects.filter(readers__in=user)
 
-#     while True:
-#         owner_genomes = Genome.objects.filter(owner=user)
-#         reader_genomes = Genome.objects.filter(readers__in=user)
-#         my_genomes = list(owner_genomes) + list(reader_genomes)
+        # Get only latest for each riskreport.
+        risk_reports = []
+        for readable_report in RiskReport.objects.distinct('genome').filter(Q(genome__owner=user) | Q(genome__readers=user)):
+            risk_reports.append(RiskReport.objects.filter(genome=readable_report.genome).latest('created_at'))
 
-#         # TODO: show only latest for each riskreport?
-#         risk_reports = RiskReport.objects.filter(genome__in=my_genomes)
+        if len(risk_reports) < 1:
+            messages.error(request, _('No risk reports available.'))
+            break
 
-#         if len(riskreport) < 1:
-#             err = _('no data uploaded')
-#             break
+        if request.method == 'POST':
+            form = RiskReportForm(request.POST)
+            if not form.is_valid():
+                messages.error(request, _('Invalid request.'))
+                break
 
-#         if not request.method == 'POST':
-#             # By default, browse `last_viewed_file` if exists.
-#             # TODO: implement using cookie
-#             # if tmp_user_info.get('last_viewed_file'):
-#             #     if genomes.get_data_info(user_id, tmp_user_info['last_viewed_file']):
-#             #         if genomes.get_data_info(user_id, tmp_user_info['last_viewed_file'])['status'] == 100:
-#             #             tmp_info = genomes.get_data_info(user_id, tmp_user_info['last_viewed_file'])
-#             #             file_name = tmp_info['name']
-#             #             break
-#             #
-#             # If this is the first time, choose first file_name in infos (with status == 100).
-#             # for info in infos:
-#             #     if info['status'] == 100:
-#             #         file_name = info['name']
-#             #         tmp_info = info
-#             #         break
-#             risk_report = risk_reports.first()
+            genome_id = request.POST.get('genome_id')
 
+        else:
+            # TODO: Get `last_viewed_report` cookie
+            risk_report = risk_reports[0]
 
-#         elif request.method == 'POST':
-#             # TODO: replace genome file_name to riskreport name
-#             # file_name is selected by user with Form
-#             form = RiskReportForm(request.POST)
-#             if not form.is_valid():
-#                 err = _('Invalid request.')
-#                 break
+        # Get top-10 highest
+        top_10 = PhenotypeRiskReport.objects.filter(risk_report=risk_report).exclude(estimated_risk__isnull=True).order_by('-estimated_risk')[0:10]
+        top_10_names = top_10.values_list('phenotype__name', flat=True)
+        top_10_risks = top_10.values_list('estimated_risk', flat=True)
 
-#             file_name = request.POST.get('file_name')
-#             # population = request.POST.get('population')
+        break
 
-#             # TODO: get top-10 highest & top-10 lowest
+    # TODO: Set `last_viewed_report` cookie
 
-#             # TODO: set `last_viewed_file`
+    return render(request, 'riskreport.html',
+                  dict(risk_reports=risk_reports,
+                       risk_report=risk_report,
+                       top_10_names=top_10_names,
+                       top_10_risks=top_10_risks
+                  ))
 
-#             # TODO: translate to Japanese
-#             # if browser_language == 'ja':
-#             #     h_risk_traits = [TRAITS2JA.get(trait) for trait in h_risk_traits]
-
-#             # TODO: If this is the first time for riskreport,
-#             # if ([bool(info.get('riskreport')) for info in infos].count(True) == 0):
-#             #     do_intro = True
-
-#         break
-
-#     return render(request, 'index.html',
-#                   {})
-
-# @require_http_methods(['GET'])
-# @login_required
-# def study(request, trait, study):
+@require_http_methods(['GET'])
+@login_required
+def study(request, trait, study):
+    pass
 #     user_id = request.user.username
 #     msg, err = '', ''
 #     risk_infos = None
@@ -135,11 +120,11 @@ log = clogging.getColorLogger(__name__)
 
 #     return direct_to_template(request, 'risk_report/study.html', risk_infos)
 
-# @login_required
-# def export(request):
-#     """Download riskreport
-#     """
-
+@login_required
+def export(request):
+    """Download riskreport
+    """
+    pass
 #     user_id = request.user.username
 #     file_name = request.GET.get('file_name')
 
@@ -164,19 +149,19 @@ log = clogging.getColorLogger(__name__)
 #     # response['Content-Disposition'] = 'filename=' + os.path.basename(fout_path)
 #     # return response
 
-# @require_http_methods(['GET', 'POST'])
-# @login_required
-# def show_all(request):
-#     """
-#     Show all risk values in a chart.
-#     * It can compare two individual genomes.
+@require_http_methods(['GET', 'POST'])
+@login_required
+def show_all(request):
+    """
+    Show all risk values in a chart.
+    * It can compare two individual genomes.
 
-#     TODO:
-#     * Do not use log-scale. Replace to real-scale.
-#     * Enable to click & link trait-name in charts. (currently bar in charts only)
-#     * Show population in charts, e.g., `Japanese national flag`, etc.
-#     """
-
+    TODO:
+    * Do not use log-scale. Replace to real-scale.
+    * Enable to click & link trait-name in charts. (currently bar in charts only)
+    * Show population in charts, e.g., `Japanese national flag`, etc.
+    """
+    pass
 #     user_id = request.user.username
 #     msg, err = '', ''
 #     # risk_reports, risk_traits, risk_values = None, None, None
