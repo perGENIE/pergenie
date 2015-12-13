@@ -98,13 +98,11 @@ $ python manage.py runserver
 
 ## Notice
 
-* Theme
-
-  * [Bootstrap](//getbootstrap.com/), Apache License v2.0
-
-* Data visualization
-
-  * Highcharts JS, [for free under the Creative Commons Attribution-NonCommercial 3.0 License](//shop.highsoft.com/highcharts.html)
+- [Bootstrap](//getbootstrap.com/), Apache License v2.0
+- [Highcharts JS](//www.highcharts.com/), [for free under the Creative Commons Attribution-NonCommercial 3.0 License](//shop.highsoft.com/highcharts.html)
+- [jQuery MultiFile](//www.fyneworks.com/jquery/multifile/), MIT License
+- [Peity](//benpickles.github.io/peity/), MIT License
+- [Intro.js](//usablica.github.io/intro.js/), MIT License
 
 
 ## License
