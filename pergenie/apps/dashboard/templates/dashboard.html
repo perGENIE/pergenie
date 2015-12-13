@@ -1,9 +1,7 @@
 {% extends "layout/layout.html" %}
-{% load extras %}
-{% load staticfiles %}
+{% load i18n %}
 {% block title %}Dashboard{% endblock %}
 {% block description %}{% endblock %}
-{% load i18n %}
 
 {% block main %}
 <section id="main">
@@ -54,8 +52,6 @@
 {% endblock %}
 
 {% block js %}
-<link href="{% static 'css/introjs.css' %}" rel="stylesheet">
-<script type="text/javascript" src="{% static 'js/intro.js' %}"></script>
 <script type="text/javascript">
     function startIntro(){
 
@@ -140,5 +136,4 @@
 </script>
 <script type="text/javascript">$(function(){startIntro();});</script>
 <script type="text/javascript">window.upload_status_url = "#";</script>
-<script type="text/javascript" src="{% static 'js/dashboard.js' %}"></script>
 {% endblock %}
