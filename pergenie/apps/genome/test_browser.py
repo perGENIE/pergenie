@@ -8,8 +8,9 @@ from django.conf import settings
 from splinter import Browser
 
 from test.utils import auth
-from apps.gwascatalog.models import GwasCatalogSnp
+from apps.gwascatalog.models import GwasCatalogSnp, GwasCatalogPhenotype
 from .models import Genome
+from lib.utils.population import POPULATION_UNKNOWN
 from lib.utils.date import today_with_tz
 
 
@@ -26,7 +27,10 @@ class GenomeBrowserTestCase(TestCase):
         self.browser = auth.browser_login(Browser('django'), self.test_user_id, self.test_user_password)
 
         # SNPs for whitelist
+        phenotype, _ = GwasCatalogPhenotype.objects.get_or_create(name='test phenotype 1')
         GwasCatalogSnp(date_downloaded=today_with_tz,
+                       pubmed_id='12345678',
+                       phenotype=phenotype,
                        snp_id_current=527236043,  # rsLow rs6054257 => rsHigh rs527236043
                        population=['EastAsian']).save()
 
@@ -48,7 +52,7 @@ class GenomeBrowserTestCase(TestCase):
     def test_one_genome_upload_ok(self):
         self.browser.visit('/genome/upload')
         default = {'file_format': Genome.FILE_FORMAT_VCF,
-                   'population': Genome.POPULATION_UNKNOWN,
+                   'population': POPULATION_UNKNOWN,
                    'sex': Genome.SEX_UNKNOWN}
         self.browser.attach_file('upload_files', os.path.join(settings.TEST_DATA_DIR, 'test_vcf42.vcf'))
         self.browser.fill_form(default)
@@ -58,7 +62,7 @@ class GenomeBrowserTestCase(TestCase):
 
         assert self.genomes[0].file_name == 'test_vcf42.vcf'
         assert self.genomes[0].file_format == Genome.FILE_FORMAT_VCF
-        assert self.genomes[0].population == Genome.POPULATION_UNKNOWN
+        assert self.genomes[0].population == POPULATION_UNKNOWN
         assert self.genomes[0].sex == Genome.SEX_UNKNOWN
         assert [x.id for x in self.genomes[0].readers.all()] == [self.user.id]
 
@@ -69,7 +73,7 @@ class GenomeBrowserTestCase(TestCase):
     def test_3_genomes_upload_ok(self):
         self.browser.visit('/genome/upload')
         default = {'file_format': Genome.FILE_FORMAT_VCF,
-                   'population': Genome.POPULATION_UNKNOWN,
+                   'population': POPULATION_UNKNOWN,
                    'sex': Genome.SEX_UNKNOWN}
 
         self.browser.attach_file('upload_files', os.path.join(settings.TEST_DATA_DIR, 'test_vcf42.vcf'))
@@ -102,7 +106,7 @@ class GenomeBrowserTestCase(TestCase):
         self.browser.visit('/genome/upload')
         self.browser.attach_file('upload_files', os.path.join(settings.TEST_DATA_DIR, 'test_vcf42.vcf'))
         self.browser.select('file_format', Genome.FILE_FORMAT_VCF)
-        self.browser.select('population', Genome.POPULATION_UNKNOWN)
+        self.browser.select('population', POPULATION_UNKNOWN)
         self.browser.select('sex', Genome.SEX_UNKNOWN)
         self.browser.find_by_name('submit').click()
 
@@ -122,7 +126,7 @@ class GenomeBrowserTestCase(TestCase):
         self.browser.visit('/genome/upload')
         self.browser.attach_file('upload_files', os.path.join(settings.TEST_DATA_DIR, 'test_vcf42.vcf'))
         self.browser.select('file_format', Genome.FILE_FORMAT_VCF)
-        self.browser.select('population', Genome.POPULATION_UNKNOWN)
+        self.browser.select('population', POPULATION_UNKNOWN)
         self.browser.select('sex', Genome.SEX_UNKNOWN)
         self.browser.find_by_name('submit').click()
 
