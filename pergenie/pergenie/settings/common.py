@@ -22,9 +22,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.humanize',
 
-    # Uncomment the next line to enable admin documentation:
-    # 'django.contrib.admindocs',
-
+    'apps.application',
     'apps.landing',
     'apps.authentication',
     'apps.dashboard',
@@ -33,9 +31,6 @@ INSTALLED_APPS = (
     'apps.gwascatalog',
     'apps.riskreport',
     'apps.faq',
-
-    'apps.templatetags',
-    'apps.db'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -55,7 +50,6 @@ ROOT_URLCONF = 'pergenie.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
