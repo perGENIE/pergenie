@@ -1,6 +1,8 @@
 [![perGENIE screenshot](http://knmkr.info/img/portfolio/pergenie.png)](http://pergenie.org/)
 
-## Getting started with Vagrant & Ansible
+## For developers
+
+### Getting started with Vagrant & Ansible
 
 1\. Install `VirtualBox`, `Vagrant`, and `Ansible`.
 
@@ -26,8 +28,6 @@ $ ANSIBLE_TAGS=rollout vagrant provision
 See details in `pergenie/deploy`
 
 
-## For developers
-
 ### Getting started with Django development server
 
 1\. Install requirements
@@ -52,7 +52,6 @@ $ ${EDITOR} pergenie/settings/development.py  # e.g. pergenie/settings/developme
 
 ```
 $ createuser pergenie --password
-Password: pergenie
 $ createdb pergenie -O pergenie
 ```
 
@@ -71,38 +70,44 @@ $ python manage.py setup_go_vcf_tools
 $ python manage.py init_demo_user
 ```
 
-7\. Run Celery (for job queing)
+7\. Run Celery for job queing
 
 ```
 $ DJANGO_SETTINGS_MODULE=pergenie.settings.development celery --app=pergenie worker
 ```
 
-8\. Run perGENIE server
+8\. Run development server
 
 ```
 $ python manage.py runserver
 ```
 
-9\. Browse development server at `http://127.0.0.1:8000/`
+9\. Browse application at `http://127.0.0.1:8000/`
 
 
-## Notes
+## Notice
 
-- Versions of public database sources are pinned as follows:
+### About public data resources
 
-| Sources                | Versions         |
+Versions of public data resources are pinned as follows:
+
+| Resources              | Versions         |
 |------------------------|------------------|
 | Human Reference Genome | GRCh37p13        |
 | dbSNP                  | b144             |
 
 
-## Notice
+### About html design data
 
-- [Bootstrap](//getbootstrap.com/), Apache License v2.0
-- [Highcharts JS](//www.highcharts.com/), [for free under the Creative Commons Attribution-NonCommercial 3.0 License](//shop.highsoft.com/highcharts.html)
-- [jQuery MultiFile](//www.fyneworks.com/jquery/multifile/), MIT License
-- [Peity](//benpickles.github.io/peity/), MIT License
-- [Intro.js](//usablica.github.io/intro.js/), MIT License
+- Currently, main design data (`static/vendor/wood-admin/stylesheets/application.css`) is not included in this repository. You can purchase from [wrapbootstrap.com/theme/wood-admin-theme-WB0941911](//wrapbootstrap.com/theme/wood-admin-theme-WB0941911). Sorry for inconvenience.
+
+- Following open source stylesheet/image/javascript products are used under the each license:
+  - [Bootstrap](//getbootstrap.com/), Apache License v2.0
+  - [Highcharts JS](//www.highcharts.com/), [for free under the Creative Commons Attribution-NonCommercial 3.0 License](//shop.highsoft.com/highcharts.html)
+  - [jQuery](//jquery.com/), MIT License
+  - [jQuery MultiFile](//www.fyneworks.com/jquery/multifile/), MIT License
+  - [Peity](//benpickles.github.io/peity/), MIT License
+  - [Intro.js](//usablica.github.io/intro.js/), MIT License
 
 
 ## License
