@@ -18,4 +18,9 @@ class DashboardTestCase(TestCase):
         assert 'dashboard' in self.browser.title.lower()
 
     def test_menu_bar_contains_user_id(self):
+        self.browser.visit('/dashboard')
         assert self.browser.find_by_id('menu_user_id')[0].text.replace(' ', '').strip() == self.test_user_id
+
+    def test_menu_bar_contains_apps(self):
+        self.browser.visit('/dashboard')
+        assert [x.strip() for x in self.browser.find_by_id('menu_apps')[0].text.split(' ') if x.strip() != ''] == ['Dashboard', 'RiskReports', 'Genomes', 'FAQ']

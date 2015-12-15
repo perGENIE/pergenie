@@ -1,3 +1,4 @@
+{% load extras %}
 {% load i18n %}
 {% load staticfiles %}
 <!-- Nav -->
@@ -28,22 +29,46 @@
                   <b class="caret"></b>
                 </a>
 
-                <ul class="dropdown-menu secondary">
-                  <!-- TODO: list INSTALLED_APP -->
+                <ul class="dropdown-menu secondary" id="menu_apps">
                   <!-- Dashboard -->
-                  <!-- RiskReport -->
-                  <!-- Population -->
-                  <!-- MyGene -->
-                  <!-- MyCatalog -->
-                  <!-- Upload -->
-                  <!-- Library -->
-                  <!-- FAQ -->
-
-                  <li class="">
+                  {% if "dashboard"|is_in_installed_apps %}
+                  <li>
                     <a href="{% url 'apps.dashboard.views.index' %}">
                       <i class="icon-dashboard"></i> Dashboard
                     </a>
                   </li>
+                  {% endif %}
+
+                  <!-- RiskReport -->
+                  {% if "riskreport"|is_in_installed_apps %}
+                  <li>
+                    <a href="{% url 'apps.riskreport.views.index' %}">
+                      <i class="icon-align-left"></i> RiskReports
+                    </a>
+                  </li>
+                  {% endif %}
+
+                  <!-- TODO: Population -->
+
+                  <!-- Genome -->
+                  {% if "genome"|is_in_installed_apps %}
+                  <li>
+                    <a href="{% url 'apps.genome.views.upload' %}">
+                      <i class="icon-upload-alt"></i> Genomes
+                    </a>
+                  </li>
+                  {% endif %}
+
+                  <!-- TODO: Library -->
+
+                  <!-- FAQ -->
+                  {% if "faq"|is_in_installed_apps %}
+                  <li>
+                    <a href="{% url 'apps.faq.views.index' %}">
+                      <i class="icon-question-sign"></i> FAQ
+                    </a>
+                  </li>
+                  {% endif %}
 
                 </ul>
               </li>
