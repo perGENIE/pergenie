@@ -11,4 +11,4 @@ dependencies:
 
 test:
     override:
-        - cd pergenie && DJANGO_SETTINGS_MODULE=pergenie.settings.ci py.test apps/{landing,authentication,gwascatalog,riskreport} test
+        - cd pergenie && DJANGO_SETTINGS_MODULE=pergenie.settings.ci py.test apps/{landing,authentication,dashboard,gwascatalog,riskreport} test
