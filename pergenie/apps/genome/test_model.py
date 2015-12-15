@@ -7,8 +7,9 @@ from django.conf import settings
 from django.utils.translation import ugettext as _
 
 from apps.authentication.models import User
-from apps.gwascatalog.models import GwasCatalogSnp
+from apps.gwascatalog.models import GwasCatalogSnp, GwasCatalogPhenotype
 from .models import Genome, Genotype
+from lib.utils.population import POPULATION_UNKNOWN
 from lib.utils.date import today_with_tz
 from lib.utils import clogging
 log = clogging.getColorLogger(__name__)
@@ -28,7 +29,10 @@ class GenomeModelTestCase(TestCase):
         self.genome = None
 
         # SNPs for whitelist
+        phenotype, _ = GwasCatalogPhenotype.objects.get_or_create(name='test phenotype 1')
         GwasCatalogSnp(date_downloaded=today_with_tz,
+                       pubmed_id='12345678',
+                       phenotype=phenotype,
                        snp_id_current=527236043,  # rsLow rs6054257 => rsHigh rs527236043
                        population=['EastAsian']).save()
 
@@ -43,7 +47,7 @@ class GenomeModelTestCase(TestCase):
                              file_name='file_name.vcf',
                              display_name='display name',
                              file_format=Genome.FILE_FORMAT_VCF,
-                             population=Genome.POPULATION_UNKNOWN,
+                             population=POPULATION_UNKNOWN,
                              sex=Genome.SEX_UNKNOWN)
         self.genome.save()
         self.genome.readers.add(self.user)
@@ -54,7 +58,7 @@ class GenomeModelTestCase(TestCase):
         assert records[0].file_name == 'file_name.vcf'
         assert records[0].display_name == 'display name'
         assert records[0].file_format == Genome.FILE_FORMAT_VCF
-        assert records[0].population == Genome.POPULATION_UNKNOWN
+        assert records[0].population == POPULATION_UNKNOWN
         assert records[0].sex == Genome.SEX_UNKNOWN
         assert records[0].owner == self.user
         assert [x.id for x in records[0].readers.all()] == [self.user.id]
@@ -68,7 +72,7 @@ class GenomeModelTestCase(TestCase):
                              file_name='file_name.vcf',
                              display_name='display name',
                              file_format=Genome.FILE_FORMAT_VCF,
-                             population=Genome.POPULATION_UNKNOWN,
+                             population=POPULATION_UNKNOWN,
                              sex=Genome.SEX_UNKNOWN)
         self.genome.save()
 
@@ -97,7 +101,7 @@ class GenomeModelTestCase(TestCase):
                              file_name='file_name.vcf',
                              display_name='display name',
                              file_format=Genome.FILE_FORMAT_VCF,
-                             population=Genome.POPULATION_UNKNOWN,
+                             population=POPULATION_UNKNOWN,
                              sex=Genome.SEX_UNKNOWN)
         self.genome.save()
 
