@@ -108,6 +108,7 @@ Versions of public data resources are pinned as follows:
   - [jQuery MultiFile](//www.fyneworks.com/jquery/multifile/), MIT License
   - [Peity](//benpickles.github.io/peity/), MIT License
   - [Intro.js](//usablica.github.io/intro.js/), MIT License
+  - [google/code-prettify](//github.com/google/code-prettify/), Apache License v2.0
 
 
 ## License
