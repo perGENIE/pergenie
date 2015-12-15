@@ -1,4 +1,4 @@
-![screenshot](https://github.com/knmkr/perGENIE-private/blob/master/pergenie/screenshot/screenshot.png)
+![screenshot](https://github.com/knmkr/perGENIE-private/blob/master/pergenie/lib/screenshot/screenshot.png)
 
 ## Notice
 
