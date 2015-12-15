@@ -24,7 +24,7 @@ class Command(BaseCommand):
                                                                                  tag='0.0.2',
                                                                                  os_platform=platform.system().lower())
         tar_gz = os.path.join(tmp_dir, 'go-vcf-tools.tar.gz')
-        get_url_content(url, tar_gz)
+        get_url_content(url, tar_gz, if_not_exists=True)
 
         log.info('Extracting go-vcf-tools ...')
         with tarfile.open(tar_gz, 'r') as tar:
