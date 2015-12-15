@@ -1,4 +1,5 @@
 {% extends "layout/layout.html" %}
+{% load extras %}
 {% load i18n %}
 {% block title %}Dashboard{% endblock %}
 {% block description %}{% endblock %}
@@ -11,29 +12,36 @@
         <i class="icon-magic"></i> Components
       </div>
 
-      <!-- TODO: list from INSTALLED_APP -->
       <div class="row-fluid">
-        <div class="span12 padded5">
+        <div class="span12 padded5" id="dashboard_menu">
+
+          {% if "riskreport"|is_in_installed_apps %}
           <a href="{% url 'riskreport' %}">
             <button class="button square" href="#">
               <i class="icon-align-left icon-large"></i>
               <span class="button-text">RiskReport</span>
             </button>
           </a>
+          {% endif %}
 
+          {% if "genome"|is_in_installed_apps %}
           <a href="{% url 'genome-upload' %}">
             <button class="button square" href="#">
               <i class="icon-upload-alt icon-large"></i>
               <span class="button-text">Genomes</span>
             </button>
           </a>
+          {% endif %}
 
+          {% if "faq"|is_in_installed_apps %}
           <a href="{% url 'faq' %}">
             <button class="button square" href="#">
               <i class="icon-question-sign icon-large"></i>
               <span class="button-text">FAQ</span>
             </button>
           </a>
+          {% endif %}
+
         </div>
       </div>
     </div>

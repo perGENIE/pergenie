@@ -12,15 +12,16 @@ class DashboardTestCase(TestCase):
         self.user = auth.create_user(self.test_user_id, self.test_user_password, is_active=True)
 
         self.browser = auth.browser_login(Browser('django'), self.test_user_id, self.test_user_password)
+        self.browser.visit('/dashboard')
 
     def test_login_required(self):
-        self.browser.visit('/dashboard')
         assert 'dashboard' in self.browser.title.lower()
 
     def test_menu_bar_contains_user_id(self):
-        self.browser.visit('/dashboard')
         assert self.browser.find_by_id('menu_user_id')[0].text.replace(' ', '').strip() == self.test_user_id
 
     def test_menu_bar_contains_apps(self):
-        self.browser.visit('/dashboard')
-        assert [x.strip() for x in self.browser.find_by_id('menu_apps')[0].text.split(' ') if x.strip() != ''] == ['Dashboard', 'RiskReports', 'Genomes', 'FAQ']
+        assert [x.strip() for x in self.browser.find_by_id('menu_apps')[0].text.split(' ') if x.strip() != ''] == ['Dashboard', 'RiskReport', 'Genomes', 'FAQ']
+
+    def test_dashboard_menu_contains_apps(self):
+        assert [x.strip() for x in self.browser.find_by_id('dashboard_menu')[0].text.split(' ') if x.strip() != ''] == ['RiskReport', 'Genomes', 'FAQ']
