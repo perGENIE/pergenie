@@ -177,8 +177,10 @@ TEST_DATA_DIR = os.path.join(BASE_DIR, 'test', 'data')
 
 MAX_UPLOAD_GENOME_FILE_NAME_LENGTH = 255
 MAX_UPLOAD_GENOME_FILE_SIZE = 2 * (1024 ** 3)  # == 2Gbytes. 100Mbytes: 1024**2 == 104857600, 1Gbytes: 1024**3
-MAX_UPLOAD_GENOMEFILE_COUNT = 100
-
+MAX_UPLOAD_GENOMEFILE_COUNT = {
+    'default': 3,
+    'demo': 1
+}
 
 # GWAS Catalog
 

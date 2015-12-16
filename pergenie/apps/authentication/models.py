@@ -45,6 +45,7 @@ class User(AbstractBaseUser):
     is_active = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
     is_demo = models.BooleanField(default=False)
+    grade = models.ForeignKey(UserGrade)
 
     objects = UserManager()
 
@@ -86,3 +87,7 @@ class UserActivation(models.Model):
     user = models.OneToOneField(User)
     activation_key = models.CharField(max_length=40, unique=True)
     created_at = models.DateTimeField(default=timezone.now)
+
+
+class UserGrade(models.Model):
+    name = models.CharField(max_length=20, unique=True, default='default')

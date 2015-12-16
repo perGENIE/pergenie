@@ -8,7 +8,7 @@ from datetime import timedelta
 from django.utils import timezone
 from django.conf import settings
 
-from apps.authentication.models import User
+from apps.authentication.models import User, UserGrade
 from apps.genome.models import Genome, Genotype
 from apps.gwascatalog.models import GwasCatalogSnp
 from apps.riskreport.models import RiskReport
@@ -61,7 +61,8 @@ def create_demo_user():
     demo_user = User.objects.create_user(username=email,
                                          email=email,
                                          password='',
-                                         is_demo=True)
+                                         is_demo=True,
+                                         grade=UserGrade(name='demo'))
     genome.readers.add(demo_user)
     log.info('User created. id: {}'.format(demo_user.id))
 

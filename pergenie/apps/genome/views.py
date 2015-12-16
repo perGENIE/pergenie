@@ -34,7 +34,7 @@ def upload(request):
 
             # Ensure not to exceed the limits of upload file count.
             my_genomes = Genome.objects.filter(owner=request.user)
-            if len(my_genomes) + len(upload_files) > settings.MAX_UPLOAD_GENOMEFILE_COUNT:
+            if len(my_genomes) + len(upload_files) > settings.MAX_UPLOAD_GENOMEFILE_COUNT.get(request.user.grade.name, 'default'):
                 messages.error(request, _('Too many files.'))
                 break
 
