@@ -28,10 +28,10 @@ class Genome(models.Model):
     display_name = models.CharField(max_length=100)
 
     FILE_FORMAT_VCF = 'VCF'
-    FILE_FORMAT_23ANDME = 'ANDME'
+    # FILE_FORMAT_23ANDME = 'ANDME'
     FILE_FORMAT_CHOICES = [
         (FILE_FORMAT_VCF, 'VCF'),
-        (FILE_FORMAT_23ANDME, '23andMe CSV'),
+        # (FILE_FORMAT_23ANDME, '23andMe CSV'),
     ]
     file_format = models.CharField(max_length=5,
                                    choices=FILE_FORMAT_CHOICES,
@@ -41,17 +41,17 @@ class Genome(models.Model):
                                   choices=POPULATION_CHOICES,
                                   default=POPULATION_UNKNOWN)
 
-    SEX_MALE = 'M'
-    SEX_FEMALE = 'F'
-    SEX_UNKNOWN = 'U'
-    SEX_CHOICES = [
-        (SEX_UNKNOWN, _('unknown')),
-        (SEX_MALE, _('Male')),
-        (SEX_FEMALE, _('Female')),
+    GENDER_MALE = 'M'
+    GENDER_FEMALE = 'F'
+    GENDER_UNKNOWN = 'U'
+    GENDER_CHOICES = [
+        (GENDER_UNKNOWN, _('Unknown')),
+        (GENDER_MALE, _('Male')),
+        (GENDER_FEMALE, _('Female')),
     ]
-    sex = models.CharField(max_length=1,
-                           choices=SEX_CHOICES,
-                           default=SEX_UNKNOWN)
+    gender = models.CharField(max_length=1,
+                           choices=GENDER_CHOICES,
+                           default=GENDER_UNKNOWN)
 
     status = models.IntegerField(default=0)
     error = models.CharField(max_length=256, blank=True, null=True)

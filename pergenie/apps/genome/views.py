@@ -1,6 +1,7 @@
 import os
 
 from django.db.models import Q
+from django.db import IntegrityError, transaction
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
@@ -44,46 +45,52 @@ def upload(request):
                 os.makedirs(upload_dir)
 
             for upload_file in upload_files:
-                genome = Genome(owner=request.user,
-                                file_name=upload_file.name,
-                                display_name=upload_file.name,
-                                file_format=form.cleaned_data['file_format'],
-                                population=form.cleaned_data['population'],
-                                sex=form.cleaned_data['sex'])
+                with transaction.atomic():
+                    genome = Genome(owner=request.user,
+                                    file_name=upload_file.name,
+                                    display_name=upload_file.name,
+                                    file_format=form.cleaned_data['file_format'],
+                                    population=form.cleaned_data['population'],
+                                    gender=form.cleaned_data['gender'])
 
-                # Convert UploadedFile object to a file
-                uploaded_file_path = os.path.join(upload_dir, str(genome.id))
-                with open(uploaded_file_path, 'wb+') as fout:
-                    for chunk in upload_file.chunks():
-                        fout.write(chunk)
+                    # Convert UploadedFile object to a file
+                    uploaded_file_path = os.path.join(upload_dir, str(genome.id))
+                    with open(uploaded_file_path, 'wb+') as fout:
+                        for chunk in upload_file.chunks():
+                            fout.write(chunk)
 
-                # Ensure the file contains the content that the content-type header claims -- "trust but verify".
-                # Filetype identification using libmagic via python-magic
-                m = magic.Magic(mime_encoding=True)
-                magic_filetype = m.from_file(uploaded_file_path)
+                    # Ensure the file contains the content that the content-type header claims -- "trust but verify".
+                    # Filetype identification using libmagic via python-magic
+                    m = magic.Magic(mime_encoding=True)
+                    magic_filetype = m.from_file(uploaded_file_path)
 
-                if magic_filetype not in ('us-ascii'):
-                    msg = _('File type not allowed, or encoding not allowed {magic_filetype}: {file_name}'.format(file_name=genome.file_name, magic_filetype=magic_filetype))
-                    log.warn(msg)
-                    messages.error(request, msg)
+                    if magic_filetype not in ('us-ascii'):
+                        msg = _('File type not allowed, or encoding not allowed {magic_filetype}: {file_name}'.format(file_name=genome.file_name, magic_filetype=magic_filetype))
+                        log.warn(msg)
+                        messages.error(request, msg)
+                        try:
+                            os.remove(uploaded_file_path)
+                        except OSError:
+                            log.error('Could not remove invalid uploaded file')
+
+                        messages.error(request, _('Invalid request'))
+                        continue
+
                     try:
-                        os.remove(uploaded_file_path)
-                    except OSError:
-                        log.error('Could not remove invalid uploaded file')
+                        genome.save()
+                    except IntegrityError:
+                        messages.error(request, _('Already submitted file name'))
+                        continue
 
-                    messages.error(request, _('Invalid request'))
-                    continue
+                    genome.readers.add(request.user)
 
-                genome.save()
-                genome.readers.add(request.user)
+                    msg = _('%(file_name)s uploaded.') % {'file_name': upload_file.name}
 
-                msg = _('%(file_name)s uploaded.') % {'file_name': upload_file.name}
+                    # Import genome into DB as background job.
+                    genome.create_genotypes()
+                    msg += _(', and now importing...')
 
-                # Import genome into DB as background job.
-                genome.create_genotypes()
-                msg += _(', and now importing...')
-
-                messages.success(request, msg)
+                    messages.success(request, msg)
 
             break
 
@@ -95,7 +102,7 @@ def upload(request):
 
     return render(request, 'upload.html',
                   {'POPULATION_CHOICES': POPULATION_CHOICES,
-                   'SEX_CHOICES': Genome.SEX_CHOICES,
+                   'GENDER_CHOICES': Genome.GENDER_CHOICES,
                    'FILE_FORMAT_CHOICES': Genome.FILE_FORMAT_CHOICES,
                    'my_genomes': my_genomes})
 

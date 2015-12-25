@@ -49,7 +49,7 @@ class GenomeModelTestCase(TestCase):
                              display_name='display name',
                              file_format=Genome.FILE_FORMAT_VCF,
                              population=POPULATION_UNKNOWN,
-                             sex=Genome.SEX_UNKNOWN)
+                             gender=Genome.GENDER_UNKNOWN)
         self.genome.save()
         self.genome.readers.add(self.user)
 
@@ -60,11 +60,11 @@ class GenomeModelTestCase(TestCase):
         assert records[0].display_name == 'display name'
         assert records[0].file_format == Genome.FILE_FORMAT_VCF
         assert records[0].population == POPULATION_UNKNOWN
-        assert records[0].sex == Genome.SEX_UNKNOWN
+        assert records[0].gender == Genome.GENDER_UNKNOWN
         assert records[0].owner == self.user
         assert [x.id for x in records[0].readers.all()] == [self.user.id]
 
-    def test_invalid_params_should_fail_create(self):
+    def test_duplicate_genome_name_should_fail_create(self):
         pass
 
     def test_create_genotypes_ok(self):
@@ -74,7 +74,7 @@ class GenomeModelTestCase(TestCase):
                              display_name='display name',
                              file_format=Genome.FILE_FORMAT_VCF,
                              population=POPULATION_UNKNOWN,
-                             sex=Genome.SEX_UNKNOWN)
+                             gender=Genome.GENDER_UNKNOWN)
         self.genome.save()
 
         genome_file_dir = os.path.join(settings.GENOME_UPLOAD_DIR, str(self.user.id))
@@ -103,7 +103,7 @@ class GenomeModelTestCase(TestCase):
                              display_name='display name',
                              file_format=Genome.FILE_FORMAT_VCF,
                              population=POPULATION_UNKNOWN,
-                             sex=Genome.SEX_UNKNOWN)
+                             gender=Genome.GENDER_UNKNOWN)
         self.genome.save()
 
         genome_file_dir = os.path.join(settings.GENOME_UPLOAD_DIR, str(self.user.id))
