@@ -49,7 +49,9 @@ class User(AbstractBaseUser):
     is_active = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
     is_demo = models.BooleanField(default=False)
-    grade = models.ForeignKey(UserGrade)
+
+    default_user_grade, _ = UserGrade.objects.get_or_create()
+    grade = models.ForeignKey(UserGrade, default=default_user_grade)
 
     objects = UserManager()
 
