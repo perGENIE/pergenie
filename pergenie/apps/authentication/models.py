@@ -16,6 +16,10 @@ class UserManager(BaseUserManager):
         email = self.normalize_email(email)
         user = self.model(username=username, email=email, **extra_fields)
         user.set_password(password)
+
+        default_user_grade, _ = UserGrade.objects.get_or_create(name='default')
+        user.grade = default_user_grade
+
         user.save(using=self._db)
         return user
 
@@ -49,9 +53,7 @@ class User(AbstractBaseUser):
     is_active = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
     is_demo = models.BooleanField(default=False)
-
-    default_user_grade, _ = UserGrade.objects.get_or_create()
-    grade = models.ForeignKey(UserGrade, default=default_user_grade)
+    grade = models.ForeignKey(UserGrade)
 
     objects = UserManager()
 

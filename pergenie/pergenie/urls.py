@@ -21,6 +21,7 @@ urlpatterns = [
 
     # Authentication
     url(r'^register/$', authentication_views.register),
+    url(r'^about/$',    authentication_views.about, name='about'),
     url(r'^activation/(?P<activation_key>\w{{{activation_key_length}}})/$'.format(activation_key_length=settings.ACCOUNT_ACTIVATION_KEY_LENGTH),
                         authentication_views.activation),
     url(r'^login/$',    authentication_views.login),
