@@ -29,8 +29,8 @@ class UploadForm(forms.Form):
                         'invalid_choice': _('Select file format.')}
     )
 
-    sex = forms.ChoiceField(
-        Genome.SEX_CHOICES,
+    gender = forms.ChoiceField(
+        Genome.GENDER_CHOICES,
         error_messages={'required': _('Select file format.'),
                         'invalid_choice': _('Select file format.')}
     )

@@ -47,7 +47,7 @@ class GenomeBrowserTestCase(TestCase):
         self.browser.visit('/genome/upload')
         default = {'file_format': Genome.FILE_FORMAT_VCF,
                    'population': POPULATION_UNKNOWN,
-                   'sex': Genome.SEX_UNKNOWN}
+                   'gender': Genome.GENDER_UNKNOWN}
         self.browser.attach_file('upload_files', os.path.join(settings.TEST_DATA_DIR, 'test_vcf42.vcf'))
         self.browser.fill_form(default)
         self.browser.find_by_name('submit').click()
@@ -57,7 +57,7 @@ class GenomeBrowserTestCase(TestCase):
         assert self.genomes[0].file_name == 'test_vcf42.vcf'
         assert self.genomes[0].file_format == Genome.FILE_FORMAT_VCF
         assert self.genomes[0].population == POPULATION_UNKNOWN
-        assert self.genomes[0].sex == Genome.SEX_UNKNOWN
+        assert self.genomes[0].gender == Genome.GENDER_UNKNOWN
         assert [x.id for x in self.genomes[0].readers.all()] == [self.user.id]
 
         genotypes = self.genomes[0].get_genotypes()
@@ -68,7 +68,7 @@ class GenomeBrowserTestCase(TestCase):
         self.browser.visit('/genome/upload')
         default = {'file_format': Genome.FILE_FORMAT_VCF,
                    'population': POPULATION_UNKNOWN,
-                   'sex': Genome.SEX_UNKNOWN}
+                   'gender': Genome.GENDER_UNKNOWN}
 
         self.browser.attach_file('upload_files', os.path.join(settings.TEST_DATA_DIR, 'test_vcf42.a.vcf'))
         self.browser.fill_form(default)
@@ -92,6 +92,22 @@ class GenomeBrowserTestCase(TestCase):
             for owner in genome.readers.all():
                 assert owner.id == self.user.id
 
+    def test_duplicate_genomes_upload_should_fail_upload(self):
+        self.browser.visit('/genome/upload')
+        default = {'file_format': Genome.FILE_FORMAT_VCF,
+                   'population': POPULATION_UNKNOWN,
+                   'gender': Genome.GENDER_UNKNOWN}
+
+        self.browser.attach_file('upload_files', os.path.join(settings.TEST_DATA_DIR, 'test_vcf42.a.vcf'))
+        self.browser.fill_form(default)
+        self.browser.find_by_name('submit').click()
+
+        self.browser.attach_file('upload_files', os.path.join(settings.TEST_DATA_DIR, 'test_vcf42.a.vcf'))
+        self.browser.fill_form(default)
+        self.browser.find_by_name('submit').click()
+
+        assert len(Genome.objects.filter(owner=self.user)) == 1
+
     def test_invalid_genome_file_should_fail_upload(self):
         pass
 
@@ -101,7 +117,7 @@ class GenomeBrowserTestCase(TestCase):
         self.browser.attach_file('upload_files', os.path.join(settings.TEST_DATA_DIR, 'test_vcf42.vcf'))
         self.browser.select('file_format', Genome.FILE_FORMAT_VCF)
         self.browser.select('population', POPULATION_UNKNOWN)
-        self.browser.select('sex', Genome.SEX_UNKNOWN)
+        self.browser.select('gender', Genome.GENDER_UNKNOWN)
         self.browser.find_by_name('submit').click()
 
         self.genomes = [Genome.objects.get(owner=self.user)]
@@ -121,7 +137,7 @@ class GenomeBrowserTestCase(TestCase):
         self.browser.attach_file('upload_files', os.path.join(settings.TEST_DATA_DIR, 'test_vcf42.vcf'))
         self.browser.select('file_format', Genome.FILE_FORMAT_VCF)
         self.browser.select('population', POPULATION_UNKNOWN)
-        self.browser.select('sex', Genome.SEX_UNKNOWN)
+        self.browser.select('gender', Genome.GENDER_UNKNOWN)
         self.browser.find_by_name('submit').click()
 
         self.genomes = [Genome.objects.get(owner=self.user)]

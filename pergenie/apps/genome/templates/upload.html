@@ -21,9 +21,9 @@
 
                 <form class="form-horizontal" action="{% url 'genome-upload' %}" method="post" enctype="multipart/form-data">
                   {% csrf_token %}
-		          <fieldset>
+		              <fieldset>
                     <div class="control-group">
-                      <label class="control-label" title="see help?"><a data-toggle="modal" href="#uploadModal">Genome File <span class="glyphicon glyphicon-question-sign"></span></a></label>
+                      <label class="control-label">Genome File</label>
                       <div class="controls">
                         <input type="file" name="upload_files" class="multi" maxlength="{{ allowed_upload_genomefile_count }}">
                       </div>
@@ -31,9 +31,7 @@
 
                     <div>
                       <div class="control-group">
-                        <label class="control-label" title="see help?">
-                          <a data-toggle="modal" href="#uploadModal">File Format <span class="glyphicon glyphicon-question-sign"></span></a>
-                        </label>
+                        <label class="control-label">File Format</label>
                         <div class="controls">
                           <select name="file_format">
                             {% for file_format_value, file_format_display_name in FILE_FORMAT_CHOICES %}
@@ -44,9 +42,7 @@
                       </div>
 
                       <div class="control-group">
-                        <label class="control-label" title="see help?">
-                          <a data-toggle="modal" href="#uploadModal">Population <span class="glyphicon glyphicon-question-sign"></span></a>
-                        </label>
+                        <label class="control-label">Population</label>
                         <div class="controls">
                           <select name="population">
                             {% for population_value, population_display_name in POPULATION_CHOICES %}
@@ -57,13 +53,11 @@
                       </div>
 
                       <div class="control-group">
-                        <label class="control-label">
-                          <a data-toggle="modal" href="#uploadModal">Sex <span class="glyphicon glyphicon-question-sign"></span></a>
-                        </label>
+                        <label class="control-label">Gender</label>
                         <div class="controls">
-                          <select name="sex">
-                            {% for sex_value, sex_display_name in SEX_CHOICES %}
-                            <option value="{{ sex_value }}">{{ sex_display_name }}</option>
+                          <select name="gender">
+                            {% for gender_value, gender_display_name in GENDER_CHOICES %}
+                            <option value="{{ gender_value }}">{{ gender_display_name }}</option>
                             {% endfor %}
                           </select>
                         </div>
@@ -71,7 +65,6 @@
 
                     </div>
 
-                    <!-- <span class="label label-warning">Notice</span> genome fileをアップロードする前に，<a href="#">利用規約</a>をご確認ください． -->
                     <div>
                       <div class="form-actions">
                         <input name="submit" type="submit" class="btn btn-primary">
@@ -241,7 +234,4 @@
 
 {% block js %}
 <script type="text/javascript">window.upload_status_url = "{% url 'genome-status' %}";</script>
-
-<script type="text/javascript">$('label.control-label').tooltip();</script>
-<script type="text/javascript">$('a.helpModal').tooltip({ position: "bottom center"});</script>
 {% endblock %}

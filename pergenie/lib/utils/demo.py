@@ -38,7 +38,7 @@ def create_demo_user():
                                                       display_name='Demo VCF',
                                                       file_format=Genome.FILE_FORMAT_VCF,
                                                       population=POPULATION_EAST_ASIAN,
-                                                      sex=Genome.SEX_MALE)
+                                                      gender=Genome.GENDER_MALE)
     # Init default demo genotype and riskreport (once)
     if is_created:
         # Prepare genome file
