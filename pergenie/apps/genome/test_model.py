@@ -22,10 +22,8 @@ class GenomeModelTestCase(TestCase):
     def setUp(self):
         self.test_user_id = 'test-user@pergenie.org'
         self.test_user_password = 'test-user-password'
-        self.default_user_grade, _ = UserGrade.objects.get_or_create()
         self.user = User.objects.create_user(self.test_user_id,
-                                             self.test_user_password,
-                                             grade=self.default_user_grade)
+                                             self.test_user_password)
         assert self.user.grade.name == 'default'
         self.user.is_active = True
         self.user.save()

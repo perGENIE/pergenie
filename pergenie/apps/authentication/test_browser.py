@@ -42,7 +42,7 @@ class AuthenticationLoginBrowserTestCase(TestCase):
 
         # logout
         self.browser.visit('/logout')
-        assert '/login' in self.browser.url
+        assert 'login' in self.browser.title.lower()
 
     def test_too_long_email_should_fail_login(self):
         self.browser.fill('email', 'a' * 254 + '@pergenie.org')

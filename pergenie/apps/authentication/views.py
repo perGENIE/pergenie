@@ -63,6 +63,10 @@ def register(request):
     return render(request, 'register.html')
 
 
+def about(request):
+    return render(request, 'about.html')
+
+
 def activation(request, activation_key):
     try:
         activation_target = UserActivation.objects.get(activation_key=activation_key)
