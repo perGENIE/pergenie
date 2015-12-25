@@ -7,6 +7,10 @@ SECRET_KEY = '{{ django_secret_key }}'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
+INSTALLED_APPS += (
+    'apps.landing',
+)
+
 ALLOWED_HOSTS = ['{{ django_allowed_host }}',
                  'www.{{ django_allowed_host }}']
 
