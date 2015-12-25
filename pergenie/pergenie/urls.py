@@ -9,6 +9,8 @@ from apps.dashboard import views as dashboard_views
 from apps.genome import views as genome_views
 from apps.riskreport import views as riskreport_views
 from apps.faq import views as faq_views
+from lib.utils import clogging
+log = clogging.getColorLogger(__name__)
 
 admin.autodiscover()
 
@@ -69,3 +71,15 @@ for extra_app in extra_apps:
     urlpatterns += [
         url('^{name}/'.format(name=name), include('apps.{name}.urls'.format(name=name))),
     ]
+
+# Set root (/)
+if 'apps.landing' in extra_apps:
+    from apps.landing import views as landing_views
+    root_view = landing_views.index
+else:
+    log.info('apps.landing is not installed. So /login is set as root (/) url.')
+    root_view = authentication_views.login
+
+urlpatterns += [
+    url(r'^$', root_view),
+]
