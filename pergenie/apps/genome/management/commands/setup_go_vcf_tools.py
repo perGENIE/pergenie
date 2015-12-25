@@ -21,7 +21,7 @@ class Command(BaseCommand):
 
         log.info('Fetching go-vcf-tools ...')
         url = '{repo}/releases/download/{tag}/{os_platform}.amd64.tar.gz'.format(repo='https://github.com/knmkr/go-vcf-tools',
-                                                                                 tag='0.0.2',
+                                                                                 tag='0.0.3',
                                                                                  os_platform=platform.system().lower())
         tar_gz = os.path.join(tmp_dir, 'go-vcf-tools.tar.gz')
         get_url_content(url, tar_gz, if_not_exists=True)
