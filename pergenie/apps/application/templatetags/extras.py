@@ -2,11 +2,13 @@
 To use filters bellow, put `{% load extras %}` in templates.
 """
 
+import math
+
 from django import template
 from django.template.defaultfilters import stringfilter  # only expects a string as the first argument
 from django.conf import settings
-import math
 
+from lib.utils.population import POPULATION_MAP
 
 register = template.Library()
 
@@ -83,3 +85,8 @@ def hide_None(s):
 def is_in_installed_apps(s):
     installed_apps = [x for x in settings.INSTALLED_APPS if x.startswith('apps.')]
     return 'apps.' + s in installed_apps
+
+@register.filter
+@stringfilter
+def population_display_name(s):
+    return POPULATION_MAP.get(s, '.')

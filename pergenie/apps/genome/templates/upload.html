@@ -1,4 +1,5 @@
 {% extends "layout/layout.html" %}
+{% load extras %}
 {% load i18n %}
 {% load staticfiles %}
 {% block title %}Upload{% endblock %}
@@ -67,8 +68,16 @@
 
                     <div>
                       <div class="form-actions">
+                        {% if request.user.grade.name == 'demo' %}
+                        <input type="reset" value="Submit" class="btn disabled">
+                        {% trans "Demo users are not allowed to upload." %}
+                        {% elif is_exceed_file_count_limits %}
+                        <input name="submit" type="submit" class="btn btn-primary disabled">
+                        <input name="reset" type="reset" value="reset" class="btn">
+                        {% else %}
                         <input name="submit" type="submit" class="btn btn-primary">
                         <input name="reset" type="reset" value="reset" class="btn">
+                        {% endif %}
                       </div>
                     </div>
 
@@ -150,7 +159,7 @@
                       <th>Population</th>
                       <th>File Format</th>
                       <th>Status</th>
-                      <th></th>
+                      <th>Actions</th>
                     </tr>
                   </thead>
 
@@ -158,30 +167,36 @@
                     {% for my_genome in my_genomes %}
                     <tr class="genome_info">
                       <td class="genome_id" style="display:none">{{ my_genome.id }}</td>
-                      <td class="genome_file_name">{{ my_genome.file_name }}</td>
+                      <td class="genome_file_name">{{ my_genome.display_name }}</td>
                       <td>{{ my_genome.created_at }}</td>
                       <td>
-                        <span class="label label-success">{{ my_genome.population }}</span>
+                        <span class="label label-success">{{ my_genome.population|population_display_name  }}</span>
                       </td>
                       <td>
                         <span class="label label-success">{{ my_genome.file_format }}</span>
                       </td>
                       <td>
-                        {% if my_genome.status == -1 %}
-                          <span class="badge badge-red">failed</span>
-		                {% elif my_genome.status >= 100 %}
-                          <span class="badge badge-green">ok</span>
-		                {% else %}
+                        {% if my_genome.status == 100 %}
+                          <span class="badge badge-green">OK</span>
+                        {% elif 100 > my_genome.status and my_genome.status > 0 %}
                           <div class="progress progress-info progress-striped active">
                             <div class="bar" style="width: {{ my_genome.status }}%"></div>
                           </div>
-		                {% endif %}
+                        {% elif my_genome.status and my_genome.status == -1 %}
+                          <span class="badge badge-red">FAILED</span>
+                        {% else %}
+                          <span class="badge badge-red">{{ my_genome.status }}</span>
+		                    {% endif %}
                       </td>
 
                       <td>
                         <!-- Delete  -->
-                        {% if my_genome.owner == request.user.id %}
+                        {% if my_genome.owner.id == request.user.id %}
                         <button class="btn btn-red" type="button" data-toggle="modal" data-target="#deleteModal{{ forloop.counter0 }}">
+                          <i class="icon-trash"></i> Remove
+                        </button>
+                        {% else %}
+                        <button class="btn disabled" type="button">
                           <i class="icon-trash"></i> Remove
                         </button>
                         {% endif %}

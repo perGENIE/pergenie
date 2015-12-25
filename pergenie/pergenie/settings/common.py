@@ -180,7 +180,7 @@ MAX_UPLOAD_GENOME_FILE_NAME_LENGTH = 255
 MAX_UPLOAD_GENOME_FILE_SIZE = 2 * (1024 ** 3)  # == 2Gbytes. 100Mbytes: 1024**2 == 104857600, 1Gbytes: 1024**3
 MAX_UPLOAD_GENOMEFILE_COUNT = {
     'default': 3,
-    'demo': 1
+    'demo': 0
 }
 
 # GWAS Catalog
