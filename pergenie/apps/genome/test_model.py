@@ -6,7 +6,7 @@ from django.test.utils import override_settings
 from django.conf import settings
 from django.utils.translation import ugettext as _
 
-from apps.authentication.models import User
+from apps.authentication.models import User, UserGrade
 from apps.gwascatalog.models import GwasCatalogSnp, GwasCatalogPhenotype
 from .models import Genome, Genotype
 from lib.utils.population import POPULATION_UNKNOWN
@@ -22,8 +22,11 @@ class GenomeModelTestCase(TestCase):
     def setUp(self):
         self.test_user_id = 'test-user@pergenie.org'
         self.test_user_password = 'test-user-password'
+        self.default_user_grade, _ = UserGrade.objects.get_or_create()
         self.user = User.objects.create_user(self.test_user_id,
-                                             self.test_user_password)
+                                             self.test_user_password,
+                                             grade=self.default_user_grade)
+        assert self.user.grade.name == 'default'
         self.user.is_active = True
         self.user.save()
         self.genome = None
@@ -33,7 +36,7 @@ class GenomeModelTestCase(TestCase):
         GwasCatalogSnp(date_downloaded=today_with_tz,
                        pubmed_id='12345678',
                        phenotype=phenotype,
-                       snp_id_current=527236043,  # rsLow rs6054257 => rsHigh rs527236043
+                       snp_id_current=6054257,
                        population=['EastAsian']).save()
 
     def tearDown(self):
@@ -91,7 +94,7 @@ class GenomeModelTestCase(TestCase):
         assert genome.status == 100
         assert genotypes.count() == 1
 
-        one_genotype = Genotype.objects.get(genome=self.genome.id, rs_id_current=527236043)
+        one_genotype = Genotype.objects.get(genome=self.genome.id, rs_id_current=6054257)
 
         assert one_genotype.genotype == ['G', 'G']
 
