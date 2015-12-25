@@ -8,7 +8,10 @@ machine:
 dependencies:
     pre:
         - pip install -r requirements/ci.txt
+        - wget https://github.com/knmkr/go-vcf-tools/releases/download/0.0.3/linux.amd64.tar.gz; tar zxvf linux.amd64.tar.gz
+        - cp linux.amd64/* pergenie/bin/
+        - rm -rf linux.amd64{,.tar.gz}
 
 test:
     override:
-        - cd pergenie && DJANGO_SETTINGS_MODULE=pergenie.settings.ci py.test apps/{landing,authentication,dashboard,gwascatalog,riskreport} test
+        - cd pergenie && DJANGO_SETTINGS_MODULE=pergenie.settings.ci py.test apps test
