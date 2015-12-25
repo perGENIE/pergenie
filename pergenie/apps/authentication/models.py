@@ -10,15 +10,16 @@ from django.conf import settings
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, username, email, password=None, **extra_fields):
+    def create_user(self, username, email, password=None, grade=None, **extra_fields):
         if not email:
             raise ValueError('Users must have an email address')
         email = self.normalize_email(email)
         user = self.model(username=username, email=email, **extra_fields)
         user.set_password(password)
 
-        default_user_grade, _ = UserGrade.objects.get_or_create(name='default')
-        user.grade = default_user_grade
+        if not grade:
+            grade, _ = UserGrade.objects.get_or_create(name='default')
+        user.grade = grade
 
         user.save(using=self._db)
         return user
@@ -52,7 +53,6 @@ class User(AbstractBaseUser):
     email = models.EmailField(_('email address'), max_length=254, unique=True)
     is_active = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
-    is_demo = models.BooleanField(default=False)
     grade = models.ForeignKey(UserGrade)
 
     objects = UserManager()
@@ -63,13 +63,13 @@ class User(AbstractBaseUser):
     _demo_name = 'demo@{}'.format(settings.DOMAIN)
 
     def get_full_name(self):
-        return self._demo_name if self.is_demo else self.email
+        return self._demo_name if self.grade.name == 'demo' else self.email
 
     def get_short_name(self):
-        return self._demo_name if self.is_demo else self.email
+        return self._demo_name if self.grade.name == 'demo' else self.email
 
     def __str__(self):
-        return self._demo_name if self.is_demo else self.email
+        return self._demo_name if self.grade.name == 'demo' else self.email
 
     def has_perm(self, perm, obj=None):
         "Does the user have a specific permission?"

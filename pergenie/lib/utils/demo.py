@@ -25,7 +25,7 @@ def create_demo_user():
       - file_name = settings.DEMO_GENOME_FILE_NAME
 
     - demo User is defined as:
-      - is_demo = True
+      - grade.name = 'demo'
     """
 
     admin_user = User.objects.filter(is_admin=True).last()
@@ -58,11 +58,11 @@ def create_demo_user():
 
     # Init new demo user (everytime)
     email = '{}@{}'.format(uuid4(), settings.DOMAIN)
+    demo_user_grade, _ = UserGrade.objects.get_or_create(name='demo')
     demo_user = User.objects.create_user(username=email,
                                          email=email,
                                          password='',
-                                         is_demo=True,
-                                         grade=UserGrade(name='demo'))
+                                         grade=demo_user_grade)
     genome.readers.add(demo_user)
     log.info('User created. id: {}'.format(demo_user.id))
 
@@ -76,7 +76,7 @@ def prune_demo_user():
     """
 
     date_30_days_ago = timezone.now() - timedelta(30)
-    not_logged_in_30_days_demo_users = User.objects.filter(is_demo=True, last_login__lt=date_30_days_ago)
+    not_logged_in_30_days_demo_users = User.objects.filter(grade__name='demo', last_login__lt=date_30_days_ago)
 
     admin_users = User.objects.filter(is_admin=True)
     demo_genomes = Genome.objects.filter(owner__in=admin_users, file_name=settings.DEMO_GENOME_FILE_NAME)

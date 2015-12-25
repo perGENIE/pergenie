@@ -35,8 +35,8 @@ def upload(request):
 
             # Ensure not to exceed the limits of upload file count.
             my_genomes = Genome.objects.filter(owner=request.user)
-            if len(my_genomes) + len(upload_files) > settings.MAX_UPLOAD_GENOMEFILE_COUNT.get(request.user.grade.name, 'default'):
-                messages.error(request, _('Too many files.'))
+            if len(my_genomes) + len(upload_files) > settings.MAX_UPLOAD_GENOMEFILE_COUNT[request.user.grade.name]:
+                messages.error(request, _('Upload file limits exceeded.'))
                 break
 
             # Ensure upload dir exists.
@@ -100,11 +100,15 @@ def upload(request):
     reader_genomes = Genome.objects.filter(readers__in=user)
     my_genomes = list(owner_genomes) + list(reader_genomes)
 
+    is_exceed_file_count_limits = len(owner_genomes) >= settings.MAX_UPLOAD_GENOMEFILE_COUNT[request.user.grade.name]
+
     return render(request, 'upload.html',
                   {'POPULATION_CHOICES': POPULATION_CHOICES,
                    'GENDER_CHOICES': Genome.GENDER_CHOICES,
                    'FILE_FORMAT_CHOICES': Genome.FILE_FORMAT_CHOICES,
-                   'my_genomes': my_genomes})
+                   'my_genomes': my_genomes,
+                   'owner_genomes': owner_genomes,
+                   'is_exceed_file_count_limits': is_exceed_file_count_limits})
 
 
 @login_required
