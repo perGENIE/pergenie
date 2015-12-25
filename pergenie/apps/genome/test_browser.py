@@ -31,14 +31,8 @@ class GenomeBrowserTestCase(TestCase):
         GwasCatalogSnp(date_downloaded=today_with_tz,
                        pubmed_id='12345678',
                        phenotype=phenotype,
-                       snp_id_current=527236043,  # rsLow rs6054257 => rsHigh rs527236043
+                       snp_id_current=6054257,
                        population=['EastAsian']).save()
-
-    def tearDown(self):
-        if self.genomes:
-            for genome in self.genomes:
-                genome.delete_genotypes()
-                genome.delete()
 
     def test_genome_index_page_login_required(self):
         self.browser.visit('/logout')
@@ -76,19 +70,19 @@ class GenomeBrowserTestCase(TestCase):
                    'population': POPULATION_UNKNOWN,
                    'sex': Genome.SEX_UNKNOWN}
 
-        self.browser.attach_file('upload_files', os.path.join(settings.TEST_DATA_DIR, 'test_vcf42.vcf'))
+        self.browser.attach_file('upload_files', os.path.join(settings.TEST_DATA_DIR, 'test_vcf42.a.vcf'))
         self.browser.fill_form(default)
         self.browser.find_by_name('submit').click()
         self.genomes = Genome.objects.filter(owner=self.user)
         assert len(self.genomes) == 1
 
-        self.browser.attach_file('upload_files', os.path.join(settings.TEST_DATA_DIR, 'test_vcf42.vcf'))
+        self.browser.attach_file('upload_files', os.path.join(settings.TEST_DATA_DIR, 'test_vcf42.b.vcf'))
         self.browser.fill_form(default)
         self.browser.find_by_name('submit').click()
         self.genomes = Genome.objects.filter(owner=self.user)
         assert len(self.genomes) == 2
 
-        self.browser.attach_file('upload_files', os.path.join(settings.TEST_DATA_DIR, 'test_vcf42.vcf'))
+        self.browser.attach_file('upload_files', os.path.join(settings.TEST_DATA_DIR, 'test_vcf42.c.vcf'))
         self.browser.fill_form(default)
         self.browser.find_by_name('submit').click()
         self.genomes = Genome.objects.filter(owner=self.user)
