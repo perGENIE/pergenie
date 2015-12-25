@@ -4,7 +4,6 @@ from django.conf.urls.static import static
 from django.contrib import admin
 
 from apps.internal import views as internal_views
-from apps.landing import views as landing_views
 from apps.authentication import views as authentication_views
 from apps.dashboard import views as dashboard_views
 from apps.genome import views as genome_views
@@ -14,9 +13,6 @@ from apps.faq import views as faq_views
 admin.autodiscover()
 
 urlpatterns = [
-    url(r'^$', landing_views.index, name='index'),
-    url(r'^about/$', landing_views.about, name='about'),
-
     # Internal
     url(r'^internal/admin/', include(admin.site.urls)),
     url(r'^internal/health-check/$', internal_views.health_check),
@@ -56,19 +52,6 @@ urlpatterns = [
     # FAQ
     url(r'^faq/$', faq_views.index, name='faq'),
 
-    # url(r'^population/$', 'apps.population.views.index'),
-
-    # url(r'^mygene/$', 'apps.mygene.views.index'),
-    # url(r'^mygene/(?P<gene>.*?)/$', 'apps.mygene.views.my_gene'),
-
-    # url(r'^mycatalog/$', 'apps.mycatalog.views.index'),
-
-    # url(r'^myprotain/$', 'apps.myprotain.views.index'),
-    # url(r'^myprotain/pdb/(?P<pdb_id>[a-zA-Z0-9]{4}?)/$', 'apps.myprotain.views.my_pdb'),
-
-    # url(r'^mydys/$', 'apps.mygene.views.my_dys'),
-
-    # url(r'^traits/$', 'apps.traits.views.index'),
 ] + static(settings.STATIC_URL)
 
 if settings.DEBUG:
@@ -78,12 +61,11 @@ if settings.DEBUG:
         url(r'^__debug__/$', include(debug_toolbar.urls)),
     ]
 
-# TODO:
+# Include extra apps defined in settings.py
+extra_apps = [x for x in list(set(settings.INSTALLED_APPS) - set(settings.DEFAULT_APPS)) if x.startswith('apps.')]
 
-# # 23andme-api
-# url(r'^auth/callback/$', 'apps.api.views.callback'),
-# url(r'^auth/logout/$', 'apps.api.views.logout'),
-# url(r'^auth/profiles/$', 'apps.api.views.profiles'),
-# url(r'^auth/user/$', 'apps.api.views.user'),
-# url(r'^auth/genotype/(?P<snpid>\w+)/$', 'apps.api.views.genotype'),
-# url(r'^login_with_23andme/$', 'apps.login_with_23andme.views.view'),
+for extra_app in extra_apps:
+    name = extra_app[5:]
+    urlpatterns += [
+        url('^{name}/'.format(name=name), include('apps.{name}.urls'.format(name=name))),
+    ]
