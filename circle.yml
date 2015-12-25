@@ -2,7 +2,7 @@ machine:
     python:
         version: 2.7.10
     environment:
-        DB_NAME: circle_ci
+        DB_NAME: circle_test
         DB_USER: ubuntu
 
 dependencies:
