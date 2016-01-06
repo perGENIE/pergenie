@@ -135,12 +135,12 @@ def trydemo(request):
 def send_activation_email(user, activation_url):
     email_template = get_template('activation_email.html')
     email_title = _("Welcome to perGENIE")
-    email_body = email_template.render(Context({'activation_url': activation_url, 'support_email': settings.SUPPORT_EMAIL}))
-    user.email_user(subject=email_title, message=email_body, from_email=settings.NOREPLY_EMAIL)
+    email_body = email_template.render(Context({'activation_url': activation_url, 'support_email': settings.SUPPORT_EMAIL_TO}))
+    user.email_user(subject=email_title, message=email_body, from_email=settings.DEFAULT_EMAIL_FROM)
 
 
 def send_activation_completed_email(user):
     email_template = get_template('activation_completed_email.html')
     email_title = _('Your account has been activated')
-    email_body = email_template.render(Context({'support_email': settings.SUPPORT_EMAIL}))
-    user.email_user(subject=email_title, message=email_body, from_email=settings.NOREPLY_EMAIL)
+    email_body = email_template.render(Context({'support_email': settings.SUPPORT_EMAIL_TO}))
+    user.email_user(subject=email_title, message=email_body, from_email=settings.DEFAULT_EMAIL_FROM)
