@@ -15,23 +15,21 @@ ALLOWED_HOSTS = ['{{ django_allowed_host }}',
                  'www.{{ django_allowed_host }}']
 
 
-# Email
+# Email (IMAP)
 
 # People who get code error notifications when DEBUG=False.
 ADMINS = (
-    ('{{ app_user }}', '{{ django_error_notification_email }}'),
+    ('{{ app_user }}', '{{ django_error_notification_email_to }}'),
 )
 MANAGERS = ADMINS
 
-# FIXME:
-SUPPORT_EMAIL = ''
-NOREPLY_EMAIL = ''
+SUPPORT_EMAIL_TO = '{{ django_support_email_to }}'
+DEFAULT_EMAIL_FROM = '{{ django_default_email_from }}'
 
-# Gmail
 EMAIL_USE_TLS = True
-EMAIL_HOST = '{{ django_email_host }}'
-EMAIL_PORT = {{ django_email_port }}
-EMAIL_HOST_USER = '{{ django_email_user }}'
+EMAIL_HOST = '{{ django_email_host }}'           # e.g. smtp.example.com
+EMAIL_PORT = {{ django_email_port }}             # e.g. 587
+EMAIL_HOST_USER = '{{ django_email_user }}'      # e.g. me@example.com
 EMAIL_HOST_PASSWORD = '{{ django_email_pass }}'
 
 

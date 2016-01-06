@@ -6,8 +6,9 @@ SECRET_KEY = 'secretkey_secretkey_secretkey_secretkey_secretkey_secretkey'
 
 # Email
 
-SUPPORT_EMAIL = ''
-NOREPLY_EMAIL = ''
+SUPPORT_EMAIL_TO = ''
+DEFAULT_EMAIL_FROM = ''
+
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = 'tmp/email'
 

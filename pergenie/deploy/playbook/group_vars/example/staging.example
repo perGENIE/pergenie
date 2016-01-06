@@ -20,11 +20,13 @@ django_allowed_host: "{{ http_server_host }}"
 djnago_admin_user: "{{ app_user }}"
 django_admin_email: "{{ app_user }}@{{ http_server_host }}"
 
-django_error_notification_email: you@gmail.com
+django_error_notification_email_to: errors@example.com
+django_support_email_to: support@example.com
+django_default_email_from: admin@example.com
 
-django_email_host: smtp.gmail.com
-django_email_port: 000
-django_email_user: you@gmail.com
+django_email_host: smtp.example.com
+django_email_port: 587
+django_email_user: me@example.com
 django_email_pass: password
 
 
