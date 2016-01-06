@@ -1,4 +1,4 @@
-[![perGENIE screenshot](http://knmkr.info/img/portfolio/pergenie.png)](http://pergenie.org/)
+[![perGENIE screenshot](http://knmkr.info/img/portfolio/pergenie/pergenie.png)](http://pergenie.org/)
 
 ## For developers
 
