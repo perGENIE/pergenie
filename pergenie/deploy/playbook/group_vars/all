@@ -1,7 +1,4 @@
 ---
-# ntp
-ntp_server: ntp.nict.jp
-
 # pergenie
 repo_url: git@github.com:knmkr/perGENIE-private.git
 
