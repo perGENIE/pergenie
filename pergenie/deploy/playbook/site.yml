@@ -11,6 +11,6 @@
   roles:
     - { role: python }
     - { role: postgresql }
-    - { role: rabbitmq }
+    - { role: rabbitmq, tags: ['rabbitmq'] }
     - { role: httpd, tags: ['httpd'] }
     - { role: pergenie, tags: ['pergenie'] }

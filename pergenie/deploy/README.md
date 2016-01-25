@@ -48,5 +48,5 @@ See details in `Vagrantfile` and `playbook`.
 |------------------------|------------------|----------------------------|
 | Python                 | 2.7              | yum default                |
 | PostgreSQL             | 9.4              | yum with official rpm repo |
-| RabbitMQ               | 3.5              | yum with official rpm repo |
+| RabbitMQ               | 3.6              | yum with official rpm repo |
 | Apache httpd           | 2.4              | yum default                |
