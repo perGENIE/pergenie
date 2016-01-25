@@ -42,7 +42,7 @@ See details in `Vagrantfile` and `playbook`.
 
 ## Software versions in playbook
 
-- CentOS 7.1
+- CentOS 7.2
 
 |                        | version          |                            |
 |------------------------|------------------|----------------------------|
