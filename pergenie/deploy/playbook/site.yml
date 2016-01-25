@@ -3,14 +3,14 @@
   become: yes
   gather_facts: no
   roles:
-    - { role: devtools }
+    - { role: devtools, tags: ['devtools'] }
 
 - hosts: pergenie_host
   become: yes
   gather_facts: yes
   roles:
-    - { role: python }
-    - { role: postgresql }
+    - { role: python, tags: ['python'] }
+    - { role: postgresql, tags: ['postgresql'] }
     - { role: rabbitmq, tags: ['rabbitmq'] }
     - { role: httpd, tags: ['httpd'] }
     - { role: pergenie, tags: ['pergenie'] }
