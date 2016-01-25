@@ -4,7 +4,6 @@
   gather_facts: no
   roles:
     - { role: devtools }
-    - { role: epel }
 
 - hosts: pergenie_host
   become: yes
