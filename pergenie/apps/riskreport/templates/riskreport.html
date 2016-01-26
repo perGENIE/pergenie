@@ -77,7 +77,8 @@
             <div class="row-fluid">
               <div class="span12">
                 <div id="container_highest_risks"></div>
-                <a href="#"><button class="btn btn-info"><i class="icon-zoom-in"></i> {% trans "Show more" %}</button></a>
+                <!-- TODO -->
+                <!-- <a href="#"><button class="btn btn-info"><i class="icon-zoom-in"></i> {% trans "Show more" %}</button></a> -->
               </div>
             </div>
           </div>
@@ -86,6 +87,7 @@
 
         <div class="span6">
           <div class="content-box">
+            <!-- TODO -->
             <div class="content-box-header">
               <i class="icon-ok-sign"></i> {% trans "Statistics" %}
             </div>
@@ -94,21 +96,6 @@
         </div>
       </div>
 
-      <div class="row-fluid">
-        <div class="span6">
-          <div class="content-box">
-            <div class="content-box-header">
-              <i class="icon-flag"></i> {% trans "Download" %}
-            </div>
-
-            <div class="row-fluid">
-              <div class="span6">
-                <a href="#"><button class="btn btn-info">{% trans "Download all reports" %}</button></a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 </section>
@@ -117,8 +104,12 @@
 {% endblock %}
 
 {% block js %}
-<script type="text/javascript" src="//code.highcharts.com/3.0/highcharts.js"></script>
-<script type="text/javascript" src="//code.highcharts.com/3.0/modules/exporting.js"></script>
+<!-- <script type="text/javascript" src="//code.highcharts.com/3.0/highcharts.js"></script> -->
+<!-- <script type="text/javascript" src="//code.highcharts.com/3.0/modules/exporting.js"></script> -->
+
+<!-- TODO: -->
+<script src="{% static 'js/highcharts-3.0.10.js' %}"></script>
+<script src="{% static 'js/highcharts-exporting-3.0.10.js' %}"></script>
 
 <script type="text/javascript">
 $(function () {
@@ -205,7 +196,7 @@ $(function () {
                     name: 'name',
                     data: [{% for risk in top_10_risks %}{y: {% ifnotequal risk 1.0 %}{{ risk }}{% else %}0.0{% endifnotequal %},
                             color: {% if risk < 0 %}'#2ca6f1'{% elif risk == 0 %}'#8a8a8a'{% else %}'#f12ca6'{% endif %},
-                            url:""},
+                            url: "{{ top_10_urls| listvalue:forloop.counter0 }}"},
                            {% endfor %}],
                     },
             ]

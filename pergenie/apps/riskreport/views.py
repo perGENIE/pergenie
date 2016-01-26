@@ -5,12 +5,12 @@ import datetime
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 from django.shortcuts import redirect, render
-# from django.http import HttpResponse, Http404
-# from django.utils.translation import get_language
+from django.http import Http404
 from django.contrib import messages
 from django.utils.translation import ugettext as _
 from django.conf import settings
 from django.db.models import Q
+from django.core.exceptions import ObjectDoesNotExist
 
 from apps.authentication.models import User
 from apps.genome.models import Genome
@@ -61,6 +61,9 @@ def index(request):
         top_10 = PhenotypeRiskReport.objects.filter(risk_report=risk_report).exclude(estimated_risk__isnull=True).order_by('-estimated_risk')[0:10]
         top_10_names = top_10.values_list('phenotype__name', flat=True)
         top_10_risks = top_10.values_list('estimated_risk', flat=True)
+        top_10_urls = []
+        for phenotype_report in top_10:
+            top_10_urls.append(os.path.join('/', 'riskreport', risk_report.display_id, str(phenotype_report.phenotype.id)))
 
         break
 
@@ -70,55 +73,40 @@ def index(request):
                   dict(risk_reports=risk_reports,
                        risk_report=risk_report,
                        top_10_names=top_10_names,
-                       top_10_risks=top_10_risks
+                       top_10_risks=top_10_risks,
+                       top_10_urls=top_10_urls
                   ))
 
 @require_http_methods(['GET'])
 @login_required
-def study(request, trait, study):
-    pass
-#     user_id = request.user.username
-#     msg, err = '', ''
-#     risk_infos = None
+def phenotype(request, display_id, phenotype_id):
+    """Detailed view for each phenotype of risk reports.
+    """
 
-#     while True:
-#         trait = JA2TRAITS.get(trait, trait)
-#         trait_eng = trait
+    try:
+        user = User.objects.filter(id=request.user.id)
+        owner_genomes = Genome.objects.filter(owner=user)
+        reader_genomes = Genome.objects.filter(readers__in=user)
 
-#         if not trait in TRAITS:
-#             err = _('trait not found')
-#             raise Http404
+        report = RiskReport.objects.get(display_id=display_id)
 
-#         # # no need ?
-#         # if not request.method == 'GET':
-#         #     return redirect('apps.riskreport.views.index')
+        readable_reports = RiskReport.objects.filter(Q(genome__owner=user) | Q(genome__readers=user))
+        if not report in readable_reports:
+            raise Http404  # or 401 forbidden
 
-#         # Determine `file_name`.
-#         # If file_name is selected,
-#         file_name = request.GET.get('file_name')
+        phenotype_report = PhenotypeRiskReport.objects.get(phenotype__id=phenotype_id)
+        snp_reports = SnpRiskReport.objects.filter(phenotype_risk_report_id=phenotype_report)
+        # evidence_snps = GwasCatalogSnp.objects.filter(id__in=snp_reports.values_list('evidence_snp'))
 
-#         if not file_name:
-#             # By default, browse `last_viewed_file`
-#             file_name = user.get_user_info(user_id).get('last_viewed_file')
+        return render(request, 'riskreport-phenotype.html',
+                      dict(phenotype_report=phenotype_report,
+                           snp_reports=snp_reports,
+                           # evidence_snps=evidence_snps,
+                      ))
 
-#             # If you have no riskreports, but this time you try to browse details of reprort,
-#             if not file_name:
-#                 return redirect('apps.riskreport.views.index')
+    except ObjectDoesNotExist:
+        raise Http404
 
-#         info = genomes.get_data_info(user_id, file_name)
-
-#         if not info:
-#             err = _('no such file %(file_name)s') % {'file_name': file_name}
-#             raise Http404
-
-#         # Trait & file_name exists, so get the risk information about this trait.
-#         risk_infos = get_risk_infos_for_subpage(info, trait=trait, study=study)
-#         risk_infos.update(dict(msg=msg, file_name=file_name, info=info, trait_eng=trait_eng,
-#                                wiki_url_en=TRAITS2WIKI_URL_EN.get(trait),
-#                                is_ja=bool(get_language() == 'ja')))
-#         break
-
-#     return direct_to_template(request, 'risk_report/study.html', risk_infos)
 
 @login_required
 def export(request):
@@ -151,7 +139,7 @@ def export(request):
 
 @require_http_methods(['GET', 'POST'])
 @login_required
-def show_all(request):
+def all(request):
     """
     Show all risk values in a chart.
     * It can compare two individual genomes.
