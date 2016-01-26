@@ -5,6 +5,7 @@ import subprocess
 from uuid import uuid4
 from datetime import timedelta
 
+from django.db import IntegrityError, transaction
 from django.utils import timezone
 from django.conf import settings
 
@@ -21,11 +22,11 @@ def create_demo_user():
     """Create demo user records.
 
     - demo Genome is defined as:
-      - owner = one of the admin users
-      - file_name = settings.DEMO_GENOME_FILE_NAME
+      - owner == one of the admin users
+      - file_name == settings.DEMO_GENOME_FILE_NAME
 
     - demo User is defined as:
-      - grade.name = 'demo'
+      - grade.name == 'demo'
     """
 
     admin_user = User.objects.filter(is_admin=True).last()
@@ -51,8 +52,16 @@ def create_demo_user():
         genome.create_genotypes(async=False)
         log.info('Genotype created. count: {}'.format(Genotype.objects.filter(genome_id=genome.id).count()))
 
+        # TODO: need refactoring
+        while True:
+            try:
+                with transaction.atomic():
+                    riskreport = RiskReport.objects.create(genome=genome, display_id=User.objects.make_random_password(8))
+                    break
+            except IntegrityError:
+                log.warn('IntegrityError with RiskReport.objects.create')
+
         # TODO: To update riskreport for new users, create risk report as async = True?
-        riskreport = RiskReport.objects.create(genome=genome)
         riskreport.create_riskreport(async=False)
         log.info('RiskReport created. id: {}'.format(riskreport.id))
 

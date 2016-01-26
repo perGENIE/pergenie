@@ -38,12 +38,13 @@ urlpatterns = [
 
     # Risk Report
     url(r'^riskreport/$', riskreport_views.index, name='riskreport'),
-    # url(r'^riskreport/export/$', 'apps.riskreport.views.export'),
-    # url(r'^riskreport/show_all/$', 'apps.riskreport.views.show_all'),
-    # url(r'^riskreport/show_all_files/$', 'apps.riskreport.views.show_all_files'),
-    # url(r'^riskreport/(?P<trait>[^/]*)/$', 'apps.riskreport.views.trait'),
-    # url(r'^riskreport/(?P<trait>[^/]*)/(?P<study>[^/]*)/$', 'apps.riskreport.views.study'),
+    url(r'^riskreport/(?P<display_id>[^/]{8})/(?P<phenotype_id>\d*)/$', 'apps.riskreport.views.phenotype', name='riskreport-phenotype'),
 
+    # TODO:
+    # url(r'^riskreport/(?P<display_id>[^/]{8})/$', 'apps.riskreport.views.show', name='riskreport-show'),
+    # url(r'^riskreport/export/$', 'apps.riskreport.views.export'),
+
+    # TODO:
     # url(r'^library/$', 'apps.library.views.index'),
     # url(r'^library/trait/$', 'apps.library.views.trait_index'),
     # url(r'^library/trait/(?P<trait>.*?)/$', 'apps.library.views.trait'),

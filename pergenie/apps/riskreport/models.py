@@ -6,6 +6,7 @@ from django.utils import timezone
 
 from celery.decorators import task
 
+from apps.authentication.models import User
 from apps.genome.models import Genome, Genotype
 from apps.gwascatalog.models import GwasCatalogPhenotype, GwasCatalogSnp
 from apps.snp.models import get_freqs
@@ -41,9 +42,9 @@ class RiskReport(models.Model):
                         ----------------------      ----------------
     """
 
+    display_id = models.CharField(max_length=8, unique=True)
     created_at = models.DateTimeField(default=timezone.now)
     genome = models.ForeignKey(Genome)
-    # display_name =
 
     def create_riskreport(self, async=True):
         if async:
