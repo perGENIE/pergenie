@@ -1,4 +1,6 @@
 ---
 - include: install.yml
-- include: mod_ssl.yml tags=mod_ssl
-- include: mod_wsgi.yml tags=mod_wsgi
+- include: mod_ssl.yml
+  tags: mod_ssl
+- include: mod_wsgi.yml
+  tags: mod_wsgi

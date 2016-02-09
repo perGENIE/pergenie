@@ -18,14 +18,12 @@
         state=link
   when: private_files_repo_url is defined
 
-# TODO:
+# FIXME:
 - name: symlink apps
-  file: src="{{ private_files_repo_root }}/apps/*"
-        dest="{{ app_root }}/apps/"
-        owner={{ app_user }} group={{ app_user }}
-        state=link
+  shell: ln -s -f "{{ private_files_repo_root }}"/apps/* "{{ app_root }}"/apps/
   when: private_files_repo_url is defined
 
+# FIXME:
 - name: create virtualenv and install python packages
   pip: virtualenv_command=virtualenv
        virtualenv={{ virtualenv_dir }}

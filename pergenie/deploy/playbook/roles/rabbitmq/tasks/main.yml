@@ -9,6 +9,7 @@
 
 - name: install rabbitmq server
   yum: name={{ rpm_url }} state=present
+  ignore_errors: yes
 
 # TODO: configure
 

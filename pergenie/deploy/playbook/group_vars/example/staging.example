@@ -31,8 +31,8 @@ django_email_pass: password
 
 
 # (optional) Private files repo
-# private_files_repo_url: git@github.com:user/repo.git
-# private_files_repo_root: "{{ build_root }}/pergenie/private-files-repo"
+private_files_repo_url: https://github.com/knmkr/pergenie-private-files-example.git
+private_files_repo_root: "{{ build_root }}/pergenie/private-files-repo"
 
 # (optional) Backup server
 # backup_server: backup_server_host_name
