@@ -31,9 +31,14 @@ django_email_pass: password
 
 
 # (optional) Private files repo
-private_files_repo_url: https://github.com/knmkr/pergenie-private-files-example.git
-private_files_repo_root: "{{ build_root }}/pergenie/private-files-repo"
+# private_files_repo_url: https://github.com/knmkr/pergenie-private-files-example.git
+# private_files_repo_root: "{{ build_root }}/pergenie/private-files-repo"
 
 # (optional) Backup server
 # backup_server: backup_server_host_name
 # backup_server_ssh_port: 22
+
+# (optional) Overwite IP whitelist which can access /internal:
+#            - Default:             127.0.0.1 192.168.0.0/16
+#            - localhost + VM host: 127.0.0.1 192.168.0.0/16 10.0.2.2
+# http_internal_require_ip: 127.0.0.1 192.168.0.0/16 10.0.2.2

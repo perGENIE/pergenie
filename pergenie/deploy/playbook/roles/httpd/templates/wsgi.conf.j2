@@ -18,8 +18,11 @@
     </Directory>
 
     <Location /internal>
-        Require ip 127.0.0.1
-        Require ip 192.168.0.0/16
+    {% if http_internal_require_ip is defined %}
+        Require ip {{ http_internal_require_ip }}
+    {% else %}
+        Require ip 127.0.0.1 192.168.0.0/16
+    {% endif %}
     </Location>
 
 </IfModule>
