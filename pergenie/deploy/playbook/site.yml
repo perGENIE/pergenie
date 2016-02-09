@@ -3,18 +3,14 @@
   become: yes
   gather_facts: no
   roles:
-    - { role: sshd, tags: ['sshd'] }
-    - { role: devtools }
-    - { role: epel }
-    - { role: ntpd }
-    - { role: firewalld, tags: ['firewalld'], when: private_files_repo_root is defined }
+    - { role: devtools, tags: ['devtools'] }
 
 - hosts: pergenie_host
   become: yes
   gather_facts: yes
   roles:
-    - { role: python }
-    - { role: postgresql }
-    - { role: rabbitmq }
+    - { role: python, tags: ['python'] }
+    - { role: postgresql, tags: ['postgresql'] }
+    - { role: rabbitmq, tags: ['rabbitmq'] }
     - { role: httpd, tags: ['httpd'] }
     - { role: pergenie, tags: ['pergenie'] }
