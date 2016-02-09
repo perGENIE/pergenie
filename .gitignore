@@ -43,6 +43,7 @@ pergenie/static/vendor
 # ansible/vagrant
 hosts
 .vagrant
+.bundle
 
 # Settings
 pergenie/pergenie/settings/development.py
