@@ -1,7 +1,7 @@
 # Deploy scripts for hosting `perGENIE`
 
 
-## For staging env
+## Setup for staging env
 
 1\. Install `VirtualBox`, `Vagrant`, and `Ansible`.
 
@@ -17,13 +17,28 @@ $ ${EDITOR} playbook/group_vars/staging  # e.g. playbook/group_vars/staging.exam
 $ vagrant up
 ```
 
-Once VM is up, you can rollout pergenie application by:
+**NOTE:** Once VM is up, you can rollout pergenie application by:
 
 ```
 $ ANSIBLE_TAGS=rollout vagrant provision
 ```
 
-## For production env
+4\. Edit /etc/hosts on localhost
+
+Add following line to /etc/hosts on localhost:
+
+```
+127.0.0.1 staging.pergenie.org
+```
+
+5\. You can browse perGENIE at following url:
+
+```
+$ https://staging.pergenie.org:8443/
+```
+
+
+## Setup for production env
 
 1\. Define production servers in `playbook/hosts`:
 
@@ -37,7 +52,7 @@ $ ${EDITOR} playbook/hosts  # e.g. playbook/hosts.example
 $ ansible-playbook playbook/site.yml -i playbook/hosts --ask-become-pass
 ```
 
-See details in `Vagrantfile` and `playbook`.
+**NOTE:** See details in `Vagrantfile` and `playbook`.
 
 
 ## Software versions in playbook
