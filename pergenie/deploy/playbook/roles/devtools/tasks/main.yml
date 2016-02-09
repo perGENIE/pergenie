@@ -9,3 +9,6 @@
   yum: name=gcc,gcc-c++,make,git,patch,openssl-devel,bzip2-devel,zlib-devel,sqlite-devel,readline-devel state=present
   with_items:
     - yum-cron
+
+- name: install epel-release
+  yum: name=epel-release state=present
