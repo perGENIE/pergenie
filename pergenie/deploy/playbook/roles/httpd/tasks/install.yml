@@ -4,4 +4,9 @@
 
 - name: configure httpd
   template: src=httpd.conf.j2 dest=/etc/httpd/conf/httpd.conf
+
+- name: start httpd service
+  service: name=httpd state=started enabled=yes
+
+- command: /bin/true
   notify: restart httpd
