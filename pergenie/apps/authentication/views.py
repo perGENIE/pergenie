@@ -121,7 +121,10 @@ def login(request):
 
 def logout(request):
     auth_logout(request)
-    return redirect('apps.authentication.views.login')
+    if settings.DEMO_MODE_ONLY:
+        return redirect('/')
+    else:
+        return redirect(settings.LOGIN_URL)
 
 
 def trydemo(request):
