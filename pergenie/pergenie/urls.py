@@ -20,11 +20,6 @@ urlpatterns = [
     url(r'^internal/health-check/$', internal_views.health_check),
 
     # Authentication
-    url(r'^register/$', authentication_views.register),
-    url(r'^about/$',    authentication_views.about, name='about'),
-    url(r'^activation/(?P<activation_key>\w{{{activation_key_length}}})/$'.format(activation_key_length=settings.ACCOUNT_ACTIVATION_KEY_LENGTH),
-                        authentication_views.activation),
-    url(r'^login/$',    authentication_views.login),
     url(r'^logout/$',   authentication_views.logout),
     url(r'^trydemo/$',  authentication_views.trydemo),
 
@@ -63,6 +58,15 @@ if settings.DEBUG:
 
     urlpatterns += [
         url(r'^__debug__/$', include(debug_toolbar.urls)),
+    ]
+
+if not settings.DEMO_MODE_ONLY:
+    urlpatterns += [
+        url(r'^register/$', authentication_views.register),
+        url(r'^about/$',    authentication_views.about, name='about'),
+        url(r'^activation/(?P<activation_key>\w{{{activation_key_length}}})/$'.format(activation_key_length=settings.ACCOUNT_ACTIVATION_KEY_LENGTH),
+            authentication_views.activation),
+        url(r'^login/$',    authentication_views.login),
     ]
 
 # Include extra apps defined in settings.py
