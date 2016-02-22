@@ -1,2 +1,43 @@
 ---
 rollout_env: production
+http_server_host: production.pergenie.org
+http_server_name: "{{ http_server_host }}:80"
+
+ssl_crt_file_path: /etc/pki/tls/certs/server.crt
+ssl_key_file_path: /etc/pki/tls/private/server.key
+self_signed_certificate: yes
+
+database_name: "{{ app_user }}"
+database_user: "{{ app_user }}"
+database_pass: "{{ app_user }}"
+database_host: localhost
+database_port: 5432
+
+django_secret_key: secretkey_secretkey_secretkey_secretkey_secretkey_secretkey
+django_allowed_host: "{{ http_server_host }}"
+
+djnago_admin_user: "{{ app_user }}"
+django_admin_email: "{{ app_user }}@{{ http_server_host }}"
+
+django_error_notification_email_to: errors@example.com
+django_support_email_to: support@example.com
+django_default_email_from: admin@example.com
+
+django_email_host: smtp.example.com
+django_email_port: 587
+django_email_user: me@example.com
+django_email_pass: password
+
+
+# (optional) Private files repo
+# private_files_repo_url: https://github.com/knmkr/pergenie-private-files-example.git
+# private_files_repo_root: "{{ build_root }}/pergenie/private-files-repo"
+
+# (optional) Backup server
+# backup_server: backup_server_host_name
+# backup_server_ssh_port: 22
+
+# (optional) Overwite IP whitelist which can access /internal:
+#            - Default:             127.0.0.1 192.168.0.0/16
+#            - localhost + VM host: 127.0.0.1 192.168.0.0/16 10.0.2.2
+# http_internal_require_ip: 127.0.0.1 192.168.0.0/16 10.0.2.2
