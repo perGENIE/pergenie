@@ -68,7 +68,7 @@
       </div>
 
       <div class="row-fluid">
-        <div class="span6">
+        <div class="span12">
           <div class="content-box">
             <div class="content-box-header">
               <i class="icon-align-left"></i> {% trans "Top 10 Highest Risks" %}
@@ -85,15 +85,15 @@
         </div>
 
 
-        <div class="span6">
-          <div class="content-box">
-            <!-- TODO -->
-            <div class="content-box-header">
-              <i class="icon-ok-sign"></i> {% trans "Statistics" %}
-            </div>
+        <!-- <div class="span6"> -->
+        <!--   <div class="content-box"> -->
+        <!--     <\!-- TODO -\-> -->
+        <!--     <div class="content-box-header"> -->
+        <!--       <i class="icon-ok-sign"></i> {% trans "Statistics" %} -->
+        <!--     </div> -->
+        <!--   </div> -->
+        <!-- </div> -->
 
-          </div>
-        </div>
       </div>
 
     </div>
@@ -147,15 +147,15 @@ $(function () {
             plotOptions: {
             series: {
                 shadow:false,
-                cursor:'pointer',
-                    point: {
-                        events: {
-                            click: function() {
-                                location.href = this.options.url;
-                                <!-- window.open(this.options.url); -->
-                            }
-                        }
-                    }
+                <!-- cursor:'pointer', -->
+                <!--     point: { -->
+                <!--         events: { -->
+                <!--             click: function() { -->
+                <!--                 location.href = this.options.url; -->
+                <!--                 <\!-- window.open(this.options.url); -\-> -->
+                <!--             } -->
+                <!--         } -->
+                <!--     } -->
                 },
                 bar: {
                     dataLabels: {
