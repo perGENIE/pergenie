@@ -49,7 +49,7 @@ urlpatterns = [
     # url(r'^library/summary/(?P<field_name>.*?)/$', 'apps.library.views.summary'),
 
     # FAQ
-    url(r'^faq/$', faq_views.index, name='faq'),
+    # url(r'^faq/$', faq_views.index, name='faq'),
 
 ] + static(settings.STATIC_URL)
 
