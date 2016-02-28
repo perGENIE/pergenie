@@ -11,6 +11,9 @@ INSTALLED_APPS += (
     'apps.landing',
 )
 
+#
+DEMO_MODE_ONLY = True
+
 ALLOWED_HOSTS = ['{{ django_allowed_host }}',
                  'www.{{ django_allowed_host }}']
 
