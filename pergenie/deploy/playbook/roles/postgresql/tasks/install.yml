@@ -16,10 +16,3 @@
 
 - name: install psycopg2
   yum: name=python-psycopg2 state=present
-
-# FIXME:
-- name: export postgresql bin PATH
-  template:
-    src=bashrc.j2
-    dest=/home/{{ app_user }}/.bashrc
-    owner={{ app_user }} group={{ app_user }} mode=0644

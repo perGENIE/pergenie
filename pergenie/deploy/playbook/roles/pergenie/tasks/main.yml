@@ -12,6 +12,13 @@
                    password={{ database_pass }}
                    role_attr_flags=NOSUPERUSER
 
+# FIXME:
+- name: export postgresql bin PATH
+  template:
+    src=bashrc.j2
+    dest=/home/{{ app_user }}/.bashrc
+    owner={{ app_user }} group={{ app_user }} mode=0644
+
 - name: create postgresql database
   become_user: postgres
   postgresql_db: name={{ database_name }}
