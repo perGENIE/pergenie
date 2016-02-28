@@ -17,13 +17,18 @@
       <tr>
         <td class="project-title center">{{ genome.display_name }}</td>
         <td class="center">
-          <div class="progress">
-            <div class="bar" style="width: {{ genome.status }}%;">{{ genome.status }} %</div>
+          {% if genome.status == 100 %}
+          <span class="badge badge-green">OK</span>
+          {% elif 100 > genome.status and my_genome.status > 0 %}
+          <div class="progress progress-info progress-striped active">
+            <div class="bar" style="width: {{ my_genome.status }}%"></div>
           </div>
+          {% elif genome.status and my_genome.status == -1 %}
+          <span class="badge badge-red">FAILED</span>
+		  {% endif %}
         </td>
       </tr>
       {% endfor %}
-
     </tbody>
   </table>
 
