@@ -7,6 +7,8 @@ ssl_crt_file_path: /etc/pki/tls/certs/server.crt
 ssl_key_file_path: /etc/pki/tls/private/server.key
 self_signed_certificate: yes
 
+postgresql_version: '9.4'
+
 database_name: "{{ app_user }}"
 database_user: "{{ app_user }}"
 database_pass: "{{ app_user }}"

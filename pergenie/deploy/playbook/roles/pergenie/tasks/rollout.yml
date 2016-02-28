@@ -28,10 +28,11 @@
 
 # FIXME:
 - name: create virtualenv and install python packages
-  become_user: "{{ app_user }}"
   pip: virtualenv_command=virtualenv
        virtualenv={{ virtualenv_dir }}
        requirements={{ proj_root }}/requirements/{{ rollout_env }}.txt
+  environment:
+    PATH: /usr/pgsql-{{ postgresql_version }}/bin:{{ ansible_env.PATH }}
 
 - name: configure settings.py
   template: src=settings.py.j2 dest="{{ wsgi_dir }}/settings/{{ rollout_env }}.py"
