@@ -4,7 +4,6 @@
 # http://serialized.net/2013/04/simply-generating-self-signed-ssl-certs-with-ansible/
 - name: generate a self-signed certificate
   command: openssl req -new -nodes -x509 -subj '/C=JP/ST=Miyagi/L=Sendai/O="perGENIE Team"/CN={{ ansible_fqdn }}' -days 3650 -keyout {{ ssl_key_file_path }} -out {{ ssl_crt_file_path }} -extensions v3_ca creates={{ ssl_crt_file_path }}
-  when: self_signed_certificate == 'yes'
 
 # TODO:
 # - name: put .key and .crt
