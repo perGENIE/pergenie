@@ -39,6 +39,14 @@
     - "{{ upload_root }}"
     - "{{ backup_root }}"
 
+# $ chcon -R -t httpd_user_content_t
+# - file: path="{{ build_root }}/pergenie" setype=httpd_user_content_t recurse=yes
+
+# FIXME: consider to use httpd_can_network_connect_db,
+#        and add settings for rabbitmq, etc.
+# $ setsebool -P httpd_can_network_connect=1
+# - seboolean: name=httpd_can_network_connect state=yes persistent=yes
+
 - include: crontab.yml
 
 - include: celery.yml
