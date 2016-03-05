@@ -1,7 +1,5 @@
 ---
-# pergenie
-# FIXME:
-repo_url: https://github.com/knmkr/perGENIE.git
+repo_url: https://github.com/perGENIE/pergenie.git
 
 app_user: pergenie
 
