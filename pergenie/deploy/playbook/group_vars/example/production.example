@@ -41,3 +41,6 @@ django_email_pass: password
 #            - Default:             127.0.0.1 192.168.0.0/16
 #            - localhost + VM host: 127.0.0.1 192.168.0.0/16 10.0.2.2
 # http_internal_require_ip: 127.0.0.1 192.168.0.0/16 10.0.2.2
+
+# (optional) Google Analytics
+# google_analytics_property_id: XX-00000000-0
