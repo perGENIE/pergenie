@@ -53,7 +53,7 @@
 
                 <!-- Population -->
                 <td class="center">
-                  <span class="label label-success">{{ risk_report.genome.population }}</span>
+                  <span class="label label-success">{{ risk_report.genome.population| population_display_name }}</span>
                 </td>
 
                 <!-- File Format -->
@@ -143,15 +143,15 @@ $(function () {
             plotOptions: {
             series: {
                 shadow:false,
-                <!-- cursor:'pointer', -->
-                <!--     point: { -->
-                <!--         events: { -->
-                <!--             click: function() { -->
-                <!--                 location.href = this.options.url; -->
-                <!--                 <\!-- window.open(this.options.url); -\-> -->
-                <!--             } -->
-                <!--         } -->
-                <!--     } -->
+                cursor:'pointer',
+                    point: {
+                        events: {
+                            click: function() {
+                                location.href = this.options.url;
+                                <!-- window.open(this.options.url); -->
+                            }
+                        }
+                    }
                 },
                 bar: {
                     dataLabels: {
@@ -190,9 +190,11 @@ $(function () {
             series: [
                     {
                     name: 'name',
-                    data: [{% for risk in top_10_risks %}{y: {% ifnotequal risk 1.0 %}{{ risk }}{% else %}0.0{% endifnotequal %},
-                            color: {% if risk < 0 %}'#2ca6f1'{% elif risk == 0 %}'#8a8a8a'{% else %}'#f12ca6'{% endif %},
-                            url: "{{ top_10_urls| listvalue:forloop.counter0 }}"},
+                    data: [{% for risk in top_10_risks %}
+                           {
+                               y: {{ risk| effect_as_signed| decimal_places:2 }},
+                               color: chartColors({{ risk| effect_as_signed| decimal_places:2 }}),
+                               url: "{{ top_10_urls| listvalue:forloop.counter0 }}"},
                            {% endfor %}],
                     },
             ]

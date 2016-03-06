@@ -54,8 +54,16 @@ def keyvalue(dict, key):
     return dict[key]
 
 @register.filter
-def listvalue(list, index):
-    return list[index]
+def getvalue(dict, key):
+    return dict.get(key)
+
+@register.filter
+def listvalue(li, index):
+    return li[index] if li else li
+
+@register.filter
+def dict_index(dict, index):
+    return dict.get(dict.keys()[index])
 
 @register.filter
 def pow10(float, value):
@@ -72,13 +80,39 @@ def abs(s):
 
     return math.fabs(value)
 
-def dict_index(dict, index):
-    return dict.get(dict.keys()[index])
+@register.filter
+def effect_as_signed(x):
+    if not x:
+        return 0.0
+
+    if float(x) > 1.0:
+        return x
+    elif float(x) == 1.0:
+        return 0.0
+    elif float(x) < 1.0:
+        return -1.0 / float(x)
+
+@register.filter
+def lt(x, a):
+    return x < a
+
+@register.filter
+def gt(x, a):
+    return x > a
+
+@register.filter
+def eq(x, a):
+    return x == a
 
 @register.filter
 @stringfilter
 def hide_None(s):
     return s.replace('None', '')
+
+@register.filter
+@stringfilter
+def na(s):
+    return s.replace('None', 'N/A')
 
 @register.filter
 @stringfilter
@@ -90,3 +124,16 @@ def is_in_installed_apps(s):
 @stringfilter
 def population_display_name(s):
     return POPULATION_MAP.get(s, '.')
+
+@register.filter
+def scientific(x):
+    return '%.2e' % x
+
+@register.filter
+def decimal_places(x, length):
+    fmt = '{0:.' + str(length) + 'f}'
+    return fmt.format(x) if x else x
+
+@register.filter
+def num2range(x):
+    return xrange(int(x))
