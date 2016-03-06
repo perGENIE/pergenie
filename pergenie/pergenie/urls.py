@@ -33,8 +33,7 @@ urlpatterns = [
 
     # Risk Report
     url(r'^riskreport/$', riskreport_views.index, name='riskreport'),
-    # url(r'^riskreport/(?P<display_id>[^/]{8})/(?P<phenotype_id>\d*)/$', 'apps.riskreport.views.phenotype', name='riskreport-phenotype'),
-
+    url(r'^riskreport/(?P<display_id>[^/]{8})/(?P<phenotype_id>\d*)/$', riskreport_views.phenotype, name='riskreport-phenotype'),
     # TODO:
     # url(r'^riskreport/(?P<display_id>[^/]{8})/$', 'apps.riskreport.views.show', name='riskreport-show'),
     # url(r'^riskreport/export/$', 'apps.riskreport.views.export'),

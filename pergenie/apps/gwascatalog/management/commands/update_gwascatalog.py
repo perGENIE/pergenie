@@ -144,10 +144,6 @@ class Command(BaseCommand):
                          'phenotype':           phenotype,
                          'is_active':           is_active})
 
-            # if 'EAS' in population:
-            #     log.warn(population)
-            #     log.warn(data)
-
             gwascatalog_snps.append(GwasCatalogSnp(**data))
             # GwasCatalogSnp.objects.create(**data)
 

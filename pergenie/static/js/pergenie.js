@@ -55,3 +55,13 @@ var updateStatus = function () {
 $(document).ready(function () {
     updateStatus();
 });
+
+function chartColors(x){
+    if (x > 1.0) {
+        return '#f12ca6'
+    } else if (x < 1.0) {
+        return '#2ca6f1'
+    } else {
+        return '#8a8a8a'
+    }
+}

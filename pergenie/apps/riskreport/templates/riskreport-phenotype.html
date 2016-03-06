@@ -21,14 +21,11 @@
           <div class="content-box-header">
             <i class="icon-zoom-in"></i> {% trans "Effects of SNPs" %}
           </div>
-
-          <!-- <div id="container" style="max-width: 100px; height: 300px; margin: auto"></div> -->
-          <div id="container"> <!-- style="max-width: 400px; height: 300px; margin: 0 auto"></div> -->
-          </div>
+          <div id="container"></div>
         </div>
       </div>
 
-      <div class="span4">
+      <div class="span8">
         <div class="content-box">
           <div class="content-box-header">
             <i class="icon-book"></i> {% trans "Reference study" %}
@@ -36,60 +33,38 @@
 
           <table class="table table-hover">
             <tbody>
+              {% set study = snp_reports.0.evidence_snp %}
               <tr>
-                <td>{% trans "Study name" %}</td>
-                <td>{{ study }} <span class="label label-info" title="browse in PubMed"><a href="{{ record.catalog_info.pubmed_link }}" target="_blank">Pubmed</a></span></td>
+                <td>{% trans "Study" %}</td>
+                <td>{{ study.study_title }} <span class="label label-yellow"><a href="{{ study.pubmed_url }}" target="_blank">PubMed</a></span></td>
               </tr>
               <tr>
                 <td>{% trans "Population" %}</td>
                 <td>
-                  {% if record.catalog_info.population %}
-                  {% for p in record.catalog_info.population %}
-                  <span class="badge">{{ p }}</span>
+                  {% for population in study.population %}
+                  <span class="badge badge-green">{{ population| population_display_name }}</span>
                   {% endfor %}
-                  {% endif %}
                 </td>
               </tr>
               <tr>
-                <td>{% trans "Initial sample size" %}</td>
-                <td>{{ record.catalog_info.initial_sample_size }}</td>
+                <td>{% trans "Initial Sample" %}</td>
+                <td>{{ study.initial_sample }}</td>
               </tr>
               <tr>
                 <td>{% trans "Journal" %}</td>
-                <td>{{ record.catalog_info.jornal }}</td>
+                <td>{{ study.journal }}</td>
               </tr>
               <tr>
-                <td>{% trans "First author" %}</td>
-                <td>{{ record.catalog_info.first_author }}</td>
+                <td>{% trans "First Author" %}</td>
+                <td>{{ study.first_author }}</td>
               </tr>
               <tr>
-                <td>{% trans "Date" %}</td>
-                <td>{{ record.catalog_info.date|date }}</td>
-              </tr>
-              <tr>
-                <td>{% trans "p-value" %}</td>
-                <td>{{ record.catalog_info.p_value }}</td>
-              </tr>
-              <tr>
-                <td><a href="#">{% trans "Reliability rank" %} <span class="glyphicon glyphicon-question-sign"></span></a></td>
-                <td>
-                  {% for r in record.rank %}
-                  {% ifequal r "m" %}<span class="label label-green">Meta</span>
-                  {% else %}{% ifequal r "*" %}<span class="glyphicon glyphicon-star"></span>{% endifequal %}{% endifequal %}
-                  {% endfor %}
-
-                </td>
-                <!-- <tr> -->
-                <!--   <td>RR</td> -->
-                <!--   <td>{{ record.RR }}</td> -->
-                <!-- </tr> -->
+                <td>{% trans "Published Date" %}</td>
+                <td>{{ study.date_published|date }}</td>
               </tr>
             </tbody>
           </table>
 
-          <!-- TODO: support Other studies -->
-          <!-- <a href="">
-               <button class="btn btn-green"><span class="glyphicon glyphicon-book icon-white" style="margin-top: 1px;"></span> Other studies</button></a> -->
         </div>
       </div>
     </div>
@@ -107,50 +82,37 @@
                 <th>SNP</th>
                 <th>Chrom</th>
                 <th>Pos</th>
-                {% ifequal info.file_format 'vcf_exome_truseq' %}
-                <th>in TrueSeq</th>
-                {% endifequal %}
-                <th>Context</th>
                 <th>Gene</th>
+                <th>Risk Allele</th>
+                <th>Odds Ratio</th>
                 <th>Genotype</th>
-                <th>Reference allele</th>
-                <th>Risk allele</th>
-                <th>Risk allele frequency</th>
-                <th>OR in GWAS</th>
-                <th>Risk of yours</th>
+                <th>Estimated Risk</th>
               </tr>
             </thead>
 
             <tbody>
-              {% for snp_record in snp_records %}
+              {% for snp in snp_reports %}
               <tr>
-                <td class="center"><span class="dbsnp" title="browse in dbSNP"><a href="//www.ncbi.nlm.nih.gov/projects/SNP/snp_ref.cgi?rs={{ snp_record.snp }}" target="_blank">rs{{ snp_record.snp }}</a></span></td>
-                <td class="center">{{ snp_record.catalog_info.chr_id }}</td>
-                <td class="center">{{ snp_record.catalog_info.chr_pos }}</td>
-                {% ifequal info.file_format 'vcf_exome_truseq' %}
-                <td class="center">{{ snp_record.catalog_info.is_in_truseq }}</td>
-                {% endifequal %}
-                <td class="center">{{ snp_record.catalog_info.context }}</td>
                 <td class="center">
-                  {% for gene in snp_record.catalog_info.snp_genes %}
-                  {% if forloop.counter0|add:1 > 1 %}-{% endif %}
-
-                  {% if gene.entrez_gene_id %}<span class="entrez" title="browse in NCBI Gene"><a href="//www.ncbi.nlm.nih.gov/gene/?term={{ gene.entrez_gene_id }}" target="_blank">{% endif %}
-                      {{ gene.gene_symbol }}
-                      {% if gene.entrez_gene_id %}</a></span>{% endif %}
-
-                  {% endfor %}
+                  <span class="dbsnp" title="browse in dbSNP">
+                    <a href="//www.ncbi.nlm.nih.gov/projects/SNP/snp_ref.cgi?rs={{ snp.evidence_snp.snp_id_reported }}" target="_blank">
+                      rs{{ snp.evidence_snp.snp_id_reported }}
+                    </a>
+                  </span>
+                </td>
+                <td class="center">{{ snp.evidence_snp.chrom_reported }}</td>
+                <td class="center">{{ snp.evidence_snp.pos_reported }}</td>
+                <td class="center">{{ snp.evidence_snp.gene_reported }}</td>
+                <td class="center">{{ snp.evidence_snp.risk_allele_forward }}</td>
+                <td class="center">{{ snp.evidence_snp.odds_ratio|decimal_places:3 }}</td>
+                <td class="center">
+                  {{ genotypes| getvalue:snp.evidence_snp.snp_id_reported| listvalue:0| na }}
+                  {{ genotypes| getvalue:snp.evidence_snp.snp_id_reported| listvalue:1| hide_None }}
                 </td>
                 <td class="center">
-                  <span{% if not snp_record.genotype.0 in snp_record.catalog_info.risk_allele %} style="color : #c5c5c5"{% endif %}>{{ snp_record.genotype.0 }}</span>
-                  <span{% if not snp_record.genotype.1 in snp_record.catalog_info.risk_allele %} style="color : #c5c5c5"{% endif %}>{{ snp_record.genotype.1 }}</span>
+                  {{ snp.estimated_risk| decimal_places:2| na }}
                 </td>
-                <td class="center">{{ snp_record.catalog_info.ref }}</td>
-                <td class="center">{{ snp_record.catalog_info.risk_allele }}</td>
-                <td class="center">{{ snp_record.catalog_info.risk_allele_frequency }}</td>
-                <td class="center">{{ snp_record.catalog_info.OR }}</td>
-                <td class="center">{{ snp_record.RR }}</td>
-		          </tr>
+		      </tr>
               {% endfor %}
             </tbody>
           </table>
@@ -163,6 +125,9 @@
 {% endblock %}
 
 {% block js %}
+<script type="text/javascript" src="//code.highcharts.com/3.0/highcharts.js"></script>
+<script type="text/javascript" src="//code.highcharts.com/3.0/modules/exporting.js"></script>
+
 <script type="text/javascript">
 $(function () {
     var chart;
@@ -176,7 +141,7 @@ $(function () {
                 text: ''
             },
             xAxis: {
-                categories: [{% for snp_record in snp_records %}"rs{{ snp_record.snp }}",{% endfor %}],
+                categories: [{% for snp in snp_reports %}"rs{{ snp.evidence_snp.snp_id_reported }}",{% endfor %}],
                 labels: {
                     rotation: -45,
                     align: 'right',
@@ -206,11 +171,11 @@ $(function () {
                 enabled: false
             },
             series: [{
-                name: "{{ file_name }}",
-                data: [{% for snp_record in snp_records %}
-                         {y: {% ifnotequal snp_record.RR|abs 1.0 %}{{ snp_record.RR }}{% else %}0.0{% endifnotequal %},
-                          color: {% if snp_record.RR < 0 %}'#2ca6f1'{% elif snp_record.RR == 0 %}'#8a8a8a'{% else %}'#f12ca6'{% endif %},
-                          },
+                data: [{% for snp in snp_reports %}
+                       {
+                           y: {{ snp.estimated_risk| effect_as_signed| decimal_places:2 }},
+                           color: chartColors({{ snp.estimated_risk| effect_as_signed| decimal_places:2 }}),
+                       },
                        {% endfor %}],
                 },
             ]
@@ -222,23 +187,20 @@ $(function () {
 });
 </script>
 
-<script type="text/javascript" src="{% static 'js/highcharts/highcharts.js' %}"></script>
-<script type="text/javascript" src="{% static 'js/highcharts/modules/exporting.js' %}"></script>
-
 <script type="text/javascript">
-$(document).ready(function(){
-  $('#risk_reports_table').dataTable({
-    "bJQueryUI": true,
-    "sPaginationType": "full_numbers",
-    "iDisplayLength": 30,
-    "oLanguage": {
-            "sZeroRecords": "Nothing found - sorry",
-            "sInfo": "Showing _START_ to _END_ of _TOTAL_ records",
-            "sInfoEmpty": "Showing 0 to 0 of 0 records",
-            "sInfoFiltered": "(filtered from _MAX_ total records)"
-    },
-    "sDom": '<"top">t<"bottom"><"clear">'
-  });
-});
+// $(document).ready(function(){
+//   $('#risk_reports_table').dataTable({
+//     "bJQueryUI": true,
+//     "sPaginationType": "full_numbers",
+//     "iDisplayLength": 30,
+//     "oLanguage": {
+//             "sZeroRecords": "Nothing found - sorry",
+//             "sInfo": "Showing _START_ to _END_ of _TOTAL_ records",
+//             "sInfoEmpty": "Showing 0 to 0 of 0 records",
+//             "sInfoFiltered": "(filtered from _MAX_ total records)"
+//     },
+//     "sDom": '<"top">t<"bottom"><"clear">'
+//   });
+// });
 </script>
 {% endblock %}

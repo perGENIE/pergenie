@@ -13,10 +13,11 @@ from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
 
 from apps.authentication.models import User
-from apps.genome.models import Genome
+from apps.genome.models import Genome, Genotype
 from apps.gwascatalog.models import GwasCatalogSnp
 from .forms import RiskReportForm
 from .models import RiskReport, PhenotypeRiskReport, SnpRiskReport
+from lib.utils import d
 from lib.utils import clogging
 log = clogging.getColorLogger(__name__)
 
@@ -89,19 +90,23 @@ def phenotype(request, display_id, phenotype_id):
         reader_genomes = Genome.objects.filter(readers__in=user)
 
         report = RiskReport.objects.get(display_id=display_id)
-
         readable_reports = RiskReport.objects.filter(Q(genome__owner=user) | Q(genome__readers=user))
         if not report in readable_reports:
             raise Http404  # or 401 forbidden
 
-        phenotype_report = PhenotypeRiskReport.objects.get(phenotype__id=phenotype_id)
-        snp_reports = SnpRiskReport.objects.filter(phenotype_risk_report_id=phenotype_report)
-        # evidence_snps = GwasCatalogSnp.objects.filter(id__in=snp_reports.values_list('evidence_snp'))
+        phenotype_report = PhenotypeRiskReport.objects.get(risk_report=report, phenotype__id=phenotype_id)
+        snp_reports = SnpRiskReport.objects.filter(phenotype_risk_report=phenotype_report)
+
+        #
+        evidence_snp_ids = snp_reports.values_list('evidence_snp__snp_id_reported')
+        reported2current = snp_reports.values_list('evidence_snp__snp_id_reported', 'evidence_snp__snp_id_current')
+        current2genotype = Genotype.objects.filter(genome=report.genome, rs_id_current__in=evidence_snp_ids).values_list('rs_id_current', 'genotype')
+        genotypes = d.join(reported2current, current2genotype)
 
         return render(request, 'riskreport-phenotype.html',
                       dict(phenotype_report=phenotype_report,
                            snp_reports=snp_reports,
-                           # evidence_snps=evidence_snps,
+                           genotypes=genotypes,
                       ))
 
     except ObjectDoesNotExist:
