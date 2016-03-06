@@ -20,7 +20,6 @@ DEFAULT_APPS = (
     'apps.snp',
     'apps.gwascatalog',
     'apps.riskreport',
-    # 'apps.faq'
 )
 
 INSTALLED_APPS = (
