@@ -23,7 +23,7 @@ if 'apps.landing' in apps:
     urlpatterns += [url(r'^$', landing_views.index)]
 else:
     log.info('apps.landing is not installed. So /login is set as root (/) url.')
-    urlpatterns += [url(r'^$', authentication_views.login)]
+    urlpatterns += [url(r'^$', auth_views.login)]
 
 # Authentication
 urlpatterns += [
