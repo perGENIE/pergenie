@@ -15,6 +15,7 @@ DOMAIN = socket.gethostname()
 DEFAULT_APPS = (
     'apps.application',
     'apps.authentication',
+    'apps.internal',
     'apps.dashboard',
     'apps.genome',
     'apps.snp',
