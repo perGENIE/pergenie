@@ -1,13 +1,18 @@
-import sys, os
+import os
+import sys
 import subprocess
-from pymongo import MongoClient
+
 from django.conf import settings
-from lib.api.genomes import Genomes
-genomes = Genomes()
+
 from utils import clogging
 log = clogging.getColorLogger(__name__)
 
-def projection(scale, info):
+
+# TODO: replace Rscript to python?
+def project_new_person(geo_source, ):
+    """Execute Rscript to project new person onto PCA coordinate
+    """
+
     _1000genomes = os.path.join(settings.BASE_DIR, 'lib', 'r', '1000genomes.{0}.subsnps.csv'.format(scale))
 
     with open(_1000genomes, 'r') as f:

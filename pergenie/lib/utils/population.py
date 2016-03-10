@@ -17,3 +17,8 @@ POPULATION_CHOICES = [
 ]
 POPULATION_MAP = {x[0]:x[1] for x in POPULATION_CHOICES}
 POPULATION_MAP_REVERSE = {x[1]:x[0] for x in POPULATION_CHOICES}
+
+POPCODE2GLOBAL = {'CHB': 'EastAsia', 'JPT': 'EastAsia', 'CHS': 'EastAsia',
+                  'CEU': 'Europe', 'TSI': 'Europe', 'GBR': 'Europe', 'FIN': 'Europe', 'IBS': 'Europe',
+                  'YRI': 'Africa', 'LWK': 'Africa', 'ASW': 'Africa',
+                  'MXL': 'Americas', 'CLM': 'Americas', 'PUR': 'Americas'}

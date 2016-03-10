@@ -1,49 +1,62 @@
-from lib.r.r import projection
-from django.conf import settings
-import pymongo
+from django.db import models
+
+from celery.decorators import task
+
+from lib.population.projection import projection
 
 
-def project_new_person(scale, info):
-    """Project new person onto PCA coordinate.
-
-    args: str(scale)
-          data_info: {'user_id': '', 'name': '', ...}
-    retval: {'position': [x, y], 'label': '', 'map_label': ''}
+class PopulationPcaSnp(models.Model):
+    """FIXME
     """
 
-    # TODO: currently only for `global` scale
-    if scale in ('global'):
-        record = {'position': projection(scale, info),
-                  'label': info['name'],
-                  'map_label': ''}
-    else:
-        record = None
+    geo_source       = models.CharField()
+    snp_id_used      = IntegerField()
+    snp_id_current   = IntegerField()
 
-    return record
+    class Meta:
+        index_together = [
+            ['geo_source'],
+        ]
 
-
-def get_people(scale):
-    """Get points of people in PCA coordinate.
-
-    args: str(scale)
-    retval: list(list(), ...)
+class PopulationPcaGeoPoint(models.Model):
+    """Geometric points of people in each PCA coordinate
     """
-    popcode2global = {'CHB': 'EastAsia', 'JPT': 'EastAsia', 'CHS': 'EastAsia',
-                      'CEU': 'Europe', 'TSI': 'Europe', 'GBR': 'Europe', 'FIN': 'Europe', 'IBS': 'Europe',
-                      'YRI': 'Africa', 'LWK': 'Africa', 'ASW': 'Africa',
-                      'MXL': 'Americas', 'CLM': 'Americas', 'PUR': 'Americas'}
 
-    with pymongo.MongoClient(host=settings.MONGO_URI) as c:
-        db = c['pergenie']
-        col = db['population_pca'][scale]
+    geo_source = models.CharField()
+    population_code = models.CharField(null=True, blank=True)
+    pc_1 = models.FloatField()
+    pc_2 = models.FloatField()
+    genome = models.ForeignKey(Genome, null=True)
 
-        if scale == 'global':
-            records = [{'position': rec['position'],
-                        'label': popcode2global[rec['popcode']],
-                        'map_label': rec['popcode']} for rec in col.find()]
-        else:
-            records = [{'position': rec['position'],
-                        'label': rec['popcode'],
-                        'map_label': rec['popcode']} for rec in col.find()]
+    @classmethod
+    def create_geo_point(self, async=True):
+        # if async:
+        #     task_create_geo_point.delay()
+        # else:
+        task_create_geo_point()
 
-        return records
+    class Meta:
+        index_together = [
+            ['geo_source', 'population_code', 'genome'],
+        ]
+
+@task(ignore_result=True)
+def task_create_geo_point(geo_source, genome_id):  # NOTE: arguments for celery task should be JSON serializable
+    """Project new person onto PCA coordinate, then create PopulationPcaGeoPoint record.
+    """
+
+    # TODO: currently `global` only
+    assert geo_source = 'global'
+
+    pca_snp_ids = PopulationPcaSnp.objects.x()
+    pca_snps = Genome.objects.x()
+
+    pc_1, pc_2 = project_new_person(geo_source)
+
+    data = dict(geo_source=geo_source,
+                population_code=population_code,
+                pc_1=float(pc_1),
+                pc_2=float(pc_2),
+                genome=genome_id)
+
+    PopulationPcaGeoPoint.objects.create(**data)
