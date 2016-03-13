@@ -13,6 +13,7 @@ from apps.authentication.models import User, UserGrade
 from apps.genome.models import Genome, Genotype
 from apps.gwascatalog.models import GwasCatalogSnp
 from apps.riskreport.models import RiskReport
+from apps.population.models import PopulationPcaGeoPoint
 from lib.utils.population import POPULATION_UNKNOWN, POPULATION_EAST_ASIAN
 from lib.utils import clogging
 log = clogging.getColorLogger(__name__)
@@ -64,6 +65,12 @@ def create_demo_user():
         # TODO: To update riskreport for new users, create risk report as async = True?
         riskreport.create_riskreport(async=False)
         log.info('RiskReport created. id: {}'.format(riskreport.id))
+
+        #
+        geo_point = PopulationPcaGeoPoint.objects.create(genome=genome,
+                                                         population_code='global')
+        geo_point.create_geo_point(async=False)
+        log.info('Population PCA Geo Point created. id: {}'.format(geo_point.id))
 
     # Init new demo user (everytime)
     email = '{}@{}'.format(uuid4(), settings.DOMAIN)

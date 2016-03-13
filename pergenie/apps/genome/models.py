@@ -98,6 +98,8 @@ def task_import_genotypes(genome_id, minimum_snps=False):
         log.info('Creating SNP ID whitelist ...')
         snp_id_whitelist = []
         snp_id_whitelist += GwasCatalogSnp.objects.exclude(snp_id_current__isnull=True).distinct('snp_id_current').values_list('snp_id_current', flat=True)
+        # FIXME:
+        # snp_id_whitelist += pca_snp_ids
         with open(file_path + '.whitelist.txt', 'w') as fout:
             for snp_id in snp_id_whitelist:
                 print >>fout, 'rs{}'.format(snp_id)

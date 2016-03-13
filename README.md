@@ -39,6 +39,7 @@ $ python manage.py migrate
 $ python manage.py createsuperuser
 $ python manage.py update_gwascatalog
 $ python manage.py setup_go_vcf_tools
+$ python manage.py init_population_pca
 $ python manage.py init_demo_user
 ```
 

@@ -1,0 +1,483 @@
+{% extends "layout.html" %}
+{% block title %}Population{% endblock %}
+{% block description %}population{% endblock %}
+{% load staticfiles %}
+{% load extras %}
+
+{% block main_container %}
+<div id="main_container" class="span14">
+  <section id="main">
+
+    <div class="container">
+
+      <div class="row-fluid">
+        <div class="span12">
+          <div class="content-box transparent">
+            <div class="padded">
+              <h2>Population<span class="badge badge-blue">&nbsp;&beta;&nbsp;</span></h2>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- alerts -->
+      {% if msg %}
+      <div class="alert alert-info">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>Information:</strong> {{ msg }}
+      </div>
+      {% endif %}
+
+      {% if err %}
+      <div class="alert alert-error">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>Error!</strong> {{ err }}
+      </div>
+      {% endif %}
+
+      <div class="row-fluid">
+        <div class="span14">
+          <div class="content-box">
+            <div class="content-box-header">
+              <icon class="icon-globe"></icon>
+            </div>
+
+            <div class="padded">
+              <div class="row-fluid">
+                <div class="span14">
+                  <div id="pca-chart" style="width: 500px; height: 500px;"></div>
+                  <div id="pca-map" style="height: 500px;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+</div>
+
+<style type="text/css">
+#pca-map label { width: auto; display: inline; }
+#pca-map img { max-width: none; }
+</style>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript" src="{% static 'js/highcharts/highcharts.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/highcharts/highcharts-more.js' %}"></script>
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDHIY3O4PNfRsWEdFOxyqPJZntQByf5CZQ&sensor=true"></script><!-- TODO -->
+<script type="text/javascript">
+(function () {
+
+  ///
+  /// pca data
+  ///
+
+  {% regroup people by 1 as people_groups %}
+
+  var pcaData = {
+    {% for key, records in people.items %}
+    "{{ key }}": [
+        {% for record in records %}{ position: [{{ record.position.0 }}, {{ record.position.1 }}], label: "{{ record.label }}", mapLabel: "{{ record.map_label }}" },
+        {% endfor %}
+    ],
+    {% endfor %}
+  }; // var pcaData
+
+  var regionMap = {
+    "JPT": {
+      name: "Japanese in Tokyo, Japan",
+      category: "EastAsia",
+      location: "Tokyo, Japan",
+      center: [35.689544, 139.69171],
+      radius: 200000 * 4
+    },
+    "CHB": {
+      name: "CHB Han Chinese in Beijing, China",
+      category: "EastAsia",
+      location: "Beijing, China",
+      center: [39.904018, 116.407535],
+      radius: 200000 * 4
+    },
+    "CHS": {
+      name: "Han Chinese South",
+      category: "EastAsia",
+      location: "Hu Nan and Fu Jian Province, China",
+      center: [28.115594, 112.986317],
+      radius: 200000 * 4
+    },
+    "CEU": {
+      name: "Utah residents with ancestry from northern and western Europe",
+      category: "Europe",
+      location: "Utah, USA",
+      center: [39.320986, -111.093727],
+      radius: 200000 * 4
+    },
+    "IBS": {
+      name: "Iberian Populations in Spain",
+      category: "Europe",
+      location: "Spain",
+      center: [40.416778, -3.703783],
+      radius: 200000 * 4
+    },
+    "GBR": {
+      name: "British from England and Scotland",
+      catrgory: "Europe",
+      location: "Great Britain",
+      center: [51.51124, -0.119765],
+      radius: 200000 * 4
+    },
+    "FIN": {
+      name: "Finnish in Finland",
+      category: "Europe",
+      location: "Finland",
+      center: [60.173346, 24.941048],
+      radius: 200000 * 4
+    },
+    "TSI": {
+      name: "Toscani in Italia",
+      category: "Europe",
+      location: "Italy",
+      center: [41.894611, 12.48358],
+      radius: 200000 * 4
+    },
+    "ASW": {
+      name: "African Ancestry in SW USA",
+      category: "Africa",
+      location: "Southwest, USA",
+      center: [36.999023, -109.045163],
+      radius: 200000 * 4
+    },
+    "YRI": {
+      name: "Yoruba in Ibadan",
+      category: "Africa",
+      location: "Webuye, Kenya",
+      center: [0.616939, 34.767013],
+      radius: 200000 * 4
+    },
+    "LWK": {
+      name: "Luhya in Webuye, Kenya",
+      category: "Africa",
+      location: "Ibadan, Nigeria",
+      center: [7.396451, 3.916702],
+      radius: 200000 * 4
+    },
+    "MXL": {
+      name: "Mexican Ancestry in Los Angeles, CA, USA",
+      category: "Americas",
+      location: "Los Angeles, USA",
+      center: [34.052237, -118.24368],
+      radius: 200000 * 4
+    },
+    "PUR": {
+      name: "Puerto Ricans in Puerto Rico",
+      category: "Americas",
+      location: "Puerto Rico",
+      center: [18.466482, -66.105691],
+      radius: 200000 * 4
+    },
+    "CLM": {
+      name: "Colombians in Medellín, Colombia",
+      category: "Americas",
+      location: "Medellin, Colombia",
+      center: [6.236125, -75.574769],
+      radius: 200000 * 4
+    }
+  }; // var regionMap
+
+  var colorMap = {
+    "EastAsia": "#167833",
+    "Europe": "#2A3D93",
+    "Africa": "#773518",
+    "Americas":  "#E7311B",
+    "JPT": "#167833",
+    "CHB": "#A2C928",
+    "CHS": "#5BB335",
+    "CEU": "#2A3D93",
+    "IBS": "#597BBF",
+    "GBR": "#5EC3D5",
+    "FIN": "#24B2BC",
+    "TSI": "#1E1D68",
+    "ASW": "#773518",
+    "YRI": "#E8E699",
+    "LWK": "#BEA378",
+    "MXL": "#E7311B",
+    "PUR": "#F69216",
+    "CLM": "#EF6A39",
+  }; // var colorMap
+
+
+  //
+  // pca-chart
+  //
+
+  var isRoot = true;
+  var pcaChart = null;
+
+  var pcaChartOpts = {
+    chart: {
+      renderTo: "pca-chart",
+      type: "bubble",
+      plotBorderWidth: 1,
+      zoomType: "xy",
+      events: {
+        click: function (e) {
+          try {
+            if (e.srcElement.firstChild.data == "Reset zoom") {
+              pcaChart.zoomOut();
+              return;
+            }
+          } catch (ex) {}
+
+          if (!isRoot) {
+            isRoot = true;
+            showPcaData("global");
+          }
+        }
+      }
+    },
+    title: {
+      text: "TODO"
+    },
+    subtitle: {
+      text: "TODO"
+    },
+    xAxis: {
+      gridLineWidth: 1,
+      title: { text: "PC1" }
+    },
+    yAxis: {
+      gridLineWidth: 2,
+      title: { text: "PC2" }
+    },
+    plotOptions: {
+      bubble: {
+        minSize: "10px",
+        maxSize: "10px",
+      }
+    },
+    tooltip: {
+      borderColor: "auto",  // http://api.highcharts.com/highcharts#tooltip.borderColor
+      formatter: function () {
+        return "<b>" + this.series.name; //+ "</b><br>" + this.x + ", " + this.y;
+      }
+    },
+    credits: {
+      enabled: false
+    },
+  }; // var chartOpts
+
+
+  ///
+  /// pca-map
+  ///
+
+  var pcaMap = null;
+  var pcaMapCircles = {};
+  var pcaMapMarkers = {};
+
+  var pcaMapOpts = {
+    center: new google.maps.LatLng(35.689544, 139.69171),
+    zoom: 2,
+    mapTypeId: google.maps.MapTypeId.ROADMAP,
+  };
+
+
+  ///
+  ///
+  ///
+
+  var categorizePcaData = function (targetPcaData) {
+    var categorizedPcaData = {};
+
+    $.each(targetPcaData, function () {
+      var category = this.label;
+      var flag = category in categorizedPcaData;
+
+      if (!flag) {
+        categorizedPcaData[category] = {
+          name: category,
+          data: [],
+          marker: {
+            fillColor: colorMap[category],
+            lineColor: colorMap[category],
+            lineWidth: 0,
+          },
+          events: {
+            click: function (e) {
+              isRoot = false;
+              showPcaData(category);
+            },
+            mouseOver: function (e) {
+              highlightPcaMapCircles(category);
+            },
+            mouseOut: function (e) {
+              unhighlightPcaMapCircles();
+            },
+          },
+          marks: [],
+        };
+      }
+
+      var pos = this.position;
+      categorizedPcaData[category].data.push([pos[0], pos[1], 1]);
+
+      flag = categorizedPcaData[category].marks.indexOf(this.mapLabel) >= 0;
+      if (!flag) categorizedPcaData[category].marks.push(this.mapLabel);
+    });
+
+    //
+    var result = [];
+    $.each(categorizedPcaData, function (key, data) {
+      if (data.data.length > 0) result.push(data);
+    });
+
+    return result;
+  }; // var categorizedPcaData
+
+
+  ///
+  ///
+  ///
+
+  var showPcaData = function (targetPcaDataName) {
+    if (targetPcaDataName == null ||
+        !(targetPcaDataName in pcaData) ||
+        pcaData[targetPcaDataName].length <= 0) {
+      return;
+    }
+
+    var categorizedPcaData = categorizePcaData(pcaData[targetPcaDataName]);
+
+    // pca chart
+    var n = pcaChart.series.length;
+    for (var i = 0; i < n; i++) pcaChart.series[0].remove();
+
+    $.each(categorizedPcaData, function () {
+      pcaChart.addSeries(this);
+    });
+
+    // pca map
+    $.each(pcaMapCircles, function (key, circles) {
+      $.each(circles, function () { this.setMap(null); })
+    });
+    $.each(pcaMapMarkers, function (key, markers) {
+      $.each(markers, function () { this.setMap(null); })
+    });
+
+    $.each(categorizedPcaData, function () {
+      var name = this.name;
+      var color = colorMap[this.name];
+
+      var circles = [];
+      var markers = [];
+
+      $.each(this.marks, function () {
+        var mark = "" + this;
+        var region = regionMap[mark];
+        if (region == undefined) return; // TODO
+
+        //
+        var circle = new google.maps.Circle({
+          strokeColor: color,
+          strokeOpacity: 0.4,
+          strokeWeight: 1,
+          fillColor: color,
+          fillOpacity: 0.4,
+          map: pcaMap,
+          center: new google.maps.LatLng(region.center[0], region.center[1]),
+          radius: region.radius,
+        });
+
+        var marker = new google.maps.Marker({
+          position: new google.maps.LatLng(region.center[0], region.center[1]),
+          title: region.name,
+          map: pcaMap,
+        });
+
+        var infoWindow = new google.maps.InfoWindow({
+          content: "<b>" + mark + "</b><br>" + region.name
+        });
+
+        //
+        google.maps.event.addListener(circle, "mouseover", function () {
+          infoWindow.open(pcaMap, marker);
+        });
+
+        google.maps.event.addListener(circle, "mouseout", function () {
+          infoWindow.close();
+        });
+
+        google.maps.event.addListener(marker, "mouseover", function () {
+          infoWindow.open(pcaMap, marker);
+        });
+
+        google.maps.event.addListener(marker, "mouseout", function () {
+          infoWindow.close();
+        });
+
+        //
+        circles.push(circle);
+        markers.push(marker);
+      });
+
+      pcaMapCircles[name] = circles;
+      pcaMapMarkers[name] = markers;
+    });
+  }; // var showPcaData
+
+  var lastHightlightTimer = null;
+
+  var highlightPcaMapCircles = function (label) {
+    if (lastHightlightTimer != null) {
+      clearTimeout(lastHightlightTimer);
+      lastHightlightTimer = null;
+    }
+
+    $.each(pcaMapCircles, function (key, circles) {
+      var opacity = key == label ? 0.8 : 0.2;
+
+      $.each(circles, function () {
+        this.setOptions({
+          strokeOpacity: opacity,
+          fillOpacity: opacity
+        });
+      });
+    });
+  }; // var highlightPcaMapCircles
+
+  var unhighlightPcaMapCircles = function () {
+    if (lastHightlightTimer != null)
+      clearTimeout(lastHightlightTimer);
+
+    lastHightlightTimer = setTimeout(function () {
+      $.each(pcaMapCircles, function (key, circles) {
+        $.each(circles, function () {
+          this.setOptions({
+            strokeOpacity: 0.4,
+            fillOpacity: 0.4
+          });
+        })
+      });
+
+      lastHightlightTimer = null;
+    }, 1000);
+  }; // // var highlightPcaMapCircles
+
+
+  ///
+  ///
+  ///
+
+  $(document).ready(function () {
+    pcaChart = new Highcharts.Chart(pcaChartOpts);
+    pcaMap = new google.maps.Map(document.getElementById("pca-map"), pcaMapOpts);
+
+    isRoot = true;
+    showPcaData("global");
+  }); // $(document).ready
+})();
+</script>
+{% endblock %}

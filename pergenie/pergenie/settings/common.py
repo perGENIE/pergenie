@@ -12,7 +12,7 @@ DOMAIN = socket.gethostname()
 
 # Application definition
 
-DEFAULT_APPS = (
+INSTALLED_APPS = (
     'apps.application',
     'apps.authentication',
     'apps.internal',
@@ -22,9 +22,7 @@ DEFAULT_APPS = (
     'apps.gwascatalog',
     'apps.riskreport',
     'apps.population',
-)
 
-INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -33,7 +31,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
-) + DEFAULT_APPS
+)
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',

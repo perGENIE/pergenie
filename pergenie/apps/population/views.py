@@ -21,5 +21,5 @@ def index(request):
     context =  dict(scale=scale,
                     people=people)
 
-    return render(request, 'population/index.html',
+    return render(request, 'population.html',
                   context)
