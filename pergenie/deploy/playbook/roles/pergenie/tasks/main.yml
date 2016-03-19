@@ -1,0 +1,61 @@
+---
+- name: create app user
+  user: name={{ app_user }} generate_ssh_key=yes ssh_key_bits=2048 ssh_key_file=.ssh/id_rsa
+
+- name: create ssh-key for private files repo if exists
+  user: name={{ app_user }} generate_ssh_key=yes ssh_key_bits=2048 ssh_key_file=.ssh/id_rsa_private_files_repo
+  when: private_files_repo_url is defined
+
+- name: create postgresql user
+  become_user: postgres
+  postgresql_user: name={{ database_user }}
+                   password={{ database_pass }}
+                   role_attr_flags=NOSUPERUSER
+
+# FIXME:
+# - name: export postgresql bin PATH
+#   template:
+#     src=bashrc.j2
+#     dest=/home/{{ app_user }}/.bashrc
+#     owner={{ app_user }} group={{ app_user }} mode=0644
+
+- name: create postgresql database
+  become_user: postgres
+  postgresql_db: name={{ database_name }}
+                 encoding='UTF-8'
+                 owner={{ database_user }}
+                 state=present
+
+- name: create .pgpass
+  template: src=pgpass.j2 dest="/home/{{ app_user }}/.pgpass"
+            owner={{ app_user }} group={{ app_user }} mode=0600
+
+- name: create dirs
+  file: path={{ item }} state=directory recurse=yes owner={{ app_user }} group={{ app_user }}
+  with_items:
+    - "{{ build_root }}"
+    - "{{ proj_root }}"
+    - "{{ static_root }}"
+    - "{{ upload_root }}"
+    - "{{ backup_root }}"
+
+# $ chcon -R -t httpd_user_content_t
+# - file: path="{{ build_root }}/pergenie" setype=httpd_user_content_t recurse=yes
+
+# FIXME: consider to use httpd_can_network_connect_db,
+#        and add settings for rabbitmq, etc.
+# $ setsebool -P httpd_can_network_connect=1
+# - seboolean: name=httpd_can_network_connect state=yes persistent=yes
+
+- include: crontab.yml
+
+- include: celery.yml
+
+- include: rollout.yml
+  become_user: "{{ app_user }}"
+  tags: rollout
+
+- include: init_data.yml
+  become_user: "{{ app_user }}"
+  notify: restart wsgi
+  tags: init_data

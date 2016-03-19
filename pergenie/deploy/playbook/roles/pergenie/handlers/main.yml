@@ -1,0 +1,14 @@
+---
+- name: restart wsgi
+  become_user: "{{ app_user }}"
+  file: path={{ wsgi_dir }}/wsgi.py state=touch
+
+- name: reload crontab
+  become_user: "{{ app_user }}"
+  command: crontab "/home/{{ app_user }}/crontab"
+
+- name: restart celery
+  command: /etc/init.d/celeryd restart
+
+- name: stop celery
+  command: /etc/init.d/celeryd stop

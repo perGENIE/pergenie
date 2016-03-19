@@ -1,0 +1,59 @@
+---
+- name: clone repo
+  git: repo={{ repo_url }}
+       dest={{ proj_root }}
+       accept_hostkey=yes
+
+- name: clone private files repo if exists
+  git: repo={{ private_files_repo_url }}
+       dest={{ private_files_repo_root }}
+       accept_hostkey=yes
+       key_file="/home/{{ app_user }}/.ssh/id_rsa_private_files_repo"
+  when: private_files_repo_url is defined
+
+- name: symlink statc/vendor
+  file: src="{{ private_files_repo_root }}/static/vendor"
+        dest="{{ app_root }}/static/vendor"
+        owner={{ app_user }} group={{ app_user }}
+        state=link
+  when: private_files_repo_url is defined
+
+# FIXME:
+- name: symlink apps
+  shell: ln -s -f "{{ private_files_repo_root }}"/apps/* "{{ app_root }}"/apps/
+  when: private_files_repo_url is defined
+
+- name: configure requirements
+  template: src=requirements.j2 dest="{{ proj_root }}/requirements/{{ rollout_env }}.txt"
+
+# FIXME:
+- name: create virtualenv and install python packages
+  pip: virtualenv_command=virtualenv
+       virtualenv={{ virtualenv_dir }}
+       requirements={{ proj_root }}/requirements/{{ rollout_env }}.txt
+  environment:
+    PATH: /usr/pgsql-{{ postgresql_version }}/bin:{{ ansible_env.PATH }}
+
+- name: configure settings.py
+  template: src=settings.py.j2 dest="{{ wsgi_dir }}/settings/{{ rollout_env }}.py"
+
+- name: django manage.py
+  django_manage: command={{ item }}
+                 virtualenv={{ virtualenv_dir }} app_path={{ app_root }} settings="pergenie.settings.{{ rollout_env }}"
+  with_items:
+    - migrate
+    - collectstatic
+
+# TODO: print stdout/stderr
+# TODO: fail when some issues found
+- name: django manage.py check --deploy
+  django_manage: command="check --deploy"
+                 virtualenv={{ virtualenv_dir }} app_path={{ app_root }} settings="pergenie.settings.{{ rollout_env }}"
+  # register: command_result
+  # failed_when: "'identified some issues' in command_result.stderr"
+
+- command: /bin/true
+  notify: restart celery
+
+- command: /bin/true
+  notify: restart wsgi

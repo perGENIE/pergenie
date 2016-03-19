@@ -1,33 +1,5 @@
 [![perGENIE screenshot](http://knmkr.info/img/portfolio/pergenie/pergenie.png)](http://pergenie.org/)
 
-## For developers
-
-### Getting started with Vagrant & Ansible
-
-1\. Install `VirtualBox`, `Vagrant`, and `Ansible`.
-
-2\. Configure variables in playbook:
-
-```
-$ ${EDITOR} pergenie/deploy/playbook/group_vars/staging  # e.g. pergenie/deploy/playbook/group_vars/example/staging.example
-```
-
-3\. Build VM and deploy:
-
-```
-$ cd pergenie/deploy
-$ vagrant up
-```
-
-Once VM is up, you can rollout pergenie application by:
-
-```
-$ ANSIBLE_TAGS=rollout vagrant provision
-```
-
-See details in `pergenie/deploy`
-
-
 ### Getting started with Django development server
 
 1\. Install requirements

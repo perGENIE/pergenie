@@ -1,0 +1,109 @@
+# coding: utf-8
+from common import *
+
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = '{{ django_secret_key }}'
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = False
+
+INSTALLED_APPS += (
+    'apps.landing',
+)
+
+#
+DEMO_MODE_ONLY = True
+
+ALLOWED_HOSTS = ['{{ django_allowed_host }}']
+
+
+# Email (IMAP)
+
+# People who get code error notifications when DEBUG=False.
+ADMINS = (
+    ('{{ app_user }}', '{{ django_error_notification_email_to }}'),
+)
+MANAGERS = ADMINS
+
+SUPPORT_EMAIL_TO = '{{ django_support_email_to }}'
+DEFAULT_EMAIL_FROM = '{{ django_default_email_from }}'
+
+EMAIL_USE_TLS = True
+EMAIL_HOST = '{{ django_email_host }}'           # e.g. smtp.example.com
+EMAIL_PORT = {{ django_email_port }}             # e.g. 587
+EMAIL_HOST_USER = '{{ django_email_user }}'      # e.g. me@example.com
+EMAIL_HOST_PASSWORD = '{{ django_email_pass }}'
+
+
+# Security
+
+# Set the HTTP Strict Transport Security header.
+SECURE_HSTS_SECONDS = 31536000  # 1 year
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+
+# Redirect all non-HTTPS requests to HTTPS.
+SECURE_SSL_REDIRECT = True
+
+# Browser will block the resource from loading in a frame no matter which site made the request.
+X_FRAME_OPTIONS = 'DENY'
+
+# Prevent the browser from guessing the content type and force it to always use the type provided in the Content-Type header.
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
+# Enable the XSS filter in the browser, and force it to always block suspected XSS attacks.
+SECURE_BROWSER_XSS_FILTER = True
+
+# Use a secure cookie for the CSRF cookie.
+CSRF_COOKIE_SECURE = True
+
+# Use HttpOnly flag on the CSRF cookie
+CSRF_COOKIE_HTTPONLY = True
+
+
+# Session
+
+SESSION_SAVE_EVERY_REQUEST = False
+SESSION_COOKIE_SECURE = True
+
+
+# Database
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME':     '{{ database_name }}',
+        'USER':     '{{ database_user }}',
+        'PASSWORD': '{{ database_pass }}',
+        'HOST':     '{{ database_host }}',
+        'PORT':     '{{ database_port }}',
+    },
+}
+
+# Celery (RabbitMQ)
+# TODO:
+
+
+# Static files
+STATIC_ROOT = '{{ static_root }}'
+
+
+# Google Analytics
+
+GOOGLE_ANALYTICS_PROPERTY_ID = '{{ google_analytics_property_id }}'
+
+
+# Genome upload/delete/status
+UPLOAD_ROOT = '{{ upload_root }}'
+GENOME_UPLOAD_DIR = os.path.join(UPLOAD_ROOT, 'genome')
+
+RS_MERGE_ARCH_PATH = os.path.join(BASE_DIR, 'tmp', 'RsMergeArch.bcp.gz')
+
+
+# Demo mode
+DEMO_GENOME_FILE_DIR = os.path.join(BASE_DIR, 'data', 'demo')
+DEMO_GENOME_FILE_NAME = 'DRA000583.bwa.gatk.b144.gwascatalog.gt.vcf'
+
+
+# GWAS Catalog
+GWASCATALOG_DIR = os.path.join(UPLOAD_ROOT, 'gwascatalog')
+GWASCATALOG_FREQ_DIFF_THRS = 0.1
