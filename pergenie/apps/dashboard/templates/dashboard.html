@@ -24,6 +24,15 @@
           </a>
           {% endif %}
 
+          {% if "population"|is_in_installed_apps %}
+          <a href="{% url 'population' %}">
+            <button class="button square" href="#">
+              <i class="icon-globe icon-large"></i>
+              <span class="button-text">Population</span>
+            </button>
+          </a>
+          {% endif %}
+
           {% if "genome"|is_in_installed_apps %}
           <a href="{% url 'genome-upload' %}">
             <button class="button square" href="#">
