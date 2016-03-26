@@ -8,10 +8,6 @@ celery>=3.1,<3.1.99
 pyfasta
 numpy
 
-# internal api
-requests
-git+https://github.com/knmkr/py-vcf-parser.git
-
 # others
 termcolor     # logging
 psutil        # logging
