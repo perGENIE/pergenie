@@ -9,10 +9,10 @@ BIN_PATH=$3
 # FIXME: Need to check gzipeed or not
 # gzip -dc ${GENOME_FILE_PATH}| \
 cat ${GENOME_FILE_PATH}| \
-    ${BIN_PATH}/vcf-subset --keep-index 0 | \
-    ${BIN_PATH}/vcf-update ${RS_MERGE_ARCH_PATH} | \
-    ${BIN_PATH}/vcf-filter -keep-ids ${GENOME_FILE_PATH}.whitelist.txt | \
-    ${BIN_PATH}/vcf-to-tab --without-header \
+    ${BIN_PATH}/go-vcf subset --keep-index 0 | \
+    ${BIN_PATH}/go-vcf update --rs-merge-arch ${RS_MERGE_ARCH_PATH} | \
+    ${BIN_PATH}/go-vcf filter -keep-ids ${GENOME_FILE_PATH}.whitelist.txt | \
+    ${BIN_PATH}/go-vcf to-tab --without-header \
                  --without-chr-pos \
                  --rs-id-as-int \
                  > ${GENOME_FILE_PATH}.tsv

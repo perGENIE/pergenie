@@ -20,17 +20,17 @@ class Command(BaseCommand):
         bin_dir = os.path.join(settings.BASE_DIR, 'bin')
 
         log.info('Fetching go-vcf-tools ...')
-        url = '{repo}/releases/download/{tag}/{os_platform}.amd64.tar.gz'.format(repo='https://github.com/knmkr/go-vcf-tools',
-                                                                                 tag='0.0.3',
-                                                                                 os_platform=platform.system().lower())
-        tar_gz = os.path.join(tmp_dir, 'go-vcf-tools.tar.gz')
+        url = '{repo}/releases/download/{tag}/go-vcf.{os_platform}-amd64.tar.gz'.format(repo='https://github.com/knmkr/go-vcf-tools',
+                                                                                        tag='0.1.0',
+                                                                                        os_platform=platform.system().lower())
+        tar_gz = os.path.join(tmp_dir, 'go-vcf.tar.gz')
         get_url_content(url, tar_gz, if_not_exists=True)
 
         log.info('Extracting go-vcf-tools ...')
         with tarfile.open(tar_gz, 'r') as tar:
-            dst = os.path.join(tmp_dir, 'go-vcf-tools')
+            dst = os.path.join(tmp_dir, 'go-vcf')
             tar.extractall(dst)
-            for tool in glob.glob(os.path.join(tmp_dir, 'go-vcf-tools', '*', 'vcf-*')):
+            for tool in glob.glob(os.path.join(tmp_dir, 'go-vcf', '*')):
                 shutil.copy(tool, bin_dir)
 
         os.remove(tar_gz)
