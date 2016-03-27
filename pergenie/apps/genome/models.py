@@ -12,6 +12,7 @@ from celery.decorators import task
 
 from apps.authentication.models import User
 from apps.gwascatalog.models import GwasCatalogSnp
+from lib.population.pca_snps import pca_snp_ids
 from lib.utils.population import POPULATION_CHOICES, POPULATION_UNKNOWN
 from lib.utils import clogging
 log = clogging.getColorLogger(__name__)
@@ -90,7 +91,7 @@ def task_import_genotypes(genome_id, minimum_snps=False):
 
         genotypes_found = genome.get_genotypes()
         if genotypes_found:
-            log.info('Delete old records ...')
+            log.info('Delete old records: Genotype ...')
             genome.delete_genotypes()
 
         file_path = genome.get_genome_file()
@@ -98,8 +99,7 @@ def task_import_genotypes(genome_id, minimum_snps=False):
         log.info('Creating SNP ID whitelist ...')
         snp_id_whitelist = []
         snp_id_whitelist += GwasCatalogSnp.objects.exclude(snp_id_current__isnull=True).distinct('snp_id_current').values_list('snp_id_current', flat=True)
-        # FIXME:
-        # snp_id_whitelist += pca_snp_ids
+        snp_id_whitelist += pca_snp_ids()
         with open(file_path + '.whitelist.txt', 'w') as fout:
             for snp_id in snp_id_whitelist:
                 print >>fout, 'rs{}'.format(snp_id)
